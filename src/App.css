@@ -109,3 +109,18 @@
 }
 @media(max-width:420px){.hero-copy{padding:20px 17px 16px}.hero-copy h2{font-size:25px}.hero-art{min-height:180px}.workspace-photo-banner{min-height:128px;padding:15px}.workspace-photo-mark{right:11px;top:11px;width:31px;height:31px}}
 @media(prefers-reduced-motion:reduce){.workspace-photo-banner>img{transition:none!important;transform:none!important}}
+
+/* Phase 6.2: a small, CSS-only 3D growth motif */
+.workspace-photo-banner{perspective:900px}
+.workspace-orbit{position:absolute;right:8%;bottom:17px;width:102px;height:102px;display:grid;place-items:center;transform-style:preserve-3d;pointer-events:none;animation:orbit-float 6s ease-in-out infinite}
+.orbit-core{position:relative;z-index:2;display:grid;place-items:center;width:54px;height:54px;border:1px solid rgba(255,255,255,.76);border-radius:19px;background:linear-gradient(145deg,rgba(255,255,255,.58),rgba(228,245,222,.18));box-shadow:inset 0 1px 0 rgba(255,255,255,.65),0 12px 28px rgba(10,34,18,.16);color:#f8fff3;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transform:translateZ(18px);transition:transform .45s cubic-bezier(.2,.8,.2,1),border-radius .45s ease}
+.orbit-ring{position:absolute;inset:8px;border:1px solid rgba(255,255,255,.64);border-radius:50%;transform-style:preserve-3d}
+.orbit-ring-a{transform:rotateX(67deg) rotateZ(-22deg) scaleY(.82)}
+.orbit-ring-b{inset:0 17px;border-color:rgba(235,249,221,.86);transform:rotateY(66deg) rotateZ(24deg)}
+.orbit-dot{position:absolute;top:10px;right:12px;width:9px;height:9px;border:2px solid rgba(255,255,255,.85);border-radius:50%;background:#c6e0a9;box-shadow:0 0 14px rgba(222,247,193,.75);transform:translateZ(28px)}
+.workspace-photo-banner:hover .workspace-orbit,.workspace-photo-banner:focus-within .workspace-orbit{animation-play-state:paused;transform:rotateX(-7deg) rotateY(12deg) scale(1.04)}
+.workspace-photo-banner:hover .orbit-core{transform:translateZ(25px) rotateY(-9deg);border-radius:23px}
+@keyframes orbit-float{0%,100%{translate:0 0;rotate:-3deg}50%{translate:0 -7px;rotate:3deg}}
+@media(max-width:760px){.workspace-orbit{right:14px;bottom:10px;scale:.82;transform-origin:bottom right}.workspace-photo-copy{padding-right:46px}}
+@media(max-width:420px){.workspace-orbit{scale:.68;right:8px;bottom:5px}.workspace-photo-copy{padding-right:28px}}
+@media(prefers-reduced-motion:reduce){.workspace-orbit{animation:none!important}.workspace-photo-banner:hover .workspace-orbit{transform:none}.workspace-photo-banner:hover .orbit-core{transform:none}}
