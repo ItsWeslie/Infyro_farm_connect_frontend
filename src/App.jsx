@@ -1,65 +1,142 @@
 import { useMemo, useState } from 'react'
+import {
+  Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Bell, CalendarDays, Check,
+  ChevronDown, CircleHelp, CloudSun, Command, CreditCard, Ellipsis, Field, Flower2,
+  LayoutDashboard, Leaf, Menu, MoreHorizontal, Plus, Search, Settings2, Sprout,
+  Tractor, TrendingUp, Wheat, X, MapPinned, ClipboardList, PackageCheck, SlidersHorizontal,
+  CircleUserRound, Settings, LogOut, CheckCheck, Clock3, Droplets, Sun, Wallet,
+} from 'lucide-react'
 import './App.css'
 
-const initialCrops = [
-  { id: 1, name: 'Tomato', variety: 'Arka Rakshak', field: 'North Field', area: '1.2 acres', status: 'Growing', progress: 72, harvest: 'Nov 12, 2026', color: 'tomato' },
-  { id: 2, name: 'Rice', variety: 'Ponni', field: 'Paddy Field A', area: '2.5 acres', status: 'Growing', progress: 48, harvest: 'Dec 04, 2026', color: 'rice' },
-  { id: 3, name: 'Spinach', variety: 'Palak Green', field: 'Kitchen Garden', area: '0.4 acres', status: 'Ready to harvest', progress: 94, harvest: 'Oct 30, 2026', color: 'spinach' },
-  { id: 4, name: 'Chilli', variety: 'Guntur Sannam', field: 'East Field', area: '0.8 acres', status: 'Growing', progress: 35, harvest: 'Jan 18, 2027', color: 'chilli' },
+const navigation = [
+  { section: 'WORKSPACE', items: [
+    { label: 'Overview', icon: LayoutDashboard },
+    { label: 'Farms', icon: Tractor },
+    { label: 'Fields', icon: MapPinned },
+    { label: 'Crop management', icon: Sprout, badge: '4' },
+    { label: 'Activities', icon: ClipboardList },
+    { label: 'Calendar', icon: CalendarDays, dot: true },
+  ]},
+  { section: 'INSIGHTS', items: [
+    { label: 'Expenses', icon: Wallet },
+    { label: 'Harvest records', icon: PackageCheck },
+    { label: 'Notifications', icon: Bell, badge: '3' },
+  ]},
 ]
-const navItems = [
-  { label: 'Overview', icon: '◫' }, { label: 'My crops', icon: '♧' }, { label: 'Fields', icon: '▦' },
-  { label: 'Calendar', icon: '▦' }, { label: 'Expenses', icon: '₹' }, { label: 'Harvests', icon: '⌁' },
+const crops = [
+  { name: 'Tomato', variety: 'Arka Rakshak', field: 'North Field', area: '1.2 acres', progress: 72, status: 'Growing', harvest: 'Nov 12, 2026', icon: '🍅', tone: 'tomato' },
+  { name: 'Rice', variety: 'Ponni', field: 'Paddy Field A', area: '2.5 acres', progress: 48, status: 'Growing', harvest: 'Dec 04, 2026', icon: '🌾', tone: 'rice' },
+  { name: 'Spinach', variety: 'Palak Green', field: 'Kitchen Garden', area: '0.4 acres', progress: 94, status: 'Ready soon', harvest: 'Oct 30, 2026', icon: '🥬', tone: 'spinach' },
+  { name: 'Chilli', variety: 'Guntur Sannam', field: 'East Field', area: '0.8 acres', progress: 35, status: 'Growing', harvest: 'Jan 18, 2027', icon: '🌶️', tone: 'chilli' },
 ]
-const activity = [
-  { icon: '☀', tone: 'gold', title: 'Morning irrigation completed', detail: 'North Field · Tomato', time: 'Today, 8:30 AM' },
-  { icon: '♧', tone: 'green', title: 'Fertilizer applied', detail: 'Paddy Field A · Rice', time: 'Yesterday, 4:15 PM' },
-  { icon: '✓', tone: 'blue', title: 'Harvest record added', detail: 'Kitchen Garden · Spinach', time: 'Oct 24, 11:20 AM' },
+const activities = [
+  { icon: Droplets, tone: 'blue', title: 'Morning irrigation completed', detail: 'North Field · Tomato', time: 'Today, 8:30 AM' },
+  { icon: Sprout, tone: 'green', title: 'Fertilizer applied', detail: 'Paddy Field A · Rice', time: 'Yesterday, 4:15 PM' },
+  { icon: CheckCheck, tone: 'gold', title: 'Harvest record added', detail: 'Kitchen Garden · Spinach', time: 'Oct 24, 11:20 AM' },
 ]
-function Icon({ children, className = '' }) { return <span aria-hidden="true" className={'icon ' + className}>{children}</span> }
-function Brand() { return <div className="brand"><div className="brand-mark"><span>i</span><span className="brand-leaf">✦</span></div><div><strong>infyro</strong><small>FARM CONNECT</small></div></div> }
+const pageDescriptions = {
+  Farms: 'A home for every plot, plan, and growing season.',
+  Fields: 'Know your land, understand your soil, grow with confidence.',
+  'Crop management': 'Follow every crop from planting to harvest.',
+  Activities: 'Keep your daily farm work moving smoothly.',
+  Calendar: 'Your season at a glance, with every important date in view.',
+  Expenses: 'Understand where your farm investment goes.',
+  'Harvest records': 'Celebrate every harvest and learn from each season.',
+  Notifications: 'A calm place for updates that need your attention.',
+  Settings: 'Make your farm workspace feel like yours.',
+}
+function Brand() {
+  return <div className="brand" aria-label="Infyro Farm Connect">
+    <div className="brand-symbol"><Sprout size={23} strokeWidth={2.2} /></div>
+    <div className="brand-wordmark"><strong>infyro</strong><span>FARM CONNECT</span></div>
+  </div>
+}
+function Avatar({ small = false }) { return <div className={small ? 'avatar avatar-small' : 'avatar'}>RK</div> }
 function App() {
   const [active, setActive] = useState('Overview')
-  const [crops, setCrops] = useState(initialCrops)
   const [search, setSearch] = useState('')
-  const [showAdd, setShowAdd] = useState(false)
+  const [mobileNav, setMobileNav] = useState(false)
+  const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
+  const [farmOpen, setFarmOpen] = useState(false)
   const [toast, setToast] = useState('')
-  const [form, setForm] = useState({ name: '', variety: '', field: '', area: '' })
-  const filtered = useMemo(() => crops.filter(c => [c.name, c.variety, c.field].join(' ').toLowerCase().includes(search.toLowerCase())), [crops, search])
-  function notify(message) { setToast(message); window.setTimeout(() => setToast(''), 2600) }
+  const [showAdd, setShowAdd] = useState(false)
+  const [cropName, setCropName] = useState('')
+  const [localCrops, setLocalCrops] = useState(crops)
+  const filteredCrops = useMemo(() => localCrops.filter(c => [c.name, c.variety, c.field].join(' ').toLowerCase().includes(search.toLowerCase())), [localCrops, search])
+  function notify(message) { setToast(message); window.clearTimeout(window.__ifcToast); window.__ifcToast = window.setTimeout(() => setToast(''), 2600) }
   function addCrop(e) {
     e.preventDefault()
-    if (!form.name.trim()) return
-    setCrops(prev => [{ id: Date.now(), name: form.name.trim(), variety: form.variety || 'Local variety', field: form.field || 'Unassigned field', area: form.area ? form.area + ' acres' : '—', status: 'Planned', progress: 5, harvest: 'To be scheduled', color: 'new' }, ...prev])
-    setForm({ name: '', variety: '', field: '', area: '' }); setShowAdd(false); setActive('My crops'); notify('Crop added to your farm')
+    if (!cropName.trim()) return
+    setLocalCrops([{ name: cropName.trim(), variety: 'Local variety', field: 'Unassigned field', area: '—', progress: 4, status: 'Planned', harvest: 'To be scheduled', icon: '🌱', tone: 'new' }, ...localCrops])
+    setCropName(''); setShowAdd(false); setActive('Crop management'); notify('Your crop was added to the demo workspace')
   }
-  const isOverview = active === 'Overview'
+  const currentIcon = navigation.flatMap(g => g.items).find(i => i.label === active)?.icon || LayoutDashboard
+  const PageIcon = currentIcon
   return <div className="app-shell">
-    <aside className="sidebar">
-      <Brand />
-      <div className="farm-switch"><div className="farm-avatar">🌿</div><div className="farm-meta"><strong>Green Valley Farm</strong><small>Tambaram, Tamil Nadu</small></div><span className="chevron">⌄</span></div>
-      <div className="nav-caption">WORKSPACE</div>
-      <nav>{navItems.map(item => <button key={item.label} onClick={() => setActive(item.label)} className={'nav-item ' + (active === item.label ? 'selected' : '')}><Icon>{item.icon}</Icon><span>{item.label}</span>{item.label === 'Calendar' && <span className="nav-dot" />}</button>)}</nav>
-      <div className="sidebar-bottom"><div className="help-card"><div className="help-sun">✳</div><strong>Growing together</strong><p>Small steps every day lead to a thriving farm.</p><button onClick={() => notify('Farm tips are coming soon')}>Explore farm tips <span>↗</span></button></div><button className="profile-row" onClick={() => notify('Account settings coming soon')}><div className="profile-avatar">RK</div><div><strong>Ravi Kumar</strong><small>Farm owner</small></div><span className="more">···</span></button></div>
+    {mobileNav && <button className="mobile-scrim" aria-label="Close navigation" onClick={() => setMobileNav(false)} />}
+    <aside className={'sidebar ' + (mobileNav ? 'sidebar-open' : '')}>
+      <div className="sidebar-top">
+        <Brand />
+        <button className="icon-button mobile-close" aria-label="Close menu" onClick={() => setMobileNav(false)}><X size={19}/></button>
+      </div>
+      <button className="farm-switch" onClick={() => setFarmOpen(!farmOpen)} aria-expanded={farmOpen}>
+        <div className="farm-avatar"><Leaf size={18}/></div><span className="farm-meta"><strong>Green Valley Farm</strong><small><MapPinned size={11}/> Tambaram, Tamil Nadu</small></span><ChevronDown size={15} className={farmOpen ? 'rotate' : ''}/>
+      </button>
+      {farmOpen && <div className="farm-popover"><strong>My farms</strong><button onClick={() => { setFarmOpen(false); notify('Green Valley Farm selected') }}><span className="farm-dot"/>Green Valley Farm <Check size={14}/></button><button onClick={() => { setFarmOpen(false); notify('Demo farm switcher') }}><span className="farm-dot farm-dot-muted"/>Sunrise Plot <Plus size={14}/></button></div>}
+      <nav className="side-navigation" aria-label="Main navigation">
+        {navigation.map(group => <div className="nav-group" key={group.section}><div className="nav-label">{group.section}</div>{group.items.map(item => { const Icon = item.icon; return <button key={item.label} className={'nav-item ' + (active === item.label ? 'nav-active' : '')} onClick={() => { setActive(item.label); setMobileNav(false) }}><Icon size={18} strokeWidth={active === item.label ? 2.2 : 1.8}/><span>{item.label}</span>{item.badge && <span className="nav-badge">{item.badge}</span>}{item.dot && <span className="nav-notice-dot"/>}</button> })}</div>)}
+      </nav>
+      <div className="sidebar-bottom">
+        <div className="season-card"><div className="season-icon"><Sun size={17}/></div><div><strong>Growing together</strong><p>Small steps every day lead to a thriving farm.</p></div><button aria-label="Learn more about farm tips" onClick={() => notify('More farm tips are coming soon')}><ArrowUpRight size={15}/></button></div>
+        <button className="sidebar-help" onClick={() => notify('Help centre is coming soon')}><CircleHelp size={17}/><span>Help & support</span><ArrowUpRight size={14}/></button>
+        <div className="profile-area"><button className="profile-button" onClick={() => setProfileOpen(!profileOpen)} aria-expanded={profileOpen}><Avatar/><span className="profile-copy"><strong>Ravi Kumar</strong><small>Farm owner</small></span><Ellipsis size={19}/></button>{profileOpen && <div className="profile-popover"><button onClick={() => { setActive('Settings'); setProfileOpen(false) }}><CircleUserRound size={16}/> My profile</button><button onClick={() => { setActive('Settings'); setProfileOpen(false) }}><Settings size={16}/> Settings</button><button onClick={() => { setProfileOpen(false); notify('You are in demo mode') }}><LogOut size={16}/> Sign out</button></div>}</div>
+      </div>
     </aside>
     <main className="main-area">
-      <header className="topbar"><div className="breadcrumb">Farm workspace <span>/</span> <strong>{active}</strong></div><div className="top-actions"><div className="weather-pill"><span>☀</span><div><strong>29°C</strong><small>Mostly sunny</small></div></div><button className="icon-button notification" aria-label="Notifications" onClick={() => notify('You’re all caught up!')}>♧<i /></button><div className="top-avatar">RK</div></div></header>
+      <header className="topbar">
+        <div className="topbar-left"><button className="icon-button menu-toggle" aria-label="Open navigation" onClick={() => setMobileNav(true)}><Menu size={21}/></button><div className="breadcrumbs"><span>Farm workspace</span><span className="crumb-slash">/</span><strong>{active}</strong></div></div>
+        <div className="topbar-right">
+          <label className="global-search"><Search size={16}/><input aria-label="Search workspace" placeholder="Search anything..." value={search} onChange={e => { setSearch(e.target.value); if (e.target.value) setActive('Crop management') }}/><kbd><Command size={10}/> K</kbd></label>
+          <div className="top-divider"/>
+          <div className="weather-chip"><span className="weather-icon"><CloudSun size={20}/></span><span><strong>29°C</strong><small>Mostly sunny</small></span></div>
+          <div className="popover-anchor"><button className={'icon-button top-icon ' + (notificationsOpen ? 'icon-selected' : '')} aria-label="Notifications" onClick={() => { setNotificationsOpen(!notificationsOpen); setProfileOpen(false) }}><Bell size={19}/><i className="notification-dot"/></button>{notificationsOpen && <div className="notification-popover"><div className="popover-heading"><strong>Notifications</strong><span>3 new</span></div><div className="notification-row"><span className="notification-symbol gold"><CalendarDays size={16}/></span><span><strong>Harvest coming up</strong><small>Spinach is almost ready · in 3 days</small></span></div><div className="notification-row"><span className="notification-symbol green"><Droplets size={16}/></span><span><strong>Irrigation reminder</strong><small>Check moisture in North Field</small></span></div><div className="notification-row"><span className="notification-symbol blue"><Wallet size={16}/></span><span><strong>Weekly expenses ready</strong><small>Your farm spending overview is updated</small></span></div><button className="popover-footer" onClick={() => { setActive('Notifications'); setNotificationsOpen(false) }}>View all notifications <ArrowRight size={14}/></button></div>}</div>
+          <button className="top-profile" aria-label="Open profile menu" onClick={() => { setProfileOpen(!profileOpen); setNotificationsOpen(false) }}><Avatar small/><ChevronDown size={14}/></button>
+        </div>
+      </header>
       <div className="page-content">
-        <section className="welcome-row"><div><div className="eyebrow"><span className="eyebrow-dot" /> TUESDAY, OCTOBER 27, 2026</div><h1>{isOverview ? 'Good evening, Ravi' : active}<span className="wave">{isOverview ? ' 👋' : ''}</span></h1><p>{isOverview ? 'Here’s what’s happening on your farm today.' : active === 'My crops' ? 'Keep track of every crop, from planting to harvest.' : 'Manage your farm activity and keep everything growing.'}</p></div><button className="primary-button" onClick={() => setShowAdd(true)}><span>＋</span> Add new crop</button></section>
-        {isOverview && <section className="hero-banner"><div className="hero-copy"><div className="hero-tag"><span>✦</span> YOUR FARM, IN RHYTHM</div><h2>Every season is a<br/><em>fresh beginning.</em></h2><p>Healthy soil. Thoughtful care. A little patience.<br/>You’re growing something wonderful.</p><button onClick={() => setActive('My crops')}>Explore your crops <span>→</span></button></div><div className="hero-art" aria-label="Illustration of growing plants"><div className="sun-disc" /><div className="hill hill-back" /><div className="hill hill-front" /><div className="plant plant-one"><i/><b/><span/></div><div className="plant plant-two"><i/><b/><span/></div><div className="plant plant-three"><i/><b/><span/></div><div className="flower"><i/><i/><i/><i/><i/><b/></div><div className="art-label">GROW WITH CARE <span>✦</span></div></div><div className="hero-spark spark-one">✳</div><div className="hero-spark spark-two">✦</div></section>}
-        <section className="stats-grid">
-          <div className="stat-card"><div className="stat-head"><span>Total crops</span><span className="stat-icon green">♧</span></div><div className="stat-number">{crops.length}<small> varieties</small></div><div className="stat-foot"><span className="trend-up">↗ 2 new</span><span> this season</span></div><div className="mini-bars"><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/><i/></div></div>
-          <div className="stat-card"><div className="stat-head"><span>Active fields</span><span className="stat-icon blue">▦</span></div><div className="stat-number">4<small> fields</small></div><div className="stat-foot"><span className="muted-dot" /> Across 4.9 acres</div><div className="stat-visual field-visual"><i/><i/><i/><i/></div></div>
-          <div className="stat-card"><div className="stat-head"><span>Upcoming harvest</span><span className="stat-icon orange">♧</span></div><div className="stat-number">3<small> crops</small></div><div className="stat-foot"><span className="trend-warm">Next in 3 days</span></div><div className="harvest-visual"><span>30</span><span>02</span><span>04</span><small>OCT</small><small>NOV</small><small>NOV</small></div></div>
-          <div className="stat-card"><div className="stat-head"><span>Monthly expenses</span><span className="stat-icon violet">₹</span></div><div className="stat-number">₹8,450</div><div className="stat-foot"><span className="trend-down">↓ 8.4%</span><span> vs last month</span></div><div className="expense-line"><svg viewBox="0 0 180 36" preserveAspectRatio="none"><path d="M0 29 C16 26 19 13 33 18 S51 30 67 19 S87 22 102 10 S122 19 137 13 S161 20 180 4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/></svg></div></div>
-        </section>
-        <section className="content-grid"><div className="panel crops-panel"><div className="panel-heading"><div><h3>{isOverview ? 'Your growing crops' : 'Crop directory'}</h3><p>{isOverview ? 'A little progress goes a long way.' : 'Search and manage the crops on your farm.'}</p></div><button className="text-button" onClick={() => setActive('My crops')}>View all <span>→</span></button></div><div className="crop-toolbar"><div className="search-box"><Icon>⌕</Icon><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search crops or fields..." /></div><button className="filter-button" onClick={() => notify('Showing all crop statuses')}>☷ <span>Filter</span></button></div><div className="crop-table-wrap"><table className="crop-table"><thead><tr><th>CROP</th><th>FIELD</th><th>PROGRESS</th><th>STATUS</th><th>HARVEST DATE</th></tr></thead><tbody>{(isOverview ? filtered.slice(0,4) : filtered).map(crop => <tr key={crop.id}><td><div className="crop-name-cell"><div className={'crop-thumb ' + crop.color}>{crop.color === 'tomato' ? '🍅' : crop.color === 'rice' ? '🌾' : crop.color === 'spinach' ? '🥬' : crop.color === 'chilli' ? '🌶️' : '🌱'}</div><div><strong>{crop.name}</strong><small>{crop.variety}</small></div></div></td><td><strong className="field-name">{crop.field}</strong><small className="area-label">{crop.area}</small></td><td><div className="progress-cell"><div className="progress-track"><i style={{width: crop.progress + '%'}} /></div><small>{crop.progress}%</small></div></td><td><span className={'status-pill ' + (crop.status === 'Ready to harvest' ? 'ready' : crop.status === 'Planned' ? 'planned' : 'growing')}><i />{crop.status}</span></td><td className="harvest-date">{crop.harvest}</td></tr>)}</tbody></table>{filtered.length === 0 && <div className="empty-search">No crops match “{search}”. Try another search.</div>}</div><div className="table-footer"><span>Showing <strong>{isOverview ? Math.min(filtered.length,4) : filtered.length}</strong> of <strong>{crops.length}</strong> crops</span><button onClick={() => setActive('My crops')}>Open crop directory <span>→</span></button></div></div>
-          <div className="right-column"><div className="panel activity-panel"><div className="panel-heading"><div><h3>Recent activity</h3><p>The latest from your fields.</p></div><button className="dots-button" onClick={() => notify('Activity options')}>···</button></div><div className="activity-list">{activity.map((a, i) => <div className="activity-item" key={a.title}><div className={'activity-icon ' + a.tone}>{a.icon}</div><div className="activity-copy"><strong>{a.title}</strong><p>{a.detail}</p><small>{a.time}</small></div></div>)}</div><button className="activity-link" onClick={() => notify('You’re viewing the latest activity')}>View activity log <span>→</span></button></div><div className="tip-card"><div className="tip-top"><span>✳ FIELD NOTE</span><span>NO. 024</span></div><div className="tip-leaf">♧</div><h3>A little care goes<br/>a long way.</h3><p>Check soil moisture before watering. Your crops — and your water bill — will thank you.</p><button onClick={() => notify('Tip saved to your field notes')}>Save this tip <span>↗</span></button><div className="tip-decoration">✳</div></div></div></section>
-        <footer className="footer"><span>© 2026 Infyro Farm Connect</span><span><i/> Your farm data, growing with you</span><a href="https://github.com/ItsWeslie/Infyro_farm_connect" target="_blank" rel="noreferrer">Help & support ↗</a></footer>
+        {active === 'Overview' ? <Dashboard
+          filteredCrops={filteredCrops} cropCount={localCrops.length} search={search} setSearch={setSearch}
+          onAdd={() => setShowAdd(true)} onNavigate={setActive} notify={notify}
+        /> : <section className="placeholder-page">
+          <div className="page-eyebrow"><span className="eyebrow-pip"/>{active === 'Settings' ? 'PREFERENCES' : 'FARM WORKSPACE'}</div>
+          <div className="page-title-row"><div className="page-title-icon"><PageIcon size={23}/></div><div><h1>{active}</h1><p>{pageDescriptions[active] || 'Personalize your farm workspace and preferences.'}</p></div><button className="button-primary" onClick={() => active === 'Crop management' ? setShowAdd(true) : notify(active + ' actions will be available in the next UI phase')}><Plus size={16}/>{active === 'Crop management' ? 'Add crop' : 'Create new'}</button></div>
+          <div className="placeholder-banner"><div className="placeholder-art"><div className="placeholder-sun"/><div className="placeholder-hill one"/><div className="placeholder-hill two"/><Sprout size={64}/></div><div><span className="section-kicker">YOUR FARM, IN RHYTHM</span><h2>Good things take<br/><em>time to grow.</em></h2><p>This workspace is ready for its next chapter. We’re building each screen with the same thoughtful, farm-first design.</p><button className="button-secondary" onClick={() => setActive('Overview')}>Back to overview <ArrowRight size={15}/></button></div></div>
+          <div className="placeholder-cards"><div className="surface-card"><span className="placeholder-card-icon"><PageIcon size={18}/></span><strong>Everything in one place</strong><p>Clear summaries and useful details, without the clutter.</p></div><div className="surface-card"><span className="placeholder-card-icon sage"><Sprout size={18}/></span><strong>Made for farm work</strong><p>Purposeful tools designed around your daily workflow.</p></div><div className="surface-card"><span className="placeholder-card-icon amber"><Activity size={18}/></span><strong>Progress at a glance</strong><p>Visual status, helpful reminders, and next steps.</p></div></div>
+        </section>}
+        <footer className="app-footer"><span>© 2026 Infyro Farm Connect</span><span className="footer-status"><i/> Your farm, growing with you</span><button onClick={() => notify('Help centre is coming soon')}>Help centre <ArrowUpRight size={13}/></button></footer>
       </div>
     </main>
-    {showAdd && <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) setShowAdd(false) }}><form className="add-modal" onSubmit={addCrop}><div className="modal-head"><div><span className="modal-kicker">GROW SOMETHING NEW</span><h2>Add a crop</h2><p>Start a new chapter for your farm.</p></div><button type="button" className="modal-close" onClick={() => setShowAdd(false)}>×</button></div><label>Crop name<input required autoFocus placeholder="e.g. Tomato" value={form.name} onChange={e => setForm({...form, name:e.target.value})}/></label><label>Variety<input placeholder="e.g. Arka Rakshak" value={form.variety} onChange={e => setForm({...form, variety:e.target.value})}/></label><label>Field name<input placeholder="e.g. North Field" value={form.field} onChange={e => setForm({...form, field:e.target.value})}/></label><label>Area (acres)<input type="number" min="0" step="0.1" placeholder="e.g. 1.2" value={form.area} onChange={e => setForm({...form, area:e.target.value})}/></label><div className="modal-actions"><button type="button" className="secondary-button" onClick={() => setShowAdd(false)}>Cancel</button><button type="submit" className="primary-button">＋ Add crop</button></div></form></div>}
-    {toast && <div className="toast"><span>✓</span>{toast}</div>}
+    {showAdd && <div className="modal-overlay" onMouseDown={e => { if (e.target === e.currentTarget) setShowAdd(false) }}><form className="dialog-card" onSubmit={addCrop}><div className="dialog-heading"><div><span className="section-kicker">GROW SOMETHING NEW</span><h2>Add a crop</h2><p>Start a new chapter for your farm.</p></div><button type="button" className="icon-button" aria-label="Close dialog" onClick={() => setShowAdd(false)}><X size={19}/></button></div><label className="form-label">Crop name<input required autoFocus placeholder="e.g. Tomato, Okra, Spinach" value={cropName} onChange={e => setCropName(e.target.value)}/></label><div className="dialog-note"><Sprout size={17}/><span>This demo entry will be added to your local crop directory.</span></div><div className="dialog-actions"><button type="button" className="button-secondary" onClick={() => setShowAdd(false)}>Cancel</button><button type="submit" className="button-primary"><Plus size={16}/>Add crop</button></div></form></div>}
+    {toast && <div role="status" className="toast-message"><span><Check size={15}/></span>{toast}</div>}
   </div>
+}
+function Dashboard({ filteredCrops, cropCount, search, setSearch, onAdd, onNavigate, notify }) {
+  return <>
+    <section className="welcome-row"><div><div className="page-eyebrow"><span className="eyebrow-pip"/>TUESDAY, OCTOBER 27, 2026</div><h1>Good evening, Ravi <span className="wave">✳</span></h1><p>Here’s what’s happening on your farm today.</p></div><button className="button-primary" onClick={onAdd}><Plus size={17}/> Add new crop</button></section>
+    <section className="hero-banner"><div className="hero-copy"><div className="hero-tag"><Flower2 size={14}/> YOUR FARM, IN RHYTHM</div><h2>Every season is a<br/><em>fresh beginning.</em></h2><p>Healthy soil. Thoughtful care. A little patience.<br/>You’re growing something wonderful.</p><button className="hero-button" onClick={() => onNavigate('Crop management')}>Explore your crops <ArrowRight size={15}/></button><div className="hero-note"><span><Sun size={14}/></span> A beautiful day to grow something good</div></div><div className="hero-art" aria-label="Illustration of growing plants"><div className="hero-sun"/><div className="hero-cloud cloud-a"/><div className="hero-cloud cloud-b"/><div className="hero-hill hill-back"/><div className="hero-hill hill-front"/><div className="hero-plant plant-a"><i/><b/><span/></div><div className="hero-plant plant-b"><i/><b/><span/></div><div className="hero-plant plant-c"><i/><b/><span/></div><div className="hero-flower"><i/><i/><i/><i/><b/></div><span className="art-caption">GROW WITH CARE <Flower2 size={12}/></span></div></section>
+    <section className="stats-grid">
+      <StatCard label="Total crops" value={String(cropCount).padStart(2,'0')} suffix="varieties" icon={Sprout} tone="sage" trend="+2 new" foot="this season" visual="bars"/>
+      <StatCard label="Active fields" value="04" suffix="fields" icon={MapPinned} tone="blue" trend="4.9 acres" foot="under cultivation" visual="fields"/>
+      <StatCard label="Upcoming harvest" value="03" suffix="crops" icon={Wheat} tone="amber" trend="Next in 3 days" foot="Spinach · Kitchen Garden" visual="calendar"/>
+      <StatCard label="Monthly expenses" value="₹8,450" suffix="" icon={Wallet} tone="lilac" trend="↓ 8.4%" foot="vs. last month" visual="line"/>
+    </section>
+    <section className="dashboard-grid"><div className="surface-card crop-card"><div className="section-heading"><div><h2>Your growing crops</h2><p>A little progress goes a long way.</p></div><button className="button-link" onClick={() => onNavigate('Crop management')}>View all <ArrowRight size={14}/></button></div><div className="table-tools"><label className="table-search"><Search size={15}/><input placeholder="Search crops or fields..." value={search} onChange={e => setSearch(e.target.value)}/>{search && <button aria-label="Clear search" onClick={() => setSearch('')}><X size={14}/></button>}</label><button className="filter-button" onClick={() => notify('All crop statuses are currently shown')}><SlidersHorizontal size={15}/>Filter</button></div><div className="crop-table-wrap"><table className="crop-table"><thead><tr><th>CROP</th><th>FIELD</th><th>PROGRESS</th><th>STATUS</th><th>HARVEST</th></tr></thead><tbody>{filteredCrops.slice(0,4).map(c => <tr key={c.name}><td><div className="crop-identity"><span className={'crop-emoji '+c.tone}>{c.icon}</span><span><strong>{c.name}</strong><small>{c.variety}</small></span></div></td><td><strong className="field-name">{c.field}</strong><small className="field-area">{c.area}</small></td><td><div className="progress-wrap"><div className="progress-track"><span style={{width:c.progress+'%'}}/></div><small>{c.progress}%</small></div></td><td><span className={'status-pill '+(c.status==='Ready soon'?'status-ready':c.status==='Planned'?'status-planned':'status-growing')}><i/>{c.status}</span></td><td className="harvest-date">{c.harvest}</td></tr>)}</tbody></table>{filteredCrops.length===0 && <div className="empty-state"><Sprout size={22}/><strong>No crops found</strong><span>Try another crop or field name.</span></div>}</div><div className="table-footer"><span>Showing <strong>{Math.min(filteredCrops.length,4)}</strong> of <strong>{filteredCrops.length}</strong> crops</span><button onClick={() => onNavigate('Crop management')}>Open crop directory <ArrowRight size={14}/></button></div></div>
+      <div className="right-column"><div className="surface-card activity-card"><div className="section-heading"><div><h2>Recent activity</h2><p>The latest from your fields.</p></div><button className="icon-button subtle-icon" aria-label="Activity options" onClick={() => notify('Activity options are coming soon')}><MoreHorizontal size={19}/></button></div><div className="activity-list">{activities.map(a => {const Icon=a.icon;return <div className="activity-item" key={a.title}><span className={'activity-icon '+a.tone}><Icon size={16}/></span><div className="activity-copy"><strong>{a.title}</strong><p>{a.detail}</p><small><Clock3 size={11}/>{a.time}</small></div></div>})}</div><button className="activity-link" onClick={() => onNavigate('Activities')}>View activity log <ArrowRight size={14}/></button></div><div className="field-note"><div className="field-note-top"><span><Flower2 size={13}/> FIELD NOTE</span><span>NO. 024</span></div><div className="field-note-illustration"><Droplets size={25}/><Leaf size={39}/></div><h3>A little care goes<br/>a long way.</h3><p>Check soil moisture before watering. Your crops — and your water bill — will thank you.</p><button onClick={() => notify('Tip saved to your field notes')}>Save this tip <ArrowUpRight size={14}/></button><Flower2 className="note-decoration" size={64}/></div></div>
+    </section>
+  </>
+}
+function StatCard({ label, value, suffix, icon: Icon, tone, trend, foot, visual }) {
+  return <article className="stat-card"><div className="stat-top"><span>{label}</span><span className={'stat-icon '+tone}><Icon size={17}/></span></div><div className="stat-value">{value}<small>{suffix}</small></div><div className="stat-foot"><span className={visual==='line'?'positive-trend':'trend-tag'}>{trend}</span><span>{foot}</span></div><div className={'stat-visual '+visual}>{visual==='bars' ? Array.from({length:12},(_,i)=><i key={i}/>) : visual==='fields' ? Array.from({length:4},(_,i)=><i key={i}/>) : visual==='calendar' ? <><b>30<small>OCT</small></b><b>02<small>NOV</small></b><b>04<small>NOV</small></b></> : <svg viewBox="0 0 120 32" preserveAspectRatio="none"><path d="M1 25 C14 24 15 10 28 16 S45 27 58 17 S73 19 83 9 S102 17 119 3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>}</div></article>
 }
 export default App
