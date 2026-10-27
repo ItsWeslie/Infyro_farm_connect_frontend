@@ -45,19 +45,14 @@ const pageDescriptions = {
   Notifications: 'A calm place for updates that need your attention.',
   Settings: 'Make your farm workspace feel like yours.',
 }
-function Brand() {
-  return <a className="brand brand-logo" href="#overview" aria-label="Infyro Farm home" onClick={e => { e.preventDefault(); window.dispatchEvent(new CustomEvent('ifc-home')) }}>
+function Brand({ onHome }) {
+  return <button type="button" className="brand brand-logo" aria-label="Infyro Farm home" onClick={onHome}>
     <img src="/infyro-logo.svg" alt="Infyro Farm — Farm smarter. Grow better." />
-  </a>
+  </button>
 }
 function Avatar({ small = false }) { return <div className={small ? 'avatar avatar-small' : 'avatar'}>RK</div> }
 function App() {
   const [active, setActive] = useState('Overview')
-  useMemo(() => {
-    const goHome = () => setActive('Overview')
-    window.addEventListener('ifc-home', goHome)
-    return () => window.removeEventListener('ifc-home', goHome)
-  }, [])
   const [search, setSearch] = useState('')
   const [mobileNav, setMobileNav] = useState(false)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
@@ -81,7 +76,7 @@ function App() {
     {mobileNav && <button className="mobile-scrim" aria-label="Close navigation" onClick={() => setMobileNav(false)} />}
     <aside className={'sidebar ' + (mobileNav ? 'sidebar-open' : '')}>
       <div className="sidebar-top">
-        <Brand />
+        <Brand onHome={() => { setActive('Overview'); setMobileNav(false) }} />
         <button className="icon-button mobile-close" aria-label="Close menu" onClick={() => setMobileNav(false)}><X size={19}/></button>
       </div>
       <button className="farm-switch" onClick={() => setFarmOpen(!farmOpen)} aria-expanded={farmOpen}>
