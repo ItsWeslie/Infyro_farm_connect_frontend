@@ -43,3 +43,10 @@ npm run preview
 ## Current scope
 
 Phase 1–5 are UI-only prototypes. Phase 5 adds a dedicated Infyro Farm brand logo asset and small-screen/focus/reduced-motion polish. Phase 3 adds dashboard seasonal insights and detail views for workspace records. Phase 4 adds editable workspace records and a calendar event composer. API/auth integration is intentionally deferred; the chart is illustrative, and editing/export actions remain UI placeholders.
+
+
+## Phase 6 — visual refinement
+
+The dashboard keeps the existing light, nature-inspired layout while adding photographic farm imagery, restrained frosted-glass surfaces, softer depth, tactile hover/press states, and subtle chart animation. Decorative hand-built hero artwork and the tiny inline sparkline were replaced with photography and CSS-based visual treatment. Lucide remains in place for interface icons.
+
+Photography is currently loaded from Unsplash over HTTPS, so those images require an internet connection. The interface remains a frontend-only demo; dashboard values are illustrative and no backend is connected.
