@@ -57,3 +57,8 @@ Photography is currently loaded from Unsplash over HTTPS, so those images requir
 Workspace pages now share a restrained photographic banner treatment with contextual farm and crop imagery, a soft dark overlay for readable text, and subtle depth on hover. The mobile hero layout is explicitly stacked to keep the photograph and headline from colliding at smaller widths. Settings stays intentionally quieter so its controls remain the focus.
 
 Images are loaded from Unsplash over HTTPS. A live browser/build check has not been run in this editing environment; please run `npm run build` locally before merging.
+
+
+## Phase 6.2 — lightweight 3D interaction
+
+Added a small CSS-only 3D growth motif to photographic workspace banners. It uses layered perspective rings, a frosted-glass core, and restrained float/hover movement rather than a heavy WebGL dependency. The decoration is hidden from assistive technology, does not intercept pointer input, and respects reduced-motion preferences.
