@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 112" role="img" aria-labelledby="title desc">
+  <title id="title">Infyro Farm</title><desc id="desc">Infyro Farm — Farm smarter. Grow better.</desc>
+  <rect x="4" y="5" width="102" height="102" rx="22" fill="#eef6ff"/>
+  <path d="M25 48 49 25 69 37 48 51 48 72 25 72Z" fill="#1674ef"/>
+  <path d="M49 78c17-20 30-29 48-29-2 19-15 32-34 34" fill="#101d36"/>
+  <path d="M55 81c-6-13-15-19-23-20 1 12 8 21 20 24" fill="#101d36"/>
+  <path d="M17 79c22 1 39 12 48 20M18 88c13 3 23 9 31 15M50 104c14-15 32-25 54-29" fill="none" stroke="#1674ef" stroke-width="5" stroke-linecap="round"/>
+  <path d="M130 44V18h7v26c0 5 2 8 7 8s7-3 7-8V18h7v26c0 10-5 16-14 16s-14-6-14-16Zm39-5c0-9 6-15 15-15s15 6 15 15-6 15-15 15-15-6-15-15Zm7 0c0 6 3 9 8 9s8-3 8-9-3-9-8-9-8 3-8 9Zm29-14h7v5c2-4 5-6 10-6v7c-6 0-10 4-10 10v12h-7V25Zm20 14c0-9 6-15 15-15s15 6 15 15-6 15-15 15-15-6-15-15Zm7 0c0 6 3 9 8 9s8-3 8-9-3-9-8-9-8 3-8 9Zm27-14h7v4c2-3 6-5 10-5 8 0 13 6 13 15s-5 15-13 15c-4 0-8-2-10-5v15h-7V25Zm7 14c0 6 3 9 8 9s8-3 8-9-3-9-8-9-8 3-8 9Zm29 0c0-9 6-15 15-15s14 6 14 15v2h-22c1 5 4 7 9 7 3 0 6-1 8-3l4 4c-3 3-7 5-12 5-10 0-16-6-16-15Zm7-3h15c-1-4-3-6-7-6s-7 2-8 6Z" fill="#101d36"/>
+  <text x="130" y="91" font-family="Arial,Helvetica,sans-serif" font-size="43" font-weight="700" fill="#1674ef">Farm</text>
+  <text x="238" y="88" font-family="Arial,Helvetica,sans-serif" font-size="10" letter-spacing="2.3" fill="#4b5563">FARM SMARTER. GROW BETTER.</text>
+</svg>
