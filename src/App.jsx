@@ -46,14 +46,18 @@ const pageDescriptions = {
   Settings: 'Make your farm workspace feel like yours.',
 }
 function Brand() {
-  return <div className="brand" aria-label="Infyro Farm Connect">
-    <div className="brand-symbol"><Sprout size={23} strokeWidth={2.2} /></div>
-    <div className="brand-wordmark"><strong>infyro</strong><span>FARM CONNECT</span></div>
-  </div>
+  return <a className="brand brand-logo" href="#overview" aria-label="Infyro Farm home" onClick={e => { e.preventDefault(); window.dispatchEvent(new CustomEvent('ifc-home')) }}>
+    <img src="/infyro-logo.svg" alt="Infyro Farm — Farm smarter. Grow better." />
+  </a>
 }
 function Avatar({ small = false }) { return <div className={small ? 'avatar avatar-small' : 'avatar'}>RK</div> }
 function App() {
   const [active, setActive] = useState('Overview')
+  useMemo(() => {
+    const goHome = () => setActive('Overview')
+    window.addEventListener('ifc-home', goHome)
+    return () => window.removeEventListener('ifc-home', goHome)
+  }, [])
   const [search, setSearch] = useState('')
   const [mobileNav, setMobileNav] = useState(false)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
