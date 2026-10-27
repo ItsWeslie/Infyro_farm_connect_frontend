@@ -41,3 +41,51 @@
 .brand-logo:focus-visible{outline:3px solid #9ecb8e;outline-offset:4px;border-radius:6px}
 @media(max-width:360px){.brand-logo img{width:190px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+
+/* Phase 6: photographic warmth, restrained glass surfaces, and tactile motion */
+.hero-banner{isolation:isolate;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.78);box-shadow:0 14px 38px rgba(37,70,47,.075),inset 0 1px 0 rgba(255,255,255,.8)}
+.hero-banner:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at 18% 0%,rgba(255,255,255,.9),transparent 55%),linear-gradient(115deg,#f0f5e9 0%,#e8f0df 54%,#d9e9d2 100%)}
+.hero-copy{position:relative;z-index:2}
+.hero-art{position:relative;isolation:isolate;overflow:hidden;min-height:270px;align-self:stretch;border-radius:20px;background:#dce9d6;box-shadow:0 16px 34px rgba(29,66,39,.16),inset 0 0 0 1px rgba(255,255,255,.4);transform:translateZ(0)}
+.hero-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 54%;transform:scale(1.015);transition:transform 900ms cubic-bezier(.2,.8,.2,1),filter 500ms ease;filter:saturate(.88) contrast(.96)}
+.hero-art:hover .hero-photo{transform:scale(1.065);filter:saturate(1.02) contrast(1)}
+.hero-photo-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,42,24,.03) 35%,rgba(15,42,24,.63) 100%),linear-gradient(120deg,rgba(26,63,37,.08),transparent 60%);pointer-events:none}
+.hero-photo-caption{position:absolute;left:15px;right:15px;bottom:15px;display:flex;align-items:center;gap:10px;padding:12px 13px;border:1px solid rgba(255,255,255,.48);border-radius:15px;background:rgba(250,253,247,.76);box-shadow:0 8px 26px rgba(14,44,23,.15);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:#284332}
+.photo-caption-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:11px;background:rgba(65,112,68,.13);color:#3d7047}
+.hero-photo-caption>span:nth-child(2){display:grid;gap:3px;min-width:0}
+.hero-photo-caption strong{font-size:11px;font-weight:700;letter-spacing:-.1px}
+.hero-photo-caption small{font-size:9px;color:#6c806e}
+.photo-caption-spark{margin-left:auto;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.68);color:#8e9b57}
+.hero-photo-pill{position:absolute;top:14px;left:14px;display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid rgba(255,255,255,.5);border-radius:99px;background:rgba(248,251,244,.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#31583a;font-size:9px;font-weight:700;letter-spacing:.2px}
+.hero-photo-pill>span{width:6px;height:6px;border-radius:50%;background:#78a65e;box-shadow:0 0 0 3px rgba(120,166,94,.15)}
+/* Soft glass finish: keep the familiar light, uncluttered dashboard */
+.surface-card,.stat-card,.workspace-stat,.workspace-data-card,.activity-card,.crop-card{transition:transform .28s cubic-bezier(.2,.75,.25,1),box-shadow .28s ease,border-color .28s ease}
+.surface-card{border:1px solid rgba(224,232,221,.88);box-shadow:0 5px 20px rgba(35,64,43,.025)}
+.surface-card:hover{box-shadow:0 12px 32px rgba(35,64,43,.065);border-color:rgba(195,213,193,.95)}
+.stat-card{position:relative;overflow:hidden;border:1px solid rgba(224,232,221,.9);box-shadow:0 5px 18px rgba(35,64,43,.025)}
+.stat-card:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.5),transparent 44%);opacity:.65}
+.stat-card:hover{transform:translateY(-3px);box-shadow:0 13px 28px rgba(35,64,43,.075);border-color:#d2e0d0}
+.button-primary,.button-secondary,.hero-button,.filter-button,.icon-button,.button-link,.activity-link{transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .22s ease,background-color .22s ease,border-color .22s ease}
+.button-primary:hover,.hero-button:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(34,83,53,.17)}
+.button-primary:active,.button-secondary:active,.hero-button:active,.icon-button:active{transform:scale(.975)}
+.button-link:hover,.activity-link:hover{transform:translateX(2px)}
+.crop-identity .crop-emoji{box-shadow:inset 0 0 0 1px rgba(44,78,49,.05)}
+.insights-strip{background:linear-gradient(125deg,rgba(255,255,255,.96),rgba(247,250,244,.93));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(222,232,218,.9);box-shadow:0 9px 30px rgba(38,70,45,.04)}
+.field-note{position:relative;overflow:hidden}
+.field-note-illustration{position:relative;height:118px;overflow:hidden;border-radius:13px;background:#dce8d8;margin:8px 0 14px}
+.field-note-illustration img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 48%;filter:saturate(.82)}
+.field-note-illustration:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(22,53,31,.3),transparent 75%);pointer-events:none}
+.field-note-illustration>span{position:absolute;z-index:1;left:10px;bottom:10px;display:flex;align-items:center;gap:6px;padding:7px 9px;border:1px solid rgba(255,255,255,.45);border-radius:99px;background:rgba(250,253,248,.76);color:#31563a;font-size:9px;font-weight:600;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.stat-sparkline{display:flex;align-items:flex-end;gap:4px;height:32px;padding:0 2px;color:#78a681}
+.stat-sparkline span{flex:1;border-radius:5px 5px 2px 2px;background:currentColor;opacity:.55;transform-origin:bottom;animation:spark-rise .8s cubic-bezier(.2,.8,.2,1) both}
+.stat-sparkline span:nth-child(1){height:35%;animation-delay:.02s}.stat-sparkline span:nth-child(2){height:48%;animation-delay:.06s}.stat-sparkline span:nth-child(3){height:42%;animation-delay:.1s}.stat-sparkline span:nth-child(4){height:68%;animation-delay:.14s}.stat-sparkline span:nth-child(5){height:55%;animation-delay:.18s}.stat-sparkline span:nth-child(6){height:73%;animation-delay:.22s}.stat-sparkline span:nth-child(7){height:63%;animation-delay:.26s}.stat-sparkline span:nth-child(8){height:84%;animation-delay:.3s}.stat-sparkline span:nth-child(9){height:75%;animation-delay:.34s}.stat-sparkline span:nth-child(10){height:96%;animation-delay:.38s}
+.chart-bar{transform-origin:bottom;animation:chart-rise .75s cubic-bezier(.2,.8,.25,1) both}
+.chart-month:nth-child(2) .chart-bar{animation-delay:.06s}.chart-month:nth-child(3) .chart-bar{animation-delay:.12s}.chart-month:nth-child(4) .chart-bar{animation-delay:.18s}.chart-month:nth-child(5) .chart-bar{animation-delay:.24s}.chart-month:nth-child(6) .chart-bar{animation-delay:.3s}
+@keyframes chart-rise{from{transform:scaleY(.12);opacity:.45}to{transform:scaleY(1);opacity:1}}
+@keyframes spark-rise{from{transform:scaleY(.15);opacity:.15}to{transform:scaleY(1);opacity:.55}}
+/* Give overlays and popovers a little depth without changing their workflow */
+.dialog-card{box-shadow:0 24px 80px rgba(24,49,30,.22),0 3px 12px rgba(24,49,30,.06);border:1px solid rgba(255,255,255,.72)}
+.modal-overlay{backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+@media(max-width:760px){.hero-art{min-height:210px}.hero-photo-caption{left:10px;right:10px;bottom:10px;padding:10px}.hero-photo-pill{top:10px;left:10px}}
+@media(prefers-reduced-motion:reduce){.hero-photo,.surface-card,.stat-card,.button-primary,.button-secondary,.hero-button,.filter-button,.icon-button,.button-link,.activity-link,.chart-bar,.stat-sparkline span{animation:none!important;transition:none!important;transform:none!important}}
