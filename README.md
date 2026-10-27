@@ -50,3 +50,10 @@ Phase 1–5 are UI-only prototypes. Phase 5 adds a dedicated Infyro Farm brand l
 The dashboard keeps the existing light, nature-inspired layout while adding photographic farm imagery, restrained frosted-glass surfaces, softer depth, tactile hover/press states, and subtle chart animation. Decorative hand-built hero artwork and the tiny inline sparkline were replaced with photography and CSS-based visual treatment. Lucide remains in place for interface icons.
 
 Photography is currently loaded from Unsplash over HTTPS, so those images require an internet connection. The interface remains a frontend-only demo; dashboard values are illustrative and no backend is connected.
+
+
+## Phase 6.1 — consistent workspace imagery
+
+Workspace pages now share a restrained photographic banner treatment with contextual farm and crop imagery, a soft dark overlay for readable text, and subtle depth on hover. The mobile hero layout is explicitly stacked to keep the photograph and headline from colliding at smaller widths. Settings stays intentionally quieter so its controls remain the focus.
+
+Images are loaded from Unsplash over HTTPS. A live browser/build check has not been run in this editing environment; please run `npm run build` locally before merging.
