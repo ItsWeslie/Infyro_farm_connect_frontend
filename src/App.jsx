@@ -45,11 +45,10 @@ const pageDescriptions = {
   Notifications: 'A calm place for updates that need your attention.',
   Settings: 'Make your farm workspace feel like yours.',
 }
-function Brand() {
-  return <div className="brand" aria-label="Infyro Farm Connect">
-    <div className="brand-symbol"><Sprout size={23} strokeWidth={2.2} /></div>
-    <div className="brand-wordmark"><strong>infyro</strong><span>FARM CONNECT</span></div>
-  </div>
+function Brand({ onHome }) {
+  return <button type="button" className="brand brand-logo" aria-label="Infyro Farm home" onClick={onHome}>
+    <img src="/infyro-logo.svg" alt="Infyro Farm — Farm smarter. Grow better." />
+  </button>
 }
 function Avatar({ small = false }) { return <div className={small ? 'avatar avatar-small' : 'avatar'}>RK</div> }
 function App() {
@@ -77,7 +76,7 @@ function App() {
     {mobileNav && <button className="mobile-scrim" aria-label="Close navigation" onClick={() => setMobileNav(false)} />}
     <aside className={'sidebar ' + (mobileNav ? 'sidebar-open' : '')}>
       <div className="sidebar-top">
-        <Brand />
+        <Brand onHome={() => { setActive('Overview'); setMobileNav(false) }} />
         <button className="icon-button mobile-close" aria-label="Close menu" onClick={() => setMobileNav(false)}><X size={19}/></button>
       </div>
       <button className="farm-switch" onClick={() => setFarmOpen(!farmOpen)} aria-expanded={farmOpen}>

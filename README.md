@@ -42,4 +42,4 @@ npm run preview
 
 ## Current scope
 
-Phase 1–4 are UI-only prototypes. Phase 3 adds dashboard seasonal insights and detail views for workspace records. Phase 4 adds editable workspace records and a calendar event composer. API/auth integration is intentionally deferred; the chart is illustrative, and editing/export actions remain UI placeholders.
+Phase 1–5 are UI-only prototypes. Phase 5 adds a dedicated Infyro Farm brand logo asset and small-screen/focus/reduced-motion polish. Phase 3 adds dashboard seasonal insights and detail views for workspace records. Phase 4 adds editable workspace records and a calendar event composer. API/auth integration is intentionally deferred; the chart is illustrative, and editing/export actions remain UI placeholders.
