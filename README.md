@@ -20,7 +20,7 @@ npm run preview
 
 ## UI screens
 
-- **Overview:** dashboard hero, farm metrics, crop progress table, recent activity, field note.
+- **Overview:** dashboard hero, farm metrics, crop progress table, recent activity, field note, and an illustrative six-month income/expense comparison.
 - **Farms:** farm directory, acreage and field summaries, search/filter, add-farm dialog.
 - **Fields:** field directory, farm association, crop assignment, availability status.
 - **Crop management:** crop directory, growth progress, status filters, add-crop dialog.
@@ -36,10 +36,10 @@ npm run preview
 - React functional components and local state; no backend calls are made.
 - Lucide icons via `lucide-react`.
 - Responsive desktop, tablet, and mobile layouts.
-- Search, filters, table/card view switching, dialogs, toasts, calendar navigation, and settings toggles.
+- Search, filters, table/card view switching, create dialogs, record-detail modals, toasts, calendar navigation, and settings toggles.
 - All content is illustrative sample data. Entries and preferences are not persisted to a server.
 - Earth-inspired colors, accessible focus states, and reduced-motion support.
 
 ## Current scope
 
-Phase 1 application shell and Phase 2 workspace screens are UI-only prototypes. API/auth integration is intentionally deferred. Some actions such as exports, detailed record actions, and profile subsections are UI placeholders for later refinement.
+Phase 1–3 are UI-only prototypes. Phase 3 adds dashboard seasonal insights and detail views for workspace records. API/auth integration is intentionally deferred; the chart is illustrative, and editing/export actions remain UI placeholders.
