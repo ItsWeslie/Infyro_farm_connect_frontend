@@ -173,6 +173,16 @@ const pageMeta = {
   Notifications: {icon: Bell, cta:'Mark all read', columns:['NOTIFICATION','DETAILS','RECEIVED','TYPE','STATUS'], labels:[]},
   Settings: {icon: Settings, cta:'Save preferences', columns:['SETTING','DESCRIPTION','CURRENT VALUE','ACTION','STATUS'], labels:[]},
 }
+const workspacePhotos = {
+  Farms: { src: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80', alt: 'Wide view across cultivated green farmland', kicker: 'A PLACE TO PUT DOWN ROOTS', title: 'Every acre has a little more potential.' },
+  Fields: { src: 'https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1200&q=80', alt: 'Green fields and trees in soft morning light', kicker: 'GET TO KNOW YOUR LAND', title: 'Healthy fields start with thoughtful care.' },
+  'Crop management': { src: 'https://images.unsplash.com/photo-1499529112087-3cb3b73e0d5?auto=format&fit=crop&w=1200&q=80', alt: 'Fresh plants growing in a sunlit garden', kicker: 'GROW AT YOUR OWN PACE', title: 'Small signs of growth add up.' },
+  Activities: { src: 'https://images.unsplash.com/photo-1592982537447-7440770cbfc9?auto=format&fit=crop&w=1200&q=80', alt: 'Hands tending young green plants', kicker: 'CARE IS IN THE DETAILS', title: 'Good work, one task at a time.' },
+  Calendar: { src: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=80', alt: 'Rows of crops across a farm landscape', kicker: 'MAKE THE SEASON YOURS', title: 'A little planning makes room to grow.' },
+  Expenses: { src: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80', alt: 'Freshly grown produce in a field', kicker: 'INVEST IN WHAT MATTERS', title: 'A clearer view of your farm, season by season.' },
+  'Harvest records': { src: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1200&q=80', alt: 'Fresh leafy greens ready for harvest', kicker: 'NOTICE WHAT YOUR CARE CREATES', title: 'Every harvest tells a story.' },
+  Notifications: { src: 'https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1200&q=80', alt: 'Sunlit green leaves', kicker: 'A MOMENT TO CHECK IN', title: 'The right reminder, at the right time.' },
+}
 function WorkspacePage({active, onNavigate, notify, onAdd}) {
   const data = workspaceData[active] || workspaceData.Farms
   const meta = pageMeta[active] || pageMeta.Farms
@@ -212,6 +222,7 @@ function WorkspacePage({active, onNavigate, notify, onAdd}) {
     <div className="page-eyebrow"><span className="eyebrow-pip"/>{data.eyebrow}</div>
     <div className="workspace-title-row"><div className="workspace-title-icon"><Icon size={23}/></div><div className="workspace-title-copy"><h1>{data.title}</h1><p>{data.description}</p></div><div className="workspace-title-actions"><button className="button-secondary desktop-secondary" onClick={() => notify('Your demo report is ready to explore')}><ArrowDownRight size={15}/> Export report</button><button className="button-primary" onClick={primaryAction}>{active==='Notifications' ? <Check size={16}/> : active==='Settings' ? <Check size={16}/> : <Plus size={16}/>} {meta.cta}</button></div></div>
     <div className="workspace-stats">{data.stats.map((stat,i)=><article className="workspace-stat surface-card" key={stat[0]}><div className="workspace-stat-label">{stat[0]}<span className={'workspace-stat-icon ws-tone-'+i}><Icon size={15}/></span></div><strong>{stat[1]}</strong><small>{stat[2]}</small><span className="workspace-stat-accent"/></article>)}</div>
+    {active !== 'Settings' && workspacePhotos[active] && <section className="workspace-photo-banner" aria-label={workspacePhotos[active].alt}><img src={workspacePhotos[active].src} alt={workspacePhotos[active].alt} loading="lazy"/><div className="workspace-photo-shade"/><div className="workspace-photo-copy"><span>{workspacePhotos[active].kicker}</span><h2>{workspacePhotos[active].title}</h2></div><span className="workspace-photo-mark"><Leaf size={17}/></span></section>}
     {active === 'Calendar' && <CalendarPanel notify={notify}/>}
     {active === 'Settings' ? <SettingsPanel notify={notify}/> : <div className="workspace-data-card surface-card">
       <div className="workspace-data-heading"><div><h2>{active === 'Notifications' ? 'All updates' : active === 'Activities' ? 'Activity log' : active === 'Expenses' ? 'Expense ledger' : active === 'Harvest records' ? 'Harvest history' : active === 'Calendar' ? 'Upcoming events' : 'All '+active.toLowerCase()}</h2><p>Explore, search, and manage your farm information.</p></div><div className="view-toggle"><button className={layout==='table'?'selected':''} onClick={()=>setLayout('table')} aria-label="Table view"><ClipboardList size={15}/></button><button className={layout==='cards'?'selected':''} onClick={()=>setLayout('cards')} aria-label="Card view"><LayoutDashboard size={15}/></button></div></div>
