@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import {
   Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Bell, CalendarDays, Check,
   ChevronDown, CircleHelp, CloudSun, Command, Flower2,
-  LayoutDashboard, Leaf, Menu, MoreHorizontal, Plus, Search, Sprout,
+  LayoutDashboard, Leaf, Menu, Ellipsis, Plus, Search, Sprout,
   Tractor, Wheat, X, MapPinned, ClipboardList, PackageCheck, SlidersHorizontal,
   CircleUserRound, Settings, LogOut, CheckCheck, Clock3, Droplets, Sun, Wallet,
 } from 'lucide-react'
