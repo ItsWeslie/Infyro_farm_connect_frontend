@@ -1,35 +1,45 @@
-# Infyro Farm Connect Frontend
+# Infyro Farm Connect — Frontend
 
-A responsive React + Vite farm-management dashboard for tracking crops, fields, harvests, and farm activity. The interface uses an earth-inspired palette and lightweight CSS illustrations, with no icon or animation packages required.
-
-## Requirements
-
-- Node.js 20.19+ or 22.12+
-- npm
+A responsive React + Vite farm-management UI prototype for Infyro Farm Connect. Built with a custom earth-inspired visual system and Lucide icons.
 
 ## Run locally
+
+Requirements: Node.js 20.19+ or 22.12+ (recommended for current Vite releases).
 
 ```bash
 npm install
 npm run dev
 ```
 
-Vite prints the local development URL (usually http://localhost:5173).
-
-## Production build
+Build the production bundle:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-## Current features
+## UI screens
 
-- Responsive farm workspace and navigation
-- Crop overview with progress, status, field, and expected harvest
-- Search across crop names, varieties, and fields
-- Add-crop modal with client-side state updates
-- Activity feed, farm metrics, and field note card
-- Reduced-motion support and mobile layouts
+- **Overview:** dashboard hero, farm metrics, crop progress table, recent activity, field note.
+- **Farms:** farm directory, acreage and field summaries, search/filter, add-farm dialog.
+- **Fields:** field directory, farm association, crop assignment, availability status.
+- **Crop management:** crop directory, growth progress, status filters, add-crop dialog.
+- **Activities:** activity log, completion status, search and filters.
+- **Calendar:** interactive month grid and agenda view with sample events.
+- **Expenses:** sample expense ledger, totals, category and status presentation.
+- **Harvest records:** sample harvest history, yield and grade details.
+- **Notifications:** notification list and mark-all-read interaction.
+- **Settings:** local preferences for units, weather, reminders and weekly summary.
 
-The current dashboard uses sample data so the UI can be previewed independently. Connect API calls to the Spring Boot backend at `http://localhost:8080` when wiring up live authentication and farm records. Do not commit `node_modules`, build output, or local environment files.
+## Design and interactions
+
+- React functional components and local state; no backend calls are made.
+- Lucide icons via `lucide-react`.
+- Responsive desktop, tablet, and mobile layouts.
+- Search, filters, table/card view switching, dialogs, toasts, calendar navigation, and settings toggles.
+- All content is illustrative sample data. Entries and preferences are not persisted to a server.
+- Earth-inspired colors, accessible focus states, and reduced-motion support.
+
+## Current scope
+
+Phase 1 application shell and Phase 2 workspace screens are UI-only prototypes. API/auth integration is intentionally deferred. Some actions such as exports, detailed record actions, and profile subsections are UI placeholders for later refinement.
