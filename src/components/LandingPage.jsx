@@ -193,7 +193,9 @@ export default function LandingPage() {
 
       <main>
         <section className="landing-hero">
-          <div className="landing-hero-photo" aria-hidden="true" />          <div className="landing-hero-orb landing-hero-orb-one" aria-hidden="true" />          <div className="landing-hero-orb landing-hero-orb-two" aria-hidden="true" />
+          <div className="landing-hero-photo" aria-hidden="true" />
+          <div className="landing-hero-orb landing-hero-orb-one" aria-hidden="true" />
+          <div className="landing-hero-orb landing-hero-orb-two" aria-hidden="true" />
           <div className="landing-hero-shade" aria-hidden="true" />
           <div className="landing-hero-inner">
             <div className="landing-hero-copy">
