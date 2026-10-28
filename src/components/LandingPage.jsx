@@ -60,9 +60,36 @@ function BrandMark() {
 }
 
 function DashboardPreview() {
+  const [tilt, setTilt] = useState({ x: 1, y: -4 });
+  const [motionEnabled, setMotionEnabled] = useState(false);
+
+  useEffect(() => {
+    setMotionEnabled(!window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
+
+  function handlePointerMove(event) {
+    if (!motionEnabled || event.pointerType !== "mouse") return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+    setTilt({ x: 1 - y * 5, y: -4 + x * 9 });
+  }
+
+  function resetTilt() {
+    setTilt({ x: 1, y: -4 });
+  }
+
   return (
-    <div className="landing-preview" aria-label="Illustrative farm management dashboard preview">
-      <div className="preview-window">
+    <div
+      className="landing-preview relative [perspective:1400px] [transform-style:preserve-3d]"
+      aria-label="Illustrative farm management dashboard preview"
+      onPointerMove={handlePointerMove}
+      onPointerLeave={resetTilt}
+    >
+      <div
+        className="preview-window transform-gpu transition-transform duration-500 ease-out motion-reduce:transition-none"
+        style={{ transform: `perspective(1400px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateZ(0)` }}
+      >
         <div className="preview-topbar">
           <div className="preview-brand-dot"><Sprout size={13} /></div>
           <div className="preview-breadcrumb"><span>Workspace</span><b>/</b><strong>Overview</strong></div>
