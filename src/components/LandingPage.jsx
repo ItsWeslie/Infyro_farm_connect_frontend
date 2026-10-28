@@ -77,8 +77,6 @@ function WorkflowVine() {
               const Icon = step.icon;
               return (
                 <button className={`landing-vine-node${index === activeStep ? " is-active" : ""}`} type="button" key={step.number} onClick={() => setActiveStep(index)} aria-pressed={index === activeStep} aria-label={`Step ${step.number}: ${step.title}`}>
-                  <span className="landing-vine-node-leaf landing-vine-node-leaf-a" aria-hidden="true" />
-                  <span className="landing-vine-node-leaf landing-vine-node-leaf-b" aria-hidden="true" />
                   <span className="landing-vine-node-circle"><Icon size={19} strokeWidth={1.8} /></span>
                   <span className="landing-vine-node-number">{step.number}</span>
                 </button>
