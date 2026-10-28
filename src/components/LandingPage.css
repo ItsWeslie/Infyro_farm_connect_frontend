@@ -2441,9 +2441,9 @@ html[data-ifc-theme="light"] .landing-footer-premium .landing-footer-bottom > .l
 .landing-contact-info-icon { display: grid; place-items: center; width: 48px; height: 48px; border: 1px solid rgba(255,255,255,.2); border-radius: 15px; color: #f2b831; background: rgba(255,255,255,.08); }
 .landing-contact-info h3 { margin: 26px 0 10px; font-size: clamp(24px, 3vw, 31px); letter-spacing: -.03em; line-height: 1.15; }
 .landing-contact-info > p { max-width: 300px; margin: 0 0 28px; color: rgba(248,248,239,.78); font-size: 14px; line-height: 1.8; }
-.landing-contact-email { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; font-size: 13px; overflow-wrap: anywhere; }
+.landing-contact-email { position: relative; z-index: 1; display: inline-flex; flex: 0 1 auto; align-items: center; gap: 8px; min-height: 38px; color: #fff; text-decoration: none; font-size: 13px; overflow-wrap: anywhere; }
 .landing-contact-email:hover { color: #f2b831; }
-.landing-contact-socials { position: relative; z-index: 1; display: flex; gap: 10px; margin-top: 22px; }
+.landing-contact-socials { position: relative; z-index: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 22px; }
 .landing-contact-socials a { display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid rgba(255,255,255,.24); border-radius: 50%; color: #fff; transition: background .2s, border-color .2s, transform .2s; }
 .landing-contact-socials a:hover { transform: translateY(-2px); border-color: #f2b831; background: rgba(255,255,255,.1); }
 .landing-contact-decoration { position: absolute; z-index: -1; right: -24px; bottom: -20px; color: rgba(255,255,255,.1); transform: rotate(-15deg); }
