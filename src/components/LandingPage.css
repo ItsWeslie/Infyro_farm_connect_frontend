@@ -858,3 +858,37 @@ html[data-ifc-theme="dark"] .landing-nav { background: rgba(23,34,25,.97); }
 @media (max-width: 640px) {
   .landing-hero .landing-preview { display: none !important; }
 }
+
+
+/* Gentle, staggered hero text reveal */
+@keyframes ifc-hero-text-reveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+.landing-hero .landing-hero-reveal {
+  opacity: 0;
+  animation: ifc-hero-text-reveal 850ms cubic-bezier(.2,.7,.2,1) both;
+  will-change: opacity, transform, filter;
+}
+.landing-hero .landing-hero-reveal-1 { animation-delay: 100ms; }
+.landing-hero .landing-hero-reveal-2 { animation-delay: 220ms; }
+.landing-hero .landing-hero-reveal-3 { animation-delay: 360ms; }
+.landing-hero .landing-hero-reveal-4 { animation-delay: 500ms; }
+.landing-hero .landing-hero-reveal-5 { animation-delay: 620ms; }
+@media (prefers-reduced-motion: reduce) {
+  .landing-hero .landing-hero-reveal {
+    opacity: 1;
+    animation: none;
+    filter: none;
+    transform: none;
+    will-change: auto;
+  }
+}
