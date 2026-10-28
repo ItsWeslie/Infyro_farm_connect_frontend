@@ -71,9 +71,6 @@ function WorkflowVine() {
               </linearGradient>
             </defs>
             <path className="landing-vine-stem" d="M60 59 C95 59 95 38 120 43 S165 82 195 62 S240 35 270 48 S315 79 345 60 S390 35 420 49 S465 79 495 60 S540 35 570 48 S615 79 645 60 S690 35 720 48 S765 79 795 60 S840 35 870 48 S915 79 945 60 S990 38 1020 53" />
-            {[{x:105,y:42,r:-36},{x:155,y:66,r:32},{x:235,y:45,r:-30},{x:285,y:59,r:35},{x:365,y:55,r:-38},{x:405,y:47,r:30},{x:485,y:56,r:-34},{x:525,y:47,r:35},{x:605,y:56,r:-34},{x:645,y:47,r:35},{x:725,y:55,r:-34},{x:765,y:47,r:35},{x:845,y:55,r:-34},{x:885,y:47,r:35},{x:965,y:57,r:-34},{x:1000,y:48,r:35}].map((leaf, i) => (
-              <path key={i} className="landing-vine-leaf" d={`M ${leaf.x} ${leaf.y} Q ${leaf.x - 10} ${leaf.y - 13} ${leaf.x - 23} ${leaf.y - 9} Q ${leaf.x - 17} ${leaf.y + 3} ${leaf.x} ${leaf.y}`} transform={`rotate(${leaf.r} ${leaf.x} ${leaf.y})`} />
-            ))}
           </svg>
           <div className="landing-vine-nodes">
             {workflow.map((step, index) => {
