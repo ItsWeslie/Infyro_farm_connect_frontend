@@ -32,7 +32,7 @@ export function AuthProvider({ children }) {
     authApi.validate()
       .then((response) => {
         if (!active) return;
-        if (response?.isLoggedIn) {
+        if (response?.isLoggedIn ?? response?.loggedIn) {
           setUser(toUser(response));
           setIsAuthenticated(true);
         } else {
@@ -54,7 +54,7 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     const response = await authApi.login({ email: email.trim(), password, loginType: "jwt" });
-    if (!response?.isLoggedIn) {
+    if (!(response?.isLoggedIn ?? response?.loggedIn)) {
       throw new Error(response?.message || "We couldn't sign you in. Please try again.");
     }
     setUser(toUser(response, email.trim()));
