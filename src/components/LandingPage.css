@@ -2300,3 +2300,35 @@ html[data-ifc-theme="light"] .landing-footer-premium .landing-footer-bottom > .l
     margin-inline: auto;
   }
 }
+
+
+/* Center the copyright independently of the other footer-bottom items. */
+.landing-footer-premium .landing-footer-bottom {
+  position: relative;
+}
+.landing-footer-premium .landing-footer-bottom > .landing-footer-copyright {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  width: max-content;
+  max-width: calc(100% - 280px);
+  text-align: center;
+}
+@media (max-width: 640px) {
+  .landing-footer-premium .landing-footer-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .landing-footer-premium .landing-footer-bottom > .landing-footer-copyright {
+    position: static;
+    transform: none;
+    order: 3;
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+  }
+  .landing-footer-premium .landing-footer-bottom-note { order: 4; }
+  .landing-footer-premium .landing-footer-bottom > .landing-back-to-top { order: 2; }
+}
