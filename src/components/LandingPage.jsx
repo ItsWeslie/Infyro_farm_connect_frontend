@@ -567,6 +567,13 @@ export default function LandingPage() {
             <a href="https://www.instagram.com/infyroinc/" target="_blank" rel="noopener noreferrer" aria-label="Infyro on Instagram"><Instagram size={15} aria-hidden="true" /> Instagram</a>
             <a href="mailto:info@infyroinc.com" aria-label="Email Infyro at info@infyroinc.com"><Mail size={15} aria-hidden="true" /> info@infyroinc.com</a>
           </div>
+          <div className="landing-footer-link-group landing-footer-contact-details">
+            <span className="landing-footer-label">CONTACT US</span>
+            <a href="mailto:info@infyroinc.com"><Mail size={15} aria-hidden="true" /> info@infyroinc.com</a>
+            <a href="tel:+918438938918"><Phone size={15} aria-hidden="true" /> +91 8438938918</a>
+            <p><Clock3 size={15} aria-hidden="true" /><span>Mon–Fri 9am–5pm · Sat 9am–2pm IST</span></p>
+            <p><MapPin size={15} aria-hidden="true" /><span>Tiruchirapalli, Tamil Nadu, India</span></p>
+          </div>
         </div>
         <div className="landing-footer-bottom">
           <small className="landing-footer-copyright">© {new Date().getFullYear()} Infyro Farms. All rights reserved.</small>
