@@ -231,6 +231,7 @@ export default function LandingPage() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState("login");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showFloatingTop, setShowFloatingTop] = useState(false);
   const [theme, setTheme] = useState(() => { try { return localStorage.getItem("ifc-landing-theme") || "light"; } catch { return "light"; } });
 
   useEffect(() => {
@@ -238,6 +239,13 @@ export default function LandingPage() {
     document.documentElement.dataset.ifcTheme = theme;
     return () => { delete document.documentElement.dataset.ifcTheme; };
   }, [theme]);
+
+  useEffect(() => {
+    const updateVisibility = () => setShowFloatingTop(window.scrollY > 420);
+    updateVisibility();
+    window.addEventListener("scroll", updateVisibility, { passive: true });
+    return () => window.removeEventListener("scroll", updateVisibility);
+  }, []);
 
   useEffect(() => {
     const root = document.querySelector(".landing-page");
@@ -504,6 +512,7 @@ export default function LandingPage() {
         </div>
       </footer>
 
+      <button className={`landing-floating-back-to-top${showFloatingTop ? " is-visible" : ""}`} type="button" onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })} aria-label="Back to top" title="Back to top" tabIndex={showFloatingTop ? 0 : -1} aria-hidden={!showFloatingTop}><ArrowUp size={19} /><span>Top</span></button>
       <AuthModal key={authMode} isOpen={authOpen} defaultMode={authMode} onClose={() => setAuthOpen(false)} />
     </div>
   );
