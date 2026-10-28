@@ -20,27 +20,6 @@ import {
 import { AuthModal } from "./AuthModal";
 import "./LandingPage.css";
 
-const features = [
-  {
-    icon: Tractor,
-    title: "Your farms, in one place",
-    description: "Keep farm details and fields organized, so you always know what is growing where.",
-    tone: "sage",
-  },
-  {
-    icon: Sprout,
-    title: "From planting to harvest",
-    description: "Follow crop progress, log daily activities, and keep the season moving forward.",
-    tone: "gold",
-  },
-  {
-    icon: Wallet,
-    title: "Know where costs go",
-    description: "Record farm expenses and harvests to understand the bigger picture of your season.",
-    tone: "blue",
-  },
-];
-
 const workflow = [
   ["01", "Set up your farm", "Add your farms and fields to build a clear picture of your land."],
   ["02", "Plan and grow", "Track plantings and keep notes on the work happening in each field."],
