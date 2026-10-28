@@ -841,3 +841,14 @@ html[data-ifc-theme="dark"] .landing-button:hover,
 html[data-ifc-theme="dark"] .landing-nav .landing-button-small:hover { background: #85B844; border-color: #85B844; }
 html[data-ifc-theme="dark"] .landing-cta { background: linear-gradient(112deg, #142719 0%, #224823 60%, #386B2A 100%); }
 html[data-ifc-theme="dark"] .landing-nav { background: rgba(23,34,25,.97); }
+
+
+/* Keep the floating dashboard labels above the transformed preview surface. */
+.landing-preview { isolation: isolate; }
+.landing-preview .preview-window { position: relative; z-index: 1; }
+.landing-preview .preview-float { z-index: 2; }
+
+/* The upper-right tagline is decorative and crowds the dashboard on phones. */
+@media (max-width: 640px) {
+  .landing-preview .preview-float-leaf { display: none; }
+}
