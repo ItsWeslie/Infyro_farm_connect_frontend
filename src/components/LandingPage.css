@@ -2422,3 +2422,71 @@ html[data-ifc-theme="light"] .landing-footer-premium .landing-footer-bottom > .l
     margin-inline: auto;
   }
 }
+
+
+/* Contact section */
+.landing-contact-section {
+  position: relative;
+  width: min(1120px, calc(100% - 64px));
+  margin: 0 auto;
+  padding: clamp(72px, 8vw, 112px) 0;
+  scroll-margin-top: 30px;
+}
+.landing-contact-heading { max-width: 660px; margin: 0 auto 38px; text-align: center; }
+.landing-contact-heading h2 { margin: 12px 0 14px; color: var(--landing-forest, #224823); font-size: clamp(34px, 4.5vw, 52px); line-height: 1.08; letter-spacing: -.045em; }
+.landing-contact-heading h2 em { color: #67992D; font-family: Georgia, serif; font-weight: 500; }
+.landing-contact-heading p { margin: 0; color: var(--landing-muted, #738075); font-size: 15px; line-height: 1.8; }
+.landing-contact-layout { display: grid; grid-template-columns: minmax(260px, .82fr) minmax(0, 1.18fr); overflow: hidden; border: 1px solid rgba(34,72,35,.12); border-radius: 26px; background: #fffefa; box-shadow: 0 24px 70px rgba(34,72,35,.09); }
+.landing-contact-info { position: relative; isolation: isolate; display: flex; flex-direction: column; align-items: flex-start; min-height: 100%; overflow: hidden; padding: clamp(28px, 4vw, 48px); color: #f8f8ef; background: linear-gradient(145deg, #2f6339, #224823 70%, #193a24); }
+.landing-contact-info-icon { display: grid; place-items: center; width: 48px; height: 48px; border: 1px solid rgba(255,255,255,.2); border-radius: 15px; color: #f2b831; background: rgba(255,255,255,.08); }
+.landing-contact-info h3 { margin: 26px 0 10px; font-size: clamp(24px, 3vw, 31px); letter-spacing: -.03em; line-height: 1.15; }
+.landing-contact-info > p { max-width: 300px; margin: 0 0 28px; color: rgba(248,248,239,.78); font-size: 14px; line-height: 1.8; }
+.landing-contact-email { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; font-size: 13px; overflow-wrap: anywhere; }
+.landing-contact-email:hover { color: #f2b831; }
+.landing-contact-socials { position: relative; z-index: 1; display: flex; gap: 10px; margin-top: 22px; }
+.landing-contact-socials a { display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid rgba(255,255,255,.24); border-radius: 50%; color: #fff; transition: background .2s, border-color .2s, transform .2s; }
+.landing-contact-socials a:hover { transform: translateY(-2px); border-color: #f2b831; background: rgba(255,255,255,.1); }
+.landing-contact-decoration { position: absolute; z-index: -1; right: -24px; bottom: -20px; color: rgba(255,255,255,.1); transform: rotate(-15deg); }
+.landing-contact-form { display: flex; flex-direction: column; gap: 20px; padding: clamp(26px, 4vw, 48px); }
+.landing-contact-field { display: flex; flex-direction: column; gap: 8px; }
+.landing-contact-field label { color: #314a35; font-size: 13px; font-weight: 700; }
+.landing-contact-field label span { color: #b65d36; }
+.landing-contact-field input, .landing-contact-field textarea { width: 100%; border: 1px solid #dfe6d9; border-radius: 12px; outline: none; padding: 13px 14px; color: #25372c; background: #fff; font: inherit; font-size: 14px; line-height: 1.55; transition: border-color .2s, box-shadow .2s, background .2s; }
+.landing-contact-field input { min-height: 48px; }
+.landing-contact-field textarea { min-height: 130px; resize: vertical; }
+.landing-contact-field input::placeholder, .landing-contact-field textarea::placeholder { color: #98a398; }
+.landing-contact-field input:focus, .landing-contact-field textarea:focus { border-color: #67992D; box-shadow: 0 0 0 3px rgba(103,153,45,.15); }
+.landing-contact-submit { align-self: flex-start; border: 0; cursor: pointer; }
+.landing-contact-form-note { margin: -8px 0 0; color: #738075; font-size: 11px; line-height: 1.6; }
+.landing-toast { position: fixed; z-index: 200; top: 22px; right: 22px; display: flex; align-items: center; gap: 11px; width: min(420px, calc(100vw - 32px)); padding: 15px 14px; border: 1px solid rgba(255,255,255,.18); border-radius: 14px; box-shadow: 0 18px 48px rgba(18,40,22,.22); color: #fff; font-size: 13px; line-height: 1.55; animation: landing-toast-in .24s ease-out both; }
+.landing-toast-success { background: #224823; }
+.landing-toast-error { background: #8d352b; }
+.landing-toast > svg { flex: 0 0 auto; }
+.landing-toast > span { flex: 1; }
+.landing-toast > button { display: grid; place-items: center; flex: 0 0 auto; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 8px; color: inherit; background: transparent; cursor: pointer; }
+.landing-toast > button:hover { background: rgba(255,255,255,.14); }
+.landing-toast > button:focus-visible, .landing-contact-socials a:focus-visible, .landing-contact-email:focus-visible { outline: 3px solid #f2b831; outline-offset: 3px; }
+@keyframes landing-toast-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+html[data-ifc-theme="dark"] .landing-contact-heading h2 { color: #e8f0df; }
+html[data-ifc-theme="dark"] .landing-contact-heading p { color: #aebba9; }
+html[data-ifc-theme="dark"] .landing-contact-layout { border-color: rgba(191,218,177,.14); background: #172b1d; box-shadow: 0 24px 70px rgba(0,0,0,.2); }
+html[data-ifc-theme="dark"] .landing-contact-form { background: #172b1d; }
+html[data-ifc-theme="dark"] .landing-contact-field label { color: #dce8d6; }
+html[data-ifc-theme="dark"] .landing-contact-field input, html[data-ifc-theme="dark"] .landing-contact-field textarea { border-color: #3b5640; color: #eef5e8; background: #203927; }
+html[data-ifc-theme="dark"] .landing-contact-field input:focus, html[data-ifc-theme="dark"] .landing-contact-field textarea:focus { border-color: #9ac76b; box-shadow: 0 0 0 3px rgba(154,199,107,.16); }
+html[data-ifc-theme="dark"] .landing-contact-form-note { color: #aebba9; }
+@media (max-width: 760px) {
+  .landing-contact-section { width: min(100% - 36px, 560px); padding: 68px 0; }
+  .landing-contact-layout { grid-template-columns: minmax(0, 1fr); border-radius: 21px; }
+  .landing-contact-info { min-height: 280px; padding: 28px; }
+  .landing-contact-info h3 { margin-top: 18px; }
+  .landing-contact-info > p { margin-bottom: 20px; }
+  .landing-contact-form { gap: 17px; padding: 25px 22px; }
+  .landing-contact-submit { width: 100%; justify-content: center; }
+  .landing-toast { top: 12px; right: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-contact-socials a, .landing-contact-field input, .landing-contact-field textarea { transition: none; }
+  .landing-contact-socials a:hover { transform: none; }
+  .landing-toast { animation: none; }
+}
