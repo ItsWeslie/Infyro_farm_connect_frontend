@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   ArrowDownRight,
+  ArrowUp,
   ClipboardList,
   GitBranch,
   LogIn,
@@ -466,11 +467,37 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="landing-footer">
-        <BrandMark />
-        <p>Clearer records. More connected seasons.</p>
-        <div><a href="#features">Features</a><a href="#how-it-works">How it works</a><button onClick={() => openAuth("login")}>Sign in</button></div>
-        <small>© {new Date().getFullYear()} Infyro Farm Connect. Grow with confidence.</small>
+      <footer className="landing-footer landing-footer-premium">
+        <div className="landing-footer-botanical" aria-hidden="true"><Sprout size={210} strokeWidth={0.65} /><Leaf size={78} strokeWidth={0.75} /></div>
+        <div className="landing-footer-main">
+          <div className="landing-footer-brand-column">
+            <BrandMark />
+            <p>Bring your fields, crop activities, expenses, and harvest records into one clearer farm workspace.</p>
+            <span className="landing-footer-signoff"><Sprout size={14} /> Rooted in your everyday work.</span>
+          </div>
+          <div className="landing-footer-link-group">
+            <span className="landing-footer-label">EXPLORE</span>
+            <a href="#features">Features</a>
+            <a href="#why-infyro">Our approach</a>
+            <a href="#how-it-works">How it works</a>
+          </div>
+          <div className="landing-footer-link-group">
+            <span className="landing-footer-label">YOUR ACCOUNT</span>
+            <button type="button" onClick={() => openAuth("login")}>Sign in</button>
+            <button type="button" onClick={() => openAuth("signup")}>Create account</button>
+          </div>
+          <div className="landing-footer-cta-card">
+            <span className="landing-footer-label">READY FOR A CLEARER SEASON?</span>
+            <h3>Bring your farm into focus.</h3>
+            <p>Start with a free account and build your workspace at your own pace.</p>
+            <button className="landing-footer-cta-button" type="button" onClick={() => openAuth("signup")}>Create your free account <ArrowRight size={16} /></button>
+          </div>
+        </div>
+        <div className="landing-footer-bottom">
+          <small>© {new Date().getFullYear()} Infyro Farms. Grow with confidence.</small>
+          <span className="landing-footer-bottom-note">Clearer records. More connected seasons.</span>
+          <button className="landing-back-to-top" type="button" onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })} aria-label="Back to top">Back to top <ArrowUp size={14} /></button>
+        </div>
       </footer>
 
       <AuthModal key={authMode} isOpen={authOpen} defaultMode={authMode} onClose={() => setAuthOpen(false)} />
