@@ -892,3 +892,32 @@ html[data-ifc-theme="dark"] .landing-nav { background: rgba(23,34,25,.97); }
     will-change: auto;
   }
 }
+
+
+/* Dashboard visual enters with the hero copy for a cohesive first impression */
+@keyframes ifc-hero-dashboard-reveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0) scale(.975);
+    filter: blur(7px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+}
+.landing-hero .landing-hero-dashboard-reveal {
+  opacity: 0;
+  animation: ifc-hero-dashboard-reveal 1100ms cubic-bezier(.2,.7,.2,1) 320ms both;
+  will-change: opacity, transform, filter;
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-hero .landing-hero-dashboard-reveal {
+    opacity: 1;
+    animation: none;
+    filter: none;
+    transform: none;
+    will-change: auto;
+  }
+}
