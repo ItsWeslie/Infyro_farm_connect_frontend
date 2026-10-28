@@ -1250,3 +1250,52 @@ html[data-ifc-theme="dark"] .landing-feature-stage span { color: #d5e4cf; }
 html[data-ifc-theme="dark"] .landing-feature-stage i { background: #344c35; color: #d5e4cf; }
 html[data-ifc-theme="dark"] .landing-feature-bento .landing-feature-number { color: rgba(200,225,191,.3); }
 html[data-ifc-theme="dark"] .landing-feature-card-primary .landing-feature-number { color: rgba(255,255,255,.38); }
+
+
+/* Feature section: staggered reveal and visible card numbering */
+.landing-feature-bento .landing-feature-card.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(26px) scale(.985);
+}
+.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed {
+  animation: ifc-feature-card-reveal .72s cubic-bezier(.2,.7,.2,1) both;
+}
+.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed:nth-child(1) { animation-delay: 40ms; }
+.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed:nth-child(2) { animation-delay: 150ms; }
+.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed:nth-child(3) { animation-delay: 260ms; }
+.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed:nth-child(4) { animation-delay: 370ms; }
+@keyframes ifc-feature-card-reveal {
+  from { opacity: 0; transform: translateY(26px) scale(.985); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+/* Numbers 02 and 03 share the card header row instead of absolute positioning. */
+.landing-feature-bento .landing-feature-card-head .landing-feature-number {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  min-height: 30px;
+  padding: 5px 7px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(34,72,35,.10);
+  border-radius: 9px;
+  color: #67992D;
+  background: rgba(255,255,255,.68);
+  line-height: 1;
+  letter-spacing: 1.2px;
+}
+html[data-ifc-theme="dark"] .landing-feature-bento .landing-feature-card-head .landing-feature-number {
+  color: #b6d5a2;
+  border-color: rgba(220,237,210,.14);
+  background: rgba(255,255,255,.05);
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-feature-bento .landing-feature-card.reveal-on-scroll,
+  .landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    animation: none !important;
+  }
+}
