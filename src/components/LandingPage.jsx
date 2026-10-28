@@ -70,7 +70,7 @@ function WorkflowVine() {
                 <stop offset="100%" stopColor="#67992D" />
               </linearGradient>
             </defs>
-            <path className="landing-vine-stem" d="M60 59 C95 59 95 38 120 43 S165 82 195 62 S240 35 270 48 S315 79 345 60 S390 35 420 49 S465 79 495 60 S540 35 570 48 S615 79 645 60 S690 35 720 48 S765 79 795 60 S840 35 870 48 S915 79 945 60 S990 38 1020 53" />
+            <path className="landing-vine-stem" d="M60 52 C100 52 140 52 180 52 S260 52 300 52 S380 52 420 52 S500 52 540 52 S620 52 660 52 S740 52 780 52 S860 52 900 52 S980 52 1020 52" />
           </svg>
           <div className="landing-vine-nodes">
             {workflow.map((step, index) => {
