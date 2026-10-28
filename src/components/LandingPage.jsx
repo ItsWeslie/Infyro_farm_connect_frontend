@@ -176,6 +176,7 @@ export default function LandingPage() {
             <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>How it works</a>
             <a href="#why-infyro" className="landing-nav-subtle" onClick={(event) => { event.preventDefault(); document.getElementById("why-infyro")?.scrollIntoView({ behavior: "smooth" }); setMobileMenuOpen(false); }}>Our approach</a>
             <div className="landing-nav-actions">
+              <button className="landing-theme-toggle" type="button" onClick={() => setTheme((current) => current === "light" ? "dark" : "light")} aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`} title={`Switch to ${theme === "light" ? "dark" : "light"} theme`}>{theme === "light" ? <Moon size={16} /> : <Sun size={16} />}<span>{theme === "light" ? "Dark" : "Light"}</span></button>
               <button className="landing-signin" onClick={() => openAuth("login")}>Sign in</button>
               <button className="landing-button landing-button-small" onClick={() => openAuth("signup")}>Get started <ArrowRight size={15} /></button>
             </div>
