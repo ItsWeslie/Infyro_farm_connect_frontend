@@ -318,6 +318,7 @@ export default function LandingPage() {
 
         <section className="landing-story" id="why-infyro">
           <div className="landing-story-photo">
+            <img className="landing-story-photo-image" src="https://images.unsplash.com/photo-1499529112087-3cb3b73d8f0a?auto=format&fit=crop&w=1400&q=85" alt="Lush green farmland in natural light" loading="lazy" />
             <div className="landing-story-photo-shade" aria-hidden="true" />
             <div className="landing-story-photo-caption"><span><Leaf size={14} /></span> Rooted in the everyday work of farming</div>
             <div className="landing-story-records-card" aria-label="Illustrative farm records preview">
