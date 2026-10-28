@@ -1,91 +1,90 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import { authApi } from '../api/client';
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { authApi } from "../api/client";
 
 const AuthContext = createContext(null);
 
+function toUser(response, fallbackEmail = "") {
+  const username = response?.username || fallbackEmail;
+  return {
+    username,
+    name: response?.name || (username.includes("@") ? username.split("@")[0] : username),
+    email: response?.email || fallbackEmail || (username.includes("@") ? username : ""),
+    role: response?.role || null,
+  };
+}
+
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    try {
-      const saved = localStorage.getItem('ifc_user');
-      return saved ? JSON.parse(saved) : null;
-    } catch (e) {
-      return null;
-    }
-  });
-  const [token, setToken] = useState(() => localStorage.getItem('ifc_token'));
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const clearSession = useCallback(() => {
+    setUser(null);
+    setIsAuthenticated(false);
+  }, []);
+
   useEffect(() => {
-    async function checkToken() {
-      if (token) {
-        try {
-          await authApi.validate();
-        } catch (err) {
-          // Token is invalid/expired
-          logout();
+    let active = true;
+    const onAuthExpired = () => clearSession();
+    window.addEventListener("ifc_auth_expired", onAuthExpired);
+
+    // The HttpOnly cookie is the source of truth. Never read or store the JWT in JS.
+    authApi.validate()
+      .then((response) => {
+        if (!active) return;
+        if (response?.isLoggedIn ?? response?.loggedIn) {
+          setUser(toUser(response));
+          setIsAuthenticated(true);
+        } else {
+          clearSession();
         }
-      }
-      setLoading(false);
-    }
+      })
+      .catch(() => {
+        if (active) clearSession();
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
 
-    const onAuthExpired = () => logout();
-    window.addEventListener('ifc_auth_expired', onAuthExpired);
-    checkToken();
-
-    return () => window.removeEventListener('ifc_auth_expired', onAuthExpired);
-  }, [token]);
-
-  const login = async (username, password) => {
-    const res = await authApi.login({ username, password });
-    // Backend LoginResponse returns { jwtToken, username, ... }
-    const jwtToken = res.jwtToken || res.token || res.data?.jwtToken;
-    const userData = {
-      username: res.username || username,
-      name: res.name || username.split('@')[0],
-      email: username,
+    return () => {
+      active = false;
+      window.removeEventListener("ifc_auth_expired", onAuthExpired);
     };
-    if (jwtToken) {
-      localStorage.setItem('ifc_token', jwtToken);
-      localStorage.setItem('ifc_user', JSON.stringify(userData));
-      setToken(jwtToken);
-      setUser(userData);
+  }, [clearSession]);
+
+  const login = async (email, password) => {
+    const response = await authApi.login({ email: email.trim(), password, loginType: "jwt" });
+    if (!(response?.isLoggedIn ?? response?.loggedIn)) {
+      throw new Error(response?.message || "We couldn't sign you in. Please try again.");
     }
-    return res;
+    setUser(toUser(response, email.trim()));
+    setIsAuthenticated(true);
+    return response;
   };
 
-  const signup = async (payload) => {
-    // payload: { name, email, password, userType: 'USER' }
-    return await authApi.signup({
-      name: payload.name,
-      email: payload.email,
-      password: payload.password,
-      userType: 'USER',
-    });
+  const signup = async ({ name, email, password }) => {
+    return authApi.signup({ name: name.trim(), email: email.trim(), password });
   };
 
   const logout = async () => {
     try {
-      if (token) await authApi.logout();
-    } catch (e) {
-      // ignore
+      await authApi.logout();
+    } catch (error) {
+      // Clear local UI state even if the server is temporarily unreachable.
     } finally {
-      localStorage.removeItem('ifc_token');
-      localStorage.removeItem('ifc_user');
-      setToken(null);
-      setUser(null);
+      clearSession();
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated: !!token, loading, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, loading, login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
 export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within an AuthProvider');
-  return ctx;
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth must be used within an AuthProvider");
+  return context;
 }
-
