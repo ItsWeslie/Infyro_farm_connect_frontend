@@ -1832,3 +1832,18 @@ html[data-ifc-theme="dark"] .landing-feature-bento .landing-feature-card.reveal-
   opacity: 1;
   visibility: visible;
 }
+
+
+/* Disable the card reveal animation itself: theme changes must never leave a card at opacity 0. */
+.landing-feature-bento .landing-feature-card.reveal-on-scroll,
+.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed {
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+  animation: none !important;
+  transform: none;
+}
+.landing-feature-bento .landing-feature-card.reveal-on-scroll:hover,
+.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed:hover {
+  transform: translateY(-7px);
+}
