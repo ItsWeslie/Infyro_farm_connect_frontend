@@ -42,6 +42,7 @@ import {
 import "./App.css";
 import { useAuth } from "./context/AuthContext";
 import { AuthModal } from "./components/AuthModal";
+import LandingPage from "./components/LandingPage";
 import {
   farmApi,
   fieldApi,
@@ -190,7 +191,9 @@ function Avatar({ small = false, name = "Ravi Kumar" }) {
   return <div className={small ? "avatar avatar-small" : "avatar"}>{initials}</div>;
 }
 function App() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, loading, logout } = useAuth();
+  if (loading) return <div className="ifc-session-loading" role="status"><span><Sprout size={22} /> Checking your farm session…</span></div>;
+  if (!isAuthenticated) return <LandingPage />;
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [active, setActive] = useState("Overview");
   const [search, setSearch] = useState("");
@@ -237,7 +240,7 @@ function App() {
   // Load summary for selected farm
   useEffect(() => {
     async function loadSummary() {
-      if (selectedFarm?.id) {
+      if (isAuthenticated && selectedFarm?.id) {
         try {
           const summary = await farmSummaryApi.getSummary(selectedFarm.id);
           setBackendSummary(summary);
@@ -247,7 +250,7 @@ function App() {
       }
     }
     loadSummary();
-  }, [selectedFarm]);
+  }, [selectedFarm, isAuthenticated]);
 
   const filteredCrops = useMemo(
     () =>
