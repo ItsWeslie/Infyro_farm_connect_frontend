@@ -852,3 +852,9 @@ html[data-ifc-theme="dark"] .landing-nav { background: rgba(23,34,25,.97); }
 @media (max-width: 640px) {
   .landing-preview .preview-float-leaf { display: none; }
 }
+
+
+/* Keep the hero focused on its message on mobile; hide the full dashboard preview. */
+@media (max-width: 640px) {
+  .landing-hero .landing-preview { display: none !important; }
+}
