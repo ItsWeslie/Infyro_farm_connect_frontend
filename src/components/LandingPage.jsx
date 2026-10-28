@@ -131,7 +131,7 @@ export default function LandingPage() {
           <nav className={"landing-nav" + (mobileMenuOpen ? " landing-nav-open" : "")} aria-label="Main navigation">
             <a href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a>
             <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>How it works</a>
-            <a href="#why-inf yro" className="landing-nav-subtle" onClick={(event) => { event.preventDefault(); document.getElementById("why-inf yro")?.scrollIntoView({ behavior: "smooth" }); setMobileMenuOpen(false); }}>Our approach</a>
+            <a href="#why-infyro" className="landing-nav-subtle" onClick={(event) => { event.preventDefault(); document.getElementById("why-infyro")?.scrollIntoView({ behavior: "smooth" }); setMobileMenuOpen(false); }}>Our approach</a>
             <div className="landing-nav-actions">
               <button className="landing-signin" onClick={() => openAuth("login")}>Sign in</button>
               <button className="landing-button landing-button-small" onClick={() => openAuth("signup")}>Get started <ArrowRight size={15} /></button>
@@ -185,7 +185,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="landing-story" id="why-inf yro">
+        <section className="landing-story" id="why-infyro">
           <div className="landing-story-photo"><div className="landing-story-photo-caption"><span><Leaf size={14} /></span> Rooted in the everyday work of farming</div></div>
           <div className="landing-story-copy">
             <span className="landing-section-kicker">MADE FOR THE WHOLE SEASON</span>
