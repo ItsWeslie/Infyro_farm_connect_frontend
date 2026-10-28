@@ -192,6 +192,19 @@ function Avatar({ small = false, name = "Ravi Kumar" }) {
 }
 function App() {
   const { user, isAuthenticated, loading, logout } = useAuth();
+  const [sessionMinimumElapsed, setSessionMinimumElapsed] = useState(false);
+  const [sessionWelcomeComplete, setSessionWelcomeComplete] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setSessionMinimumElapsed(true), 2000);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (loading || !sessionMinimumElapsed || sessionWelcomeComplete) return undefined;
+    const timer = window.setTimeout(() => setSessionWelcomeComplete(true), 2000);
+    return () => window.clearTimeout(timer);
+  }, [loading, sessionMinimumElapsed, sessionWelcomeComplete]);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [active, setActive] = useState("Overview");
   const [search, setSearch] = useState("");
@@ -261,7 +274,75 @@ function App() {
     [localCrops, search],
   );
 
-  if (loading) return <div className="ifc-session-loading" role="status"><span><Sprout size={22} /> Checking your farm session…</span></div>;
+  if (loading || !sessionMinimumElapsed) {
+    return (
+      <div className="ifc-session-loading" role="status" aria-live="polite">
+        <style>{`
+          .ifc-session-loading {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            background: var(--ifc-cream, #EFEAD5);
+            color: var(--ifc-dark-green, #224823);
+          }
+          .ifc-session-loading > span {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+          }
+          .ifc-session-loading-icon {
+            display: inline-flex;
+            animation: ifc-session-sprout 1.1s ease-in-out infinite;
+          }
+          .ifc-session-welcome {
+            font-size: clamp(1.8rem, 5vw, 3.5rem);
+            font-weight: 750;
+            letter-spacing: -0.045em;
+            text-align: center;
+            animation: ifc-session-welcome-reveal 2000ms cubic-bezier(.2,.7,.2,1) both;
+          }
+          .ifc-session-welcome em {
+            color: var(--ifc-light-green, #67992D);
+            font-style: normal;
+          }
+          @keyframes ifc-session-sprout {
+            0%, 100% { transform: translateY(0) rotate(-5deg); opacity: .75; }
+            50% { transform: translateY(-5px) rotate(5deg); opacity: 1; }
+          }
+          @keyframes ifc-session-welcome-reveal {
+            0% { opacity: 0; transform: translateY(18px); filter: blur(8px); clip-path: inset(0 100% 0 0); }
+            45% { opacity: 1; filter: blur(0); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0); clip-path: inset(0 0 0 0); }
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .ifc-session-loading-icon, .ifc-session-welcome { animation: none; }
+            .ifc-session-welcome { opacity: 1; transform: none; filter: none; clip-path: none; }
+          }
+        `}</style>
+        <span><i className="ifc-session-loading-icon"><Sprout size={22} /></i> Checking your farm session…</span>
+      </div>
+    );
+  }
+  if (!sessionWelcomeComplete) {
+    return (
+      <div className="ifc-session-loading" role="status" aria-live="polite">
+        <style>{`
+          .ifc-session-loading { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: var(--ifc-cream, #EFEAD5); color: var(--ifc-dark-green, #224823); }
+          .ifc-session-welcome { font-size: clamp(1.8rem, 5vw, 3.5rem); font-weight: 750; letter-spacing: -0.045em; text-align: center; animation: ifc-session-welcome-reveal 2000ms cubic-bezier(.2,.7,.2,1) both; }
+          .ifc-session-welcome em { color: var(--ifc-light-green, #67992D); font-style: normal; }
+          @keyframes ifc-session-welcome-reveal {
+            0% { opacity: 0; transform: translateY(18px); filter: blur(8px); clip-path: inset(0 100% 0 0); }
+            45% { opacity: 1; filter: blur(0); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0); clip-path: inset(0 0 0 0); }
+          }
+          @media (prefers-reduced-motion: reduce) { .ifc-session-welcome { animation: none; opacity: 1; transform: none; filter: none; clip-path: none; } }
+        `}</style>
+        <h1 className="ifc-session-welcome">Welcome to <em>Infyro Farms</em></h1>
+      </div>
+    );
+  }
   if (!isAuthenticated) return <LandingPage />;
   function notify(message) {
     setToast(message);
