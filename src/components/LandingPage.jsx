@@ -232,6 +232,8 @@ export default function LandingPage() {
   const [authMode, setAuthMode] = useState("login");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showFloatingTop, setShowFloatingTop] = useState(false);
+  const [contactForm, setContactForm] = useState({ name: "", email: "", message: "" });
+  const [contactToast, setContactToast] = useState(null);
   const [theme, setTheme] = useState(() => { try { return localStorage.getItem("ifc-landing-theme") || "light"; } catch { return "light"; } });
 
   useEffect(() => {
@@ -239,6 +241,12 @@ export default function LandingPage() {
     document.documentElement.dataset.ifcTheme = theme;
     return () => { delete document.documentElement.dataset.ifcTheme; };
   }, [theme]);
+
+  useEffect(() => {
+    if (!contactToast) return undefined;
+    const timer = window.setTimeout(() => setContactToast(null), 5000);
+    return () => window.clearTimeout(timer);
+  }, [contactToast]);
 
   useEffect(() => {
     const updateVisibility = () => setShowFloatingTop(window.scrollY > 420);
@@ -306,6 +314,7 @@ export default function LandingPage() {
             <a href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a>
             <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>How it works</a>
             <a href="#why-infyro" className="landing-nav-subtle" onClick={(event) => { event.preventDefault(); document.getElementById("why-infyro")?.scrollIntoView({ behavior: "smooth" }); setMobileMenuOpen(false); }}>Our approach</a>
+            <a href="#contact" onClick={() => setMobileMenuOpen(false)}>Contact</a>
             <div className="landing-nav-actions">
               <button className="landing-theme-toggle" type="button" onClick={() => setTheme((current) => current === "light" ? "dark" : "light")} aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`} title={`Switch to ${theme === "light" ? "dark" : "light"} theme`}>{theme === "light" ? <Moon size={16} /> : <Sun size={16} />}<span>{theme === "light" ? "Dark" : "Light"}</span></button>
               <button className="landing-signin" type="button" onClick={() => openAuth("login")}>Sign in</button>
@@ -467,6 +476,60 @@ export default function LandingPage() {
           <p className="landing-testimonial-note">Illustrative user stories for design preview; replace with verified testimonials before launch.</p>
         </section>
 
+        <section className="landing-contact-section" id="contact" aria-labelledby="landing-contact-title">
+          <div className="landing-contact-heading">
+            <span className="landing-section-kicker">GET IN TOUCH</span>
+            <h2 id="landing-contact-title">Let’s grow <em>together.</em></h2>
+            <p>Have a question about Infyro Farms? Send us a message — we’d love to hear from you.</p>
+          </div>
+          <div className="landing-contact-layout">
+            <aside className="landing-contact-info">
+              <span className="landing-contact-info-icon"><Mail size={22} /></span>
+              <h3>We’re here to listen.</h3>
+              <p>Share your question, feedback, or idea with the Infyro team.</p>
+              <a className="landing-contact-email" href="mailto:info@infyroinc.com"><Mail size={17} /> info@infyroinc.com</a>
+              <div className="landing-contact-socials">
+                <a href="https://www.linkedin.com/company/infyroinc/posts/" target="_blank" rel="noopener noreferrer" aria-label="Infyro on LinkedIn"><Linkedin size={17} /></a>
+                <a href="https://www.instagram.com/infyroinc/" target="_blank" rel="noopener noreferrer" aria-label="Infyro on Instagram"><Instagram size={17} /></a>
+              </div>
+              <Sprout className="landing-contact-decoration" size={150} strokeWidth={0.8} aria-hidden="true" />
+            </aside>
+            <form className="landing-contact-form" noValidate onSubmit={(event) => {
+              event.preventDefault();
+              const name = contactForm.name.trim();
+              const email = contactForm.email.trim();
+              const message = contactForm.message.trim();
+              if (!name || !email || !message) {
+                setContactToast({ type: "error", message: "Please fill in your name, email, and message." });
+                return;
+              }
+              if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+                setContactToast({ type: "error", message: "Please enter a valid email address." });
+                return;
+              }
+              const subject = encodeURIComponent("Infyro Farms enquiry");
+              const body = encodeURIComponent("Name: " + name + "\\nEmail: " + email + "\\n\\nMessage:\\n" + message);
+              setContactToast({ type: "success", message: "Your email app should open. Please review and send your message there." });
+              window.location.href = "mailto:info@infyroinc.com?subject=" + subject + "&body=" + body;
+            }}>
+              <div className="landing-contact-field">
+                <label htmlFor="landing-contact-name">Name <span aria-hidden="true">*</span></label>
+                <input id="landing-contact-name" name="name" type="text" autoComplete="name" placeholder="Your full name" required value={contactForm.name} onChange={(event) => setContactForm((current) => ({ ...current, name: event.target.value }))} />
+              </div>
+              <div className="landing-contact-field">
+                <label htmlFor="landing-contact-email">Email address <span aria-hidden="true">*</span></label>
+                <input id="landing-contact-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" required value={contactForm.email} onChange={(event) => setContactForm((current) => ({ ...current, email: event.target.value }))} />
+              </div>
+              <div className="landing-contact-field">
+                <label htmlFor="landing-contact-message">Message <span aria-hidden="true">*</span></label>
+                <textarea id="landing-contact-message" name="message" placeholder="How can we help?" rows={5} required value={contactForm.message} onChange={(event) => setContactForm((current) => ({ ...current, message: event.target.value }))} />
+              </div>
+              <button className="landing-button landing-contact-submit" type="submit">Send message <ArrowRight size={17} /></button>
+              <p className="landing-contact-form-note">Your email app will open so you can review and send the message.</p>
+            </form>
+          </div>
+        </section>
+
         <section className="landing-cta">
           <div className="landing-cta-decoration" aria-hidden="true"><Sprout size={160} strokeWidth={0.8} /></div>
           <div className="landing-cta-copy">
@@ -512,6 +575,11 @@ export default function LandingPage() {
         </div>
       </footer>
 
+      {contactToast && <div className={`landing-toast landing-toast-${contactToast.type}`} role={contactToast.type === "error" ? "alert" : "status"} aria-live={contactToast.type === "error" ? "assertive" : "polite"}>
+        {contactToast.type === "error" ? <X size={18} /> : <CheckCircle2 size={18} />}
+        <span>{contactToast.message}</span>
+        <button type="button" onClick={() => setContactToast(null)} aria-label="Dismiss notification"><X size={16} /></button>
+      </div>}
       <button className={`landing-floating-back-to-top${showFloatingTop ? " is-visible" : ""}`} type="button" onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })} aria-label="Back to top" title="Back to top" tabIndex={showFloatingTop ? 0 : -1} aria-hidden={!showFloatingTop}><ArrowUp size={19} /><span>Top</span></button>
       <AuthModal key={authMode} isOpen={authOpen} defaultMode={authMode} onClose={() => setAuthOpen(false)} />
     </div>
