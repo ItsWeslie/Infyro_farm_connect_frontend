@@ -2123,3 +2123,25 @@ html[data-ifc-theme="light"] .landing-footer-premium .landing-back-to-top:hover 
   .landing-footer-premium .landing-footer-link-group button:hover,
   .landing-footer-cta-button:hover { transform: none; }
 }
+
+
+/* Footer external links and social handles. */
+.landing-footer-connect-group a {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  overflow-wrap: anywhere;
+}
+.landing-footer-connect-group a svg { flex: 0 0 auto; opacity: .85; }
+.landing-footer-connect-group a:hover svg { opacity: 1; }
+.landing-footer-link-group a[href="https://www.infyroinc.com/"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+@media (max-width: 980px) {
+  .landing-footer-connect-group { grid-column: 2 / 3; }
+}
+@media (max-width: 640px) {
+  .landing-footer-connect-group { grid-column: 1 / -1; }
+}
