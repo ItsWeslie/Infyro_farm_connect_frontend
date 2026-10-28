@@ -1934,7 +1934,12 @@ html[data-ifc-theme="dark"] .landing-feature-bento .landing-feature-card.reveal-
   line-height: 1.6;
 }
 
-.landing-footer-contact-details p { display: flex; align-items: flex-start; gap: 9px; margin: 0; color: rgba(248,249,239,.76); font-size: 12px; line-height: 1.65; }
+
+.landing-footer-contact-details > a { color: #f4f5e9; }
+.landing-footer-contact-details > a:hover { color: #f2b831; }
+.landing-footer-contact-details .landing-footer-label { color: #f2b831; }
+.landing-footer-contact-details p svg { color: #f2b831; }
+.landing-footer-contact-details p { display: flex; align-items: flex-start; gap: 9px; margin: 0; color: #f4f5e9; font-size: 12px; line-height: 1.65; }
 .landing-footer-contact-details p svg { flex: 0 0 15px; margin-top: 2px; color: #f2b831; }
 .landing-footer-contact-details > a { display: flex; align-items: flex-start; gap: 9px; }
 .landing-footer-contact-details > a svg { flex: 0 0 15px; margin-top: 2px; }
