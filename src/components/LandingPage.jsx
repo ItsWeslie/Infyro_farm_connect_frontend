@@ -506,7 +506,7 @@ export default function LandingPage() {
           </div>
         </div>
         <div className="landing-footer-bottom">
-          <small>© {new Date().getFullYear()} Infyro Farms. Grow with confidence.</small>
+          <small>© {new Date().getFullYear()} Infyro Farms. All rights reserved.</small>
           <span className="landing-footer-bottom-note">Clearer records. More connected seasons.</span>
           <button className="landing-back-to-top" type="button" onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })} aria-label="Back to top">Back to top <ArrowUp size={14} /></button>
         </div>
