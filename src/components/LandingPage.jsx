@@ -132,8 +132,13 @@ function DashboardPreview() {
           </div>
         </div>
       </div>
-      <div className="preview-float preview-float-growth"><span><TrendingUp size={17} /></span><div><small>Every detail, connected</small><strong>One farm workspace</strong></div></div>
-      <div className="preview-float preview-float-leaf"><Leaf size={20} /><span>Rooted in better decisions</span></div>
+      <div className="preview-float preview-float-growth absolute left-0 bottom-1 z-20 flex items-center gap-3 rounded-2xl border border-white/70 bg-white/75 px-4 py-3 shadow-[0_18px_45px_rgba(34,72,35,0.18)] backdrop-blur-xl motion-safe:animate-[ifc-float_6s_ease-in-out_infinite] max-sm:left-2 max-sm:bottom-0 max-sm:px-3 max-sm:py-2">
+        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#e8f1e1] text-[#53804d]"><TrendingUp size={17} /></span>
+        <div className="flex flex-col gap-1"><small className="text-[10px] text-[#71816f] max-sm:text-[8px]">Every detail, connected</small><strong className="text-xs text-[#2b4834] max-sm:text-[10px]">One farm workspace</strong></div>
+      </div>
+      <div className="preview-float preview-float-leaf absolute right-0 top-3 z-20 flex items-center gap-2 rounded-2xl border border-white/70 bg-white/75 px-4 py-3 text-xs font-semibold text-[#47714b] shadow-[0_18px_45px_rgba(34,72,35,0.16)] backdrop-blur-xl motion-safe:animate-[ifc-float_7s_ease-in-out_infinite] [animation-delay:-2.5s] max-sm:right-1 max-sm:top-1 max-sm:px-2.5 max-sm:py-2 max-sm:text-[9px]">
+        <Leaf size={18} /><span>Rooted in better decisions</span>
+      </div>
     </div>
   );
 }
