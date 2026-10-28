@@ -1935,14 +1935,19 @@ html[data-ifc-theme="dark"] .landing-feature-bento .landing-feature-card.reveal-
 }
 
 
-.landing-footer-contact-details > a { color: #f4f5e9; }
-.landing-footer-contact-details > a:hover { color: #f2b831; }
-.landing-footer-contact-details .landing-footer-label { color: #a8cc96; }
-.landing-footer-contact-details p svg { color: #d0ddc9; }
-.landing-footer-contact-details p { display: flex; align-items: flex-start; gap: 9px; margin: 0; color: #d0ddc9; font-size: 12px; line-height: 1.65; }
-.landing-footer-contact-details p svg { flex: 0 0 15px; margin-top: 2px; color: #d0ddc9; }
-.landing-footer-contact-details > a { display: flex; align-items: flex-start; gap: 9px; }
-.landing-footer-contact-details > a svg { flex: 0 0 15px; margin-top: 2px; }
+.landing-footer-premium .landing-footer-contact-details > a,
+.landing-footer-premium .landing-footer-contact-details p {
+  color: #d0ddc9;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.landing-footer-premium .landing-footer-contact-details > a:hover { color: #b8e58e; }
+.landing-footer-premium .landing-footer-contact-details .landing-footer-label { color: #a8cc96; }
+.landing-footer-premium .landing-footer-contact-details p { display: flex; align-items: flex-start; gap: 9px; margin: 0; }
+.landing-footer-premium .landing-footer-contact-details p svg,
+.landing-footer-premium .landing-footer-contact-details > a svg { flex: 0 0 15px; margin-top: 2px; color: currentColor; }
+.landing-footer-premium .landing-footer-contact-details > a { display: flex; align-items: flex-start; gap: 9px; }
 .landing-footer-link-group {
   display: flex;
   flex-direction: column;
