@@ -1816,3 +1816,19 @@ html[data-ifc-theme="dark"] .landing-vine-experience::before {
 @media (prefers-reduced-motion: reduce) {
   .landing-vine-stem { animation: none !important; stroke-dasharray: none; stroke-dashoffset: 0; }
 }
+
+
+/* Keep feature cards visible even if the scroll observer or theme transition has not fired yet. */
+.landing-feature-bento .landing-feature-card.reveal-on-scroll {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed {
+  animation: ifc-feature-card-reveal .72s cubic-bezier(.2,.7,.2,1) both;
+}
+html[data-ifc-theme="dark"] .landing-feature-bento .landing-feature-card,
+html[data-ifc-theme="dark"] .landing-feature-bento .landing-feature-card.reveal-on-scroll {
+  opacity: 1;
+  visibility: visible;
+}
