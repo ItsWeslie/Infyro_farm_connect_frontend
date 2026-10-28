@@ -2145,3 +2145,34 @@ html[data-ifc-theme="light"] .landing-footer-premium .landing-back-to-top:hover 
 @media (max-width: 640px) {
   .landing-footer-connect-group { grid-column: 1 / -1; }
 }
+
+
+/* Give each footer link group an equal share of the available width. */
+.landing-footer-main {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 40px);
+}
+.landing-footer-link-group {
+  min-width: 0;
+}
+.landing-footer-link-group > a,
+.landing-footer-link-group > button {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 980px) {
+  .landing-footer-main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 30px 28px;
+  }
+  .landing-footer-brand-column,
+  .landing-footer-connect-group { grid-column: auto; }
+}
+@media (max-width: 640px) {
+  .landing-footer-main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 20px;
+  }
+  .landing-footer-brand-column { grid-column: 1 / -1; }
+  .landing-footer-connect-group { grid-column: 1 / -1; }
+}
