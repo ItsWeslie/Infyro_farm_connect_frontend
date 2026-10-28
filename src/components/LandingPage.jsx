@@ -488,7 +488,7 @@ export default function LandingPage() {
               <h3>We’re here to listen.</h3>
               <p>Share your question, feedback, or idea with the Infyro team.</p>
               <div className="landing-contact-socials">
-                <a className="landing-contact-email" href="mailto:info@infyroinc.com" aria-label="Email info@infyroinc.com"><Mail size={17} /> <span>info@infyroinc.com</span></a>
+                <a className="landing-contact-email" href="mailto:info@infyroinc.com" aria-label="Email Infyro"><Mail size={19} /></a>
                 <a href="https://www.linkedin.com/company/infyroinc/posts/" target="_blank" rel="noopener noreferrer" aria-label="Infyro on LinkedIn"><Linkedin size={17} /></a>
                 <a href="https://www.instagram.com/infyroinc/" target="_blank" rel="noopener noreferrer" aria-label="Infyro on Instagram"><Instagram size={17} /></a>
               </div>
