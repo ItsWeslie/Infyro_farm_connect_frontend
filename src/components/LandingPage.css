@@ -2176,3 +2176,33 @@ html[data-ifc-theme="light"] .landing-footer-premium .landing-back-to-top:hover 
   .landing-footer-brand-column { grid-column: 1 / -1; }
   .landing-footer-connect-group { grid-column: 1 / -1; }
 }
+
+
+/* Footer scroll reveal: stagger each content group as it enters the viewport. */
+.landing-footer-premium .landing-footer-brand-column.reveal-on-scroll,
+.landing-footer-premium .landing-footer-link-group.reveal-on-scroll,
+.landing-footer-premium .landing-footer-bottom > .reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1);
+  will-change: opacity, transform;
+}
+.landing-footer-premium .landing-footer-link-group.reveal-on-scroll:nth-of-type(2) { transition-delay: .08s; }
+.landing-footer-premium .landing-footer-link-group.reveal-on-scroll:nth-of-type(3) { transition-delay: .16s; }
+.landing-footer-premium .landing-footer-link-group.reveal-on-scroll:nth-of-type(4) { transition-delay: .24s; }
+.landing-footer-premium .landing-footer-brand-column.reveal-on-scroll.is-revealed,
+.landing-footer-premium .landing-footer-link-group.reveal-on-scroll.is-revealed,
+.landing-footer-premium .landing-footer-bottom > .reveal-on-scroll.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-footer-premium .landing-footer-brand-column.reveal-on-scroll,
+  .landing-footer-premium .landing-footer-link-group.reveal-on-scroll,
+  .landing-footer-premium .landing-footer-bottom > .reveal-on-scroll {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+}
