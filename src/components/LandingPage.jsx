@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
-  ArrowDownRight,\n  ClipboardList,
+  ArrowDownRight,
+  ClipboardList,
   ArrowRight,
   CheckCircle2,
   CirclePlay,
