@@ -1518,3 +1518,245 @@ html[data-ifc-theme="dark"] .landing-story-copy li svg { color: #a8d98a; backgro
 .landing-story-photo-shade { z-index: 1; }
 .landing-story-photo-caption,
 .landing-story-records-card { z-index: 2; }
+
+
+/* Animated horizontal botanical pathway for the nine-step farm journey. */
+.landing-vine-experience {
+  --vine-stem: #67992D;
+  --vine-leaf: #22C55E;
+  width: 100%;
+  margin-top: clamp(30px, 4vw, 52px);
+}
+.landing-vine-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 10px 2px 14px;
+  scrollbar-width: thin;
+  scrollbar-color: #9cba82 transparent;
+}
+.landing-vine-track {
+  position: relative;
+  min-width: 920px;
+  min-height: 150px;
+  padding: 0 4px;
+}
+.landing-vine-art {
+  position: absolute;
+  inset: 0 0 auto;
+  width: 100%;
+  height: 116px;
+  overflow: visible;
+  pointer-events: none;
+}
+.landing-vine-stem {
+  fill: none;
+  stroke: url(#ifc-vine-gradient);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  animation: ifc-vine-grow 1.6s cubic-bezier(.2,.7,.2,1) forwards;
+}
+.landing-vine-leaf {
+  fill: #83b65a;
+  stroke: #4f852e;
+  stroke-width: .8;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ifc-vine-leaf-unfurl .55s cubic-bezier(.2,.7,.2,1) both;
+}
+.landing-vine-leaf:nth-of-type(3n) { fill: #22C55E; }
+.landing-vine-nodes {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  align-items: start;
+  min-height: 150px;
+}
+.landing-vine-node {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 28px 4px 8px;
+  border: 0;
+  color: #52634F;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.landing-vine-node-circle {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 2px solid #b5ce9e;
+  border-radius: 50%;
+  color: #477b38;
+  background: #FAF9F2;
+  box-shadow: 0 5px 15px rgba(34,72,35,.08);
+  transition: color .35s ease, background .35s ease, border-color .35s ease, transform .35s ease, box-shadow .35s ease;
+}
+.landing-vine-node-number {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #75876b;
+  transition: color .3s ease;
+}
+.landing-vine-node-leaf {
+  position: absolute;
+  z-index: 2;
+  top: 19px;
+  width: 16px;
+  height: 8px;
+  border: 1px solid #5c963a;
+  border-radius: 100% 0 100% 0;
+  background: #8fbd6e;
+  opacity: .72;
+  transition: transform .35s ease, background .35s ease, opacity .35s ease;
+}
+.landing-vine-node-leaf-a { left: calc(50% - 29px); transform: rotate(-32deg); }
+.landing-vine-node-leaf-b { right: calc(50% - 29px); transform: rotate(145deg); }
+.landing-vine-node.is-active .landing-vine-node-circle {
+  color: #fff;
+  border-color: #22C55E;
+  background: #224823;
+  box-shadow: 0 0 0 6px rgba(34,197,94,.14), 0 12px 26px rgba(34,72,35,.22);
+  transform: translateY(-5px) scale(1.1);
+}
+.landing-vine-node.is-active .landing-vine-node-number { color: #67992D; }
+.landing-vine-node.is-active .landing-vine-node-leaf {
+  opacity: 1;
+  background: #22C55E;
+  transform: rotate(-48deg) scale(1.16);
+}
+.landing-vine-node.is-active .landing-vine-node-leaf-b { transform: rotate(158deg) scale(1.16); }
+.landing-vine-node:focus-visible { outline: 3px solid #F2B831; outline-offset: 3px; border-radius: 12px; }
+.landing-vine-active-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  max-width: 760px;
+  min-height: 148px;
+  margin: 16px auto 0;
+  padding: clamp(22px, 3vw, 32px);
+  border: 1px solid rgba(103,153,45,.22);
+  border-radius: 22px;
+  background: linear-gradient(115deg, rgba(231,241,221,.82), rgba(250,249,242,.98) 62%);
+  box-shadow: 0 18px 48px rgba(34,72,35,.07);
+  animation: ifc-vine-copy-reveal .45s cubic-bezier(.2,.7,.2,1) both;
+}
+.landing-vine-active-icon {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(103,153,45,.2);
+  border-radius: 18px;
+  color: #224823;
+  background: #dcebd0;
+}
+.landing-vine-active-copy { min-width: 0; flex: 1; }
+.landing-vine-active-eyebrow {
+  display: block;
+  margin-bottom: 7px;
+  color: #67992D;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+.landing-vine-active-copy h3 {
+  margin: 0 0 7px;
+  color: #224823;
+  font-size: clamp(20px, 2.5vw, 28px);
+  line-height: 1.2;
+  letter-spacing: -.6px;
+}
+.landing-vine-active-copy p { margin: 0; color: #66745F; font-size: 13px; line-height: 1.7; }
+.landing-vine-progress-label {
+  align-self: flex-start;
+  color: #224823;
+  font-size: 14px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.landing-vine-progress-label i { color: #9aa78e; font-size: 11px; font-style: normal; font-weight: 600; }
+.landing-vine-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 760px;
+  margin: 16px auto 0;
+}
+.landing-vine-controls > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid rgba(103,153,45,.2);
+  border-radius: 10px;
+  color: #477b38;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.landing-vine-controls > button:hover { background: rgba(103,153,45,.09); }
+.landing-vine-dots { display: flex; align-items: center; justify-content: center; gap: 7px; }
+.landing-vine-dots button {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 99px;
+  background: #c8d7bb;
+  cursor: pointer;
+  transition: width .25s ease, background .25s ease;
+}
+.landing-vine-dots button.is-active { width: 22px; background: #67992D; }
+@keyframes ifc-vine-grow { to { stroke-dashoffset: 0; } }
+@keyframes ifc-vine-leaf-unfurl { from { opacity: 0; scale: .45; } to { opacity: 1; scale: 1; } }
+@keyframes ifc-vine-copy-reveal { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+html[data-ifc-theme="dark"] .landing-vine-node { color: #c5d5be; }
+html[data-ifc-theme="dark"] .landing-vine-node-circle { color: #b6d5a2; background: #1c2b20; border-color: #527548; }
+html[data-ifc-theme="dark"] .landing-vine-node.is-active .landing-vine-node-circle { color: #fff; background: #315d32; border-color: #22C55E; }
+html[data-ifc-theme="dark"] .landing-vine-node-number { color: #a5b89a; }
+html[data-ifc-theme="dark"] .landing-vine-active-card { background: linear-gradient(115deg, #243729, #1b281e 65%); border-color: rgba(145,201,91,.22); }
+html[data-ifc-theme="dark"] .landing-vine-active-icon { color: #d7e9ce; background: #314b32; border-color: rgba(145,201,91,.2); }
+html[data-ifc-theme="dark"] .landing-vine-active-copy h3,
+html[data-ifc-theme="dark"] .landing-vine-progress-label { color: #e5f0dc; }
+html[data-ifc-theme="dark"] .landing-vine-active-copy p { color: #b7c4af; }
+html[data-ifc-theme="dark"] .landing-vine-controls > button { color: #c8e3b4; border-color: rgba(145,201,91,.25); }
+html[data-ifc-theme="dark"] .landing-vine-dots button { background: #4b6249; }
+html[data-ifc-theme="dark"] .landing-vine-dots button.is-active { background: #91c95b; }
+@media (max-width: 640px) {
+  .landing-vine-track { min-width: 920px; }
+  .landing-vine-active-card { gap: 13px; padding: 20px; border-radius: 17px; }
+  .landing-vine-active-icon { width: 48px; height: 48px; border-radius: 14px; }
+  .landing-vine-active-copy h3 { font-size: 20px; }
+  .landing-vine-active-copy p { font-size: 12px; }
+  .landing-vine-progress-label { font-size: 12px; }
+  .landing-vine-controls { gap: 8px; }
+  .landing-vine-dots { gap: 5px; }
+  .landing-vine-dots button { width: 5px; height: 5px; }
+  .landing-vine-dots button.is-active { width: 15px; }
+}
+@media (max-width: 380px) {
+  .landing-vine-active-card { align-items: flex-start; flex-wrap: wrap; }
+  .landing-vine-progress-label { margin-left: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-vine-stem, .landing-vine-leaf, .landing-vine-active-card { animation: none !important; }
+  .landing-vine-stem { stroke-dasharray: none; stroke-dashoffset: 0; }
+  .landing-vine-node-circle, .landing-vine-node-number, .landing-vine-node-leaf, .landing-vine-dots button { transition: none !important; }
+}
