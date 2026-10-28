@@ -503,12 +503,12 @@ export default function LandingPage() {
                 setContactToast({ type: "error", message: "Please fill in your name, email, and message." });
                 return;
               }
-              if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+              if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
                 setContactToast({ type: "error", message: "Please enter a valid email address." });
                 return;
               }
               const subject = encodeURIComponent("Infyro Farms enquiry");
-              const body = encodeURIComponent("Name: " + name + "\\nEmail: " + email + "\\n\\nMessage:\\n" + message);
+              const body = encodeURIComponent("Name: " + name + "\nEmail: " + email + "\n\nMessage:\n" + message);
               setContactToast({ type: "success", message: "Your email app should open. Please review and send your message there." });
               window.location.href = "mailto:info@infyroinc.com?subject=" + subject + "&body=" + body;
             }}>
