@@ -2206,3 +2206,59 @@ html[data-ifc-theme="light"] .landing-footer-premium .landing-back-to-top:hover 
     will-change: auto;
   }
 }
+
+
+/* Floating back-to-top control, shown after the visitor scrolls down. */
+.landing-floating-back-to-top {
+  position: fixed;
+  z-index: 100;
+  right: clamp(16px, 2.4vw, 30px);
+  bottom: clamp(18px, 3vh, 30px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid rgba(255,255,255,.28);
+  border-radius: 999px;
+  color: #f8fbf3;
+  background: linear-gradient(145deg, #2f7136, #224823);
+  box-shadow: 0 10px 28px rgba(20,54,26,.28), inset 0 1px 0 rgba(255,255,255,.16);
+  font-size: 11px;
+  font-weight: 750;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(12px) scale(.96);
+  transition: opacity .22s ease, transform .22s ease, visibility .22s ease, box-shadow .22s ease;
+  cursor: pointer;
+}
+.landing-floating-back-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+.landing-floating-back-to-top:hover {
+  box-shadow: 0 14px 34px rgba(20,54,26,.36), inset 0 1px 0 rgba(255,255,255,.2);
+  transform: translateY(-3px) scale(1.02);
+}
+.landing-floating-back-to-top:focus-visible {
+  outline: 3px solid #F2B831;
+  outline-offset: 4px;
+}
+@media (max-width: 640px) {
+  .landing-floating-back-to-top {
+    right: 14px;
+    bottom: 16px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-floating-back-to-top { transition: none; transform: none; }
+  .landing-floating-back-to-top.is-visible:hover { transform: none; }
+}
