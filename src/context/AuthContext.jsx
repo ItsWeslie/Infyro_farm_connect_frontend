@@ -7,8 +7,8 @@ function toUser(response, fallbackEmail = "") {
   const username = response?.username || fallbackEmail;
   return {
     username,
-    name: response?.name || username,
-    email: response?.email || fallbackEmail || username,
+    name: response?.name || (username.includes("@") ? username.split("@")[0] : username),
+    email: response?.email || fallbackEmail || (username.includes("@") ? username : ""),
     role: response?.role || null,
   };
 }
