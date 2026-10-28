@@ -3,6 +3,9 @@ import {
   ArrowDownRight,
   ArrowUp,
   ClipboardList,
+  Linkedin,
+  Instagram,
+  Mail,
   GitBranch,
   LogIn,
   MapPinned,
@@ -480,17 +483,18 @@ export default function LandingPage() {
             <a href="#features">Features</a>
             <a href="#why-infyro">Our approach</a>
             <a href="#how-it-works">How it works</a>
+            <a href="https://www.infyroinc.com/" target="_blank" rel="noopener noreferrer">Know more about Infyro <ArrowRight size={13} aria-hidden="true" /></a>
           </div>
           <div className="landing-footer-link-group">
             <span className="landing-footer-label">YOUR ACCOUNT</span>
             <button type="button" onClick={() => openAuth("login")}>Sign in</button>
             <button type="button" onClick={() => openAuth("signup")}>Create account</button>
           </div>
-          <div className="landing-footer-cta-card">
-            <span className="landing-footer-label">READY FOR A CLEARER SEASON?</span>
-            <h3>Bring your farm into focus.</h3>
-            <p>Start with a free account and build your workspace at your own pace.</p>
-            <button className="landing-footer-cta-button" type="button" onClick={() => openAuth("signup")}>Create your free account <ArrowRight size={16} /></button>
+          <div className="landing-footer-link-group landing-footer-connect-group">
+            <span className="landing-footer-label">CONNECT</span>
+            <a href="https://www.linkedin.com/company/infyroinc/posts/" target="_blank" rel="noopener noreferrer" aria-label="Infyro on LinkedIn"><Linkedin size={15} aria-hidden="true" /> LinkedIn</a>
+            <a href="https://www.instagram.com/infyroinc/" target="_blank" rel="noopener noreferrer" aria-label="Infyro on Instagram"><Instagram size={15} aria-hidden="true" /> Instagram</a>
+            <a href="mailto:info@infyroinc.com" aria-label="Email Infyro at info@infyroinc.com"><Mail size={15} aria-hidden="true" /> info@infyroinc.com</a>
           </div>
         </div>
         <div className="landing-footer-bottom">
