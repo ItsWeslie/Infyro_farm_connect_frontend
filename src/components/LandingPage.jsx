@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowDownRight,
   ArrowRight,
@@ -9,6 +9,8 @@ import {
   LockKeyhole,
   Menu,
   Sprout,
+  Sun,
+  Moon,
   Tractor,
   TrendingUp,
   Wallet,
@@ -48,7 +50,7 @@ const workflow = [
 function BrandMark() {
   return (
     <a className="landing-brand" href="#home" aria-label="Infyro Farm Connect home">
-      <span className="landing-brand-icon"><Sprout size={22} strokeWidth={2.2} /></span>
+      <span className="landing-logo-placeholder" aria-label="Temporary logo placeholder — replace with your logo image"><Sprout size={22} strokeWidth={2.2} /><small>LOGO</small></span>
       <span className="landing-brand-copy">
         <strong>infyro<span>farm</span></strong>
         <small>CONNECT</small>
@@ -113,6 +115,47 @@ export default function LandingPage() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState("login");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState(() => { try { return localStorage.getItem("ifc-landing-theme") || "light"; } catch { return "light"; } });
+
+  useEffect(() => {
+    try { localStorage.setItem("ifc-landing-theme", theme); } catch { /* Storage may be unavailable. */ }
+    document.documentElement.dataset.ifcTheme = theme;
+    return () => { delete document.documentElement.dataset.ifcTheme; };
+  }, [theme]);
+
+  useEffect(() => {
+    const root = document.querySelector(".landing-page");
+    if (!root) return undefined;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const targets = root.querySelectorAll(".landing-section-heading, .landing-feature-card, .landing-story-photo, .landing-story-copy, .landing-workflow-step, .landing-cta, .landing-proof-strip > div");
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      targets.forEach((target) => target.classList.add("is-revealed"));
+      return undefined;
+    }
+    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
+      if (entry.isIntersecting) { entry.target.classList.add("is-revealed"); observer.unobserve(entry.target); }
+    }), { threshold: 0.12, rootMargin: "0px 0px -35px 0px" });
+    targets.forEach((target) => { target.classList.add("reveal-on-scroll"); observer.observe(target); });
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
+    let ticking = false;
+    const updateParallax = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const hero = document.querySelector(".landing-hero");
+          if (hero) hero.style.setProperty("--hero-parallax", `${Math.min(window.scrollY * 0.16, 90)}px`);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener("scroll", updateParallax, { passive: true });
+    updateParallax();
+    return () => window.removeEventListener("scroll", updateParallax);
+  }, []);
 
   function openAuth(mode) {
     setAuthMode(mode);
@@ -142,7 +185,7 @@ export default function LandingPage() {
 
       <main>
         <section className="landing-hero">
-          <div className="landing-hero-photo" aria-hidden="true" />
+          <div className="landing-hero-photo" aria-hidden="true" />\n          <div className="landing-hero-orb landing-hero-orb-one" aria-hidden="true" />\n          <div className="landing-hero-orb landing-hero-orb-two" aria-hidden="true" />
           <div className="landing-hero-shade" aria-hidden="true" />
           <div className="landing-hero-inner">
             <div className="landing-hero-copy">
