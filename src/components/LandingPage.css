@@ -1498,3 +1498,23 @@ html[data-ifc-theme="dark"] .landing-story-copy li svg { color: #a8d98a; backgro
   .landing-story-cta svg { transition: none !important; }
   .landing-story-cta:hover svg { transform: none; }
 }
+
+
+/* Ensure the story photography renders as a real image element, not only a CSS background. */
+.landing-story-photo {
+  position: relative;
+  background-color: #314b30;
+}
+.landing-story-photo-image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.landing-story-photo-shade { z-index: 1; }
+.landing-story-photo-caption,
+.landing-story-records-card { z-index: 2; }
