@@ -81,7 +81,7 @@ function DashboardPreview() {
 
   return (
     <div
-      className="landing-preview relative [perspective:1400px] [transform-style:preserve-3d]"
+      className="landing-preview landing-hero-dashboard-reveal relative [perspective:1400px] [transform-style:preserve-3d]"
       aria-label="Illustrative farm management dashboard preview"
       onPointerMove={handlePointerMove}
       onPointerLeave={resetTilt}
