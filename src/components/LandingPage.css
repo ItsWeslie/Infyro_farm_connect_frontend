@@ -2287,3 +2287,16 @@ html[data-ifc-theme="light"] .landing-footer-premium .landing-footer-bottom > .l
     width: 100%;
   }
 }
+
+
+/* Center the copyright notice along the footer's bottom row. */
+.landing-footer-premium .landing-footer-bottom > .landing-footer-copyright {
+  text-align: center;
+  margin-inline: auto;
+}
+@media (max-width: 640px) {
+  .landing-footer-premium .landing-footer-bottom > .landing-footer-copyright {
+    text-align: center;
+    margin-inline: auto;
+  }
+}
