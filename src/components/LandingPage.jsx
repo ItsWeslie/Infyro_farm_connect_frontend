@@ -568,7 +568,6 @@ export default function LandingPage() {
             <span className="landing-footer-label">CONNECT</span>
             <a href="https://www.linkedin.com/company/infyroinc/posts/" target="_blank" rel="noopener noreferrer" aria-label="Infyro on LinkedIn"><Linkedin size={15} aria-hidden="true" /> LinkedIn</a>
             <a href="https://www.instagram.com/infyroinc/" target="_blank" rel="noopener noreferrer" aria-label="Infyro on Instagram"><Instagram size={15} aria-hidden="true" /> Instagram</a>
-            <a href="mailto:info@infyroinc.com" aria-label="Email Infyro at info@infyroinc.com"><Mail size={15} aria-hidden="true" /> info@infyroinc.com</a>
           </div>
           <div className="landing-footer-link-group landing-footer-contact-details">
             <span className="landing-footer-label">CONTACT US</span>
