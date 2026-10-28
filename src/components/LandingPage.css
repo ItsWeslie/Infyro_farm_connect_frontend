@@ -2262,3 +2262,28 @@ html[data-ifc-theme="light"] .landing-footer-premium .landing-back-to-top:hover 
   .landing-floating-back-to-top { transition: none; transform: none; }
   .landing-floating-back-to-top.is-visible:hover { transform: none; }
 }
+
+
+/* Keep the legal copyright notice clearly visible in both themes. */
+.landing-footer-premium .landing-footer-bottom > .landing-footer-copyright {
+  display: block;
+  flex: 0 1 auto;
+  position: relative;
+  z-index: 1;
+  color: #f1f4e8;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: .01em;
+}
+html[data-ifc-theme="light"] .landing-footer-premium .landing-footer-bottom > .landing-footer-copyright {
+  color: #435b40;
+}
+@media (max-width: 640px) {
+  .landing-footer-premium .landing-footer-bottom > .landing-footer-copyright {
+    width: 100%;
+  }
+}
