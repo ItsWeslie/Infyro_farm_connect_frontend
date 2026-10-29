@@ -4,7 +4,7 @@ import { BrandMark } from "./BrandMark";
 export function LandingHeader({ mobileMenuOpen, setMobileMenuOpen, theme, setTheme, openAuth }) {
   return (
     <header className="landing-header">
-            <div className="landing-header-inner">
+            <div className="landing-header-inner mx-auto flex h-[82px] w-[min(1240px,calc(100%-64px))] items-center justify-between max-[1050px]:w-[min(calc(100%-44px),1240px)] max-[760px]:h-[72px] max-[760px]:w-[calc(100%-36px)]">
               <BrandMark />
               <button
                 className="landing-mobile-toggle"
