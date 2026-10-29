@@ -43,7 +43,7 @@ export function SettingsPanel({ notify }) {
         <p className="mt-[5px] mb-5 text-[10px] text-[#95a096]">Choose the defaults that make everyday farm work easier.</p>
         <label className="grid gap-2 text-[#58685a] text-[10px] font-bold mb-[18px]">
           Default measurement unit
-          <select className="h-[39px] border border-[#e2e9de] rounded-lg px-[10px] bg-white text-[#4c5e50] text-[11px]" value={units} onChange={(e) => setUnits(e.target.value)}
+          <select className="h-[39px] border border-[#e2e9de] rounded-lg px-[10px] bg-white text-[#4c5e50] text-[11px]" value={units} onChange={(e) => setUnits(e.target.value)}>
             <option>Acres</option>
             <option>Hectares</option>
             <option>Square metres</option>
@@ -63,7 +63,7 @@ export function SettingsPanel({ notify }) {
             <i className={`w-[15px] h-[15px] rounded-full bg-white shadow-[0_1px_3px_#0002] transition-transform duration-[180ms] ${weather ? "translate-x-4" : ""}`} />
           </button>
         </div>
-        <div className="settings-option">
+        <div className="flex items-center justify-between gap-[15px] py-[15px] border-t border-[#edf0e9]">
           <div>
             <strong className="block text-[#425345] text-[11px]">Farm reminders</strong>
             <small className="block text-[#96a096] text-[9px] mt-[5px] leading-[1.5]">Get nudges for tasks and upcoming harvests.</small>
@@ -77,7 +77,7 @@ export function SettingsPanel({ notify }) {
             <i className={`w-[15px] h-[15px] rounded-full bg-white shadow-[0_1px_3px_#0002] transition-transform duration-[180ms] ${reminders ? "translate-x-4" : ""}`} />
           </button>
         </div>
-        <div className="settings-option">
+        <div className="flex items-center justify-between gap-[15px] py-[15px] border-t border-[#edf0e9]">
           <div>
             <strong className="block text-[#425345] text-[11px]">Weekly summary</strong>
             <small className="block text-[#96a096] text-[9px] mt-[5px] leading-[1.5]">A quick look at activities and expenses.</small>
