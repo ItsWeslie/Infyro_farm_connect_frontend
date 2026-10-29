@@ -1,5 +1,4 @@
 import {
-  ArrowDownRight,
   ArrowUp,
   Linkedin,
   Instagram,
@@ -9,18 +8,16 @@ import {
   ArrowRight,
   CheckCircle2,
   Clock3,
-  CirclePlay,
   Leaf,
-  LockKeyhole,
-  Menu,
   Sprout,
-  Sun,
-  Moon,
 } from "lucide-react";
 import { AuthModal } from "./AuthModal";
 import { WorkflowVine } from "./landing/WorkflowVine";
 import { BrandMark } from "./landing/BrandMark";
 import { DashboardPreview } from "./landing/DashboardPreview";
+import { LandingHeader } from "./landing/LandingHeader";
+import { LandingHero } from "./landing/LandingHero";
+import { PlatformProofStrip } from "./landing/PlatformProofStrip";
 import "./LandingPage.css";
 
 function LandingPage() {
@@ -128,172 +125,10 @@ function LandingPage() {
 
   return (
     <div className="landing-page" id="home">
-      <header className="landing-header">
-        <div className="landing-header-inner">
-          <BrandMark />
-          <button
-            className="landing-mobile-toggle"
-            type="button"
-            aria-label={
-              mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"
-            }
-            aria-expanded={mobileMenuOpen}
-            aria-controls="landing-primary-navigation"
-            onClick={() => setMobileMenuOpen((open) => !open)}
-          >
-            {mobileMenuOpen ? <X size={21} /> : <Menu size={21} />}
-          </button>
-          <nav
-            id="landing-primary-navigation"
-            className={
-              "landing-nav" + (mobileMenuOpen ? " landing-nav-open" : "")
-            }
-            aria-label="Main navigation"
-          >
-            <a href="#features" onClick={() => setMobileMenuOpen(false)}>
-              Features
-            </a>
-            <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>
-              How it works
-            </a>
-            <a
-              href="#why-infyro"
-              className="landing-nav-subtle"
-              onClick={(event) => {
-                event.preventDefault();
-                document
-                  .getElementById("why-infyro")
-                  ?.scrollIntoView({ behavior: "smooth" });
-                setMobileMenuOpen(false);
-              }}
-            >
-              Our approach
-            </a>
-            <a href="#contact" onClick={() => setMobileMenuOpen(false)}>
-              Contact
-            </a>
-            <div className="landing-nav-actions">
-              <button
-                className="landing-theme-toggle"
-                type="button"
-                onClick={() =>
-                  setTheme((current) =>
-                    current === "light" ? "dark" : "light",
-                  )
-                }
-                aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
-                title={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
-              >
-                {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
-                <span>{theme === "light" ? "Dark" : "Light"}</span>
-              </button>
-              <button
-                className="landing-signin"
-                type="button"
-                onClick={() => openAuth("login")}
-              >
-                Sign in
-              </button>
-              <button
-                className="landing-button landing-button-small"
-                type="button"
-                onClick={() => openAuth("signup")}
-              >
-                Get started <ArrowRight size={15} />
-              </button>
-            </div>
-          </nav>
-        </div>
-      </header>
+      
 
       <main>
-        <section className="landing-hero">
-          <div className="landing-hero-photo" aria-hidden="true" />
-          <div
-            className="landing-hero-orb landing-hero-orb-one"
-            aria-hidden="true"
-          />
-          <div
-            className="landing-hero-orb landing-hero-orb-two"
-            aria-hidden="true"
-          />
-          <div className="landing-hero-shade" aria-hidden="true" />
-          <div className="landing-hero-inner">
-            <div className="landing-hero-copy">
-              <div className="landing-eyebrow landing-hero-reveal landing-hero-reveal-1">
-                <span className="landing-eyebrow-mark">
-                  <Sprout size={14} />
-                </span>{" "}
-                A better way to grow
-              </div>
-              <h1 className="landing-hero-reveal landing-hero-reveal-2">
-                Grow smarter.
-                <br />
-                <em>Manage better.</em>
-              </h1>
-              <p className="landing-hero-description landing-hero-reveal landing-hero-reveal-3">
-                Your farm has a lot going on. Bring your fields, crops, daily
-                work, expenses, and harvest records together in one calm, clear
-                workspace.
-              </p>
-              <div className="landing-hero-actions landing-hero-reveal landing-hero-reveal-4">
-                <button
-                  className="landing-button"
-                  onClick={() => openAuth("signup")}
-                >
-                  Get started for free <ArrowRight size={17} />
-                </button>
-                <a className="landing-secondary-action" href="#features">
-                  <span>
-                    <CirclePlay size={18} />
-                  </span>{" "}
-                  Explore the platform
-                </a>
-              </div>
-              <div className="landing-trust-note landing-hero-reveal landing-hero-reveal-5">
-                <LockKeyhole size={14} /> Your farm workspace, made for you.
-              </div>
-            </div>
-            <DashboardPreview />
-          </div>
-          <a className="landing-scroll-cue" href="#features">
-            <span>Discover a clearer way to farm</span>
-            <ArrowDownRight size={15} />
-          </a>
-        </section>
-
-        <section
-          className="landing-proof-strip"
-          aria-label="Platform principles"
-        >
-          <div>
-            <span className="landing-proof-icon">
-              <CheckCircle2 size={17} />
-            </span>
-            <span>
-              <strong>One connected workspace</strong>
-              <small>Keep the important details together</small>
-            </span>
-          </div>
-          <div>
-            <span className="landing-proof-icon">
-              <Sprout size={17} />
-            </span>
-            <span>
-              <strong>Built around your season</strong>
-              <small>Follow work from planting to harvest</small>
-            </span>
-          </div>
-          <div>
-            <span className="landing-proof-icon">
-              <LockKeyhole size={17} />
-            </span>
-            <span>
-              <strong>Your account, your farm</strong>
-              <small>Sign in to access your workspace</small>
-            </span>
-          </div>
-        </section>
+        <PlatformProofStrip />
 
         <section className="landing-section landing-features" id="features">
           <div className="landing-section-heading">
