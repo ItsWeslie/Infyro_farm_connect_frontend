@@ -509,7 +509,7 @@ export default function LandingPage() {
       "(prefers-reduced-motion: reduce)",
     ).matches;
     const targets = root.querySelectorAll(
-      ".landing-header, .landing-scroll-cue, .landing-section-heading, .landing-feature-card, .landing-story-photo, .landing-story-copy, .landing-workflow-step, .landing-vine-nodes, .landing-vine-active-card, .landing-vine-controls, .landing-cta, .landing-proof-strip > div, .landing-contact-heading, .landing-contact-info, .landing-contact-form, .landing-footer-brand-column, .landing-footer-link-group, .landing-footer-contact-details > a, .landing-footer-contact-details > p, .landing-footer-bottom > *",
+      ".landing-header, .landing-scroll-cue, .landing-section-heading, .landing-feature-card, .landing-story-photo, .landing-story-copy, .landing-story-records-card, .landing-workflow-step, .landing-vine-nodes, .landing-vine-active-card, .landing-vine-controls, .landing-testimonial-card, .landing-cta, .landing-proof-strip > div, .landing-contact-heading, .landing-contact-info, .landing-contact-form, .landing-footer-brand-column, .landing-footer-link-group, .landing-footer-contact-details > a, .landing-footer-contact-details > p, .landing-footer-bottom > *",
     );
     if (reduceMotion || !("IntersectionObserver" in window)) {
       targets.forEach((target) => target.classList.add("is-revealed"));
