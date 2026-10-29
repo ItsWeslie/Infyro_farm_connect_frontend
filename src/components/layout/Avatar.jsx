@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function Avatar({ small = false, name = "Ravi Kumar" }) {
+export function Avatar({ small = false, name = "Ravi Kumar", variant = "tailwind" }) {
   const initials = name
     .split(" ")
     .map((p) => p[0])
@@ -8,6 +8,10 @@ export function Avatar({ small = false, name = "Ravi Kumar" }) {
     .slice(0, 2)
     .join("")
     .toUpperCase() || "IF";
+
+  if (variant === "legacy") {
+    return <div className={small ? "avatar avatar-small" : "avatar"}>{initials}</div>;
+  }
 
   const sizeClass = small ? "w-8 h-8 text-[10px]" : "w-9 h-9 text-xs";
 

@@ -1,6 +1,23 @@
 import React from 'react';
 
-export function Brand({ onHome }) {
+export function Brand({ onHome, variant = "tailwind" }) {
+  if (variant === "legacy") {
+    return (
+      <button
+        type="button"
+        className="brand brand-logo"
+        aria-label="Infyro Farm home"
+        onClick={onHome}
+      >
+        <img
+          src="/infyro-farm-logo.png"
+          alt="Infyro Farm — Farm smarter. Grow better."
+          className=""
+        />
+      </button>
+    );
+  }
+
   return (
     <button
       type="button"

@@ -44,6 +44,10 @@ import { CalendarPanel } from "./components/calendar/CalendarPanel";
 import { SettingsPanel } from "./components/settings/SettingsPanel";
 import { Dashboard } from "./components/dashboard/Dashboard";
 import { WorkspacePage } from "./components/workspace/WorkspacePage";
+import { Brand } from "./components/layout/Brand";
+import { Avatar } from "./components/layout/Avatar";
+import { navigation, initialCrops as crops } from "./data/navigation";
+import { pageDescriptions } from "./data/pageDescriptions";
 import { useAuth } from "./context/AuthContext";
 import { AuthModal } from "./components/AuthModal";
 import LandingPage from "./components/LandingPage";
@@ -67,110 +71,6 @@ import {
   HarvestUnit,
 } from "./types/enums";
 
-const navigation = [
-  {
-    section: "WORKSPACE",
-    items: [
-      { label: "Overview", icon: LayoutDashboard },
-      { label: "Farms", icon: Tractor },
-      { label: "Fields", icon: MapPinned },
-      { label: "Crop management", icon: Sprout, badge: "4" },
-      { label: "Activities", icon: ClipboardList },
-      { label: "Calendar", icon: CalendarDays, dot: true },
-    ],
-  },
-  {
-    section: "INSIGHTS",
-    items: [
-      { label: "Expenses", icon: Wallet },
-      { label: "Harvest records", icon: PackageCheck },
-      { label: "Notifications", icon: Bell, badge: "3" },
-    ],
-  },
-];
-const crops = [
-  {
-    name: "Tomato",
-    variety: "Arka Rakshak",
-    field: "North Field",
-    area: "1.2 acres",
-    progress: 72,
-    status: "Growing",
-    harvest: "Nov 12, 2026",
-    icon: "🍅",
-    tone: "tomato",
-  },
-  {
-    name: "Rice",
-    variety: "Ponni",
-    field: "Paddy Field A",
-    area: "2.5 acres",
-    progress: 48,
-    status: "Growing",
-    harvest: "Dec 04, 2026",
-    icon: "🌾",
-    tone: "rice",
-  },
-  {
-    name: "Spinach",
-    variety: "Palak Green",
-    field: "Kitchen Garden",
-    area: "0.4 acres",
-    progress: 94,
-    status: "Ready soon",
-    harvest: "Oct 30, 2026",
-    icon: "🥬",
-    tone: "spinach",
-  },
-  {
-    name: "Chilli",
-    variety: "Guntur Sannam",
-    field: "East Field",
-    area: "0.8 acres",
-    progress: 35,
-    status: "Growing",
-    harvest: "Jan 18, 2027",
-    icon: "🌶️",
-    tone: "chilli",
-  },
-];
-const pageDescriptions = {
-  Farms: "A home for every plot, plan, and growing season.",
-  Fields: "Know your land, understand your soil, grow with confidence.",
-  "Crop management": "Follow every crop from planting to harvest.",
-  Activities: "Keep your daily farm work moving smoothly.",
-  Calendar: "Your season at a glance, with every important date in view.",
-  Expenses: "Understand where your farm investment goes.",
-  "Harvest records": "Celebrate every harvest and learn from each season.",
-  Notifications: "A calm place for updates that need your attention.",
-  Settings: "Make your farm workspace feel like yours.",
-};
-function Brand({ onHome }) {
-  return (
-    <button
-      type="button"
-      className="brand brand-logo"
-      aria-label="Infyro Farm home"
-      onClick={onHome}
-    >
-      <img
-        src="/infyro-farm-logo.png"
-        alt="Infyro Farm — Farm smarter. Grow better."
-        className=""
-      />
-    </button>
-  );
-}
-function Avatar({ small = false, name = "Ravi Kumar" }) {
-  const initials = name
-    .split(" ")
-    .map((p) => p[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase() || "IF";
-  return <div className={small ? "avatar avatar-small" : "avatar"}>{initials}</div>;
-}
 function App() {
   const { user, isAuthenticated, loading, logout } = useAuth();
   const [sessionMinimumElapsed, setSessionMinimumElapsed] = useState(false);
@@ -367,7 +267,7 @@ function App() {
       )}
       <aside className={"sidebar " + (mobileNav ? "sidebar-open" : "")}>
         <div className="sidebar-top">
-          <Brand
+          <Brand variant="legacy"
             onHome={() => {
               setActive("Overview");
               setMobileNav(false);
@@ -516,7 +416,7 @@ function App() {
                 onClick={() => setProfileOpen(!profileOpen)}
                 aria-expanded={profileOpen}
               >
-                <Avatar name={user?.name || user?.username} />
+                <Avatar variant="legacy" name={user?.name || user?.username} />
                 <span className="profile-copy">
                   <strong>{user?.name || user?.username}</strong>
                   <small>Live Account</small>
@@ -678,7 +578,7 @@ function App() {
                   setNotificationsOpen(false);
                 }}
               >
-                <Avatar small name={user?.name || user?.username} />
+                <Avatar variant="legacy" small name={user?.name || user?.username} />
                 <ChevronDown size={14} />
               </button>
             ) : (
