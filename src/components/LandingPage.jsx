@@ -6,9 +6,6 @@ import {
 } from "lucide-react";
 
 import { AuthModal } from "./AuthModal";
-import { WorkflowVine } from "./landing/WorkflowVine";
-import { BrandMark } from "./landing/BrandMark";
-import { DashboardPreview } from "./landing/DashboardPreview";
 import { FeaturesSection } from "./landing/FeaturesSection";
 import { StorySection } from "./landing/StorySection";
 import { WorkflowSection } from "./landing/WorkflowSection";
@@ -16,8 +13,6 @@ import { TestimonialsSection } from "./landing/TestimonialsSection";
 import { ContactSection } from "./landing/ContactSection";
 import { LandingCTA } from "./landing/LandingCTA";
 import { LandingFooter } from "./landing/LandingFooter";
-import { LandingHeader } from "./landing/LandingHeader";
-import { LandingHero } from "./landing/LandingHero";
 import { PlatformProofStrip } from "./landing/PlatformProofStrip";
 import "./LandingPage.css";
 
@@ -142,6 +137,7 @@ function LandingPage() {
         <ContactSection contactForm={contactForm} setContactForm={setContactForm} setContactToast={setContactToast} />
 
         <LandingCTA openAuth={openAuth} />
+      </main>
 
       <LandingFooter openAuth={openAuth} />
 

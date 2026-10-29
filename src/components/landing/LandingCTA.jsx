@@ -24,6 +24,5 @@ export function LandingCTA({ openAuth }) {
                 Create your account <ArrowRight size={17} />
               </button>
             </section>
-          </main>
   );
 }
