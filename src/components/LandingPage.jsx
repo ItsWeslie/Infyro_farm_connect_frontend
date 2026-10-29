@@ -262,7 +262,7 @@ export default function LandingPage() {
     const root = document.querySelector(".landing-page");
     if (!root) return undefined;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const targets = root.querySelectorAll(".landing-section-heading, .landing-feature-card, .landing-story-photo, .landing-story-copy, .landing-workflow-step, .landing-cta, .landing-proof-strip > div, .landing-footer-brand-column, .landing-footer-link-group, .landing-footer-bottom > *");
+    const targets = root.querySelectorAll(".landing-section-heading, .landing-feature-card, .landing-story-photo, .landing-story-copy, .landing-workflow-step, .landing-cta, .landing-proof-strip > div, .landing-contact-heading, .landing-contact-info, .landing-contact-form, .landing-footer-brand-column, .landing-footer-link-group, .landing-footer-bottom > *");
     if (reduceMotion || !("IntersectionObserver" in window)) {
       targets.forEach((target) => target.classList.add("is-revealed"));
       return undefined;
