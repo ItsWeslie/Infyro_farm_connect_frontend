@@ -2439,6 +2439,34 @@ html[data-ifc-theme="light"] .landing-footer-premium .landing-footer-bottom > .l
 }
 
 
+/* Contact section scroll reveals, matching the landing sections and footer. */
+.landing-contact-section .landing-contact-heading.reveal-on-scroll,
+.landing-contact-section .landing-contact-info.reveal-on-scroll,
+.landing-contact-section .landing-contact-form.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .72s cubic-bezier(.2,.7,.2,1), transform .72s cubic-bezier(.2,.7,.2,1);
+  will-change: opacity, transform;
+}
+.landing-contact-section .landing-contact-info.reveal-on-scroll { transition-delay: .08s; }
+.landing-contact-section .landing-contact-form.reveal-on-scroll { transition-delay: .18s; }
+.landing-contact-section .landing-contact-heading.reveal-on-scroll.is-revealed,
+.landing-contact-section .landing-contact-info.reveal-on-scroll.is-revealed,
+.landing-contact-section .landing-contact-form.reveal-on-scroll.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-contact-section .landing-contact-heading.reveal-on-scroll,
+  .landing-contact-section .landing-contact-info.reveal-on-scroll,
+  .landing-contact-section .landing-contact-form.reveal-on-scroll {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+}
+
 /* Contact section */
 .landing-contact-section {
   position: relative;
