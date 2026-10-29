@@ -1,6 +1,63 @@
 import { useEffect, useState } from "react";
 import { ArrowRight, ClipboardList, GitBranch, LogIn, MapPinned, Sprout, Tractor, UserPlus, Wallet, Wheat } from "lucide-react";
 
+const workflow = [
+  {
+    number: "01",
+    title: "Create your free account",
+    description: "Create your Infyro Farms account to begin your farm journey.",
+    icon: UserPlus,
+  },
+  {
+    number: "02",
+    title: "Sign in to your account",
+    description: "Sign in securely to open your farm workspace.",
+    icon: LogIn,
+  },
+  {
+    number: "03",
+    title: "Create your farm",
+    description: "Set up your farm and give your growing work a home.",
+    icon: Tractor,
+  },
+  {
+    number: "04",
+    title: "Create your field",
+    description: "Add the fields where you manage your crops.",
+    icon: MapPinned,
+  },
+  {
+    number: "05",
+    title: "Create your crop",
+    description: "Add the crops you plan to grow in your fields.",
+    icon: Sprout,
+  },
+  {
+    number: "06",
+    title: "Manage the crop life cycle",
+    description: "Follow your crop from early growth through the season.",
+    icon: GitBranch,
+  },
+  {
+    number: "07",
+    title: "Record daily activities",
+    description: "Keep a record of the work happening on your farm each day.",
+    icon: ClipboardList,
+  },
+  {
+    number: "08",
+    title: "Add expenses",
+    description: "Record the expenses associated with your farm work.",
+    icon: Wallet,
+  },
+  {
+    number: "09",
+    title: "Store harvest records",
+    description: "Save harvest details to review as your season progresses.",
+    icon: Wheat,
+  },
+];
+
 export function WorkflowVine() {
   const [activeStep, setActiveStep] = useState(0);
   const [paused, setPaused] = useState(false);
