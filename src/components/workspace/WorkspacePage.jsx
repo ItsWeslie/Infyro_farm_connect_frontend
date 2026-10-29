@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { CalendarPanel } from "../calendar/CalendarPanel";
 import { SettingsPanel } from "../settings/SettingsPanel";
-import { Activity, ArrowDownRight, ArrowRight, Bell, CalendarDays, Check, ChevronDown, LayoutDashboard, MoreHorizontal, Plus, Search, Sprout, Tractor, MapPinned, ClipboardList, PackageCheck, SlidersHorizontal, Settings, Wallet, Eye } from "lucide-react";
+import { Activity, ArrowDownRight, ArrowRight, Bell, CalendarDays, Check, ChevronDown, LayoutDashboard, MoreHorizontal, Plus, Search, Sprout, Tractor, MapPinned, ClipboardList, PackageCheck, SlidersHorizontal, Settings, Wallet, Eye, X } from "lucide-react";
 
 const workspaceData = {
   Farms: {

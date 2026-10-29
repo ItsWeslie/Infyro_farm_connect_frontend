@@ -236,7 +236,7 @@ function App() {
       )}
       <aside className={"sidebar " + (mobileNav ? "sidebar-open" : "")}>
         <div className="sidebar-top">
-          <Brand variant="legacy"
+          <Brand
             onHome={() => {
               setActive("Overview");
               setMobileNav(false);
@@ -385,7 +385,7 @@ function App() {
                 onClick={() => setProfileOpen(!profileOpen)}
                 aria-expanded={profileOpen}
               >
-                <Avatar variant="legacy" name={user?.name || user?.username} />
+                <Avatar name={user?.name || user?.username} />
                 <span className="profile-copy">
                   <strong>{user?.name || user?.username}</strong>
                   <small>Live Account</small>
@@ -547,7 +547,7 @@ function App() {
                   setNotificationsOpen(false);
                 }}
               >
-                <Avatar variant="legacy" small name={user?.name || user?.username} />
+                <Avatar small name={user?.name || user?.username} />
                 <ChevronDown size={14} />
               </button>
             ) : (
