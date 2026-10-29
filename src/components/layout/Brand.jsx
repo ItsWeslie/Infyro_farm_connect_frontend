@@ -1,5 +1,3 @@
-import React from 'react';
-
 export function Brand({ onHome, variant = "tailwind" }) {
   if (variant === "legacy") {
     return (

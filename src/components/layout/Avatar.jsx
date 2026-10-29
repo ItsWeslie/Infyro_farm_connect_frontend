@@ -1,5 +1,3 @@
-import React from 'react';
-
 export function Avatar({ small = false, name = "Ravi Kumar", variant = "tailwind" }) {
   const initials = name
     .split(" ")
