@@ -2548,3 +2548,13 @@ html[data-ifc-theme="dark"] .landing-contact-form-note { color: #aebba9; }
   }
 }
 
+/* Reveal testimonial and story-record cards individually as they enter view. */
+.landing-testimonial-card,
+.landing-story-records-card {
+  transition: opacity .65s cubic-bezier(.2,.7,.2,1),
+    transform .65s cubic-bezier(.2,.7,.2,1),
+    box-shadow .35s ease;
+}
+.landing-testimonial-card:nth-child(2) { transition-delay: .08s; }
+.landing-testimonial-card:nth-child(3) { transition-delay: .16s; }
+
