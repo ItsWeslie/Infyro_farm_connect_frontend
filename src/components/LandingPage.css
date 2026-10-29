@@ -1818,7 +1818,7 @@ html[data-ifc-theme="dark"] .landing-vine-experience::before {
 }
 
 
-/* Keep feature cards visible even if the scroll observer or theme transition has not fired yet. */
+/* Keep bento cards visible by default, then reveal them with a stagger when observed. */
 .landing-feature-bento .landing-feature-card.reveal-on-scroll {
   opacity: 1;
   visibility: visible;
@@ -1827,21 +1827,13 @@ html[data-ifc-theme="dark"] .landing-vine-experience::before {
 .landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed {
   animation: ifc-feature-card-reveal .72s cubic-bezier(.2,.7,.2,1) both;
 }
+.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed:nth-child(1) { animation-delay: 40ms; }
+.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed:nth-child(2) { animation-delay: 150ms; }
+.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed:nth-child(3) { animation-delay: 260ms; }
+.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed:nth-child(4) { animation-delay: 370ms; }
 html[data-ifc-theme="dark"] .landing-feature-bento .landing-feature-card,
 html[data-ifc-theme="dark"] .landing-feature-bento .landing-feature-card.reveal-on-scroll {
-  opacity: 1;
   visibility: visible;
-}
-
-
-/* Disable the card reveal animation itself: theme changes must never leave a card at opacity 0. */
-.landing-feature-bento .landing-feature-card.reveal-on-scroll,
-.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed {
-  opacity: 1 !important;
-  visibility: visible !important;
-  filter: none !important;
-  animation: none !important;
-  transform: none;
 }
 .landing-feature-bento .landing-feature-card.reveal-on-scroll:hover,
 .landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed:hover {
@@ -2223,12 +2215,13 @@ html[data-ifc-theme="light"] .landing-footer-premium .landing-back-to-top:hover 
 }
 
 
-/* Give each Contact Us detail the same fade-and-rise reveal as the footer groups. */
+/* Reveal each footer Contact Us detail individually, with a subtle stagger. */
 .landing-footer-premium .landing-footer-contact-details > a.reveal-on-scroll,
 .landing-footer-premium .landing-footer-contact-details > p.reveal-on-scroll {
   opacity: 0;
   transform: translateY(22px);
-  transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1);
+  transition: opacity .7s cubic-bezier(.2,.7,.2,1),
+    transform .7s cubic-bezier(.2,.7,.2,1);
   will-change: opacity, transform;
 }
 .landing-footer-premium .landing-footer-contact-details > a.reveal-on-scroll:nth-of-type(1) { transition-delay: .04s; }
@@ -2476,7 +2469,7 @@ html[data-ifc-theme="light"] .landing-footer-premium .landing-footer-bottom > .l
 }
 .landing-contact-heading { max-width: 660px; margin: 0 auto 38px; text-align: center; }
 .landing-contact-heading h2 { margin: 12px 0 14px; color: var(--landing-forest, #224823); font-size: clamp(34px, 4.5vw, 52px); line-height: 1.08; letter-spacing: -.045em; }
-.landing-contact-heading h2 em { color: #67992D; font-family: Georgia, serif; font-weight: 500; }
+.landing-contact-heading h2 em { color: #67992D; font-family: inherit; font-weight: 500; }
 .landing-contact-heading p { margin: 0; color: var(--landing-muted, #738075); font-size: 15px; line-height: 1.8; }
 .landing-contact-layout { display: grid; grid-template-columns: minmax(260px, .82fr) minmax(0, 1.18fr); overflow: hidden; border: 1px solid rgba(34,72,35,.12); border-radius: 26px; background: #fffefa; box-shadow: 0 24px 70px rgba(34,72,35,.09); }
 .landing-contact-info { position: relative; isolation: isolate; display: flex; flex-direction: column; align-items: flex-start; min-height: 100%; overflow: hidden; padding: clamp(28px, 4vw, 48px); color: #f8f8ef; background: linear-gradient(145deg, #2f6339, #224823 70%, #193a24); }
@@ -2533,3 +2526,55 @@ html[data-ifc-theme="dark"] .landing-contact-form-note { color: #aebba9; }
   .landing-contact-socials a:hover { transform: none; }
   .landing-toast { animation: none; }
 }
+
+/* Extend the existing reveal system to the previously uncovered page areas. */
+.landing-header,
+.landing-scroll-cue,
+.landing-contact-heading,
+.landing-contact-info,
+.landing-contact-form,
+.landing-vine-nodes,
+.landing-vine-active-card,
+.landing-vine-controls {
+  transition: opacity .65s cubic-bezier(.2,.7,.2,1),
+    transform .65s cubic-bezier(.2,.7,.2,1);
+}
+.landing-contact-info.reveal-on-scroll { transform: translateX(-22px); }
+.landing-contact-form.reveal-on-scroll { transform: translateX(22px); }
+.landing-contact-info.reveal-on-scroll.is-revealed,
+.landing-contact-form.reveal-on-scroll.is-revealed {
+  transform: translateX(0);
+}
+.landing-vine-nodes.reveal-on-scroll { transition-delay: .06s; }
+.landing-vine-active-card.reveal-on-scroll { transition-delay: .12s; }
+.landing-vine-controls.reveal-on-scroll { transition-delay: .18s; }
+@media (max-width: 760px) {
+  .landing-contact-info.reveal-on-scroll { transform: translateY(18px); }
+  .landing-contact-form.reveal-on-scroll { transform: translateY(18px); }
+  .landing-contact-info.reveal-on-scroll.is-revealed,
+  .landing-contact-form.reveal-on-scroll.is-revealed { transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-header,
+  .landing-scroll-cue,
+  .landing-contact-heading,
+  .landing-contact-info,
+  .landing-contact-form,
+  .landing-vine-nodes,
+  .landing-vine-active-card,
+  .landing-vine-controls {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Reveal testimonial and story-record cards individually as they enter view. */
+.landing-testimonial-card,
+.landing-story-records-card {
+  transition: opacity .65s cubic-bezier(.2,.7,.2,1),
+    transform .65s cubic-bezier(.2,.7,.2,1),
+    box-shadow .35s ease;
+}
+.landing-testimonial-card:nth-child(2) { transition-delay: .08s; }
+.landing-testimonial-card:nth-child(3) { transition-delay: .16s; }
+
