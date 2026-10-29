@@ -2,8 +2,8 @@ import { Sprout, ArrowRight } from "lucide-react";
 
 export function LandingCTA({ openAuth }) {
   return (
-    <section className="landing-cta">
-              <div className="landing-cta-decoration" aria-hidden="true">
+    <section className="landing-cta relative flex items-center justify-between gap-[35px] overflow-hidden px-[max(32px,calc((100%-1120px)/2))] py-[62px] max-[760px]:items-start max-[760px]:flex-col max-[760px]:gap-[25px] max-[760px]:px-[22px] max-[760px]:py-[44px]">
+              <div className="landing-cta-decoration pointer-events-none absolute right-[29%] bottom-[-63px] rotate-[-18deg] text-white/[0.06] max-[760px]:right-[-25px] max-[760px]:bottom-[-75px]" aria-hidden="true">
                 <Sprout size={160} strokeWidth={0.8} />
               </div>
               <div className="landing-cta-copy">
