@@ -129,7 +129,7 @@
 .landing-story-copy li { display: flex; align-items: center; gap: 10px; color: #526653; font-size: 11px; }
 .landing-story-copy li svg { flex-shrink: 0; color: #739661; }
 .landing-text-button { display: inline-flex; align-items: center; gap: 9px; padding: 0 0 7px; border: 0; border-bottom: 1px solid #a7b99b; background: none; color: #315b3c; font-size: 11px; font-weight: 800; cursor: pointer; }
-.landing-workflow { padding-top: 100px; padding-bottom: 100px; }
+
 .landing-workflow-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 30px; }
 .landing-workflow-step { position: relative; padding: 0 23px 0 0; }
 .landing-step-number { display: grid; place-items: center; width: 46px; height: 46px; border: 1px solid #dce7d4; border-radius: 50%; background: #f0f5ea; color: #5f8452; font-size: 12px; font-weight: 800; }
