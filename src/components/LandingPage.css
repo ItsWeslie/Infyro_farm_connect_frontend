@@ -1937,13 +1937,13 @@ html[data-ifc-theme="dark"] .landing-feature-bento .landing-feature-card.reveal-
 
 .landing-footer-premium .landing-footer-contact-details > a,
 .landing-footer-premium .landing-footer-contact-details p {
-  color: #d0ddc9;
+  color: #435b40;
   font-size: 12px;
   font-weight: 500;
   line-height: 1.5;
 }
 .landing-footer-premium .landing-footer-contact-details > a:hover { color: #b8e58e; }
-.landing-footer-premium .landing-footer-contact-details .landing-footer-label { color: #a8cc96; }
+.landing-footer-premium .landing-footer-contact-details .landing-footer-label { color: ; }
 .landing-footer-premium .landing-footer-contact-details p { display: flex; align-items: flex-start; gap: 9px; margin: 0; }
 .landing-footer-premium .landing-footer-contact-details p svg,
 .landing-footer-premium .landing-footer-contact-details > a svg { flex: 0 0 15px; margin-top: 2px; color: currentColor; }
