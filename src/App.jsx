@@ -1,7 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
 import {
-  Activity,
-  ArrowDownRight,
   ArrowRight,
   ArrowUpRight,
   Bell,
@@ -11,65 +9,36 @@ import {
   CircleHelp,
   CloudSun,
   Command,
-  Flower2,
   LayoutDashboard,
   Leaf,
   Menu,
   Ellipsis,
-  MoreHorizontal,
   Plus,
   Search,
   Sprout,
-  Tractor,
-  Wheat,
   X,
   MapPinned,
-  ClipboardList,
-  PackageCheck,
-  SlidersHorizontal,
   CircleUserRound,
   Settings,
   LogOut,
-  CheckCheck,
-  Clock3,
   Droplets,
   Sun,
   Wallet,
-  TrendingUp,
-  Eye,
   LogIn,
 } from "lucide-react";
 import "./App.css";
-import { CalendarPanel } from "./components/calendar/CalendarPanel";
-import { SettingsPanel } from "./components/settings/SettingsPanel";
 import { Dashboard } from "./components/dashboard/Dashboard";
 import { WorkspacePage } from "./components/workspace/WorkspacePage";
 import { Brand } from "./components/layout/Brand";
 import { Avatar } from "./components/layout/Avatar";
 import { navigation, initialCrops as crops } from "./data/navigation";
-import { pageDescriptions } from "./data/pageDescriptions";
 import { useAuth } from "./context/AuthContext";
 import { AuthModal } from "./components/AuthModal";
 import LandingPage from "./components/LandingPage";
 import {
   farmApi,
-  fieldApi,
-  cropPlantingApi,
-  cropTypeApi,
-  cropActivityApi,
-  expenseApi,
-  harvestApi,
   farmSummaryApi,
-  calendarApi,
-  notificationApi,
 } from "./api/client";
-import {
-  CropPlantingStatus,
-  CropStage,
-  ActivityStatus,
-  ExpenseCategory,
-  HarvestUnit,
-} from "./types/enums";
 
 function App() {
   const { user, isAuthenticated, loading, logout } = useAuth();
