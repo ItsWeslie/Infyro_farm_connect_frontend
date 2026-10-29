@@ -2506,3 +2506,45 @@ html[data-ifc-theme="dark"] .landing-contact-form-note { color: #aebba9; }
   .landing-contact-socials a:hover { transform: none; }
   .landing-toast { animation: none; }
 }
+
+/* Extend the existing reveal system to the previously uncovered page areas. */
+.landing-header,
+.landing-scroll-cue,
+.landing-contact-heading,
+.landing-contact-info,
+.landing-contact-form,
+.landing-vine-nodes,
+.landing-vine-active-card,
+.landing-vine-controls {
+  transition: opacity .65s cubic-bezier(.2,.7,.2,1),
+    transform .65s cubic-bezier(.2,.7,.2,1);
+}
+.landing-contact-info.reveal-on-scroll { transform: translateX(-22px); }
+.landing-contact-form.reveal-on-scroll { transform: translateX(22px); }
+.landing-contact-info.reveal-on-scroll.is-revealed,
+.landing-contact-form.reveal-on-scroll.is-revealed {
+  transform: translateX(0);
+}
+.landing-vine-nodes.reveal-on-scroll { transition-delay: .06s; }
+.landing-vine-active-card.reveal-on-scroll { transition-delay: .12s; }
+.landing-vine-controls.reveal-on-scroll { transition-delay: .18s; }
+@media (max-width: 760px) {
+  .landing-contact-info.reveal-on-scroll { transform: translateY(18px); }
+  .landing-contact-form.reveal-on-scroll { transform: translateY(18px); }
+  .landing-contact-info.reveal-on-scroll.is-revealed,
+  .landing-contact-form.reveal-on-scroll.is-revealed { transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-header,
+  .landing-scroll-cue,
+  .landing-contact-heading,
+  .landing-contact-info,
+  .landing-contact-form,
+  .landing-vine-nodes,
+  .landing-vine-active-card,
+  .landing-vine-controls {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
