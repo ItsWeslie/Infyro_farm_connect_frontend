@@ -23,6 +23,7 @@ export function AppSidebar({
   logout,
 }) {
   return (
+    <>
     {mobileNav && (
             <button
               className="mobile-scrim"
@@ -232,5 +233,6 @@ export function AppSidebar({
               </div>
             </div>
           </aside>
+    </>
   );
 }
