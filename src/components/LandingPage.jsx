@@ -119,11 +119,40 @@ export default function LandingPage() {
 
   return (
     <div className="landing-page" id="home">
-            <LandingHeader mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} theme={theme} setTheme={setTheme} openAuth={openAuth} />
-
+      <LandingHeader
+        mobileMenuOpen={mobileMenuOpen}
+        setMobileMenuOpen={setMobileMenuOpen}
+        theme={theme}
+        setTheme={setTheme}
+        openAuth={openAuth}
+      />
       <main>
-                <LandingHero openAuth={openAuth} />        <PlatformProofStrip />        <FeaturesSection />        <StorySection openAuth={openAuth} />        <WorkflowSection />        <TestimonialsSection />        <ContactSection contactForm={contactForm} setContactForm={setContactForm} setContactToast={setContactToast} />        <LandingCTA openAuth={openAuth} /></main>
-
-            <LandingFooter openAuth={openAuth} />
-
-      <ContactToast contactToast={contactToast} setContactToast={setContactToast} />      <BackToTop showFloatingTop={showFloatingTop} />undefined
+        <LandingHero openAuth={openAuth} />
+        <PlatformProofStrip />
+        <FeaturesSection />
+        <StorySection openAuth={openAuth} />
+        <WorkflowSection />
+        <TestimonialsSection />
+        <ContactSection
+          contactForm={contactForm}
+          setContactForm={setContactForm}
+          setContactToast={setContactToast}
+        />
+        <LandingCTA openAuth={openAuth} />
+      </main>
+      <LandingFooter openAuth={openAuth} />
+      <ContactToast
+        contactToast={contactToast}
+        setContactToast={setContactToast}
+      />
+      <BackToTop showFloatingTop={showFloatingTop} />
+      <AuthModal
+        key={authMode}
+        isOpen={authOpen}
+        defaultMode={authMode}
+        onClose={() => setAuthOpen(false)}
+      />
+    </div>
+  );
+}
+}
