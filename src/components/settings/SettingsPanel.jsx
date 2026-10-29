@@ -7,9 +7,9 @@ export function SettingsPanel({ notify }) {
   const [reminders, setReminders] = useState(true);
   const [weekly, setWeekly] = useState(false);
   return (
-    <div className="settings-layout">
-      <div className="settings-menu surface-card">
-        <div className="settings-menu-title">PREFERENCES</div>
+    <div className="grid grid-cols-[minmax(190px,.7fr)_minmax(0,1.7fr)] gap-4 items-start max-[900px]:grid-cols-1">
+      <div className="surface-card p-[14px] max-[900px]:grid max-[900px]:grid-cols-2 max-[900px]:gap-1 max-[650px]:grid-cols-1">
+        <div className="text-[8px] tracking-[1.2px] font-bold text-[#9aa59b] pt-[5px] px-2 pb-3 max-[900px]:col-span-full">PREFERENCES</div>
         {[
           "Profile information",
           "Farm preferences",
@@ -18,10 +18,10 @@ export function SettingsPanel({ notify }) {
         ].map((s, i) => (
           <button
             key={s}
-            className={i === 1 ? "settings-menu-active" : ""}
+            className={`w-full border-0 bg-white rounded-lg flex items-center gap-[9px] py-[10px] px-2 text-left text-[10px] text-[#78867b] mb-[3px] max-[650px]:mb-0 ${i === 1 ? "bg-[#edf4e8] text-[#356943] font-bold" : ""}`}
             onClick={() => notify(s + " section selected")}
           >
-            <span className="settings-menu-icon">
+            <span className="grid place-items-center">
               {i === 0 ? (
                 <CircleUserRound size={16} />
               ) : i === 1 ? (
@@ -37,64 +37,64 @@ export function SettingsPanel({ notify }) {
           </button>
         ))}
       </div>
-      <div className="settings-form surface-card">
+      <div className="surface-card p-[22px] max-[650px]:p-4">
         <span className="section-kicker">FARM PREFERENCES</span>
-        <h2>Make it yours</h2>
-        <p>Choose the defaults that make everyday farm work easier.</p>
-        <label className="settings-field">
+        <h2 className="m-0 mt-[7px] font-[800] text-[19px] tracking-[-0.3px] text-[#2c4032] [font-family:Manrope,sans-serif]">Make it yours</h2>
+        <p className="mt-[5px] mb-5 text-[10px] text-[#95a096]">Choose the defaults that make everyday farm work easier.</p>
+        <label className="grid gap-2 text-[#58685a] text-[10px] font-bold mb-[18px]">
           Default measurement unit
-          <select value={units} onChange={(e) => setUnits(e.target.value)}>
+          <select className="h-[39px] border border-[#e2e9de] rounded-lg px-[10px] bg-white text-[#4c5e50] text-[11px]" value={units} onChange={(e) => setUnits(e.target.value)}
             <option>Acres</option>
             <option>Hectares</option>
             <option>Square metres</option>
           </select>
         </label>
-        <div className="settings-option">
+        <div className="flex items-center justify-between gap-[15px] py-[15px] border-t border-[#edf0e9]">
           <div>
-            <strong>Weather updates</strong>
-            <small>Show local conditions in your workspace.</small>
+            <strong className="block text-[#425345] text-[11px]">Weather updates</strong>
+            <small className="block text-[#96a096] text-[9px] mt-[5px] leading-[1.5]">Show local conditions in your workspace.</small>
           </div>
           <button
             role="switch"
             aria-checked={weather}
-            className={"switch " + (weather ? "switch-on" : "")}
+            className={`w-[37px] h-[21px] shrink-0 border-0 rounded-[20px] p-[3px] flex items-center transition-[background] duration-[180ms] ${weather ? "bg-[#6e9b63]" : "bg-[#dfe5dc]"}`}
             onClick={() => setWeather(!weather)}
           >
-            <i />
+            <i className={`w-[15px] h-[15px] rounded-full bg-white shadow-[0_1px_3px_#0002] transition-transform duration-[180ms] ${weather ? "translate-x-4" : ""}`} />
           </button>
         </div>
         <div className="settings-option">
           <div>
-            <strong>Farm reminders</strong>
-            <small>Get nudges for tasks and upcoming harvests.</small>
+            <strong className="block text-[#425345] text-[11px]">Farm reminders</strong>
+            <small className="block text-[#96a096] text-[9px] mt-[5px] leading-[1.5]">Get nudges for tasks and upcoming harvests.</small>
           </div>
           <button
             role="switch"
             aria-checked={reminders}
-            className={"switch " + (reminders ? "switch-on" : "")}
+            className={`w-[37px] h-[21px] shrink-0 border-0 rounded-[20px] p-[3px] flex items-center transition-[background] duration-[180ms] ${reminders ? "bg-[#6e9b63]" : "bg-[#dfe5dc]"}`}
             onClick={() => setReminders(!reminders)}
           >
-            <i />
+            <i className={`w-[15px] h-[15px] rounded-full bg-white shadow-[0_1px_3px_#0002] transition-transform duration-[180ms] ${reminders ? "translate-x-4" : ""}`} />
           </button>
         </div>
         <div className="settings-option">
           <div>
-            <strong>Weekly summary</strong>
-            <small>A quick look at activities and expenses.</small>
+            <strong className="block text-[#425345] text-[11px]">Weekly summary</strong>
+            <small className="block text-[#96a096] text-[9px] mt-[5px] leading-[1.5]">A quick look at activities and expenses.</small>
           </div>
           <button
             role="switch"
             aria-checked={weekly}
-            className={"switch " + (weekly ? "switch-on" : "")}
+            className={`w-[37px] h-[21px] shrink-0 border-0 rounded-[20px] p-[3px] flex items-center transition-[background] duration-[180ms] ${weekly ? "bg-[#6e9b63]" : "bg-[#dfe5dc]"}`}
             onClick={() => setWeekly(!weekly)}
           >
-            <i />
+            <i className={`w-[15px] h-[15px] rounded-full bg-white shadow-[0_1px_3px_#0002] transition-transform duration-[180ms] ${weekly ? "translate-x-4" : ""}`} />
           </button>
         </div>
-        <div className="settings-save">
-          <span>Changes are local to this demo.</span>
+        <div className="flex items-center justify-between gap-3 border-t border-[#edf0e9] pt-[17px] mt-[5px] max-[650px]:items-start max-[650px]:flex-col">
+          <span className="text-[9px] text-[#9aa49b]">Changes are local to this demo.</span>
           <button
-            className="button-primary"
+            className="button-primary px-3 py-[9px] max-[650px]:w-full"
             onClick={() => notify("Preferences saved for this demo")}
           >
             <Check size={15} />
