@@ -2223,6 +2223,33 @@ html[data-ifc-theme="light"] .landing-footer-premium .landing-back-to-top:hover 
 }
 
 
+/* Give each Contact Us detail the same fade-and-rise reveal as the footer groups. */
+.landing-footer-premium .landing-footer-contact-details > a.reveal-on-scroll,
+.landing-footer-premium .landing-footer-contact-details > p.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1);
+  will-change: opacity, transform;
+}
+.landing-footer-premium .landing-footer-contact-details > a.reveal-on-scroll:nth-of-type(2) { transition-delay: .06s; }
+.landing-footer-premium .landing-footer-contact-details > a.reveal-on-scroll:nth-of-type(3) { transition-delay: .12s; }
+.landing-footer-premium .landing-footer-contact-details > p.reveal-on-scroll:nth-of-type(4) { transition-delay: .18s; }
+.landing-footer-premium .landing-footer-contact-details > p.reveal-on-scroll:nth-of-type(5) { transition-delay: .24s; }
+.landing-footer-premium .landing-footer-contact-details > a.reveal-on-scroll.is-revealed,
+.landing-footer-premium .landing-footer-contact-details > p.reveal-on-scroll.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-footer-premium .landing-footer-contact-details > a.reveal-on-scroll,
+  .landing-footer-premium .landing-footer-contact-details > p.reveal-on-scroll {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+}
+
 /* Floating back-to-top control, shown after the visitor scrolls down. */
 .landing-floating-back-to-top {
   position: fixed;
