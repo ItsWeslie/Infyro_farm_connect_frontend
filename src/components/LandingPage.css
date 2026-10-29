@@ -1818,7 +1818,7 @@ html[data-ifc-theme="dark"] .landing-vine-experience::before {
 }
 
 
-/* Keep feature cards visible even if the scroll observer or theme transition has not fired yet. */
+/* Keep bento cards visible by default, then reveal them with a stagger when observed. */
 .landing-feature-bento .landing-feature-card.reveal-on-scroll {
   opacity: 1;
   visibility: visible;
@@ -1827,21 +1827,13 @@ html[data-ifc-theme="dark"] .landing-vine-experience::before {
 .landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed {
   animation: ifc-feature-card-reveal .72s cubic-bezier(.2,.7,.2,1) both;
 }
+.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed:nth-child(1) { animation-delay: 40ms; }
+.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed:nth-child(2) { animation-delay: 150ms; }
+.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed:nth-child(3) { animation-delay: 260ms; }
+.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed:nth-child(4) { animation-delay: 370ms; }
 html[data-ifc-theme="dark"] .landing-feature-bento .landing-feature-card,
 html[data-ifc-theme="dark"] .landing-feature-bento .landing-feature-card.reveal-on-scroll {
-  opacity: 1;
   visibility: visible;
-}
-
-
-/* Disable the card reveal animation itself: theme changes must never leave a card at opacity 0. */
-.landing-feature-bento .landing-feature-card.reveal-on-scroll,
-.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed {
-  opacity: 1 !important;
-  visibility: visible !important;
-  filter: none !important;
-  animation: none !important;
-  transform: none;
 }
 .landing-feature-bento .landing-feature-card.reveal-on-scroll:hover,
 .landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed:hover {
