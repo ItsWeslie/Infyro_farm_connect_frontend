@@ -1,4 +1,5 @@
 import { X, Menu, Moon, Sun, ArrowRight } from "lucide-react";
+import { BrandMark } from "./BrandMark";
 
 export function LandingHeader({ mobileMenuOpen, setMobileMenuOpen, theme, setTheme, openAuth }) {
   return (
