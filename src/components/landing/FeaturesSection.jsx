@@ -2,7 +2,7 @@ import { Tractor, ArrowRight, Sprout, Wheat, Wallet, ClipboardList, CheckCircle2
 
 export function FeaturesSection() {
   return (
-    <section className="landing-section landing-features mx-auto w-[min(1120px,calc(100%-64px))] py-[100px] max-[760px]:w-[calc(100%-38px)] max-[760px]:py-[72px] max-[420px]:w-[calc(100%-30px)]" id="features">
+    <section className="landing-section landing-features mx-auto w-[min(1120px,calc(100%-64px))] py-[100px] max-[760px]:w-[calc(100%-38px)] max-[760px]:py-[72px] max-[640px]:w-[calc(100%-36px)] max-[640px]:py-[78px] max-[420px]:w-[calc(100%-30px)]" id="features">
               <div className="landing-section-heading">
                 <span className="landing-section-kicker">
                   LESS SCATTERED. MORE CONNECTED.
