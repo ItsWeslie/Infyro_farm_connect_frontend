@@ -29,8 +29,8 @@ import {
 import "./App.css";
 import { Dashboard } from "./components/dashboard/Dashboard";
 import { WorkspacePage } from "./components/workspace/WorkspacePage";
-import { Brand } from "./components/layout/Brand";
-import { Avatar } from "./components/layout/Avatar";
+import { AppSidebar } from "./components/layout/AppSidebar";
+import { WorkspaceTopbar } from "./components/layout/WorkspaceTopbar";
 import { navigation, initialCrops as crops } from "./data/navigation";
 import { useAuth } from "./context/AuthContext";
 import { AuthModal } from "./components/AuthModal";
@@ -227,339 +227,40 @@ function App() {
   const PageIcon = currentIcon;
   return (
     <div className="app-shell">
-      {mobileNav && (
-        <button
-          className="mobile-scrim"
-          aria-label="Close navigation"
-          onClick={() => setMobileNav(false)}
-        />
-      )}
-      <aside className={"sidebar " + (mobileNav ? "sidebar-open" : "")}>
-        <div className="sidebar-top">
-          <Brand
-            onHome={() => {
-              setActive("Overview");
-              setMobileNav(false);
-            }}
-          />
-          <button
-            className="icon-button mobile-close"
-            aria-label="Close menu"
-            onClick={() => setMobileNav(false)}
-          >
-            <X size={19} />
-          </button>
-        </div>
-        <button
-          className="farm-switch"
-          onClick={() => setFarmOpen(!farmOpen)}
-          aria-expanded={farmOpen}
-        >
-          <div className="farm-avatar">
-            <Leaf size={18} />
-          </div>
-          <span className="farm-meta">
-            <strong>{selectedFarm ? selectedFarm.name : "Green Valley Farm"}</strong>
-            <small>
-              {isLiveConnected ? (
-                <span className="live-badge"><i></i> Live {selectedFarm?.landArea ? `· ${selectedFarm.landArea} ac` : ""}</span>
-              ) : (
-                <>
-                  <MapPinned size={11} /> Tambaram, Tamil Nadu
-                </>
-              )}
-            </small>
-          </span>
-          <ChevronDown size={15} className={farmOpen ? "rotate" : ""} />
-        </button>
-        {farmOpen && (
-          <div className="farm-popover">
-            <strong>My farms</strong>
-            {farms.length > 0 ? (
-              farms.map((f) => (
-                <button
-                  key={f.id}
-                  onClick={() => {
-                    setSelectedFarm(f);
-                    setFarmOpen(false);
-                    notify(`${f.name} selected`);
-                  }}
-                >
-                  <span className={"farm-dot " + (selectedFarm?.id === f.id ? "" : "farm-dot-muted")} />
-                  {f.name} {selectedFarm?.id === f.id && <Check size={14} />}
-                </button>
-              ))
-            ) : (
-              <>
-                <button
-                  onClick={() => {
-                    setFarmOpen(false);
-                    notify("Green Valley Farm selected");
-                  }}
-                >
-                  <span className="farm-dot" />
-                  Green Valley Farm <Check size={14} />
-                </button>
-                <button
-                  onClick={() => {
-                    setFarmOpen(false);
-                    notify("Demo farm switcher");
-                  }}
-                >
-                  <span className="farm-dot farm-dot-muted" />
-                  Sunrise Plot <Plus size={14} />
-                </button>
-              </>
-            )}
-            <button
-              onClick={() => {
-                setFarmOpen(false);
-                setActive("Farms");
-              }}
-              className="popover-footer"
-            >
-              Manage all farms <ArrowRight size={13} />
-            </button>
-          </div>
-        )}
-        <nav className="side-navigation" aria-label="Main navigation">
-          {navigation.map((group) => (
-            <div className="nav-group" key={group.section}>
-              <div className="nav-label">{group.section}</div>
-              {group.items.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <button
-                    key={item.label}
-                    className={
-                      "nav-item " + (active === item.label ? "nav-active" : "")
-                    }
-                    onClick={() => {
-                      setActive(item.label);
-                      setMobileNav(false);
-                    }}
-                  >
-                    <Icon
-                      size={18}
-                      strokeWidth={active === item.label ? 2.2 : 1.8}
-                    />
-                    <span>{item.label}</span>
-                    {item.badge && (
-                      <span className="nav-badge">{item.badge}</span>
-                    )}
-                    {item.dot && <span className="nav-notice-dot" />}
-                  </button>
-                );
-              })}
-            </div>
-          ))}
-        </nav>
-        <div className="sidebar-bottom">
-          <div className="season-card">
-            <div className="season-icon">
-              <Sun size={17} />
-            </div>
-            <div>
-              <strong>Growing together</strong>
-              <p>Small steps every day lead to a thriving farm.</p>
-            </div>
-            <button
-              aria-label="Learn more about farm tips"
-              onClick={() => notify("More farm tips are coming soon")}
-            >
-              <ArrowUpRight size={15} />
-            </button>
-          </div>
-          <button
-            className="sidebar-help"
-            onClick={() => notify("Help centre is coming soon")}
-          >
-            <CircleHelp size={17} />
-            <span>Help & support</span>
-            <ArrowUpRight size={14} />
-          </button>
-          <div className="profile-area">
-            {isAuthenticated ? (
-              <button
-                className="profile-button"
-                onClick={() => setProfileOpen(!profileOpen)}
-                aria-expanded={profileOpen}
-              >
-                <Avatar name={user?.name || user?.username} />
-                <span className="profile-copy">
-                  <strong>{user?.name || user?.username}</strong>
-                  <small>Live Account</small>
-                </span>
-                <Ellipsis size={19} />
-              </button>
-            ) : (
-              <button
-                className="profile-button auth-sign-btn"
-                onClick={() => setAuthModalOpen(true)}
-              >
-                <div className="avatar avatar-auth"><LogIn size={15} /></div>
-                <span className="profile-copy">
-                  <strong>Sign in</strong>
-                  <small>Connect with backend</small>
-                </span>
-              </button>
-            )}
-            {profileOpen && (
-              <div className="profile-popover">
-                <button
-                  onClick={() => {
-                    setActive("Settings");
-                    setProfileOpen(false);
-                  }}
-                >
-                  <CircleUserRound size={16} /> My profile
-                </button>
-                <button
-                  onClick={() => {
-                    setActive("Settings");
-                    setProfileOpen(false);
-                  }}
-                >
-                  <Settings size={16} /> Settings
-                </button>
-                <button
-                  onClick={() => {
-                    setProfileOpen(false);
-                    logout();
-                    notify("Signed out successfully");
-                  }}
-                >
-                  <LogOut size={16} /> Sign out
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      </aside>
+      <AppSidebar
+        mobileNav={mobileNav}
+        setMobileNav={setMobileNav}
+        active={active}
+        setActive={setActive}
+        selectedFarm={selectedFarm}
+        setSelectedFarm={setSelectedFarm}
+        farms={farms}
+        isLiveConnected={isLiveConnected}
+        farmOpen={farmOpen}
+        setFarmOpen={setFarmOpen}
+        notify={notify}
+        user={user}
+        isAuthenticated={isAuthenticated}
+        profileOpen={profileOpen}
+        setProfileOpen={setProfileOpen}
+        setAuthModalOpen={setAuthModalOpen}
+        logout={logout}
+      />
       <main className="main-area">
-        <header className="topbar">
-          <div className="topbar-left">
-            <button
-              className="icon-button menu-toggle"
-              aria-label="Open navigation"
-              onClick={() => setMobileNav(true)}
-            >
-              <Menu size={21} />
-            </button>
-            <div className="breadcrumbs">
-              <span>Farm workspace</span>
-              <span className="crumb-slash">/</span>
-              <strong>{active}</strong>
-            </div>
-          </div>
-          <div className="topbar-right">
-            <label className="global-search">
-              <Search size={16} />
-              <input
-                aria-label="Search workspace"
-                placeholder="Search anything..."
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  if (e.target.value) setActive("Crop management");
-                }}
-              />
-              <kbd>
-                <Command size={10} /> K
-              </kbd>
-            </label>
-            <div className="top-divider" />
-            <div className="weather-chip">
-              <span className="weather-icon">
-                <CloudSun size={20} />
-              </span>
-              <span>
-                <strong>29°C</strong>
-                <small>Mostly sunny</small>
-              </span>
-            </div>
-            <div className="popover-anchor">
-              <button
-                className={
-                  "icon-button top-icon " +
-                  (notificationsOpen ? "icon-selected" : "")
-                }
-                aria-label="Notifications"
-                onClick={() => {
-                  setNotificationsOpen(!notificationsOpen);
-                  setProfileOpen(false);
-                }}
-              >
-                <Bell size={19} />
-                <i className="notification-dot" />
-              </button>
-              {notificationsOpen && (
-                <div className="notification-popover">
-                  <div className="popover-heading">
-                    <strong>Notifications</strong>
-                    <span>3 new</span>
-                  </div>
-                  <div className="notification-row">
-                    <span className="notification-symbol gold">
-                      <CalendarDays size={16} />
-                    </span>
-                    <span>
-                      <strong>Harvest coming up</strong>
-                      <small>Spinach is almost ready · in 3 days</small>
-                    </span>
-                  </div>
-                  <div className="notification-row">
-                    <span className="notification-symbol green">
-                      <Droplets size={16} />
-                    </span>
-                    <span>
-                      <strong>Irrigation reminder</strong>
-                      <small>Check moisture in North Field</small>
-                    </span>
-                  </div>
-                  <div className="notification-row">
-                    <span className="notification-symbol blue">
-                      <Wallet size={16} />
-                    </span>
-                    <span>
-                      <strong>Weekly expenses ready</strong>
-                      <small>Your farm spending overview is updated</small>
-                    </span>
-                  </div>
-                  <button
-                    className="popover-footer"
-                    onClick={() => {
-                      setActive("Notifications");
-                      setNotificationsOpen(false);
-                    }}
-                  >
-                    View all notifications <ArrowRight size={14} />
-                  </button>
-                </div>
-              )}
-            </div>
-            {isAuthenticated ? (
-              <button
-                className="top-profile"
-                aria-label="Open profile menu"
-                onClick={() => {
-                  setProfileOpen(!profileOpen);
-                  setNotificationsOpen(false);
-                }}
-              >
-                <Avatar small name={user?.name || user?.username} />
-                <ChevronDown size={14} />
-              </button>
-            ) : (
-              <button
-                className="button-primary top-auth-btn"
-                onClick={() => setAuthModalOpen(true)}
-              >
-                <LogIn size={14} /> Sign in
-              </button>
-            )}
-          </div>
-        </header>
+        <WorkspaceTopbar
+          active={active}
+          setMobileNav={setMobileNav}
+          search={search}
+          setSearch={setSearch}
+          setActive={setActive}
+          notificationsOpen={notificationsOpen}
+          setNotificationsOpen={setNotificationsOpen}
+          profileOpen={profileOpen}
+          setProfileOpen={setProfileOpen}
+          isAuthenticated={isAuthenticated}
+          user={user}
+          setAuthModalOpen={setAuthModalOpen}
+        />
         <div className="page-content">
           {active === "Overview" ? (
             <Dashboard
