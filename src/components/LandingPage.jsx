@@ -509,7 +509,7 @@ export default function LandingPage() {
       "(prefers-reduced-motion: reduce)",
     ).matches;
     const targets = root.querySelectorAll(
-      ".landing-section-heading, .landing-feature-card, .landing-story-photo, .landing-story-copy, .landing-workflow-step, .landing-cta, .landing-proof-strip > div, .landing-footer-brand-column, .landing-footer-link-group, .landing-footer-bottom > *",
+      ".landing-section-heading, .landing-feature-card, .landing-story-photo, .landing-story-copy, .landing-workflow-step, .landing-cta, .landing-proof-strip > div, .landing-footer-brand-column, .landing-footer-link-group, .landing-footer-contact-details > a, .landing-footer-contact-details > p, .landing-footer-bottom > *",
     );
     if (reduceMotion || !("IntersectionObserver" in window)) {
       targets.forEach((target) => target.classList.add("is-revealed"));
