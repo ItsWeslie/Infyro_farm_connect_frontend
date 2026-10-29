@@ -2231,10 +2231,10 @@ html[data-ifc-theme="light"] .landing-footer-premium .landing-back-to-top:hover 
   transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1);
   will-change: opacity, transform;
 }
-.landing-footer-premium .landing-footer-contact-details > a.reveal-on-scroll:nth-of-type(2) { transition-delay: .06s; }
-.landing-footer-premium .landing-footer-contact-details > a.reveal-on-scroll:nth-of-type(3) { transition-delay: .12s; }
-.landing-footer-premium .landing-footer-contact-details > p.reveal-on-scroll:nth-of-type(4) { transition-delay: .18s; }
-.landing-footer-premium .landing-footer-contact-details > p.reveal-on-scroll:nth-of-type(5) { transition-delay: .24s; }
+.landing-footer-premium .landing-footer-contact-details > a.reveal-on-scroll:nth-of-type(1) { transition-delay: .04s; }
+.landing-footer-premium .landing-footer-contact-details > a.reveal-on-scroll:nth-of-type(2) { transition-delay: .10s; }
+.landing-footer-premium .landing-footer-contact-details > p.reveal-on-scroll:nth-of-type(1) { transition-delay: .16s; }
+.landing-footer-premium .landing-footer-contact-details > p.reveal-on-scroll:nth-of-type(2) { transition-delay: .22s; }
 .landing-footer-premium .landing-footer-contact-details > a.reveal-on-scroll.is-revealed,
 .landing-footer-premium .landing-footer-contact-details > p.reveal-on-scroll.is-revealed {
   opacity: 1;
