@@ -1818,11 +1818,11 @@ html[data-ifc-theme="dark"] .landing-vine-experience::before {
 }
 
 
-/* Keep bento cards visible by default, then reveal them with a stagger when observed. */
+/* Feature cards use the same observer-driven reveal, with a stable final visible state. */
 .landing-feature-bento .landing-feature-card.reveal-on-scroll {
-  opacity: 1;
+  opacity: 0;
   visibility: visible;
-  transform: none;
+  transform: translateY(26px) scale(.985);
 }
 .landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed {
   animation: ifc-feature-card-reveal .72s cubic-bezier(.2,.7,.2,1) both;
@@ -1835,9 +1835,24 @@ html[data-ifc-theme="dark"] .landing-feature-bento .landing-feature-card,
 html[data-ifc-theme="dark"] .landing-feature-bento .landing-feature-card.reveal-on-scroll {
   visibility: visible;
 }
+.landing-feature-bento .landing-feature-card.reveal-on-scroll {
+  transition: translate .36s cubic-bezier(.2,.7,.2,1),
+    box-shadow .36s ease, border-color .36s ease;
+}
 .landing-feature-bento .landing-feature-card.reveal-on-scroll:hover,
 .landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed:hover {
-  transform: translateY(-7px);
+  /* Use the individual translate property so the reveal animation's transform doesn't mask hover. */
+  translate: 0 -7px;
+  border-color: rgba(103,153,45,.42);
+  box-shadow: 0 22px 48px rgba(34,72,35,.12);
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-feature-bento .landing-feature-card.reveal-on-scroll,
+  .landing-feature-bento .landing-feature-card.reveal-on-scroll:hover,
+  .landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed:hover {
+    transition: none;
+    translate: none;
+  }
 }
 
 
@@ -2578,3 +2593,4 @@ html[data-ifc-theme="dark"] .landing-contact-form-note { color: #aebba9; }
 .landing-testimonial-card:nth-child(2) { transition-delay: .08s; }
 .landing-testimonial-card:nth-child(3) { transition-delay: .16s; }
 
+/* Feature card visibility is controlled by the scroll-reveal state above. */
