@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { ArrowRight, Leaf, Lock, Mail, User, Sprout, AlertCircle, Eye, EyeOff, X, ShieldCheck } from "lucide-react";
+import { ArrowRight, Leaf, Lock, Mail, User, AlertCircle, Eye, EyeOff, X, ShieldCheck } from "lucide-react";
 
 const PASSWORD_RULES = "Use at least 8 characters with an uppercase letter, lowercase letter, number, and one of !@#$%^&*().";
 
@@ -48,7 +48,7 @@ export function AuthModal({ isOpen, onClose, defaultMode = "login", onAuthSucces
           <div className="auth-brand-head">
             <span className="auth-logo-badge"><Leaf size={20} /></span>
             <div>
-              <span className="section-kicker">INFYRO FARM CONNECT</span>
+              <span className="section-kicker">INFYRO FARMS</span>
               <h2 id="auth-modal-title">{mode === "login" ? "Welcome back" : "Start growing with us"}</h2>
               <p id="auth-modal-description">{mode === "login" ? "Sign in to return to your farm workspace." : "Create your account and bring your farm into focus."}</p>
             </div>
