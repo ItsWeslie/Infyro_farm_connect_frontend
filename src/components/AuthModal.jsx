@@ -48,7 +48,7 @@ export function AuthModal({ isOpen, onClose, defaultMode = "login", onAuthSucces
           <div className="auth-brand-head">
             <span className="auth-logo-badge"><Leaf size={20} /></span>
             <div>
-              <span className="section-kicker">INFYRO FARM CONNECT</span>
+              <span className="section-kicker">INFYRO FARMS</span>
               <h2 id="auth-modal-title">{mode === "login" ? "Welcome back" : "Start growing with us"}</h2>
               <p id="auth-modal-description">{mode === "login" ? "Sign in to return to your farm workspace." : "Create your account and bring your farm into focus."}</p>
             </div>
