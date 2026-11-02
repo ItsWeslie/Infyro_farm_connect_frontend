@@ -1818,11 +1818,11 @@ html[data-ifc-theme="dark"] .landing-vine-experience::before {
 }
 
 
-/* Keep bento cards visible by default, then reveal them with a stagger when observed. */
+/* Feature cards use the same observer-driven reveal, with a stable final visible state. */
 .landing-feature-bento .landing-feature-card.reveal-on-scroll {
-  opacity: 1;
+  opacity: 0;
   visibility: visible;
-  transform: none;
+  transform: translateY(26px) scale(.985);
 }
 .landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed {
   animation: ifc-feature-card-reveal .72s cubic-bezier(.2,.7,.2,1) both;
@@ -2578,12 +2578,4 @@ html[data-ifc-theme="dark"] .landing-contact-form-note { color: #aebba9; }
 .landing-testimonial-card:nth-child(2) { transition-delay: .08s; }
 .landing-testimonial-card:nth-child(3) { transition-delay: .16s; }
 
-/* Feature cards must remain visible regardless of theme or scroll-observer state. */
-.landing-feature-bento .landing-feature-card,
-.landing-feature-bento .landing-feature-card.reveal-on-scroll,
-.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed {
-  opacity: 1 !important;
-  visibility: visible !important;
-  filter: none !important;
-  animation: none !important;
-}
+/* Feature card visibility is controlled by the scroll-reveal state above. */
