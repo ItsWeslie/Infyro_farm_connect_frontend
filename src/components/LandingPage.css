@@ -2578,3 +2578,12 @@ html[data-ifc-theme="dark"] .landing-contact-form-note { color: #aebba9; }
 .landing-testimonial-card:nth-child(2) { transition-delay: .08s; }
 .landing-testimonial-card:nth-child(3) { transition-delay: .16s; }
 
+/* Feature cards must remain visible regardless of theme or scroll-observer state. */
+.landing-feature-bento .landing-feature-card,
+.landing-feature-bento .landing-feature-card.reveal-on-scroll,
+.landing-feature-bento .landing-feature-card.reveal-on-scroll.is-revealed {
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+  animation: none !important;
+}
