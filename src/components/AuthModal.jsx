@@ -70,7 +70,7 @@ export function AuthModal({ isOpen, onClose, defaultMode = "login", onAuthSucces
           {mode === "login" ? "New to Infyro Farm Connect?" : "Already have an account?"}
           <button type="button" onClick={() => switchMode(mode === "login" ? "signup" : "login")} disabled={submitting}>{mode === "login" ? "Create an account" : "Sign in"}</button>
         </div>
-        <div className="auth-footer-note"><Sprout size={14} /><span>Your session is protected with a secure, HttpOnly cookie.</span></div>
+
       </div>
     </div>
   );
