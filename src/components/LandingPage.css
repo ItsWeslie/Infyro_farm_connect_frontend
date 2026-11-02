@@ -95,7 +95,7 @@
 .preview-float-growth small { color: #89968a; font-size: 8px; }
 .preview-float-growth strong { color: #2b4834; font-size: 10px; }
 .preview-float-leaf { right: -9px; top: 0; color: #47714b; font-size: 9px; font-weight: 700; padding: 10px 13px; }
-.landing-scroll-cue { position: absolute; bottom: 17px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; color: #788678; text-decoration: none; font-size: 9px; letter-spacing: .6px; }
+.landing-scroll-cue { position: absolute; bottom: 17px; left: 0; right: 0; width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 10px; text-align: center; color: #788678; text-decoration: none; font-size: 9px; letter-spacing: .6px; }
 .landing-proof-strip { display: grid; grid-template-columns: repeat(3,1fr); width: min(1120px,calc(100% - 64px)); margin: -1px auto 0; padding: 27px 0; border-bottom: 1px solid #e9ede5; gap: 25px; }
 .landing-proof-strip > div { display: flex; align-items: center; gap: 12px; justify-content: center; }
 .landing-proof-icon { display: grid; place-items: center; width: 38px; height: 38px; flex-shrink: 0; border-radius: 11px; background: #edf3e8; color: #50784a; }
