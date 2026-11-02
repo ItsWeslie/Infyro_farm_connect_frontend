@@ -66,13 +66,6 @@
 .auth-sign-btn{cursor:pointer}
 .top-auth-btn{padding:8px 14px;font-size:11px}
 
-.auth-dialog-card .form-label .input-with-icon:focus-within {
-  border-color: #dfe7dc;
-  box-shadow: none;
-  outline: none;
-}
-.auth-dialog-card .form-label input:focus {
-  border-color: transparent;
-  box-shadow: none;
-  outline: none;
-}
+/* Keep auth fields visually unchanged while focused. */
+.auth-dialog-card .form-label .input-with-icon:focus-within{border-color:#dfe7dc;box-shadow:none;outline:none}
+.auth-dialog-card .form-label input:focus{border-color:transparent;box-shadow:none;outline:none}
