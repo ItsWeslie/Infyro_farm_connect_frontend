@@ -1089,3 +1089,7 @@ html[data-ifc-theme="dark"] .mobile-scrim{background:rgba(0,0,0,.62)}
 @media(max-width:700px){.ifc-skeleton-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.ifc-toast{right:12px;bottom:12px}}
 @media(prefers-reduced-motion:reduce){.ifc-skeleton{animation:none}.ifc-toast{animation:none}}
 html[data-ifc-theme="dark"]{--ifc-skeleton-base:#263b2c;--ifc-skeleton-highlight:#344a38}
+
+
+html[data-ifc-theme="dark"] .ifc-toast{--line:#3a513e;--surface:#1d3324;--text:#e7efdf;background:#1d3324;border-color:#3a513e;color:#e7efdf;box-shadow:0 14px 44px rgba(0,0,0,.38)}
+html[data-ifc-theme="dark"] .ifc-skeleton-card{--line:#344a38;--surface:#1d3324;background:#1d3324;border-color:#344a38}
