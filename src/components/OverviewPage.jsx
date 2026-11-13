@@ -139,7 +139,7 @@ function eventKind(eventType) {
 
 function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd }) {
   const { user } = useAuth();
-  const userName = user?.name?.trim()?.split(/\\s+/)[0] || user?.username?.split("@")[0] || "there";
+  const userName = user?.name?.trim()?.split(/\s+/)[0] || user?.username?.split("@")[0] || "there";
   const [snapshot, setSnapshot] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
