@@ -33,7 +33,7 @@ npm run preview
 
 ## Design and interactions
 
-- React functional components and local state. The shared API client now supports backend authentication and route calls; workspace screens are still being migrated from sample data.
+- React functional components and local state with a shared authenticated API client. All operational workspace modules now use backend APIs; Overview still contains illustrative fallback data.
 - Lucide icons via `lucide-react`.
 - Responsive desktop, tablet, and mobile layouts.
 - Search, filters, table/card view switching, create/edit dialogs with controlled fields, record-detail modals, toasts, calendar navigation, and responsive account/session controls.
