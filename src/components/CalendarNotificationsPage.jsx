@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { calendarApi, notificationApi } from "../api/client";
 import { SkeletonBlock } from "./ui/Skeleton";
+import { useConfirmDialog } from "../context/ConfirmDialogContext";
 import { useAuth } from "../context/AuthContext";
 
 const NOTIFICATION_PAGE_SIZE = 20;
@@ -547,6 +548,7 @@ export function NotificationsPage({ unreadCount = 0, onNotificationsChanged, not
 }
 
 export function SettingsPage({ notify }) {
+  const confirmDialog = useConfirmDialog();
   const { user, logout, logoutAll } = useAuth();
   const [busy, setBusy] = useState("");
 
@@ -555,7 +557,8 @@ export function SettingsPage({ notify }) {
   const username = user?.username || "Not available";
 
   async function signOutEverywhere() {
-    if (typeof window !== "undefined" && !window.confirm("Sign out of all active sessions for this account?")) return;
+    const confirmed = await confirmDialog({ title: "Sign out everywhere?", message: "Sign out of all active sessions for this account?", details: "This revokes your active sessions on other devices. You may need to sign in again.", confirmLabel: "Sign out everywhere", tone: "danger" });
+    if (!confirmed) return;
     setBusy("all");
     try {
       await logoutAll();
