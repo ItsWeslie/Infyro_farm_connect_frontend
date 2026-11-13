@@ -359,6 +359,7 @@ export default function CropManagementPage({
       refreshData();
       notify(editingType ? "Crop type updated" : "Crop type created");
     } catch (error) {
+      notify(error.message || "Unable to save this crop type.", "error");
       setTypeError(error.message || "Unable to save this crop type.");
     } finally {
       setTypeSaving(false);
@@ -379,6 +380,7 @@ export default function CropManagementPage({
       refreshData();
       notify("Crop type deleted");
     } catch (error) {
+      notify(error.message || "Unable to delete this crop type.", "error");
       setPageError(error.message || "Unable to delete this crop type.");
     } finally {
       setDeletingId(null);
@@ -471,6 +473,7 @@ export default function CropManagementPage({
       refreshData();
       notify(editingPlanting ? "Planting updated" : "Planting created");
     } catch (error) {
+      notify(error.message || "Unable to save this planting.", "error");
       setPlantingError(error.message || "Unable to save this planting.");
     } finally {
       setPlantingSaving(false);
@@ -485,6 +488,7 @@ export default function CropManagementPage({
       refreshData();
       notify("Planting status changed to " + humanize(nextStatus));
     } catch (error) {
+      notify(error.message || "Unable to change planting status.", "error");
       setPageError(error.message || "Unable to change planting status.");
     }
   }
@@ -498,6 +502,7 @@ export default function CropManagementPage({
       refreshData();
       notify("Planting deleted");
     } catch (error) {
+      notify(error.message || "Unable to delete this planting.", "error");
       setPageError(error.message || "Unable to delete this planting.");
     } finally {
       setDeletingId(null);
@@ -565,6 +570,7 @@ export default function CropManagementPage({
       setActivityReload((value) => value + 1);
       notify(editingActivity ? "Activity updated" : "Activity logged");
     } catch (error) {
+      notify(error.message || "Unable to save this activity.", "error");
       setActivityFormError(error.message || "Unable to save this activity.");
     } finally {
       setActivitySaving(false);
@@ -579,6 +585,7 @@ export default function CropManagementPage({
       setActivityReload((value) => value + 1);
       notify("Activity status changed to " + humanize(nextStatus));
     } catch (error) {
+      notify(error.message || "Unable to change activity status.", "error");
       setActivityError(error.message || "Unable to change activity status.");
     }
   }
@@ -592,6 +599,7 @@ export default function CropManagementPage({
       setActivityReload((value) => value + 1);
       notify("Activity deleted");
     } catch (error) {
+      notify(error.message || "Unable to delete this activity.", "error");
       setActivityError(error.message || "Unable to delete this activity.");
     } finally {
       setDeletingId(null);
