@@ -93,3 +93,8 @@ The landing page and authenticated workspace share the `ifc-landing-theme` prefe
 - Use shared skeleton primitives for initial page and section loading. Keep already-rendered data visible during background revalidation and use action-level loading states for mutations.
 - Avoid page-level manual refresh controls. Retain contextual Retry actions only for recoverable loading failures.
 - Keep page modules in separate files and extract reusable UI into focused component files rather than growing a single application component.
+
+
+### In-app destructive-action confirmation
+
+Destructive workspace actions use the shared confirmation dialog from `src/context/ConfirmDialogContext.jsx` and `src/components/ui/ConfirmDialog.jsx`, rather than browser-native confirmation prompts. The dialog supports contextual titles and descriptions, explicit action labels, danger/warning treatments, Escape-to-cancel, backdrop-to-cancel, and light/dark theme styling. Farm, field, crop type, planting, activity deletion, expense/harvest voiding, and sign-out-everywhere actions all use this shared confirmation flow.

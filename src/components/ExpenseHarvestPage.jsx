@@ -19,6 +19,7 @@ import {
 } from "../api/client";
 import { ExpenseCategory, HarvestUnit } from "../types/enums";
 import { SkeletonBlock } from "./ui/Skeleton";
+import { useConfirmDialog } from "../context/ConfirmDialogContext";
 
 const CATEGORIES = Object.values(ExpenseCategory);
 const UNITS = Object.values(HarvestUnit);
@@ -129,6 +130,7 @@ function ExpensePage({
   setSelectedFarm,
   notify,
 }) {
+  const confirmDialog = useConfirmDialog();
   const [fields, setFields] = useState([]);
   const [plantings, setPlantings] = useState([]);
   const [expenses, setExpenses] = useState([]);
@@ -280,7 +282,8 @@ function ExpensePage({
 
   async function voidExpense(expense) {
     if (expense.voided) return;
-    if (!window.confirm("Void this expense? It will remain in the audit history and will no longer count toward active totals.")) return;
+    const confirmed = await confirmDialog({ title: "Void this expense?", message: "This expense will be marked as voided.", details: "It will remain in audit history and will no longer count toward active expense totals.", confirmLabel: "Void expense", tone: "warning" });
+    if (!confirmed) return;
     setVoidingId(expense.id);
     setPageError("");
     try {
@@ -441,6 +444,7 @@ function HarvestPage({
   onNavigate,
   notify,
 }) {
+  const confirmDialog = useConfirmDialog();
   const [fields, setFields] = useState([]);
   const [plantings, setPlantings] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -617,7 +621,8 @@ function HarvestPage({
 
   async function voidRecord(record) {
     if (record.voided) return;
-    if (!window.confirm("Void this harvest record? It will remain in the history and no longer count as an active harvest.")) return;
+    const confirmed = await confirmDialog({ title: "Void this harvest record?", message: "This harvest entry will be marked as voided.", details: "It will remain in the harvest history but will no longer count toward active yield totals.", confirmLabel: "Void record", tone: "warning" });
+    if (!confirmed) return;
     setVoidingId(record.id);
     setRecordsError("");
     try {

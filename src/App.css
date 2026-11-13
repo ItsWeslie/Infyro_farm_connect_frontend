@@ -1093,3 +1093,35 @@ html[data-ifc-theme="dark"]{--ifc-skeleton-base:#263b2c;--ifc-skeleton-highlight
 
 html[data-ifc-theme="dark"] .ifc-toast{--line:#3a513e;--surface:#1d3324;--text:#e7efdf;background:#1d3324;border-color:#3a513e;color:#e7efdf;box-shadow:0 14px 44px rgba(0,0,0,.38)}
 html[data-ifc-theme="dark"] .ifc-skeleton-card{--line:#344a38;--surface:#1d3324;background:#1d3324;border-color:#344a38}
+
+
+/* Shared in-app destructive action confirmation */
+.ifc-confirm-overlay{position:fixed;inset:0;z-index:2100;display:grid;place-items:center;padding:20px;background:rgba(17,31,20,.52);backdrop-filter:blur(4px);animation:ifc-confirm-fade .16s ease-out}
+.ifc-confirm-dialog{width:min(100%,460px);display:grid;grid-template-columns:48px minmax(0,1fr);column-gap:15px;row-gap:22px;padding:25px;border:1px solid #e5eadf;border-radius:17px;background:#fff;color:#263c2b;box-shadow:0 24px 80px rgba(12,27,16,.28);animation:ifc-confirm-rise .18s cubic-bezier(.2,.7,.2,1)}
+.ifc-confirm-icon{width:46px;height:46px;border-radius:14px;display:grid;place-items:center}
+.ifc-confirm-icon-danger{background:#fff0ed;color:#bd4439}
+.ifc-confirm-icon-warning{background:#fff5df;color:#a96c13}
+.ifc-confirm-icon-neutral{background:#edf4e8;color:#4e8052}
+.ifc-confirm-copy{min-width:0;padding-top:1px}
+.ifc-confirm-copy h2{margin:0 0 8px;color:#263c2b;font:800 16px/1.3 Manrope,sans-serif;letter-spacing:-.02em}
+.ifc-confirm-copy p{margin:0;color:#647367;font-size:12px;line-height:1.65}
+.ifc-confirm-copy .ifc-confirm-details{margin-top:7px;color:#8a968c;font-size:11px}
+.ifc-confirm-actions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:9px;padding-top:3px}
+.ifc-confirm-actions button{min-height:38px;padding:0 15px;border-radius:9px;font:700 11px Manrope,sans-serif;cursor:pointer}
+.ifc-confirm-submit{border:1px solid transparent;color:#fff}
+.ifc-confirm-submit-danger{background:#b84439;border-color:#a63b32}
+.ifc-confirm-submit-warning{background:#a96c13;border-color:#955d0b}
+.ifc-confirm-submit-neutral{background:#315f38;border-color:#294f30}
+.ifc-confirm-actions button:focus-visible{outline:3px solid rgba(88,139,77,.45);outline-offset:2px}
+@keyframes ifc-confirm-fade{from{opacity:0}to{opacity:1}}
+@keyframes ifc-confirm-rise{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:520px){.ifc-confirm-dialog{padding:20px;grid-template-columns:40px minmax(0,1fr);column-gap:12px}.ifc-confirm-icon{width:40px;height:40px;border-radius:12px}.ifc-confirm-actions{display:grid;grid-template-columns:1fr 1fr}.ifc-confirm-actions button{width:100%}}
+@media(prefers-reduced-motion:reduce){.ifc-confirm-overlay,.ifc-confirm-dialog{animation:none}}
+html[data-ifc-theme="dark"] .ifc-confirm-overlay{background:rgba(0,0,0,.68)}
+html[data-ifc-theme="dark"] .ifc-confirm-dialog{background:#1d3324;color:#e7efdf;border-color:#3a513e;box-shadow:0 24px 80px rgba(0,0,0,.48)}
+html[data-ifc-theme="dark"] .ifc-confirm-copy h2{color:#e7efdf}
+html[data-ifc-theme="dark"] .ifc-confirm-copy p{color:#c0cfba}
+html[data-ifc-theme="dark"] .ifc-confirm-copy .ifc-confirm-details{color:#9eae98}
+html[data-ifc-theme="dark"] .ifc-confirm-icon-danger{background:#4a2926;color:#ffaaa0}
+html[data-ifc-theme="dark"] .ifc-confirm-icon-warning{background:#49391f;color:#f6cb78}
+html[data-ifc-theme="dark"] .ifc-confirm-icon-neutral{background:#2b412d;color:#c5e0b8}
