@@ -69,7 +69,7 @@ function NotificationTypeIcon({ type }) {
   return <Bell size={17} />;
 }
 
-export function CalendarPage() {
+export function CalendarPage({ notify }) {
   const [monthCursor, setMonthCursor] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1);
@@ -99,6 +99,7 @@ export function CalendarPage() {
         if (!active) return;
         setEvents([]);
         setError(requestError.message || "Unable to load calendar events.");
+        if (notify) notify(requestError.message || "Unable to load calendar events.", "error");
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -106,7 +107,7 @@ export function CalendarPage() {
     return () => {
       active = false;
     };
-  }, [from, to, retryKey]);
+  }, [from, to, retryKey, notify]);
 
   useEffect(() => {
     const selected = fromDateKey(selectedDate);
@@ -342,6 +343,7 @@ export function NotificationsPage({ unreadCount = 0, onNotificationsChanged, not
       setHasMore(rows.length === NOTIFICATION_PAGE_SIZE);
     } catch (requestError) {
       setError(requestError.message || "Unable to load notifications.");
+      if (notify) notify(requestError.message || "Unable to load notifications.", "error");
     } finally {
       setLoading(false);
     }
@@ -389,7 +391,7 @@ export function NotificationsPage({ unreadCount = 0, onNotificationsChanged, not
       await notifySummaryChanged();
       if (notify) notify("Notification marked as read");
     } catch (requestError) {
-      if (notify) notify(requestError.message || "Could not mark this notification as read.");
+      if (notify) notify(requestError.message || "Could not mark this notification as read.", "error");
     } finally {
       setPendingId(null);
     }
@@ -556,7 +558,7 @@ export function SettingsPage({ notify }) {
     try {
       await logoutAll();
     } catch (error) {
-      if (notify) notify(error.message || "The local session was cleared, but the server could not confirm every session was revoked.");
+      if (notify) notify(error.message || "The local session was cleared, but the server could not confirm every session was revoked.", "error");
     } finally {
       setBusy("");
     }
