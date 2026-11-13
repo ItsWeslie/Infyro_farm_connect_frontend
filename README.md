@@ -26,8 +26,8 @@ npm run preview
 - **Crop management:** live farm-scoped crop library and field plantings, with create/edit/delete, area validation, planting dates, expected harvest dates, and lifecycle status transitions.
 - **Activities:** live planting-specific activity journal with create/edit, crop-stage notes, nutrition/water and pest-control notes, and lifecycle status transitions.
 - **Calendar:** interactive month grid and agenda view with sample events.
-- **Expenses:** sample expense ledger, totals, category and status presentation.
-- **Harvest records:** sample harvest history, yield and grade details.
+- **Expenses:** live farm-scoped ledger with create, category/planting association, search, filters, and soft voiding.
+- **Harvest records:** live planting-scoped yield log with date, quantity, unit, notes, search, filters, and soft voiding.
 - **Notifications:** notification list and mark-all-read interaction.
 - **Settings:** local preferences for units, weather, reminders and weekly summary.
 
@@ -37,7 +37,7 @@ npm run preview
 - Lucide icons via `lucide-react`.
 - Responsive desktop, tablet, and mobile layouts.
 - Search, filters, table/card view switching, create/edit dialogs with controlled fields, record-detail modals, calendar event composer, toasts, calendar navigation, and settings toggles.
-- Crop management and Activities now use backend APIs. Overview still contains illustrative crop and summary fallback values; Calendar, Expenses, Harvest records, Notifications, and Settings remain prototype/sample workflows unless explicitly connected below.
+- Crop management, Activities, Expenses, and Harvest records now use backend APIs. Overview still contains illustrative crop and summary fallback values; Calendar, Notifications, and Settings remain prototype/sample workflows.
 - Earth-inspired colors, accessible focus states, and reduced-motion support.
 
 ## Backend configuration
@@ -53,7 +53,7 @@ Set `VITE_API_BASE_URL` to the Spring Boot backend origin (for example, `http://
 - A protected request that receives 401 triggers one shared refresh attempt and one retry. If that fails, the app emits `ifc_auth_expired` and clears the local session.
 - Use HTTPS and secure cookies in production. For cross-site frontend/backend deployments, configure compatible SameSite/Secure cookie settings and the exact CORS origin.
 
-The API client includes route mappings for farms, fields, crop types, crop plantings, crop activities, expenses, harvest records, summaries, calendar events, and notifications. Farms/Fields and Crop management/Activities are currently wired to live data; the remaining workspace modules are still being migrated.
+The API client includes route mappings for farms, fields, crop types, crop plantings, crop activities, expenses, harvest records, summaries, calendar events, and notifications. Farms/Fields, Crop management/Activities, Expenses, and Harvest records are currently wired to live data; Calendar, Notifications, and Settings are still being migrated.
 
 ## Current scope
 
@@ -63,4 +63,8 @@ Crop management is scoped to the currently selected farm. Crop types are created
 
 Activities are loaded for the selected planting from `/ifc/v1/crop-activities/planting/{plantingId}`. Activity entries send the backend's day number, crop stage, daily activity, optional nutrition/water notes, optional pest/disease notes, optional general notes, and status. Status changes and deletion follow the backend's allowed transitions and planned-only delete rule.
 
-Phase 1 establishes authentication and the shared API client; Phase 2 connects Farms and Fields; Phase 3 connects Crop Types, Plantings, and Activities. Overview still has illustrative sample crop rows and the income chart remains illustrative until a backend sales/revenue module exists. Calendar, Expenses, Harvest records, Notifications, and Settings remain future integration work.
+Expenses are loaded per farm from `/ifc/v1/farms/{farmId}/expenses`. Creating an expense sends `cropPlantingId` (optional), `amount`, `expenseDate`, `category`, and `description`. Dates cannot be in the future; amount supports up to two decimal places. The backend does not expose an update endpoint: the UI uses the DELETE route to void an entry, retaining it for audit history, and users create a replacement to correct a record.
+
+Harvest records are loaded for the selected planting from `/ifc/v1/crop-plantings/{plantingId}/harvest-records`. Creating a record sends `harvestDate`, `quantity`, `unit`, and optional `notes`. The backend permits new records only for Active or Harvesting plantings, and harvest dates must be on or after planting date and not in the future. The DELETE route voids a record rather than physically deleting it; the UI retains voided entries and excludes them from active yield totals. Quantities are grouped by unit and are never added across unlike units.
+
+Phase 1 establishes authentication and the shared API client; Phase 2 connects Farms and Fields; Phase 3 connects Crop Types, Plantings, and Activities; Phase 4 connects Expenses and Harvest Records. Overview still has illustrative sample crop rows and the income chart remains illustrative until a backend sales/revenue module exists. Calendar, Notifications, and Settings remain future integration work.
