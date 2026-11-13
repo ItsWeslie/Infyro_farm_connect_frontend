@@ -9,9 +9,7 @@ import {
   Check,
   ChevronDown,
   CircleHelp,
-  CloudSun,
   Command,
-  Flower2,
   LayoutDashboard,
   Leaf,
   Menu,
@@ -30,12 +28,8 @@ import {
   CircleUserRound,
   Settings,
   LogOut,
-  CheckCheck,
-  Clock3,
-  Droplets,
   Sun,
   Wallet,
-  TrendingUp,
   Eye,
   LogIn,
 } from "lucide-react";
@@ -548,15 +542,6 @@ function App() {
               </kbd>
             </label>
             <div className="top-divider" />
-            <div className="weather-chip">
-              <span className="weather-icon">
-                <CloudSun size={20} />
-              </span>
-              <span>
-                <strong>29°C</strong>
-                <small>Mostly sunny</small>
-              </span>
-            </div>
             <div className="popover-anchor">
               <button
                 className={
