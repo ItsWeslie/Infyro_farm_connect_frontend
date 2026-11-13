@@ -245,6 +245,7 @@ function App() {
         setFarms([]);
         setSelectedFarm(null);
         setFarmsError(error.message || "Unable to load your farms.");
+        notify(error.message || "Unable to load your farms.", "error");
         setIsLiveConnected(false);
       })
       .finally(() => {
@@ -252,7 +253,7 @@ function App() {
       });
 
     return () => { current = false; };
-  }, [isAuthenticated]);
+  }, [isAuthenticated, notify]);
 
   if (loading || !sessionMinimumElapsed) {
     return (
@@ -668,6 +669,7 @@ function App() {
               farmCount={farms.length}
               onAdd={() => setActive("Crop management")}
               onNavigate={setActive}
+              notify={notify}
             />
           ) : active === "Farms" || active === "Fields" ? (
             <FarmsFieldsPage
