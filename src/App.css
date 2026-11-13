@@ -224,3 +224,173 @@
   .expense4-yield-summary{align-items:flex-start;flex-direction:column}
   .expense4-yield-summary>div{justify-content:flex-start}
 }
+
+
+/* Phase 5: live calendar, notification inbox, and account settings */
+.ifc-live-page{display:flex;flex-direction:column;gap:18px;min-width:0}
+.ifc-live-page-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:18px}
+.ifc-live-page-heading h1{font:800 clamp(25px,2.2vw,32px)/1.2 Manrope,sans-serif;letter-spacing:-1.25px;color:#263c2e;margin:9px 0 5px}
+.ifc-live-page-heading p{font-size:12px;color:#89968b;margin:0}
+.ifc-live-heading-meta{display:flex;align-items:center;gap:12px;color:#89968b;font-size:10px;white-space:nowrap}
+.ifc-live-status{display:inline-flex;align-items:center;gap:6px;color:#56815b;font-size:10px;font-weight:700}
+.ifc-live-status i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#6ca76d;box-shadow:0 0 0 3px #6ca76d20}
+.ifc-live-heading-actions{display:flex;align-items:center;gap:9px}
+.ifc-live-heading-actions .button-primary,.ifc-live-heading-actions .button-secondary{min-height:37px}
+.ifc-calendar-card,.ifc-notifications-card,.ifc-settings-card{border:1px solid var(--line);border-radius:13px;background:#fff;min-width:0}
+.ifc-calendar-card{overflow:hidden}
+.ifc-calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px;border-bottom:1px solid #edf0eb}
+.ifc-calendar-month-title{display:flex;align-items:center;gap:11px;min-width:190px}
+.ifc-calendar-icon,.ifc-settings-icon{width:38px;height:38px;border-radius:11px;background:#edf4e8;color:#4e8052;display:grid;place-items:center;flex-shrink:0}
+.ifc-calendar-month-title h2{font:800 17px Manrope,sans-serif;color:#314637;margin:0}
+.ifc-calendar-month-title p{font-size:10px;color:#929e94;margin:4px 0 0}
+.ifc-calendar-controls{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.ifc-calendar-filter{display:flex;align-items:center;gap:7px;color:#8b978d;font-size:10px}
+.ifc-calendar-filter select{border:1px solid #e8ede5;border-radius:7px;background:#fff;padding:8px 23px 8px 9px;color:#536457;font-size:10px;max-width:150px}
+.ifc-calendar-month-nav{display:flex;align-items:center;gap:4px}
+.ifc-calendar-month-nav .icon-button{width:31px;height:31px;border:1px solid #edf0eb;background:#fff}
+.ifc-calendar-month-nav .button-secondary{padding:8px 10px;font-size:10px}
+.ifc-calendar-view-toggle,.ifc-notification-filters{display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid #edf0eb;border-radius:8px;background:#f8faf6}
+.ifc-calendar-view-toggle button,.ifc-notification-filters button{border:0;background:transparent;color:#879389;border-radius:6px;padding:7px 10px;font-size:10px}
+.ifc-calendar-view-toggle button.selected,.ifc-notification-filters button.selected{background:#fff;color:#326345;font-weight:700;box-shadow:0 1px 3px #233b2a12}
+.ifc-calendar-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;min-width:0}
+.ifc-calendar-main{padding:15px 17px 13px;min-width:0}
+.ifc-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid #edf0eb;border-left:1px solid #edf0eb}
+.ifc-calendar-weekday{min-height:34px;display:grid;place-items:center;background:#f8faf6;border-right:1px solid #edf0eb;border-bottom:1px solid #edf0eb;font-size:9px;font-weight:700;letter-spacing:.5px;color:#8b988d;text-transform:uppercase}
+.ifc-calendar-blank{min-height:104px;background:#fafbf9;border-right:1px solid #edf0eb;border-bottom:1px solid #edf0eb}
+.ifc-calendar-day{min-width:0;min-height:104px;border:0;border-right:1px solid #edf0eb;border-bottom:1px solid #edf0eb;background:#fff;text-align:left;padding:8px 7px 6px;display:flex;flex-direction:column;gap:6px;color:#536457;transition:background .15s,box-shadow .15s}
+.ifc-calendar-day:hover{background:#f8fbf6}
+.ifc-calendar-day.is-selected{background:#f0f6ec;box-shadow:inset 0 0 0 2px #7ba36e}
+.ifc-calendar-day.is-today .ifc-calendar-day-number{background:#286044;color:#fff}
+.ifc-calendar-day-number{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:700;color:#506154}
+.ifc-calendar-day-events{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ifc-calendar-marker{display:flex;align-items:center;gap:4px;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:3px 4px;border-radius:4px;font-size:8px;font-weight:600}
+.ifc-calendar-marker i,.ifc-calendar-legend i{width:5px;height:5px;border-radius:50%;flex-shrink:0;background:#619767}
+.ifc-calendar-marker.harvest{background:#fbf2df;color:#987335}
+.ifc-calendar-marker.harvest i,.ifc-calendar-legend i.harvest{background:#c49a4f}
+.ifc-calendar-marker.planting{background:#edf4e8;color:#4c774e}
+.ifc-calendar-marker.planting i,.ifc-calendar-legend i.planting{background:#619767}
+.ifc-calendar-day-events small{font-size:8px;color:#89958c;padding-left:3px}
+.ifc-calendar-legend{display:flex;align-items:center;gap:15px;padding:13px 2px 1px;color:#859287;font-size:9px}
+.ifc-calendar-legend span{display:flex;align-items:center;gap:6px}
+.ifc-calendar-day-panel{border-left:1px solid #edf0eb;background:#fbfcfa;padding:20px 17px;min-width:0}
+.ifc-calendar-day-panel-heading{padding-bottom:15px;border-bottom:1px solid #edf0eb;margin-bottom:13px}
+.ifc-calendar-day-panel-heading h3{font:800 16px Manrope,sans-serif;color:#344a38;margin:7px 0 4px}
+.ifc-calendar-day-panel-heading p{font-size:10px;color:#89968b;margin:0}
+.ifc-calendar-panel-state,.ifc-calendar-panel-empty,.ifc-notification-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;text-align:center;padding:35px 16px;color:#94a095}
+.ifc-calendar-panel-empty svg,.ifc-notification-state>svg{color:#a4b89b}
+.ifc-calendar-panel-empty strong,.ifc-notification-state strong{font-size:11px;color:#596b5d}
+.ifc-calendar-panel-empty span,.ifc-notification-state span{font-size:10px;line-height:1.6;max-width:240px}
+.ifc-calendar-event-card{display:flex;align-items:flex-start;gap:9px;padding:12px 0;border-bottom:1px solid #edf0eb}
+.ifc-calendar-event-icon,.ifc-notification-icon{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex-shrink:0}
+.ifc-calendar-event-icon.planting,.ifc-notification-icon.planting{background:#edf4e8;color:#548052}
+.ifc-calendar-event-icon.harvest,.ifc-notification-icon.harvest{background:#fbf2df;color:#ad843e}
+.ifc-calendar-event-copy{min-width:0;flex:1}
+.ifc-calendar-event-copy h4{font:700 11px Manrope,sans-serif;color:#3d5141;line-height:1.45;margin:5px 0}
+.ifc-calendar-event-copy>div{font-size:9px;color:#78877b;margin:3px 0}
+.ifc-calendar-event-copy>div strong{color:#516653}
+.ifc-calendar-event-field{display:flex;align-items:center;gap:4px}
+.ifc-calendar-event-copy>small{font-size:9px;color:#9aa49b}
+.ifc-event-type{display:inline-flex;align-items:center;border-radius:5px;padding:4px 6px;font-size:8px;font-weight:700;letter-spacing:.3px}
+.ifc-event-type.planting{background:#edf4e8;color:#4d794e}
+.ifc-event-type.harvest{background:#fbf2df;color:#9a7635}
+.ifc-calendar-agenda{padding:5px 19px}
+.ifc-calendar-agenda-row{width:100%;display:flex;align-items:center;gap:13px;text-align:left;border:0;border-bottom:1px solid #edf0eb;background:#fff;padding:13px 3px;color:#879489}
+.ifc-calendar-agenda-row:hover{background:#fbfcfa}
+.ifc-calendar-agenda-date{display:flex;flex-direction:column;align-items:center;justify-content:center;width:38px;flex-shrink:0}
+.ifc-calendar-agenda-date strong{font:800 17px Manrope,sans-serif;color:#344a38}
+.ifc-calendar-agenda-date span{font-size:9px;color:#909b91;text-transform:uppercase}
+.ifc-calendar-agenda-copy{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
+.ifc-calendar-agenda-copy strong{font-size:11px;color:#3f5343}
+.ifc-calendar-agenda-copy span{font-size:9px;color:#8d998f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ifc-calendar-footnote,.ifc-notifications-footnote{display:flex;align-items:flex-start;gap:7px;padding:12px 19px;border-top:1px solid #edf0eb;background:#fbfcfa;color:#8d998f;font-size:9px;line-height:1.55}
+.ifc-calendar-footnote svg{flex-shrink:0;margin-top:1px;color:#a3ad9f}
+.ifc-live-error{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 15px;margin:12px 17px 0;border-radius:8px;background:#fff7f1;border:1px solid #f0dfd2;color:#9a6042;font-size:10px}
+.ifc-live-error .button-secondary{padding:7px 10px;font-size:10px}
+.ifc-notification-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.ifc-notification-stats article{padding:13px 15px;border:1px solid var(--line);border-radius:11px;display:flex;flex-direction:column;gap:4px}
+.ifc-notification-stats article span{font-size:10px;color:#839085}
+.ifc-notification-stats article strong{font:800 23px Manrope,sans-serif;color:#2f4736}
+.ifc-notification-stats article small{font-size:9px;color:#a0aaa1}
+.ifc-notifications-card{overflow:hidden}
+.ifc-notifications-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 17px;border-bottom:1px solid #edf0eb}
+.ifc-notifications-toolbar .table-search{max-width:330px;flex:1}
+.ifc-notification-list{padding:0 17px}
+.ifc-notification-item{display:flex;align-items:center;gap:12px;padding:15px 4px;border-bottom:1px solid #eff1ed;min-width:0}
+.ifc-notification-item.is-unread{background:linear-gradient(90deg,#f8fbf5 0%,#fff 72%)}
+.ifc-notification-icon{width:38px;height:38px}
+.ifc-notification-copy{min-width:0;flex:1}
+.ifc-notification-title-line{display:flex;align-items:center;gap:9px;min-width:0}
+.ifc-notification-title-line h3{font:700 12px Manrope,sans-serif;color:#3a4f3e;margin:0;overflow:hidden;text-overflow:ellipsis}
+.ifc-notification-item.is-read .ifc-notification-title-line h3{color:#718074;font-weight:600}
+.ifc-unread-indicator{font-size:8px;font-weight:700;color:#4d7b50;background:#edf4e8;border-radius:5px;padding:3px 5px;flex-shrink:0}
+.ifc-notification-meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:7px;font-size:9px;color:#929d93}
+.ifc-notification-meta>span:last-child{display:inline-flex;align-items:center;gap:4px}
+.ifc-notification-action{flex-shrink:0}
+.ifc-notification-action .button-secondary{padding:7px 9px;font-size:9px}
+.ifc-read-label{display:inline-flex;align-items:center;gap:4px;color:#839187;font-size:9px}
+.ifc-notifications-load-more{display:flex;justify-content:center;padding:16px}
+.ifc-notification-state{min-height:220px}
+.ifc-notification-state .button-secondary{font-size:10px}
+.ifc-notifications-footnote{padding:12px 17px}
+.ifc-notification-preview-row{position:relative;cursor:pointer;text-align:left;border:0;background:#fff;width:100%;color:inherit}
+.ifc-notification-preview-row:hover{background:#f8faf6}
+.ifc-notification-preview-row.is-read{opacity:.78}
+.ifc-preview-unread-dot{width:6px;height:6px;border-radius:50%;background:#6a9a62;flex-shrink:0;margin-left:auto}
+.ifc-notification-preview-state{padding:15px 5px;color:#8a968c;font-size:10px;line-height:1.5}
+.ifc-notification-preview-state button{display:block;border:0;background:none;padding:7px 0 0;color:#3c754b;font-size:10px;font-weight:700}
+.ifc-settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.ifc-settings-card{padding:19px}
+.ifc-settings-card-heading{display:flex;align-items:center;gap:11px;padding-bottom:15px;border-bottom:1px solid #edf0eb}
+.ifc-settings-card-heading h2{font:800 14px Manrope,sans-serif;color:#344a38;margin:0}
+.ifc-settings-card-heading p{font-size:10px;color:#929e94;margin:4px 0 0}
+.ifc-account-details{margin:0}
+.ifc-account-details>div{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 1px;border-bottom:1px solid #f0f2ed}
+.ifc-account-details dt{font-size:10px;color:#89968b}
+.ifc-account-details dd{margin:0;text-align:right;font-size:10px;color:#46594a;font-weight:600;overflow-wrap:anywhere}
+.ifc-session-action{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0;border-bottom:1px solid #f0f2ed}
+.ifc-session-action>div{display:flex;flex-direction:column;gap:4px}
+.ifc-session-action strong{font-size:11px;color:#46594a}
+.ifc-session-action span{font-size:9px;color:#929e94}
+.ifc-session-action .button-primary,.ifc-session-action .button-secondary{font-size:9px;padding:8px 10px}
+.ifc-settings-note{margin-top:15px;padding:11px 12px;border-radius:8px;background:#f7f9f5;color:#88958a;font-size:9px;line-height:1.6}
+.ifc-spinning{animation:ifc-spin 1s linear infinite}
+@keyframes ifc-spin{to{transform:rotate(360deg)}}
+@media(max-width:1150px){
+  .ifc-calendar-toolbar{align-items:flex-start;flex-direction:column}
+  .ifc-calendar-controls{justify-content:flex-start;width:100%}
+  .ifc-calendar-layout{grid-template-columns:minmax(0,1fr) 260px}
+  .ifc-calendar-day,.ifc-calendar-blank{min-height:90px}
+}
+@media(max-width:850px){
+  .ifc-calendar-layout{grid-template-columns:1fr}
+  .ifc-calendar-day-panel{border-left:0;border-top:1px solid #edf0eb}
+  .ifc-settings-grid{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  .ifc-live-page-heading{align-items:flex-start;flex-direction:column}
+  .ifc-live-heading-actions{width:100%}
+  .ifc-live-heading-actions button{flex:1}
+  .ifc-live-heading-meta{flex-wrap:wrap}
+  .ifc-calendar-toolbar{padding:14px}
+  .ifc-calendar-controls{gap:7px}
+  .ifc-calendar-filter{width:100%;justify-content:space-between}
+  .ifc-calendar-filter select{flex:1;max-width:none}
+  .ifc-calendar-main{padding:10px}
+  .ifc-calendar-day,.ifc-calendar-blank{min-height:72px;padding:5px 3px}
+  .ifc-calendar-day-number{width:20px;height:20px;font-size:9px}
+  .ifc-calendar-marker{font-size:7px;padding:2px}
+  .ifc-calendar-marker:not(:first-child){display:none}
+  .ifc-calendar-day-panel{padding:15px}
+  .ifc-notification-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .ifc-notification-stats article{padding:10px}
+  .ifc-notification-stats article span{font-size:8px}
+  .ifc-notification-stats article strong{font-size:18px}
+  .ifc-notification-stats article small{font-size:8px}
+  .ifc-notifications-toolbar{align-items:stretch;flex-direction:column}
+  .ifc-notifications-toolbar .table-search{max-width:none;width:100%}
+  .ifc-notification-item{align-items:flex-start}
+  .ifc-notification-action{align-self:center}
+  .ifc-notification-meta{gap:6px}
+  .ifc-session-action{align-items:flex-start;flex-direction:column}
+  .ifc-settings-card{padding:15px}
+}
