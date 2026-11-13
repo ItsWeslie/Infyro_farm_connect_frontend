@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   Building2,
@@ -75,25 +75,34 @@ export default function FarmsFieldsPage({
   const [fieldsError, setFieldsError] = useState("");
   const [fieldReload, setFieldReload] = useState(0);
 
-  const loadFields = useCallback(async () => {
-    if (!selectedFarm?.id) {
+  useEffect(() => {
+    if (isFarmsPage) return undefined;
+    const farmId = selectedFarm?.id;
+    let current = true;
+    if (!farmId) {
       setFields([]);
       setFieldsLoading(false);
       setFieldsError("");
-      return;
+      return undefined;
     }
+
     setFieldsLoading(true);
     setFieldsError("");
-    try {
-      const response = await fieldApi.getByFarm(selectedFarm.id);
-      setFields(unwrapList(response));
-    } catch (error) {
-      setFields([]);
-      setFieldsError(error.message || "Unable to load fields for this farm.");
-    } finally {
-      setFieldsLoading(false);
-    }
-  }, [selectedFarm?.id]);
+    fieldApi.getByFarm(farmId)
+      .then((response) => {
+        if (current) setFields(unwrapList(response));
+      })
+      .catch((error) => {
+        if (!current) return;
+        setFields([]);
+        setFieldsError(error.message || "Unable to load fields for this farm.");
+      })
+      .finally(() => {
+        if (current) setFieldsLoading(false);
+      });
+
+    return () => { current = false; };
+  }, [isFarmsPage, selectedFarm?.id, fieldReload]);
 
   useEffect(() => {
     if (!isFarmsPage) loadFields();
@@ -175,7 +184,8 @@ export default function FarmsFieldsPage({
             totalArea: parsedArea,
           });
         }
-        await Promise.all([loadFields(), refreshFarms(selectedFarm.id)]);
+        await refreshFarms(selectedFarm.id);
+        setFieldReload((value) => value + 1);
         notify(editing ? "Field updated successfully" : "Field created successfully");
       }
       setDialogOpen(false);
@@ -213,7 +223,8 @@ export default function FarmsFieldsPage({
     setFieldsError("");
     try {
       await fieldApi.delete(field.id);
-      await Promise.all([loadFields(), refreshFarms(selectedFarm?.id)]);
+      await refreshFarms(selectedFarm?.id);
+      setFieldReload((value) => value + 1);
       notify("Field deleted successfully");
     } catch (error) {
       setFieldsError(error.message || "Unable to delete this field.");
