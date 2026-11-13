@@ -9,7 +9,7 @@ import {
   RefreshCw,
   Search,
   Sprout,
-  Trash2,
+  Ban,
   X,
 } from "lucide-react";
 import {
@@ -386,7 +386,7 @@ function ExpensePage({
                       <td><RecordStatus voided={expense.voided} /></td>
                       <td>
                         <button type="button" className="ff-icon-button ff-danger" aria-label={"Void expense " + expense.id} disabled={expense.voided || voidingId === expense.id} onClick={() => voidExpense(expense)}>
-                          <Trash2 size={14} />
+                          <Ban size={14} />
                         </button>
                       </td>
                     </tr>
@@ -420,6 +420,7 @@ function ExpensePage({
             <label className="form-label">Category<select className="form-select" value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value })}>{CATEGORIES.map((category) => <option key={category} value={category}>{humanize(category)}</option>)}</select></label>
             <label className="form-label">Related planting (optional)<select className="form-select" value={form.cropPlantingId} onChange={(event) => setForm({ ...form, cropPlantingId: event.target.value })}><option value="">Farm-wide expense</option>{farmPlantings.map((planting) => <option key={planting.id} value={planting.id}>{plantingLabel(planting, fieldById)}</option>)}</select></label>
             <div className="dialog-note"><Leaf size={16} /><span>Linking a planting is optional. The backend keeps this expense attached to the selected farm either way.</span></div>
+            <div className="dialog-note"><CheckCircle2 size={16} /><span>The backend does not support editing expense entries. Void an incorrect entry and create a replacement; the audit record is retained.</span></div>
             <div className="dialog-actions">
               <button type="button" className="button-secondary" disabled={saving} onClick={() => setDialogOpen(false)}>Cancel</button>
               <button type="submit" className="button-primary" disabled={saving}><Plus size={15} /> {saving ? "Saving…" : "Save expense"}</button>
@@ -743,7 +744,7 @@ function HarvestPage({
                       <td><RecordStatus voided={record.voided} /></td>
                       <td>
                         <button type="button" className="ff-icon-button ff-danger" aria-label={"Void harvest record " + record.id} disabled={record.voided || voidingId === record.id} onClick={() => voidRecord(record)}>
-                          <Trash2 size={14} />
+                          <Ban size={14} />
                         </button>
                       </td>
                     </tr>
@@ -777,6 +778,7 @@ function HarvestPage({
             </div>
             <label className="form-label">Notes<textarea rows={3} maxLength={2000} value={form.notes} onChange={(event) => setForm({ ...form, notes: event.target.value })} placeholder="Quality, grade, storage, or other observations" /></label>
             <div className="dialog-note"><CalendarDays size={16} /><span>Harvest date must be on or after the planting date and cannot be in the future. Only Active or Harvesting plantings can receive records.</span></div>
+            <div className="dialog-note"><CheckCircle2 size={16} /><span>Harvest records cannot be edited. Void an incorrect record and create a replacement; the original stays in the audit history.</span></div>
             <div className="dialog-actions">
               <button type="button" className="button-secondary" disabled={saving} onClick={() => setDialogOpen(false)}>Cancel</button>
               <button type="submit" className="button-primary" disabled={saving || !canRecordHarvest}><Plus size={15} /> {saving ? "Saving…" : "Save harvest"}</button>
