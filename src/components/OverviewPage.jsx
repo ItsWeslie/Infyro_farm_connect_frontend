@@ -1,3 +1,4 @@
+import { SkeletonBlock, SkeletonCards } from "./ui/Skeleton";
 import { useEffect, useMemo, useState } from "react";
 import {
   Activity,
@@ -12,7 +13,6 @@ import {
   MapPinned,
   Plus,
   Receipt,
-  RefreshCw,
   Search,
   Sprout,
   Sun,
@@ -144,7 +144,6 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [warnings, setWarnings] = useState([]);
-  const [refreshKey, setRefreshKey] = useState(0);
   const [cropSearch, setCropSearch] = useState("");
 
   const farmId = selectedFarm?.id;
@@ -296,7 +295,7 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd }) {
     return () => {
       current = false;
     };
-  }, [farmId, selectedFarm?.name, refreshKey]);
+  }, [farmId, selectedFarm?.name]);
 
   const filteredPlantings = useMemo(() => {
     const query = cropSearch.trim().toLowerCase();
@@ -361,9 +360,6 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd }) {
           </p>
         </div>
         <div className="ifc-overview-actions">
-          <button type="button" className="button-secondary" onClick={() => setRefreshKey((value) => value + 1)} disabled={loading}>
-            <RefreshCw size={14} className={loading ? "ifc-overview-spinning" : ""} /> Refresh
-          </button>
           <button type="button" className="button-primary" onClick={onAdd}>
             <Plus size={15} /> Add new crop
           </button>
@@ -468,7 +464,7 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd }) {
         <div className="ifc-overview-error" role="alert">
           <CircleAlert size={17} />
           <span>{error}</span>
-          <button type="button" className="button-secondary" onClick={() => setRefreshKey((value) => value + 1)}>Retry</button>
+          <button type="button" className="button-secondary" onClick={() => window.location.reload()}>Retry</button>
         </div>
       )}
       {warnings.length > 0 && !error && (
