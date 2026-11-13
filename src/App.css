@@ -1073,3 +1073,19 @@ html[data-ifc-theme="dark"] .mobile-scrim{background:rgba(0,0,0,.62)}
   .theme-toggle-button{min-height:33px;padding:0 9px}
   .theme-toggle-button span{display:none}
 }
+
+
+/* Shared loading and toast primitives */
+.ifc-skeleton{display:block;max-width:100%;background:linear-gradient(90deg,var(--ifc-skeleton-base,#e7eadf) 25%,var(--ifc-skeleton-highlight,#f4f5ef) 50%,var(--ifc-skeleton-base,#e7eadf) 75%);background-size:200% 100%;animation:ifc-skeleton-shimmer 1.35s ease-in-out infinite}
+.ifc-skeleton-block{display:grid;gap:14px;padding:20px}
+.ifc-skeleton-row{display:flex;align-items:center;gap:13px}
+.ifc-skeleton-copy{display:grid;gap:8px;flex:1}
+.ifc-skeleton-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0}
+.ifc-skeleton-card{display:grid;gap:13px;padding:18px;border:1px solid var(--line,#e4e8df);border-radius:12px;background:var(--surface,#fff)}
+.ifc-toast{position:fixed;z-index:2000;right:24px;bottom:24px;display:flex;align-items:center;gap:11px;max-width:min(480px,calc(100vw - 32px));padding:13px 15px;border:1px solid var(--line,#dfe6da);border-radius:12px;background:var(--surface,#fff);color:var(--text,#253a2b);box-shadow:0 14px 44px rgba(20,35,20,.18);font-size:13px;animation:ifc-toast-in .18s ease-out}
+.ifc-toast-success>svg:first-child{color:#32834c}.ifc-toast-error>svg:first-child{color:#c3483e}.ifc-toast-warning>svg:first-child{color:#b7791f}.ifc-toast-info>svg:first-child{color:#3974a8}
+.ifc-toast>span{flex:1;line-height:1.45}.ifc-toast-dismiss,.ifc-toast-action{border:0;background:transparent;color:inherit;cursor:pointer}.ifc-toast-dismiss{display:grid;place-items:center;padding:3px;opacity:.65}.ifc-toast-action{font-weight:700;text-decoration:underline;white-space:nowrap}
+@keyframes ifc-skeleton-shimmer{to{background-position:-200% 0}}@keyframes ifc-toast-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:700px){.ifc-skeleton-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.ifc-toast{right:12px;bottom:12px}}
+@media(prefers-reduced-motion:reduce){.ifc-skeleton{animation:none}.ifc-toast{animation:none}}
+html[data-ifc-theme="dark"]{--ifc-skeleton-base:#263b2c;--ifc-skeleton-highlight:#344a38}
