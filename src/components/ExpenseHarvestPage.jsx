@@ -134,7 +134,6 @@ function ExpensePage({
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pageError, setPageError] = useState("");
-  const [reloadKey, setReloadKey] = useState(0);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ACTIVE");
   const [categoryFilter, setCategoryFilter] = useState("ALL");
@@ -180,7 +179,7 @@ function ExpensePage({
       });
 
     return () => { current = false; };
-  }, [farmId, reloadKey]);
+  }, [farmId]);
 
   const fieldById = useMemo(
     () => new Map(fields.map((field) => [String(field.id), field])),
@@ -216,10 +215,6 @@ function ExpensePage({
       return matchesSearch && matchesStatus && matchesCategory;
     });
   }, [expenses, plantingById, fieldById, search, statusFilter, categoryFilter]);
-
-  function refresh() {
-    setReloadKey((value) => value + 1);
-  }
 
   function openCreate() {
     setForm({
@@ -258,16 +253,21 @@ function ExpensePage({
 
     setSaving(true);
     try {
-      await expenseApi.create(farmId, {
+      const savedExpense = await expenseApi.create(farmId, {
         cropPlantingId,
         amount,
         expenseDate: form.expenseDate,
         category: form.category,
         description: form.description.trim(),
       });
+      const createdExpense = savedExpense?.data || savedExpense;
+      if (createdExpense && typeof createdExpense === "object" && createdExpense.id != null) {
+        setExpenses((current) => [createdExpense, ...current.filter((item) => item.id !== createdExpense.id)]);
+      } else {
+        setPageError("Expense saved, but the server response did not include the saved record. Reopen this page to sync it.");
+      }
       setDialogOpen(false);
       setForm(EMPTY_EXPENSE);
-      refresh();
       notify("Expense saved to " + farmName);
     } catch (error) {
       notify(error.message || "Unable to save this expense.", "error");
@@ -284,7 +284,7 @@ function ExpensePage({
     setPageError("");
     try {
       await expenseApi.void(farmId, expense.id);
-      refresh();
+      setExpenses((current) => current.map((item) => item.id === expense.id ? { ...item, voided: true } : item));
       notify("Expense voided; the audit record was retained.");
     } catch (error) {
       notify(error.message || "Unable to void this expense.", "error");
@@ -488,7 +488,7 @@ function HarvestPage({
         if (current) setLoading(false);
       });
     return () => { current = false; };
-  }, [farmId, reloadKey]);
+  }, [farmId]);
 
   const fieldById = useMemo(
     () => new Map(fields.map((field) => [String(field.id), field])),
@@ -540,7 +540,7 @@ function HarvestPage({
         if (current) setRecordsLoading(false);
       });
     return () => { current = false; };
-  }, [selectedPlanting?.id, reloadKey]);
+  }, [selectedPlanting?.id]);
 
   const filteredRecords = records.filter((record) => {
     const normalized = search.toLowerCase();
@@ -556,10 +556,6 @@ function HarvestPage({
       || (statusFilter === "VOIDED" && record.voided);
     return matchesSearch && matchesStatus;
   });
-
-  function refresh() {
-    setReloadKey((value) => value + 1);
-  }
 
   function openCreate() {
     setForm({ ...EMPTY_HARVEST, harvestDate: todayIso() });
@@ -594,15 +590,20 @@ function HarvestPage({
 
     setSaving(true);
     try {
-      await harvestApi.create(selectedPlanting.id, {
+      const savedRecord = await harvestApi.create(selectedPlanting.id, {
         harvestDate: form.harvestDate,
         quantity,
         unit: form.unit,
         notes: form.notes.trim() || null,
       });
+      const createdRecord = savedRecord?.data || savedRecord;
+      if (createdRecord && typeof createdRecord === "object" && createdRecord.id != null) {
+        setRecords((current) => [createdRecord, ...current.filter((item) => item.id !== createdRecord.id)]);
+      } else {
+        setRecordsError("Harvest saved, but the server response did not include the saved record. Reopen this page to sync it.");
+      }
       setDialogOpen(false);
       setForm(EMPTY_HARVEST);
-      refresh();
       notify("Harvest record saved");
     } catch (error) {
       notify(error.message || "Unable to save this harvest record.", "error");
@@ -619,7 +620,7 @@ function HarvestPage({
     setRecordsError("");
     try {
       await harvestApi.void(selectedPlanting.id, record.id);
-      refresh();
+      setRecords((current) => current.map((item) => item.id === record.id ? { ...item, voided: true } : item));
       notify("Harvest record voided; the audit record was retained.");
     } catch (error) {
       notify(error.message || "Unable to void this harvest record.", "error");
