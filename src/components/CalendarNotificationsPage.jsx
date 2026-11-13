@@ -347,7 +347,7 @@ export function NotificationsPage({ unreadCount = 0, onNotificationsChanged, not
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [notify]);
 
   useEffect(() => {
     loadFirstPage();
