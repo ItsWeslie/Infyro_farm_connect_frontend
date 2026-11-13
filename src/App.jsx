@@ -45,6 +45,7 @@ import { AuthModal } from "./components/AuthModal";
 import LandingPage from "./components/LandingPage";
 import FarmsFieldsPage from "./components/FarmsFieldsPage";
 import CropManagementPage from "./components/CropManagementPage";
+import ExpenseHarvestPage from "./components/ExpenseHarvestPage";
 import {
   farmApi,
   farmSummaryApi,
@@ -729,6 +730,15 @@ function App() {
             />
           ) : active === "Crop management" || active === "Activities" ? (
             <CropManagementPage
+              active={active}
+              farms={farms}
+              selectedFarm={selectedFarm}
+              setSelectedFarm={setSelectedFarm}
+              onNavigate={setActive}
+              notify={notify}
+            />
+          ) : active === "Expenses" || active === "Harvest records" ? (
+            <ExpenseHarvestPage
               active={active}
               farms={farms}
               selectedFarm={selectedFarm}
