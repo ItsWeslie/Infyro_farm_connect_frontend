@@ -485,7 +485,7 @@ export default function FarmsFieldsPage({
             {isFarmsPage && editing && (
               <div className="dialog-note">
                 <MapPinned size={16} />
-                <span>Farm area is calculated from its fields. Manage land area in the Fields section.</span>
+                <span>Farm area is calculated from its fields. The current backend does not support changing an existing field’s area.</span>
               </div>
             )}
             <div className="dialog-actions">
