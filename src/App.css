@@ -69,3 +69,73 @@
 /* Keep auth fields visually unchanged while focused. */
 .auth-dialog-card .form-label .input-with-icon:focus-within{border-color:#dfe7dc;box-shadow:none;outline:none}
 .auth-dialog-card .form-label input:focus{border-color:transparent;box-shadow:none;outline:none}
+
+
+/* Live Farms & Fields workspace */
+.ff-data-card { padding-bottom: 0; }
+.ff-table td:last-child { min-width: 170px; }
+.ff-row-actions { display: inline-flex; align-items: center; gap: 6px; }
+.ff-action-button, .ff-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 30px;
+  border: 1px solid #e5ebe2;
+  border-radius: 7px;
+  padding: 0 8px;
+  background: #fff;
+  color: #58735b;
+  font-size: 9px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.ff-icon-button { width: 30px; padding: 0; }
+.ff-action-button:hover, .ff-icon-button:hover { background: #f4f8f1; border-color: #cadbc4; }
+.ff-icon-button.ff-danger { color: #a45d53; }
+.ff-icon-button:disabled, .ff-refresh:disabled { opacity: .5; cursor: not-allowed; }
+.ff-farm-select { display: grid; gap: 4px; min-width: 145px; color: #8a978c; font-size: 9px; }
+.ff-farm-select select {
+  height: 34px;
+  max-width: 220px;
+  border: 1px solid #e8ece5;
+  border-radius: 7px;
+  padding: 0 9px;
+  background: #fff;
+  color: #526454;
+  font-size: 10px;
+}
+.ff-refresh { height: 34px; padding: 0 10px; font-size: 10px; }
+.ff-error {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border: 1px solid #f0d9d5;
+  border-radius: 8px;
+  background: #fff8f6;
+  color: #9b5148;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.ff-form-context {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -8px 0 16px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f3f7ee;
+  color: #748575;
+  font-size: 10px;
+}
+.ff-form-context strong { color: #466348; }
+.ff-data-card .empty-state .button-primary,
+.ff-data-card .empty-state .button-secondary { margin-top: 8px; }
+.ff-data-card .empty-state button { display: inline-flex; align-items: center; gap: 6px; }
+@media (max-width: 700px) {
+  .ff-table td:last-child { min-width: 150px; }
+  .ff-row-actions { gap: 4px; }
+  .ff-action-button { padding: 0 6px; }
+  .ff-farm-select { min-width: 110px; }
+  .ff-farm-select select { max-width: 150px; }
+  .ff-refresh { padding: 0 8px; }
+}
