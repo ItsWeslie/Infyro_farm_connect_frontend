@@ -413,9 +413,11 @@ export function NotificationsPage({ unreadCount = 0, onNotificationsChanged, not
     await notifySummaryChanged();
     const count = successful.size;
     if (notify) {
-      notify(count === unread.length
-        ? "All loaded notifications marked as read"
-        : count + " of " + unread.length + " notifications marked as read");
+      if (count === unread.length) {
+        notify("All loaded notifications marked as read");
+      } else {
+        notify(count + " of " + unread.length + " notifications marked as read", count === 0 ? "error" : "warning");
+      }
     }
     setPendingId(null);
   }
