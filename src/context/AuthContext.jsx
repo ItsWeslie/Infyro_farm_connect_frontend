@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { authApi } from "../api/client";
+import { authApi, clearAccessToken } from "../api/client";
 
 const AuthContext = createContext(null);
 
@@ -19,8 +19,18 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   const clearSession = useCallback(() => {
+    clearAccessToken();
     setUser(null);
     setIsAuthenticated(false);
+  }, []);
+
+  const establishSession = useCallback(async (fallbackEmail = "") => {
+    const validation = await authApi.validate();
+    if (!(validation?.isLoggedIn ?? validation?.loggedIn)) {
+      throw new Error("Your session could not be validated. Please sign in again.");
+    }
+    setUser(toUser(validation, fallbackEmail));
+    setIsAuthenticated(true);
   }, []);
 
   useEffect(() => {
@@ -28,12 +38,15 @@ export function AuthProvider({ children }) {
     const onAuthExpired = () => clearSession();
     window.addEventListener("ifc_auth_expired", onAuthExpired);
 
-    // The HttpOnly cookie is the source of truth. Never read or store the JWT in JS.
-    authApi.validate()
-      .then((response) => {
+    // The refresh cookie is HttpOnly. Rotate it to obtain a fresh access token,
+    // then validate that token before rendering the authenticated workspace.
+    authApi.refresh()
+      .then(async () => {
         if (!active) return;
-        if (response?.isLoggedIn ?? response?.loggedIn) {
-          setUser(toUser(response));
+        const validation = await authApi.validate();
+        if (!active) return;
+        if (validation?.isLoggedIn ?? validation?.loggedIn) {
+          setUser(toUser(validation));
           setIsAuthenticated(true);
         } else {
           clearSession();
@@ -53,12 +66,21 @@ export function AuthProvider({ children }) {
   }, [clearSession]);
 
   const login = async (email, password) => {
-    const response = await authApi.login({ email: email.trim(), password, loginType: "jwt" });
-    if (!(response?.isLoggedIn ?? response?.loggedIn)) {
-      throw new Error(response?.message || "We couldn't sign you in. Please try again.");
+    const response = await authApi.login({
+      email: email.trim(),
+      password,
+      loginType: "jwt",
+    });
+    if (!response?.accessToken) {
+      clearSession();
+      throw new Error("The login response did not include an access token.");
     }
-    setUser(toUser(response, email.trim()));
-    setIsAuthenticated(true);
+    try {
+      await establishSession(email.trim());
+    } catch (error) {
+      clearSession();
+      throw error;
+    }
     return response;
   };
 
@@ -69,15 +91,31 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try {
       await authApi.logout();
-    } catch (error) {
-      // Clear local UI state even if the server is temporarily unreachable.
+    } catch {
+      // Always clear local authentication, even when the backend is unavailable.
+    } finally {
+      clearSession();
+    }
+  };
+
+  const logoutAll = async () => {
+    try {
+      await authApi.logoutAll();
     } finally {
       clearSession();
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, loading, login, signup, logout }}>
+    <AuthContext.Provider value={{
+      user,
+      isAuthenticated,
+      loading,
+      login,
+      signup,
+      logout,
+      logoutAll,
+    }}>
       {children}
     </AuthContext.Provider>
   );
