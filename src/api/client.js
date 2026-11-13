@@ -128,7 +128,7 @@ export async function apiRequest(endpoint, options = {}) {
   } catch (error) {
     // A protected request gets one refresh attempt and one retry. Never recurse
     // on auth endpoints or retry a second time if the new access token is rejected.
-    if (error.status !== 401 || publicAuthEndpoint || options.__retried) {
+    if (error.status !== 401 || publicAuthEndpoint) {
       if (error.status === 401 && !publicAuthEndpoint) {
         clearAccessToken();
         if (typeof window !== "undefined") {
@@ -140,7 +140,7 @@ export async function apiRequest(endpoint, options = {}) {
 
     try {
       await refreshAccessToken();
-      return await send(endpoint, { ...requestOptions, __retried: true }, { withAuth: true });
+      return await send(endpoint, requestOptions, { withAuth: true });
     } catch (refreshError) {
       clearAccessToken();
       if (typeof window !== "undefined") {
