@@ -105,10 +105,6 @@ export default function FarmsFieldsPage({
   }, [isFarmsPage, selectedFarm?.id, fieldReload]);
 
   useEffect(() => {
-    if (!isFarmsPage) loadFields();
-  }, [isFarmsPage, loadFields, fieldReload]);
-
-  useEffect(() => {
     setQuery("");
     setDialogOpen(false);
     setEditing(null);
