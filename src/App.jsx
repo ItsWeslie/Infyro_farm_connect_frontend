@@ -673,6 +673,7 @@ function App() {
             <FarmsFieldsPage
               active={active}
               farms={farms}
+              setFarms={setFarms}
               farmsLoading={farmsLoading}
               farmsError={farmsError}
               selectedFarm={selectedFarm}
