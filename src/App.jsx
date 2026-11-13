@@ -700,7 +700,7 @@ function App() {
               notify={notify}
             />
           ) : active === "Calendar" ? (
-            <CalendarPage />
+            <CalendarPage notify={notify} />
           ) : active === "Notifications" ? (
             <NotificationsPage
               unreadCount={notificationUnreadCount}
