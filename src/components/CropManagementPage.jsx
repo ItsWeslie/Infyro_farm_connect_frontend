@@ -335,14 +335,19 @@ export default function CropManagementPage({
   async function submitType(event) {
     event.preventDefault();
     if (!typeForm.name.trim()) return;
+    const maturityDays = typeForm.defaultMaturityTimeInDays
+      ? Number(typeForm.defaultMaturityTimeInDays)
+      : null;
+    if (maturityDays !== null && (!Number.isInteger(maturityDays) || maturityDays <= 0)) {
+      setTypeError("Default maturity must be a positive whole number of days.");
+      return;
+    }
     setTypeSaving(true);
     setTypeError("");
     const payload = {
       name: typeForm.name.trim(),
       description: typeForm.description.trim() || null,
-      defaultMaturityTimeInDays: typeForm.defaultMaturityTimeInDays
-        ? Number(typeForm.defaultMaturityTimeInDays)
-        : null,
+      defaultMaturityTimeInDays: maturityDays,
     };
     try {
       if (editingType) await cropTypeApi.update(farmId, editingType.id, payload);
@@ -434,6 +439,10 @@ export default function CropManagementPage({
     }
     if (plantingForm.expectedHarvestOn && plantingForm.expectedHarvestOn < plantingForm.plantedOn) {
       setPlantingError("Expected harvest date cannot be before the planting date.");
+      return;
+    }
+    if (maturity !== null && (!Number.isInteger(maturity) || maturity <= 0)) {
+      setPlantingError("Maturity time must be a positive whole number of days.");
       return;
     }
     if ((!maturity || maturity <= 0) && !cropType.defaultMaturityTimeInDays) {
@@ -857,9 +866,9 @@ export default function CropManagementPage({
             <div className="dialog-heading"><div><span className="section-kicker">PLANTING RECORD</span><h2>{editingPlanting ? "Edit planting" : "Add planting"}</h2><p>Assign a crop type and area to a field in {selectedFarm.name}.</p></div><button type="button" className="icon-button" aria-label="Close dialog" disabled={plantingSaving} onClick={() => setPlantingDialogOpen(false)}><X size={19} /></button></div>
             {plantingError && <div className="ff-error" role="alert">{plantingError}</div>}
             {!editingPlanting && <label className="form-label">Field<FieldSelect fields={fields} value={plantingForm.fieldId} onChange={(event) => setPlantingForm({ ...plantingForm, fieldId: event.target.value })} /></label>}
-            <label className="form-label">Crop type<select className="form-select" required value={plantingForm.cropTypeId} onChange={(event) => { const cropType = cropTypes.find((item) => String(item.id) === event.target.value); setPlantingForm({ ...plantingForm, cropTypeId: event.target.value, maturityTimeInDays: cropType?.defaultMaturityTimeInDays ? String(cropType.defaultMaturityTimeInDays) : plantingForm.maturityTimeInDays }); }}><option value="">Choose a crop type</option>{cropTypes.map((cropType) => <option key={cropType.id} value={cropType.id}>{cropType.name}</option>)}</select></label>
+            <label className="form-label">Crop type<select className="form-select" required value={plantingForm.cropTypeId} onChange={(event) => { const cropType = cropTypes.find((item) => String(item.id) === event.target.value); setPlantingForm({ ...plantingForm, cropTypeId: event.target.value, maturityTimeInDays: cropType?.defaultMaturityTimeInDays ? String(cropType.defaultMaturityTimeInDays) : "" }); }}><option value="">Choose a crop type</option>{cropTypes.map((cropType) => <option key={cropType.id} value={cropType.id}>{cropType.name}</option>)}</select></label>
             <label className="form-label">Crop area<input type="number" required min="0.01" step="0.01" value={plantingForm.cropArea} onChange={(event) => setPlantingForm({ ...plantingForm, cropArea: event.target.value })} placeholder="e.g. 0.75" /></label>
-            {plantingForm.fieldId && !editingPlanting && <div className="dialog-note"><Ruler size={16} /><span>Available field area: {numberLabel(fields.find((field) => String(field.id) === String(plantingForm.fieldId))?.availableArea)}. The backend validates area reservations when saving.</span></div>}
+            {plantingForm.fieldId && !editingPlanting && <div className="dialog-note"><Ruler size={16} /><span>Available field area: {numberLabel(fields.find((field) => String(field.id) === String(plantingForm.fieldId))?.availableArea)}. Use the same area unit as the field; the backend validates reservations when saving.</span></div>}
             <div className="crop3-form-grid">
               <label className="form-label">Planting date<input type="date" required value={plantingForm.plantedOn} onChange={(event) => setPlantingForm({ ...plantingForm, plantedOn: event.target.value })} /></label>
               <label className="form-label">Expected harvest<input type="date" min={plantingForm.plantedOn || undefined} value={plantingForm.expectedHarvestOn} onChange={(event) => setPlantingForm({ ...plantingForm, expectedHarvestOn: event.target.value })} /></label>
