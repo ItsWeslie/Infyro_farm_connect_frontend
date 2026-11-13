@@ -26,9 +26,9 @@ function numeric(value) {
 }
 
 function areaLabel(value) {
-  return `${numeric(value).toLocaleString(undefined, {
+  return numeric(value).toLocaleString(undefined, {
     maximumFractionDigits: 2,
-  })} acres`;
+  });
 }
 
 function totalArea(fields, key = "totalArea") {
@@ -262,7 +262,7 @@ export default function FarmsFieldsPage({
       {isFarmsPage ? (
         <div className="workspace-stats">
           <Stat label="Total farms" value={farmStats.farms} detail="registered farms" icon={Building2} />
-          <Stat label="Total land" value={areaLabel(farmStats.totalArea)} detail="across registered farms" icon={Ruler} />
+          <Stat label="Total land" value={areaLabel(farmStats.totalArea)} detail="sum of registered field areas" icon={Ruler} />
           <Stat label="Total fields" value={farmStats.fields} detail="across all farms" icon={MapPinned} />
           <Stat label="Available land" value={areaLabel(farmStats.availableArea)} detail="not assigned to plantings" icon={Sprout} />
         </div>
@@ -270,7 +270,7 @@ export default function FarmsFieldsPage({
         <div className="workspace-stats">
           <Stat label="Total fields" value={fieldStats.count} detail="in the selected farm" icon={MapPinned} />
           <Stat label="Total area" value={areaLabel(fieldStats.totalArea)} detail="registered field area" icon={Ruler} />
-          <Stat label="Available area" value={areaLabel(fieldStats.availableArea)} detail="available for planting" icon={Sprout} />
+          <Stat label="Available area" value={areaLabel(fieldStats.availableArea)} detail="available across selected fields" icon={Sprout} />
           <Stat label="Allocated area" value={areaLabel(fieldStats.usedArea)} detail="currently allocated" icon={Building2} />
         </div>
       )}
@@ -455,7 +455,7 @@ export default function FarmsFieldsPage({
             </label>
             {!isFarmsPage && !editing && (
               <label className="form-label">
-                Total area (acres)
+                Total area
                 <input required type="number" min="0.01" step="0.01" value={area} onChange={(event) => setArea(event.target.value)} placeholder="e.g. 1.25" />
               </label>
             )}
