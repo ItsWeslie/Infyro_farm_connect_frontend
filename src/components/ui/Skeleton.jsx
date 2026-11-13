@@ -1,5 +1,3 @@
-import React from "react";
-
 export function Skeleton({ className = "", width, height, radius = "10px", style = {} }) {
   return (
     <span
