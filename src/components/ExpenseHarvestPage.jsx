@@ -270,6 +270,7 @@ function ExpensePage({
       refresh();
       notify("Expense saved to " + farmName);
     } catch (error) {
+      notify(error.message || "Unable to save this expense.", "error");
       setFormError(error.message || "Unable to save this expense.");
     } finally {
       setSaving(false);
@@ -286,6 +287,7 @@ function ExpensePage({
       refresh();
       notify("Expense voided; the audit record was retained.");
     } catch (error) {
+      notify(error.message || "Unable to void this expense.", "error");
       setPageError(error.message || "Unable to void this expense.");
     } finally {
       setVoidingId(null);
@@ -603,6 +605,7 @@ function HarvestPage({
       refresh();
       notify("Harvest record saved");
     } catch (error) {
+      notify(error.message || "Unable to save this harvest record.", "error");
       setFormError(error.message || "Unable to save this harvest record.");
     } finally {
       setSaving(false);
@@ -619,6 +622,7 @@ function HarvestPage({
       refresh();
       notify("Harvest record voided; the audit record was retained.");
     } catch (error) {
+      notify(error.message || "Unable to void this harvest record.", "error");
       setRecordsError(error.message || "Unable to void this harvest record.");
     } finally {
       setVoidingId(null);
