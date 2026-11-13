@@ -160,38 +160,45 @@ export default function FarmsFieldsPage({
     if (!name.trim()) return;
     setFormError("");
     setSaving(true);
+    const wasEditing = Boolean(editing);
     try {
       if (isFarmsPage) {
         const payload = { farmName: name.trim() };
-        const response = editing
+        const response = wasEditing
           ? await farmApi.update(editing.id, payload)
           : await farmApi.create(payload);
-        await refreshFarms(response?.id || editing?.id);
-        notify(editing ? "Farm updated successfully" : "Farm created successfully");
+        setDialogOpen(false);
+        setEditing(null);
+        setName("");
+        notify(wasEditing ? "Farm updated successfully" : "Farm created successfully");
+        refreshFarms(response?.id || (wasEditing ? editing.id : undefined))
+          .catch((error) => notify(`Farm saved, but the directory could not refresh: ${error.message}`));
       } else {
         if (!selectedFarm?.id) {
           throw new Error("Choose a farm before adding a field.");
         }
-        if (editing) {
+        if (wasEditing) {
           await fieldApi.update(editing.id, { fieldName: name.trim() });
         } else {
           const parsedArea = Number(area);
           if (!Number.isFinite(parsedArea) || parsedArea < 0.01) {
-            throw new Error("Enter a field area of at least 0.01 acres.");
+            throw new Error("Enter an area of at least 0.01 in your farm's chosen area unit.");
           }
           await fieldApi.create(selectedFarm.id, {
             fieldName: name.trim(),
             totalArea: parsedArea,
           });
         }
-        await refreshFarms(selectedFarm.id);
+        setDialogOpen(false);
+        setEditing(null);
+        setName("");
+        setArea("");
         setFieldReload((value) => value + 1);
-        notify(editing ? "Field updated successfully" : "Field created successfully");
+        notify(wasEditing ? "Field updated successfully" : "Field created successfully");
+        refreshFarms(selectedFarm.id).catch((error) => {
+          setFieldsError(`Field saved, but farm totals could not refresh: ${error.message}`);
+        });
       }
-      setDialogOpen(false);
-      setEditing(null);
-      setName("");
-      setArea("");
     } catch (error) {
       setFormError(error.message || `Unable to save this ${isFarmsPage ? "farm" : "field"}.`);
     } finally {
@@ -204,8 +211,10 @@ export default function FarmsFieldsPage({
     setDeletingId(farm.id);
     try {
       await farmApi.delete(farm.id);
-      await refreshFarms();
       notify("Farm deleted successfully");
+      refreshFarms().catch((error) => {
+        notify(`Farm deleted, but the directory could not refresh: ${error.message}`);
+      });
     } catch (error) {
       notify(error.message || "Unable to delete this farm.");
     } finally {
@@ -219,9 +228,11 @@ export default function FarmsFieldsPage({
     setFieldsError("");
     try {
       await fieldApi.delete(field.id);
-      await refreshFarms(selectedFarm?.id);
       setFieldReload((value) => value + 1);
       notify("Field deleted successfully");
+      refreshFarms(selectedFarm?.id).catch((error) => {
+        setFieldsError(`Field deleted, but farm totals could not refresh: ${error.message}`);
+      });
     } catch (error) {
       setFieldsError(error.message || "Unable to delete this field.");
     } finally {
