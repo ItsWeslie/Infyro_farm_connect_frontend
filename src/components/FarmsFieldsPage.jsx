@@ -454,10 +454,16 @@ export default function FarmsFieldsPage({
               <input autoFocus required maxLength={120} value={name} onChange={(event) => setName(event.target.value)} placeholder={isFarmsPage ? "e.g. Green Valley Farm" : "e.g. North Field"} />
             </label>
             {!isFarmsPage && !editing && (
-              <label className="form-label">
-                Total area
-                <input required type="number" min="0.01" step="0.01" value={area} onChange={(event) => setArea(event.target.value)} placeholder="e.g. 1.25" />
-              </label>
+              <>
+                <label className="form-label">
+                  Total area
+                  <input required type="number" min="0.01" step="0.01" value={area} onChange={(event) => setArea(event.target.value)} placeholder="e.g. 1.25" />
+                </label>
+                <div className="dialog-note">
+                  <Ruler size={16} />
+                  <span>The current backend stores a numeric area without a unit field. Use one consistent unit for all fields in this farm.</span>
+                </div>
+              </>
             )}
             {!isFarmsPage && editing && (
               <div className="dialog-note">
