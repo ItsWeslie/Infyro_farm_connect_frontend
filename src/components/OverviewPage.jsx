@@ -476,10 +476,9 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd }) {
       )}
 
       {loading && !snapshot ? (
-        <div className="ifc-overview-loading surface-card" role="status">
-          <RefreshCw size={22} className="ifc-overview-spinning" />
-          <strong>Loading your farm records…</strong>
-          <span>Gathering fields, plantings, expenses, and upcoming milestones.</span>
+        <div className="surface-card" role="status" aria-label="Loading overview">
+          <SkeletonCards count={4} />
+          <SkeletonBlock rows={5} />
         </div>
       ) : snapshot ? (
         <>
