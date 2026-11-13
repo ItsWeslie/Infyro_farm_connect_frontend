@@ -180,3 +180,47 @@
   .crop3-status-filter{flex:1}
   .crop3-action-select{max-width:88px}
 }
+
+/* Phase 4: backend-backed expense ledger and harvest records */
+.expense4-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.expense4-refresh{min-height:36px;padding:0 11px;font-size:10px}
+.expense4-data-card{padding-bottom:0}
+.expense4-toolbar{flex-wrap:wrap}
+.expense4-toolbar .table-search{flex:1 1 230px}
+.expense4-table td:first-child{min-width:100px}
+.expense4-table td:last-child{min-width:54px}
+.expense4-table .expense4-amount{font-weight:750;color:#3c6d48}
+.expense4-voided{opacity:.68}
+.expense4-subtext{display:block;max-width:250px;margin-top:4px;color:#a09b91;font-size:9px;line-height:1.4;white-space:normal}
+.expense4-notes{display:block;max-width:240px;white-space:normal;line-height:1.5}
+.expense4-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.expense4-dialog{max-height:calc(100vh - 36px);overflow-y:auto}
+.expense4-dialog .form-label textarea{width:100%;min-height:65px;resize:vertical;border:1px solid #dfe7dc;border-radius:8px;padding:10px 11px;background:#fff;color:#34473a;font:inherit;font-size:12px;outline:none}
+.expense4-dialog .form-label textarea:focus{border-color:#8aab8c;box-shadow:0 0 0 3px rgba(112,151,117,.12)}
+.expense4-planting-select{display:grid;gap:5px;min-width:220px;color:#8a978c;font-size:9px}
+.expense4-planting-select select{height:36px;max-width:340px;border:1px solid #e8ece5;border-radius:8px;padding:0 10px;background:#fff;color:#526454;font-size:10px}
+.expense4-info{margin:0 0 14px;padding:10px 12px;border:1px solid #dce8ed;border-radius:8px;background:#f5fafb;color:#5d7780;font-size:10px;line-height:1.5}
+.expense4-info strong{color:#385b68}
+.expense4-yield-summary{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin:0 0 18px;padding:12px 14px;border:1px solid #e8ede4;border-radius:10px;background:#f8faf6}
+.expense4-yield-summary>strong{color:#5a6d5c;font-size:10px;white-space:nowrap}
+.expense4-yield-summary>div{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.expense4-yield-summary span{padding:5px 8px;border-radius:7px;background:#eaf3e6;color:#456e4b;font-size:9px;font-weight:700}
+.expense4-harvest-stats{margin-top:16px}
+.expense4-no-farm{min-height:230px;margin-top:25px;padding:30px}
+.expense4-data-card .workspace-data-heading{align-items:flex-end}
+.expense4-data-card .empty-state button{display:inline-flex;align-items:center;gap:6px}
+@media(max-width:760px){
+  .expense4-actions{width:100%;justify-content:flex-start}
+  .expense4-actions .button-primary,.expense4-actions .button-secondary{flex:1}
+  .expense4-planting-select{min-width:145px;flex:1}
+  .expense4-planting-select select{max-width:none}
+  .expense4-form-grid{grid-template-columns:1fr;gap:0}
+}
+@media(max-width:520px){
+  .expense4-dialog{padding:18px}
+  .expense4-toolbar{align-items:stretch}
+  .expense4-toolbar .table-search{flex-basis:100%}
+  .expense4-table{min-width:760px}
+  .expense4-yield-summary{align-items:flex-start;flex-direction:column}
+  .expense4-yield-summary>div{justify-content:flex-start}
+}
