@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { farmApi, fieldApi } from "../api/client";
 import { SkeletonBlock } from "./ui/Skeleton";
+import { useConfirmDialog } from "../context/ConfirmDialogContext";
 
 function unwrapList(response) {
   if (Array.isArray(response)) return response;
@@ -63,6 +64,7 @@ export default function FarmsFieldsPage({
   onNavigate,
   notify,
 }) {
+  const confirmDialog = useConfirmDialog();
   const isFarmsPage = active === "Farms";
   const [query, setQuery] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -233,7 +235,8 @@ export default function FarmsFieldsPage({
   }
 
   async function deleteFarm(farm) {
-    if (!window.confirm(`Delete “${farm.name}”? This cannot be undone.`)) return;
+    const confirmed = await confirmDialog({ title: "Delete this farm?", message: `Delete “${farm.name}”?`, details: "This permanently removes the farm from your workspace. This action cannot be undone.", confirmLabel: "Delete farm", tone: "danger" });
+    if (!confirmed) return;
     setDeletingId(farm.id);
     try {
       await farmApi.delete(farm.id);
@@ -251,7 +254,8 @@ export default function FarmsFieldsPage({
   }
 
   async function deleteField(field) {
-    if (!window.confirm(`Delete “${field.fieldName}”? This cannot be undone.`)) return;
+    const confirmed = await confirmDialog({ title: "Delete this field?", message: `Delete “${field.fieldName}”?`, details: "This action cannot be undone. Make sure the field is no longer needed before continuing.", confirmLabel: "Delete field", tone: "danger" });
+    if (!confirmed) return;
     setDeletingId(field.id);
     setFieldsError("");
     try {
