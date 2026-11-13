@@ -222,13 +222,14 @@ export default function CropManagementPage({
         setCropTypes([]);
         setPlantings([]);
         setPageError(error.message || "Unable to load crop management data.");
+        notify(error.message || "Unable to load crop management data.", "error");
       })
       .finally(() => {
         if (current) setLoading(false);
       });
 
     return () => { current = false; };
-  }, [farmId, reloadKey]);
+  }, [farmId, reloadKey, notify]);
 
   const fieldById = useMemo(
     () => new Map(fields.map((field) => [String(field.id), field])),
@@ -272,13 +273,14 @@ export default function CropManagementPage({
         if (!current) return;
         setActivities([]);
         setActivityError(error.message || "Unable to load activity logs.");
+        notify(error.message || "Unable to load activity logs.", "error");
       })
       .finally(() => {
         if (current) setActivitiesLoading(false);
       });
 
     return () => { current = false; };
-  }, [active, selectedPlantingId, reloadKey, activityReload]);
+  }, [active, selectedPlantingId, reloadKey, activityReload, notify]);
 
   useEffect(() => {
     setSearch("");
