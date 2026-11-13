@@ -173,13 +173,14 @@ function ExpensePage({
         setPlantings([]);
         setExpenses([]);
         setPageError(error.message || "Unable to load expense records.");
+        notify(error.message || "Unable to load expense records.", "error");
       })
       .finally(() => {
         if (current) setLoading(false);
       });
 
     return () => { current = false; };
-  }, [farmId]);
+  }, [farmId, notify]);
 
   const fieldById = useMemo(
     () => new Map(fields.map((field) => [String(field.id), field])),
@@ -482,6 +483,7 @@ function HarvestPage({
         setFields([]);
         setPlantings([]);
         setPageError(error.message || "Unable to load plantings for harvest.");
+        notify(error.message || "Unable to load plantings for harvest.", "error");
       })
       .finally(() => {
         if (current) setLoading(false);
@@ -534,12 +536,13 @@ function HarvestPage({
         if (!current) return;
         setRecords([]);
         setRecordsError(error.message || "Unable to load harvest records.");
+        notify(error.message || "Unable to load harvest records.", "error");
       })
       .finally(() => {
         if (current) setRecordsLoading(false);
       });
     return () => { current = false; };
-  }, [selectedPlanting?.id]);
+  }, [selectedPlanting?.id, notify]);
 
   const filteredRecords = records.filter((record) => {
     const normalized = search.toLowerCase();
