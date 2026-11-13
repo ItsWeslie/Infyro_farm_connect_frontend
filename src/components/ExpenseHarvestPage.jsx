@@ -68,6 +68,11 @@ function dateLabel(value) {
     : date.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
 }
 
+function hasTooManyFractionDigits(value, maximum) {
+  const fraction = String(value ?? "").trim().split(".")[1] || "";
+  return fraction.length > maximum;
+}
+
 function amountLabel(value) {
   const amount = Number(value);
   if (!Number.isFinite(amount)) return "—";
@@ -233,7 +238,7 @@ function ExpensePage({
       setFormError("Enter an amount of at least 0.01 with no more than 12 integer digits.");
       return;
     }
-    if (Math.round(amount * 100) !== amount * 100) {
+    if (hasTooManyFractionDigits(form.amount, 2)) {
       setFormError("Amount can have at most two decimal places.");
       return;
     }
@@ -570,7 +575,7 @@ function HarvestPage({
       setFormError("Enter a quantity of at least 0.001 with no more than 11 integer digits.");
       return;
     }
-    if (Math.round(quantity * 1000) !== quantity * 1000) {
+    if (hasTooManyFractionDigits(form.quantity, 3)) {
       setFormError("Quantity can have at most three decimal places.");
       return;
     }
