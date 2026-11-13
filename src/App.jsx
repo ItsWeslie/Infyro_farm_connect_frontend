@@ -437,8 +437,10 @@ function App() {
           <span className="farm-meta">
             <strong>{selectedFarm ? selectedFarm.name : farmsLoading ? "Loading farms…" : "No farms yet"}</strong>
             <small>
-              {isLiveConnected ? (
-                <span className="live-badge"><i></i> Live account data</span>
+              {selectedFarm ? (
+                <span className="live-badge"><i></i> Live</span>
+              ) : isLiveConnected ? (
+                <span>No farms registered</span>
               ) : (
                 <span>{farmsError ? "Farm data unavailable" : "Create your first farm"}</span>
               )}
