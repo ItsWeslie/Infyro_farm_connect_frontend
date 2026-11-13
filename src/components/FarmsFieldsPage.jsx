@@ -105,13 +105,14 @@ export default function FarmsFieldsPage({
         if (!current) return;
         setFields([]);
         setFieldsError(error.message || "Unable to load fields for this farm.");
+        notify(error.message || "Unable to load fields for this farm.", "error");
       })
       .finally(() => {
         if (current) setFieldsLoading(false);
       });
 
     return () => { current = false; };
-  }, [isFarmsPage, selectedFarm?.id, fieldReload]);
+  }, [isFarmsPage, selectedFarm?.id, fieldReload, notify]);
 
   useEffect(() => {
     setQuery("");
