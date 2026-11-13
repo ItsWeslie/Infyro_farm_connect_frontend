@@ -16,6 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { SkeletonBlock } from "./ui/Skeleton";
+import { useConfirmDialog } from "../context/ConfirmDialogContext";
 import {
   cropActivityApi,
   cropPlantingApi,
@@ -156,6 +157,7 @@ export default function CropManagementPage({
   onNavigate,
   notify,
 }) {
+  const confirmDialog = useConfirmDialog();
   const [fields, setFields] = useState([]);
   const [cropTypes, setCropTypes] = useState([]);
   const [plantings, setPlantings] = useState([]);
@@ -381,7 +383,8 @@ export default function CropManagementPage({
       setPageError("This crop type is already used by a planting and cannot be deleted.");
       return;
     }
-    if (!window.confirm("Delete crop type “" + cropType.name + "”?")) return;
+    const confirmed = await confirmDialog({ title: "Delete crop type?", message: `Delete “${cropType.name}”?`, details: "This crop type will be removed from this farm and cannot be recovered.", confirmLabel: "Delete crop type", tone: "danger" });
+    if (!confirmed) return;
     setDeletingId("type-" + cropType.id);
     setPageError("");
     try {
@@ -511,7 +514,8 @@ export default function CropManagementPage({
   }
 
   async function deletePlanting(planting) {
-    if (!window.confirm("Delete the " + planting.cropTypeName + " planting? Only a planned planting can be deleted.")) return;
+    const confirmed = await confirmDialog({ title: "Delete this planting?", message: `Delete the ${planting.cropTypeName} planting?`, details: "Only planned plantings can be deleted. This action cannot be undone.", confirmLabel: "Delete planting", tone: "danger" });
+    if (!confirmed) return;
     setDeletingId("planting-" + planting.id);
     setPageError("");
     try {
@@ -619,7 +623,8 @@ export default function CropManagementPage({
   }
 
   async function deleteActivity(activity) {
-    if (!window.confirm("Delete this planned activity?")) return;
+    const confirmed = await confirmDialog({ title: "Delete this activity?", message: "Delete this planned activity?", details: "The activity will be permanently removed from this planting log.", confirmLabel: "Delete activity", tone: "danger" });
+    if (!confirmed) return;
     setDeletingId("activity-" + activity.id);
     setActivityError("");
     try {
