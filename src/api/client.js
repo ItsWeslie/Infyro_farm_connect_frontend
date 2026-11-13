@@ -62,8 +62,13 @@ function createApiError(response, data) {
   return error;
 }
 
-function isAuthEndpoint(endpoint) {
-  return endpoint.startsWith(AUTH_BASE);
+function isPublicAuthEndpoint(endpoint) {
+  return [
+    `${AUTH_BASE}/login`,
+    `${AUTH_BASE}/signup`,
+    `${AUTH_BASE}/refresh`,
+    `${AUTH_BASE}/logout`,
+  ].includes(endpoint);
 }
 
 async function send(endpoint, options = {}, { withAuth = true } = {}) {
@@ -111,7 +116,7 @@ async function refreshAccessToken() {
 }
 
 export async function apiRequest(endpoint, options = {}) {
-  const authEndpoint = isAuthEndpoint(endpoint);
+  const publicAuthEndpoint = isPublicAuthEndpoint(endpoint);
   const csrfRequired = options.method === "POST" &&
     (endpoint === `${AUTH_BASE}/logout` || endpoint === `${AUTH_BASE}/refresh`);
   const requestOptions = csrfRequired
@@ -119,12 +124,12 @@ export async function apiRequest(endpoint, options = {}) {
     : options;
 
   try {
-    return await send(endpoint, requestOptions, { withAuth: !authEndpoint });
+    return await send(endpoint, requestOptions, { withAuth: !publicAuthEndpoint });
   } catch (error) {
     // A protected request gets one refresh attempt and one retry. Never recurse
     // on auth endpoints or retry a second time if the new access token is rejected.
-    if (error.status !== 401 || authEndpoint || options.__retried) {
-      if (error.status === 401 && !authEndpoint) {
+    if (error.status !== 401 || publicAuthEndpoint || options.__retried) {
+      if (error.status === 401 && !publicAuthEndpoint) {
         clearAccessToken();
         if (typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("ifc_auth_expired"));
