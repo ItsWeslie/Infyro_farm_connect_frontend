@@ -381,7 +381,7 @@ export default function FarmsFieldsPage({
             </div>
           )
         ) : farmsLoading ? (
-          <div className="empty-state"><RefreshCw size={20} /><strong>Loading farms…</strong></div>
+          <SkeletonBlock rows={4} />
         ) : !selectedFarm?.id ? (
           <div className="empty-state">
             <MapPinned size={23} />
