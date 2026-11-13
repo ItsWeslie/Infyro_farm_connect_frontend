@@ -66,7 +66,7 @@ const navigation = [
       { label: "Fields", icon: MapPinned },
       { label: "Crop management", icon: Sprout },
       { label: "Activities", icon: ClipboardList },
-      { label: "Calendar", icon: CalendarDays, dot: true },
+      { label: "Calendar", icon: CalendarDays },
     ],
   },
   {
@@ -1023,136 +1023,7 @@ const workspaceData = {
       ["Tomato", "North Field", "38 kg", "Sep 28, 2026", "Grade A"],
     ],
   },
-  Calendar: {
-    eyebrow: "MAKE ROOM FOR WHAT MATTERS",
-    title: "Season calendar",
-    description: "Plan field work, milestones, and harvest days at a glance.",
-    stats: [
-      ["This month", "08", "scheduled events"],
-      ["Upcoming", "03", "next seven days"],
-      ["Tasks done", "12", "completed this month"],
-      ["Next milestone", "Oct 30", "spinach harvest"],
-    ],
-    rows: [
-      [
-        "Oct 27 · Today",
-        "Check soil moisture",
-        "North Field",
-        "Ravi Kumar",
-        "Today",
-      ],
-      [
-        "Oct 28 · Tomorrow",
-        "Inspect chilli plants",
-        "East Field",
-        "Ravi Kumar",
-        "Planned",
-      ],
-      [
-        "Oct 29 · Thu",
-        "Prepare harvest crates",
-        "Green Valley Farm",
-        "Ravi Kumar",
-        "Planned",
-      ],
-      [
-        "Oct 30 · Fri",
-        "Spinach harvest",
-        "Kitchen Garden",
-        "Ravi Kumar",
-        "Important",
-      ],
-      [
-        "Nov 02 · Mon",
-        "Rice field inspection",
-        "Paddy Field A",
-        "Ravi Kumar",
-        "Planned",
-      ],
-    ],
-  },
-  Notifications: {
-    eyebrow: "A LITTLE NUDGE AT THE RIGHT TIME",
-    title: "Notifications",
-    description: "Important reminders and updates for your farm.",
-    stats: [
-      ["Unread", "03", "need a look"],
-      ["This week", "08", "total updates"],
-      ["Reminders", "04", "scheduled"],
-      ["Completed", "05", "marked as read"],
-    ],
-    rows: [
-      [
-        "Harvest coming up",
-        "Spinach is almost ready in 3 days.",
-        "Today, 9:00 AM",
-        "Harvest",
-        "Unread",
-      ],
-      [
-        "Irrigation reminder",
-        "Check soil moisture in North Field.",
-        "Today, 7:30 AM",
-        "Reminder",
-        "Unread",
-      ],
-      [
-        "Weekly expenses ready",
-        "Your farm spending overview is updated.",
-        "Yesterday, 6:00 PM",
-        "Report",
-        "Unread",
-      ],
-      [
-        "Activity logged",
-        "Fertilizer application was recorded.",
-        "Oct 25, 4:15 PM",
-        "Activity",
-        "Read",
-      ],
-    ],
-  },
-  Settings: {
-    eyebrow: "YOUR WORKSPACE, YOUR WAY",
-    title: "Settings",
-    description: "Manage your profile and personalize your farm workspace.",
-    stats: [
-      ["Profile", "Complete", "personal details"],
-      ["Farm units", "Acres", "measurement preference"],
-      ["Notifications", "Enabled", "reminders active"],
-      ["Appearance", "Earth", "current theme"],
-    ],
-    rows: [
-      [
-        "Personal profile",
-        "Name, contact details, and preferences",
-        "Ravi Kumar",
-        "Edit profile",
-        "Available",
-      ],
-      [
-        "Farm preferences",
-        "Units, location, and default farm",
-        "Acres · Tamil Nadu",
-        "Edit preferences",
-        "Available",
-      ],
-      [
-        "Notifications",
-        "Reminders and activity updates",
-        "Enabled",
-        "Manage alerts",
-        "Available",
-      ],
-      [
-        "Appearance",
-        "Theme and visual preferences",
-        "Earth-inspired",
-        "Customize",
-        "Available",
-      ],
-    ],
-  },
+
 };
 const pageMeta = {
   Farms: {
@@ -1199,24 +1070,7 @@ const pageMeta = {
     labels: ["Crop name", "Field", "Quantity harvested", "Unit"],
     units: Object.values(HarvestUnit),
   },
-  Calendar: {
-    icon: CalendarDays,
-    cta: "Add event",
-    columns: ["DATE", "EVENT", "LOCATION", "ASSIGNED TO", "STATUS"],
-    labels: ["Event name", "Date", "Location"],
-  },
-  Notifications: {
-    icon: Bell,
-    cta: "Mark all read",
-    columns: ["NOTIFICATION", "DETAILS", "RECEIVED", "TYPE", "STATUS"],
-    labels: [],
-  },
-  Settings: {
-    icon: Settings,
-    cta: "Save preferences",
-    columns: ["SETTING", "DESCRIPTION", "CURRENT VALUE", "ACTION", "STATUS"],
-    labels: [],
-  },
+
 };
 function WorkspacePage({ active, onNavigate, notify, onAdd }) {
   const data = workspaceData[active] || workspaceData.Farms;
