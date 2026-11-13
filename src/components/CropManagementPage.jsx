@@ -9,7 +9,6 @@ import {
   MapPinned,
   Pencil,
   Plus,
-  RefreshCw,
   Ruler,
   Search,
   Sprout,
@@ -673,9 +672,6 @@ export default function CropManagementPage({
               </select>
             </label>
           )}
-          <button className="button-secondary crop3-refresh" type="button" onClick={refreshData} disabled={loading}>
-            <RefreshCw size={14} /> Refresh
-          </button>
           {isActivities ? (
             <button className="button-primary" type="button" onClick={openCreateActivity} disabled={!selectedPlanting}>
               <Plus size={15} /> Log activity
