@@ -36,8 +36,8 @@ npm run preview
 - React functional components and local state with a shared authenticated API client. All operational workspace modules, including Overview, use backend APIs for farm records. The Overview income/profit view is intentionally omitted until the backend exposes sales/revenue records.
 - Lucide icons via `lucide-react`.
 - Responsive desktop, tablet, and mobile layouts.
-- Search, filters, table/card view switching, create/edit dialogs with controlled fields, record-detail modals, toasts, calendar navigation, and responsive account/session controls.
-- Farms, Fields, Crop management, Activities, Expenses, Harvest records, Calendar, and Notifications now use backend APIs. Overview still contains illustrative crop and summary fallback values. Settings exposes only backend-supported account and session actions; persistent profile and workspace preferences are not implemented because the API does not provide those endpoints.
+- Search, filters, table/card view switching, create/edit dialogs with controlled fields, record-detail modals, toasts, calendar navigation, responsive account/session controls, and a persisted light/dark theme shared between the landing page and dashboard.
+- Farms, Fields, Crop management, Activities, Expenses, Harvest records, Calendar, Notifications, and Overview use backend APIs. Overview progress is estimated from planting and maturity dates; the backend does not return a measured progress percentage. Income/profit reporting is omitted until sales/revenue endpoints are available. Settings exposes only backend-supported account and session actions; persistent profile and workspace preferences are not implemented because the API does not provide those endpoints.
 - Earth-inspired colors, accessible focus states, and reduced-motion support.
 
 ## Backend configuration
@@ -79,3 +79,8 @@ Phase 1 establishes authentication and the shared API client; Phase 2 connects F
 ### Phase 6 — Live Overview
 
 The Overview page loads data for the selected farm using the existing authenticated API client. It combines the farm summary, fields, crop plantings, current-month expense and harvest summaries, expense records, planting activity logs, and the next 30 days of calendar milestones. Farm totals and category totals are displayed only when supplied by the API; unavailable secondary sections show empty or partial-data states instead of sample values. Crop progress is a UI estimate derived from planted date and maturity duration (or expected harvest date), and should not be interpreted as a sensor reading or backend progress field. The top-level demo weather chip has been removed because no weather endpoint is currently available. Income and profit are intentionally not charted because the backend does not expose sales/revenue records.
+
+
+### Dashboard theme
+
+The landing page and authenticated workspace share the `ifc-landing-theme` preference (`light` or `dark`) and the `data-ifc-theme` document attribute. The dashboard top-bar theme switch persists the preference, and the landing page theme control updates the same shared state. Dark mode uses the landing page's forest-green palette across navigation, workspace panels, forms, tables, calendars, notifications, and settings.
