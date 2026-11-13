@@ -144,6 +144,7 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [warnings, setWarnings] = useState([]);
+  const [refreshKey, setRefreshKey] = useState(0);
   const [cropSearch, setCropSearch] = useState("");
 
   const farmId = selectedFarm?.id;
@@ -295,7 +296,7 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd }) {
     return () => {
       current = false;
     };
-  }, [farmId, selectedFarm?.name]);
+  }, [farmId, selectedFarm?.name, refreshKey]);
 
   const filteredPlantings = useMemo(() => {
     const query = cropSearch.trim().toLowerCase();
@@ -464,7 +465,7 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd }) {
         <div className="ifc-overview-error" role="alert">
           <CircleAlert size={17} />
           <span>{error}</span>
-          <button type="button" className="button-secondary" onClick={() => window.location.reload()}>Retry</button>
+          <button type="button" className="button-secondary" onClick={() => setRefreshKey((value) => value + 1)}>Retry</button>
         </div>
       )}
       {warnings.length > 0 && !error && (
