@@ -33,7 +33,7 @@ npm run preview
 
 ## Design and interactions
 
-- React functional components and local state with a shared authenticated API client. All operational workspace modules now use backend APIs; Overview still contains illustrative fallback data.
+- React functional components and local state with a shared authenticated API client. All operational workspace modules, including Overview, use backend APIs for farm records. The Overview income/profit view is intentionally omitted until the backend exposes sales/revenue records.
 - Lucide icons via `lucide-react`.
 - Responsive desktop, tablet, and mobile layouts.
 - Search, filters, table/card view switching, create/edit dialogs with controlled fields, record-detail modals, toasts, calendar navigation, and responsive account/session controls.
@@ -73,4 +73,9 @@ Notifications are loaded from `/api/notifications?unreadOnly=false&page={page}&s
 
 Settings displays the account identity returned by the authenticated session and supports the current-session logout and all-session logout endpoints. The backend does not expose profile-update or persisted user-preference endpoints, so the screen is read-only apart from session security actions.
 
-Phase 1 establishes authentication and the shared API client; Phase 2 connects Farms and Fields; Phase 3 connects Crop Types, Plantings, and Activities; Phase 4 connects Expenses and Harvest Records; Phase 5 connects Calendar, Notifications, and the supported account/session settings. Overview still has illustrative sample crop rows and the income chart remains illustrative until a backend sales/revenue module exists.
+Phase 1 establishes authentication and the shared API client; Phase 2 connects Farms and Fields; Phase 3 connects Crop Types, Plantings, and Activities; Phase 4 connects Expenses and Harvest Records; Phase 5 connects Calendar, Notifications, and the supported account/session settings; Phase 6 replaces the Overview dashboard's sample records and metrics with live farm data. Sales, revenue, and profit reporting remain out of scope until the backend provides those records.
+
+
+### Phase 6 — Live Overview
+
+The Overview page loads data for the selected farm using the existing authenticated API client. It combines the farm summary, fields, crop plantings, current-month expense and harvest summaries, expense records, planting activity logs, and the next 30 days of calendar milestones. Farm totals and category totals are displayed only when supplied by the API; unavailable secondary sections show empty or partial-data states instead of sample values. Crop progress is a UI estimate derived from planted date and maturity duration (or expected harvest date), and should not be interpreted as a sensor reading or backend progress field. The top-level demo weather chip has been removed because no weather endpoint is currently available. Income and profit are intentionally not charted because the backend does not expose sales/revenue records.
