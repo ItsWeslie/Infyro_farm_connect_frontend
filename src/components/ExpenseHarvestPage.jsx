@@ -489,7 +489,7 @@ function HarvestPage({
         if (current) setLoading(false);
       });
     return () => { current = false; };
-  }, [farmId]);
+  }, [farmId, notify]);
 
   const fieldById = useMemo(
     () => new Map(fields.map((field) => [String(field.id), field])),
