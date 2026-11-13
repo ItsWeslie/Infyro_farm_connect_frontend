@@ -46,20 +46,9 @@ import LandingPage from "./components/LandingPage";
 import FarmsFieldsPage from "./components/FarmsFieldsPage";
 import {
   farmApi,
-  fieldApi,
-  cropPlantingApi,
-  cropTypeApi,
-  cropActivityApi,
-  expenseApi,
-  harvestApi,
   farmSummaryApi,
-  calendarApi,
-  notificationApi,
 } from "./api/client";
 import {
-  CropPlantingStatus,
-  CropStage,
-  ActivityStatus,
   ExpenseCategory,
   HarvestUnit,
 } from "./types/enums";
@@ -154,17 +143,7 @@ const activities = [
     time: "Oct 24, 11:20 AM",
   },
 ];
-const pageDescriptions = {
-  Farms: "A home for every plot, plan, and growing season.",
-  Fields: "Know your land, understand your soil, grow with confidence.",
-  "Crop management": "Follow every crop from planting to harvest.",
-  Activities: "Keep your daily farm work moving smoothly.",
-  Calendar: "Your season at a glance, with every important date in view.",
-  Expenses: "Understand where your farm investment goes.",
-  "Harvest records": "Celebrate every harvest and learn from each season.",
-  Notifications: "A calm place for updates that need your attention.",
-  Settings: "Make your farm workspace feel like yours.",
-};
+
 function Brand({ onHome }) {
   return (
     <button
@@ -297,17 +276,21 @@ function App() {
 
   // Load summary for selected farm
   useEffect(() => {
+    let current = true;
     async function loadSummary() {
-      if (isAuthenticated && selectedFarm?.id) {
-        try {
-          const summary = await farmSummaryApi.getSummary(selectedFarm.id);
-          setBackendSummary(summary);
-        } catch (e) {
-          // ignore or fallback
-        }
+      if (!isAuthenticated || !selectedFarm?.id) {
+        setBackendSummary(null);
+        return;
+      }
+      try {
+        const summary = await farmSummaryApi.getSummary(selectedFarm.id);
+        if (current) setBackendSummary(summary);
+      } catch {
+        if (current) setBackendSummary(null);
       }
     }
     loadSummary();
+    return () => { current = false; };
   }, [selectedFarm, isAuthenticated]);
 
   const filteredCrops = useMemo(
@@ -418,10 +401,6 @@ function App() {
     setActive("Crop management");
     notify("Your crop was added to the workspace");
   }
-  const currentIcon =
-    navigation.flatMap((g) => g.items).find((i) => i.label === active)?.icon ||
-    LayoutDashboard;
-  const PageIcon = currentIcon;
   return (
     <div className="app-shell">
       {mobileNav && (
