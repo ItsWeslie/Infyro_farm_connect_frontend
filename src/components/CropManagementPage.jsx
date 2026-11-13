@@ -726,9 +726,9 @@ export default function CropManagementPage({
 
         {(pageError || (isActivities && activityError)) && <div className="ff-error" role="alert">{isActivities ? activityError || pageError : pageError}</div>}
 
-        {loading && !isActivities ? (
+        {loading ? (
           <div className="empty-state"><RefreshCw size={20} /><strong>Loading crop data…</strong></div>
-        ) : !isActivities && fields.length === 0 ? (
+        ) : !isActivities && !isTypes && fields.length === 0 ? (
           <div className="empty-state"><MapPinned size={23} /><strong>No fields in this farm</strong><span>Add a field before creating a crop planting.</span><button className="button-secondary" type="button" onClick={() => onNavigate("Fields")}>Manage fields <ArrowRight size={14} /></button></div>
         ) : !isActivities && isTypes ? (
           loading ? (
@@ -884,7 +884,7 @@ export default function CropManagementPage({
             <label className="form-label">Nutrition and water management<textarea rows={2} maxLength={2000} value={activityForm.nutritionAndWaterManagement} onChange={(event) => setActivityForm({ ...activityForm, nutritionAndWaterManagement: event.target.value })} placeholder="Optional observations" /></label>
             <label className="form-label">Pest and disease control<textarea rows={2} maxLength={2000} value={activityForm.pestAndDiseaseControl} onChange={(event) => setActivityForm({ ...activityForm, pestAndDiseaseControl: event.target.value })} placeholder="Optional observations" /></label>
             <label className="form-label">Notes<textarea rows={2} maxLength={2000} value={activityForm.notes} onChange={(event) => setActivityForm({ ...activityForm, notes: event.target.value })} placeholder="Additional notes" /></label>
-            <label className="form-label">Status<select className="form-select" value={activityForm.status} onChange={(event) => setActivityForm({ ...activityForm, status: event.target.value })}><option value="PLANNED">Planned</option><option value="IN_PROGRESS">In progress</option><option value="COMPLETED">Completed</option><option value="CANCELLED">Cancelled</option></select></label>
+            <label className="form-label">Status<select className="form-select" value={activityForm.status} onChange={(event) => setActivityForm({ ...activityForm, status: event.target.value })}>{(editingActivity ? [editingActivity.status, ...(ACTIVITY_TRANSITIONS[editingActivity.status] || [])] : ["PLANNED"]).map((status) => <option key={status} value={status}>{humanize(status)}</option>)}</select></label>
             <div className="dialog-actions"><button type="button" className="button-secondary" disabled={activitySaving} onClick={() => setActivityDialogOpen(false)}>Cancel</button><button type="submit" className="button-primary" disabled={activitySaving}><Plus size={15} /> {activitySaving ? "Saving…" : editingActivity ? "Save changes" : "Save activity"}</button></div>
           </form>
         </div>
