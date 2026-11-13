@@ -6,7 +6,6 @@ import {
   Coins,
   Leaf,
   Plus,
-  RefreshCw,
   Search,
   Sprout,
   Ban,
@@ -19,6 +18,7 @@ import {
   harvestApi,
 } from "../api/client";
 import { ExpenseCategory, HarvestUnit } from "../types/enums";
+import { SkeletonBlock } from "./ui/Skeleton";
 
 const CATEGORIES = Object.values(ExpenseCategory);
 const UNITS = Object.values(HarvestUnit);
@@ -313,9 +313,6 @@ function ExpensePage({
               </select>
             </label>
           )}
-          <button className="button-secondary expense4-refresh" type="button" onClick={refresh} disabled={loading}>
-            <RefreshCw size={14} /> Refresh
-          </button>
           <button className="button-primary" type="button" onClick={openCreate}>
             <Plus size={15} /> Add expense
           </button>
@@ -360,7 +357,7 @@ function ExpensePage({
 
         {pageError && <div className="ff-error" role="alert">{pageError}</div>}
         {loading ? (
-          <div className="empty-state"><RefreshCw size={20} /><strong>Loading expense ledger…</strong></div>
+          <SkeletonBlock rows={5} />
         ) : filteredExpenses.length === 0 ? (
           <div className="empty-state">
             <Coins size={23} />
@@ -649,9 +646,6 @@ function HarvestPage({
               </select>
             </label>
           )}
-          <button className="button-secondary expense4-refresh" type="button" onClick={refresh} disabled={loading || recordsLoading}>
-            <RefreshCw size={14} /> Refresh
-          </button>
           <button className="button-primary" type="button" onClick={openCreate} disabled={!canRecordHarvest}>
             <Plus size={15} /> Add harvest
           </button>
@@ -687,13 +681,13 @@ function HarvestPage({
         {recordsError && <div className="ff-error" role="alert">{recordsError}</div>}
 
         {loading ? (
-          <div className="empty-state"><RefreshCw size={20} /><strong>Loading harvest plantings…</strong></div>
+          <SkeletonBlock rows={4} />
         ) : farmPlantings.length === 0 ? (
           <div className="empty-state"><Sprout size={23} /><strong>No crop plantings in this farm</strong><span>Create a crop planting before recording a harvest.</span><button className="button-primary" type="button" onClick={() => onNavigate("Crop management")}><Plus size={14} /> Manage crops</button></div>
         ) : !selectedPlanting ? (
           <div className="empty-state"><Sprout size={23} /><strong>Select a planting</strong><span>Choose a crop above to view its harvest history.</span></div>
         ) : recordsLoading ? (
-          <div className="empty-state"><RefreshCw size={20} /><strong>Loading harvest records…</strong></div>
+          <SkeletonBlock rows={4} />
         ) : records.length === 0 ? (
           <div className="empty-state"><ClipboardList size={23} /><strong>No harvest records yet</strong><span>Record the first yield for this planting when it is ready.</span>{canRecordHarvest && <button className="button-primary" type="button" onClick={openCreate}><Plus size={14} /> Add harvest</button>}</div>
         ) : (
