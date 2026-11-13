@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import {
   Activity,
   ArrowDownRight,
@@ -43,22 +43,12 @@ import "./App.css";
 import { useAuth } from "./context/AuthContext";
 import { AuthModal } from "./components/AuthModal";
 import LandingPage from "./components/LandingPage";
+import FarmsFieldsPage from "./components/FarmsFieldsPage";
 import {
   farmApi,
-  fieldApi,
-  cropPlantingApi,
-  cropTypeApi,
-  cropActivityApi,
-  expenseApi,
-  harvestApi,
   farmSummaryApi,
-  calendarApi,
-  notificationApi,
 } from "./api/client";
 import {
-  CropPlantingStatus,
-  CropStage,
-  ActivityStatus,
   ExpenseCategory,
   HarvestUnit,
 } from "./types/enums";
@@ -153,17 +143,7 @@ const activities = [
     time: "Oct 24, 11:20 AM",
   },
 ];
-const pageDescriptions = {
-  Farms: "A home for every plot, plan, and growing season.",
-  Fields: "Know your land, understand your soil, grow with confidence.",
-  "Crop management": "Follow every crop from planting to harvest.",
-  Activities: "Keep your daily farm work moving smoothly.",
-  Calendar: "Your season at a glance, with every important date in view.",
-  Expenses: "Understand where your farm investment goes.",
-  "Harvest records": "Celebrate every harvest and learn from each season.",
-  Notifications: "A calm place for updates that need your attention.",
-  Settings: "Make your farm workspace feel like yours.",
-};
+
 function Brand({ onHome }) {
   return (
     <button
@@ -221,46 +201,96 @@ function App() {
   const [selectedFarm, setSelectedFarm] = useState(null);
   const [backendSummary, setBackendSummary] = useState(null);
   const [isLiveConnected, setIsLiveConnected] = useState(false);
+  const [farmsLoading, setFarmsLoading] = useState(false);
+  const [farmsError, setFarmsError] = useState("");
 
   // Fallback local crops for demo mode
   const [localCrops, setLocalCrops] = useState(crops);
 
-  // Fetch farms when user is authenticated
-  useEffect(() => {
-    async function loadFarms() {
-      if (isAuthenticated) {
-        try {
-          const res = await farmApi.getOwnedFarms();
-          const list = Array.isArray(res) ? res : res.data || [];
-          if (list.length > 0) {
-            setFarms(list);
-            setSelectedFarm(list[0]);
-            setIsLiveConnected(true);
-          }
-        } catch (err) {
-          console.warn("Could not fetch farms from backend, using demo data:", err);
-          setIsLiveConnected(false);
-        }
-      } else {
-        setIsLiveConnected(false);
-      }
+  const refreshFarms = useCallback(async (preferredFarmId) => {
+    setFarmsLoading(true);
+    try {
+      const response = await farmApi.getOwnedFarms();
+      const list = Array.isArray(response)
+        ? response
+        : Array.isArray(response?.data) ? response.data : [];
+      setFarms(list);
+      setSelectedFarm((current) =>
+        list.find((farm) => farm.id === preferredFarmId) ||
+        list.find((farm) => farm.id === current?.id) ||
+        list[0] ||
+        null
+      );
+      setIsLiveConnected(true);
+      setFarmsError("");
+      return list;
+    } catch (error) {
+      setFarmsError(error.message || "Unable to load your farms.");
+      setIsLiveConnected(false);
+      throw error;
+    } finally {
+      setFarmsLoading(false);
     }
-    loadFarms();
+  }, []);
+
+  // Load real farm data for every authenticated account, including an empty farm list.
+  useEffect(() => {
+    let current = true;
+    if (!isAuthenticated) {
+      setFarms([]);
+      setSelectedFarm(null);
+      setBackendSummary(null);
+      setFarmsError("");
+      setFarmsLoading(false);
+      setIsLiveConnected(false);
+      return () => { current = false; };
+    }
+
+    setFarmsLoading(true);
+    farmApi.getOwnedFarms()
+      .then((response) => {
+        if (!current) return;
+        const list = Array.isArray(response)
+          ? response
+          : Array.isArray(response?.data) ? response.data : [];
+        setFarms(list);
+        setSelectedFarm((previous) =>
+          list.find((farm) => farm.id === previous?.id) || list[0] || null
+        );
+        setIsLiveConnected(true);
+        setFarmsError("");
+      })
+      .catch((error) => {
+        if (!current) return;
+        setFarms([]);
+        setSelectedFarm(null);
+        setFarmsError(error.message || "Unable to load your farms.");
+        setIsLiveConnected(false);
+      })
+      .finally(() => {
+        if (current) setFarmsLoading(false);
+      });
+
+    return () => { current = false; };
   }, [isAuthenticated]);
 
   // Load summary for selected farm
   useEffect(() => {
+    let current = true;
     async function loadSummary() {
-      if (isAuthenticated && selectedFarm?.id) {
-        try {
-          const summary = await farmSummaryApi.getSummary(selectedFarm.id);
-          setBackendSummary(summary);
-        } catch (e) {
-          // ignore or fallback
-        }
+      if (!isAuthenticated || !selectedFarm?.id) {
+        setBackendSummary(null);
+        return;
+      }
+      try {
+        const summary = await farmSummaryApi.getSummary(selectedFarm.id);
+        if (current) setBackendSummary(summary);
+      } catch {
+        if (current) setBackendSummary(null);
       }
     }
     loadSummary();
+    return () => { current = false; };
   }, [selectedFarm, isAuthenticated]);
 
   const filteredCrops = useMemo(
@@ -371,10 +401,6 @@ function App() {
     setActive("Crop management");
     notify("Your crop was added to the workspace");
   }
-  const currentIcon =
-    navigation.flatMap((g) => g.items).find((i) => i.label === active)?.icon ||
-    LayoutDashboard;
-  const PageIcon = currentIcon;
   return (
     <div className="app-shell">
       {mobileNav && (
@@ -409,14 +435,14 @@ function App() {
             <Leaf size={18} />
           </div>
           <span className="farm-meta">
-            <strong>{selectedFarm ? selectedFarm.name : "Green Valley Farm"}</strong>
+            <strong>{selectedFarm ? selectedFarm.name : farmsLoading ? "Loading farms…" : "No farms yet"}</strong>
             <small>
-              {isLiveConnected ? (
-                <span className="live-badge"><i></i> Live {selectedFarm?.landArea ? `· ${selectedFarm.landArea} ac` : ""}</span>
+              {selectedFarm ? (
+                <span className="live-badge"><i></i> Live</span>
+              ) : isLiveConnected ? (
+                <span>No farms registered</span>
               ) : (
-                <>
-                  <MapPinned size={11} /> Tambaram, Tamil Nadu
-                </>
+                <span>{farmsError ? "Farm data unavailable" : "Create your first farm"}</span>
               )}
             </small>
           </span>
@@ -440,26 +466,15 @@ function App() {
                 </button>
               ))
             ) : (
-              <>
-                <button
-                  onClick={() => {
-                    setFarmOpen(false);
-                    notify("Green Valley Farm selected");
-                  }}
-                >
-                  <span className="farm-dot" />
-                  Green Valley Farm <Check size={14} />
-                </button>
-                <button
-                  onClick={() => {
-                    setFarmOpen(false);
-                    notify("Demo farm switcher");
-                  }}
-                >
-                  <span className="farm-dot farm-dot-muted" />
-                  Sunrise Plot <Plus size={14} />
-                </button>
-              </>
+              <button
+                onClick={() => {
+                  setFarmOpen(false);
+                  setActive("Farms");
+                }}
+              >
+                <span className="farm-dot farm-dot-muted" />
+                Create your first farm <Plus size={14} />
+              </button>
             )}
             <button
               onClick={() => {
@@ -722,6 +737,18 @@ function App() {
               notify={notify}
               summary={backendSummary}
               selectedFarm={selectedFarm}
+            />
+          ) : active === "Farms" || active === "Fields" ? (
+            <FarmsFieldsPage
+              active={active}
+              farms={farms}
+              farmsLoading={farmsLoading}
+              farmsError={farmsError}
+              selectedFarm={selectedFarm}
+              setSelectedFarm={setSelectedFarm}
+              refreshFarms={refreshFarms}
+              onNavigate={setActive}
+              notify={notify}
             />
           ) : (
             <WorkspacePage
