@@ -13,6 +13,7 @@ import {
   LayoutDashboard,
   Leaf,
   Menu,
+  Moon,
   Ellipsis,
   MoreHorizontal,
   Plus,
@@ -106,6 +107,23 @@ function formatNotificationPreviewTime(value) {
 }
 function App() {
   const { user, isAuthenticated, loading, logout } = useAuth();
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem("ifc-landing-theme") || "light";
+    } catch {
+      return "light";
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("ifc-landing-theme", theme);
+    } catch {
+      // Storage may be unavailable; the in-memory theme still applies.
+    }
+    document.documentElement.dataset.ifcTheme = theme;
+  }, [theme]);
+
   const [sessionMinimumElapsed, setSessionMinimumElapsed] = useState(false);
   const [sessionWelcomeComplete, setSessionWelcomeComplete] = useState(false);
 
@@ -303,7 +321,7 @@ function App() {
       </div>
     );
   }
-  if (!isAuthenticated) return <LandingPage />;
+  if (!isAuthenticated) return <LandingPage theme={theme} setTheme={setTheme} />;
   function notify(message) {
     setToast(message);
     window.clearTimeout(window.__ifcToast);
@@ -542,6 +560,16 @@ function App() {
               </kbd>
             </label>
             <div className="top-divider" />
+            <button
+              type="button"
+              className="theme-toggle-button"
+              onClick={() => setTheme((current) => current === "light" ? "dark" : "light")}
+              aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
+              title={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
+            >
+              {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
+              <span>{theme === "light" ? "Dark" : "Light"}</span>
+            </button>
             <div className="popover-anchor">
               <button
                 className={

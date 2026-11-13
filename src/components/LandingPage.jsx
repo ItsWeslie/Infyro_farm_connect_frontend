@@ -14,7 +14,7 @@ import { ContactToast } from "./landing/ContactToast";
 import { BackToTop } from "./landing/BackToTop";
 import "./LandingPage.css";
 
-export default function LandingPage() {
+export default function LandingPage({ theme: controlledTheme, setTheme: setControlledTheme } = {}) {
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState("login");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -25,13 +25,15 @@ export default function LandingPage() {
     message: "",
   });
   const [contactToast, setContactToast] = useState(null);
-  const [theme, setTheme] = useState(() => {
+  const [localTheme, setLocalTheme] = useState(() => {
     try {
       return localStorage.getItem("ifc-landing-theme") || "light";
     } catch {
       return "light";
     }
   });
+  const theme = controlledTheme ?? localTheme;
+  const setTheme = setControlledTheme ?? setLocalTheme;
 
   useEffect(() => {
     try {
@@ -39,11 +41,15 @@ export default function LandingPage() {
     } catch {
       /* Storage may be unavailable. */
     }
+
+    // When the app supplies a shared theme, App owns the document attribute.
+    if (controlledTheme !== undefined) return undefined;
+
     document.documentElement.dataset.ifcTheme = theme;
     return () => {
       delete document.documentElement.dataset.ifcTheme;
     };
-  }, [theme]);
+  }, [theme, controlledTheme]);
 
   useEffect(() => {
     if (!contactToast) return undefined;
