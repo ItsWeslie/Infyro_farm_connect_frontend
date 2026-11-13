@@ -37,7 +37,7 @@ npm run preview
 - Lucide icons via `lucide-react`.
 - Responsive desktop, tablet, and mobile layouts.
 - Search, filters, table/card view switching, create/edit dialogs with controlled fields, record-detail modals, calendar event composer, toasts, calendar navigation, and settings toggles.
-- All content is illustrative sample data. Entries and preferences are not persisted to a server.
+- Other workspace screens still use illustrative sample data; Farms and Fields are connected to the backend. Prototype entries and settings outside those screens are not persisted to a server.
 - Earth-inspired colors, accessible focus states, and reduced-motion support.
 
 ## Backend configuration
@@ -57,4 +57,4 @@ The API client includes backend route mappings for farms, fields, crop types, cr
 
 ## Current scope
 
-The Farms and Fields screens now use backend data and CRUD endpoints. Farm records are named using the backend's `farmName` field; land area is calculated from the farm's field responses. Field creation sends `fieldName` and `totalArea`, while field editing changes the name only because the current backend update DTO does not support area changes. Other workspace screens still contain prototype/sample data and several create/edit interactions remain local UI placeholders. Phase 1 establishes the shared authentication and API-client foundation; Phase 2 connects Farms and Fields. The dashboard income chart remains illustrative until a backend sales/revenue module exists.
+The Farms and Fields screens now use backend data and CRUD endpoints. Farm records are named using the backend's `farmName` field; area totals are calculated from the farm's field responses. The backend stores field area as a number but does not define a measurement unit in the DTO, so the UI displays the raw area value and asks farms to use a consistent unit. Field creation sends `fieldName` and `totalArea`, while field editing changes the name only because the current backend update DTO does not support area changes. Other workspace screens still contain prototype/sample data and several create/edit interactions remain local UI placeholders. Phase 1 establishes the shared authentication and API-client foundation; Phase 2 connects Farms and Fields. The dashboard income chart remains illustrative until a backend sales/revenue module exists.
