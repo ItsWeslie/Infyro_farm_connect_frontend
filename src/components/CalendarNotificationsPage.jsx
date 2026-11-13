@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import { calendarApi, notificationApi } from "../api/client";
 import { SkeletonBlock } from "./ui/Skeleton";
-import { SkeletonBlock } from "./ui/Skeleton";
 import { useAuth } from "../context/AuthContext";
 
 const NOTIFICATION_PAGE_SIZE = 20;
