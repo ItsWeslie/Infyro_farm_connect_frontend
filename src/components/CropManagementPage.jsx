@@ -16,6 +16,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
+import { SkeletonBlock } from "./ui/Skeleton";
 import {
   cropActivityApi,
   cropPlantingApi,
@@ -736,12 +737,12 @@ export default function CropManagementPage({
         {(pageError || (isActivities && activityError)) && <div className="ff-error" role="alert">{isActivities ? activityError || pageError : pageError}</div>}
 
         {loading ? (
-          <div className="empty-state"><RefreshCw size={20} /><strong>Loading crop data…</strong></div>
+          <SkeletonBlock rows={5} />
         ) : !isActivities && !isTypes && fields.length === 0 ? (
           <div className="empty-state"><MapPinned size={23} /><strong>No fields in this farm</strong><span>Add a field before creating a crop planting.</span><button className="button-secondary" type="button" onClick={() => onNavigate("Fields")}>Manage fields <ArrowRight size={14} /></button></div>
         ) : !isActivities && isTypes ? (
           loading ? (
-            <div className="empty-state"><RefreshCw size={20} /><strong>Loading crop types…</strong></div>
+            <SkeletonBlock rows={4} />
           ) : filteredTypes.length === 0 ? (
             <div className="empty-state"><Leaf size={23} /><strong>{search ? "No matching crop types" : "No crop types yet"}</strong><span>{search ? "Try another search." : "Create crop types such as tomato, rice, or chilli for this farm."}</span>{!search && <button className="button-primary" type="button" onClick={openCreateType}><Plus size={14} /> Add crop type</button>}</div>
           ) : (
@@ -770,7 +771,7 @@ export default function CropManagementPage({
           )
         ) : isActivities ? (
           activitiesLoading ? (
-            <div className="empty-state"><RefreshCw size={20} /><strong>Loading activity log…</strong></div>
+            <SkeletonBlock rows={4} />
           ) : !selectedPlanting ? (
             <div className="empty-state"><Sprout size={23} /><strong>No plantings available</strong><span>Create a planting first, then log field activity against it.</span><button className="button-primary" type="button" onClick={() => onNavigate("Crop management")}>Go to crop management <ArrowRight size={14} /></button></div>
           ) : activities.length === 0 ? (
