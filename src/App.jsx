@@ -610,7 +610,7 @@ function App() {
                             if (!item.read) await notificationApi.markRead(item.id);
                             await refreshNotificationSummary();
                           } catch (error) {
-                            notify(error.message || "Could not update this notification.");
+                            notify(error.message || "Could not update this notification.", "error");
                           }
                           setActive("Notifications");
                           setNotificationsOpen(false);
