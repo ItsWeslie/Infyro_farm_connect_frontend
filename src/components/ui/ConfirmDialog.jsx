@@ -9,6 +9,7 @@ const TONE_ICONS = {
 
 export default function ConfirmDialog({ dialog, onResolve }) {
   const cancelButtonRef = useRef(null);
+  const confirmButtonRef = useRef(null);
   const titleId = "ifc-confirm-dialog-title";
   const descriptionId = "ifc-confirm-dialog-description";
 
@@ -19,6 +20,18 @@ export default function ConfirmDialog({ dialog, onResolve }) {
       if (event.key === "Escape") {
         event.preventDefault();
         onResolve(false);
+        return;
+      }
+      if (event.key === "Tab") {
+        const first = cancelButtonRef.current;
+        const last = confirmButtonRef.current;
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
       }
     };
     document.addEventListener("keydown", onKeyDown);
@@ -60,6 +73,7 @@ export default function ConfirmDialog({ dialog, onResolve }) {
             {dialog.cancelLabel || "Cancel"}
           </button>
           <button
+            ref={confirmButtonRef}
             type="button"
             className={`ifc-confirm-submit ifc-confirm-submit-${dialog.tone || "danger"}`}
             onClick={() => onResolve(true)}
