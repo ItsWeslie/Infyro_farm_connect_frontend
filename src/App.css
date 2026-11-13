@@ -480,3 +480,12 @@
 @keyframes ifc-overview-spin{to{transform:rotate(360deg)}}
 @media(max-width:1050px){.ifc-overview-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.ifc-overview-main-grid,.ifc-overview-bottom-grid{grid-template-columns:1fr}}
 @media(max-width:640px){.ifc-overview-heading{align-items:flex-start;flex-direction:column}.ifc-overview-actions{width:100%}.ifc-overview-actions button{flex:1;justify-content:center}.ifc-overview-stats{gap:8px}.ifc-overview-stat{padding:12px}.ifc-overview-stat>strong{font-size:19px}.ifc-overview-panel{padding:13px}.ifc-overview-panel-heading{flex-wrap:wrap}.ifc-overview-milestone time,.ifc-overview-activity time{font-size:7px}.ifc-overview-footnote{flex-wrap:wrap}.ifc-overview-footnote small{margin-left:21px}}
+
+/* Keep the restored Overview hero aligned with the live dashboard panels. */
+.ifc-overview-welcome{margin-bottom:0}
+.ifc-overview-welcome .ifc-overview-actions{display:flex;align-items:center;gap:8px}
+.ifc-overview-hero{margin-bottom:0}
+@media(max-width:650px){
+  .ifc-overview-welcome .ifc-overview-actions{width:100%}
+  .ifc-overview-welcome .ifc-overview-actions button{flex:1;justify-content:center}
+}
