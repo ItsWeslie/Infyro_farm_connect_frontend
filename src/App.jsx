@@ -44,6 +44,7 @@ import { useAuth } from "./context/AuthContext";
 import { AuthModal } from "./components/AuthModal";
 import LandingPage from "./components/LandingPage";
 import FarmsFieldsPage from "./components/FarmsFieldsPage";
+import CropManagementPage from "./components/CropManagementPage";
 import {
   farmApi,
   farmSummaryApi,
@@ -60,7 +61,7 @@ const navigation = [
       { label: "Overview", icon: LayoutDashboard },
       { label: "Farms", icon: Tractor },
       { label: "Fields", icon: MapPinned },
-      { label: "Crop management", icon: Sprout, badge: "4" },
+      { label: "Crop management", icon: Sprout },
       { label: "Activities", icon: ClipboardList },
       { label: "Calendar", icon: CalendarDays, dot: true },
     ],
@@ -732,7 +733,7 @@ function App() {
               cropCount={localCrops.length}
               search={search}
               setSearch={setSearch}
-              onAdd={() => setShowAdd(true)}
+              onAdd={() => setActive("Crop management")}
               onNavigate={setActive}
               notify={notify}
               summary={backendSummary}
@@ -750,12 +751,21 @@ function App() {
               onNavigate={setActive}
               notify={notify}
             />
+          ) : active === "Crop management" || active === "Activities" ? (
+            <CropManagementPage
+              active={active}
+              farms={farms}
+              selectedFarm={selectedFarm}
+              setSelectedFarm={setSelectedFarm}
+              onNavigate={setActive}
+              notify={notify}
+            />
           ) : (
             <WorkspacePage
               active={active}
               onNavigate={setActive}
               notify={notify}
-              onAdd={() => setShowAdd(true)}
+              onAdd={() => setActive("Crop management")}
               selectedFarm={selectedFarm}
               isLive={isLiveConnected}
             />
