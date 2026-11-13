@@ -24,12 +24,7 @@ export function AuthProvider({ children }) {
     setIsAuthenticated(false);
   }, []);
 
-  const establishSession = useCallback(async (response, fallbackEmail = "") => {
-    if (response?.accessToken) {
-      // Login/refresh responses contain the short-lived JWT. Keep it in memory only.
-      const { setAccessToken } = await import("../api/client");
-      setAccessToken(response.accessToken);
-    }
+  const establishSession = useCallback(async (fallbackEmail = "") => {
     const validation = await authApi.validate();
     if (!(validation?.isLoggedIn ?? validation?.loggedIn)) {
       throw new Error("Your session could not be validated. Please sign in again.");
@@ -46,12 +41,8 @@ export function AuthProvider({ children }) {
     // The refresh cookie is HttpOnly. Rotate it to obtain a fresh access token,
     // then validate that token before rendering the authenticated workspace.
     authApi.refresh()
-      .then(async (response) => {
+      .then(async () => {
         if (!active) return;
-        if (response?.accessToken) {
-          const { setAccessToken } = await import("../api/client");
-          setAccessToken(response.accessToken);
-        }
         const validation = await authApi.validate();
         if (!active) return;
         if (validation?.isLoggedIn ?? validation?.loggedIn) {
@@ -85,7 +76,7 @@ export function AuthProvider({ children }) {
       throw new Error("The login response did not include an access token.");
     }
     try {
-      await establishSession(response, email.trim());
+      await establishSession(email.trim());
     } catch (error) {
       clearSession();
       throw error;
