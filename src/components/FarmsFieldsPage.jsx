@@ -5,7 +5,6 @@ import {
   MapPinned,
   Pencil,
   Plus,
-  RefreshCw,
   Ruler,
   Search,
   Sprout,
@@ -13,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { farmApi, fieldApi } from "../api/client";
+import { SkeletonBlock } from "./ui/Skeleton";
 
 function unwrapList(response) {
   if (Array.isArray(response)) return response;
@@ -328,14 +328,6 @@ export default function FarmsFieldsPage({
               </button>
             )}
           </label>
-          <button
-            type="button"
-            className="button-secondary ff-refresh"
-            onClick={() => (isFarmsPage ? refreshFarms().catch(() => {}) : setFieldReload((value) => value + 1))}
-            disabled={isFarmsPage ? farmsLoading : fieldsLoading}
-          >
-            <RefreshCw size={14} /> Refresh
-          </button>
           <span className="result-count">
             {isFarmsPage ? filteredFarms.length : filteredFields.length} records
           </span>
@@ -349,7 +341,7 @@ export default function FarmsFieldsPage({
 
         {isFarmsPage ? (
           farmsLoading ? (
-            <div className="empty-state"><RefreshCw size={20} /><strong>Loading farms…</strong></div>
+            <SkeletonBlock rows={4} />
           ) : filteredFarms.length === 0 ? (
             <div className="empty-state">
               <Building2 size={23} />
@@ -398,7 +390,7 @@ export default function FarmsFieldsPage({
             <button type="button" className="button-secondary" onClick={() => onNavigate("Farms")}>Go to farms <ArrowRight size={14} /></button>
           </div>
         ) : fieldsLoading ? (
-          <div className="empty-state"><RefreshCw size={20} /><strong>Loading fields…</strong></div>
+          <SkeletonBlock rows={4} />
         ) : filteredFields.length === 0 ? (
           <div className="empty-state">
             <MapPinned size={23} />
