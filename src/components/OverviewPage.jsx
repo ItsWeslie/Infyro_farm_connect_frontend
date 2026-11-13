@@ -137,7 +137,7 @@ function eventKind(eventType) {
   return String(eventType || "").toUpperCase().includes("HARVEST") ? "harvest" : "planting";
 }
 
-function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd }) {
+function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }) {
   const { user } = useAuth();
   const userName = user?.name?.trim()?.split(/\s+/)[0] || user?.username?.split("@")[0] || "there";
   const [snapshot, setSnapshot] = useState(null);
@@ -290,13 +290,14 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd }) {
     loadOverview().catch((requestError) => {
       if (!current) return;
       setError(requestError.message || "Farm overview data could not be loaded.");
+      if (notify) notify(requestError.message || "Farm overview data could not be loaded.", "error");
       setLoading(false);
     });
 
     return () => {
       current = false;
     };
-  }, [farmId, selectedFarm?.name, refreshKey]);
+  }, [farmId, selectedFarm?.name, refreshKey, notify]);
 
   const filteredPlantings = useMemo(() => {
     const query = cropSearch.trim().toLowerCase();
