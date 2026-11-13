@@ -46,9 +46,11 @@ import LandingPage from "./components/LandingPage";
 import FarmsFieldsPage from "./components/FarmsFieldsPage";
 import CropManagementPage from "./components/CropManagementPage";
 import ExpenseHarvestPage from "./components/ExpenseHarvestPage";
+import { CalendarPage, NotificationsPage, SettingsPage } from "./components/CalendarNotificationsPage";
 import {
   farmApi,
   farmSummaryApi,
+  notificationApi,
 } from "./api/client";
 import {
   ExpenseCategory,
@@ -72,7 +74,7 @@ const navigation = [
     items: [
       { label: "Expenses", icon: Wallet },
       { label: "Harvest records", icon: PackageCheck },
-      { label: "Notifications", icon: Bell, badge: "3" },
+      { label: "Notifications", icon: Bell, badge: true },
     ],
   },
 ];
@@ -172,6 +174,12 @@ function Avatar({ small = false, name = "Ravi Kumar" }) {
     .toUpperCase() || "IF";
   return <div className={small ? "avatar avatar-small" : "avatar"}>{initials}</div>;
 }
+function formatNotificationPreviewTime(value) {
+  if (!value) return "Recently received";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Recently received";
+  return date.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+}
 function App() {
   const { user, isAuthenticated, loading, logout } = useAuth();
   const [sessionMinimumElapsed, setSessionMinimumElapsed] = useState(false);
@@ -195,6 +203,39 @@ function App() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [farmOpen, setFarmOpen] = useState(false);
   const [toast, setToast] = useState("");
+  const [notificationUnreadCount, setNotificationUnreadCount] = useState(0);
+  const [notificationPreview, setNotificationPreview] = useState([]);
+  const [notificationSummaryLoading, setNotificationSummaryLoading] = useState(false);
+  const [notificationSummaryError, setNotificationSummaryError] = useState("");
+
+  const refreshNotificationSummary = useCallback(async () => {
+    if (!isAuthenticated) {
+      setNotificationUnreadCount(0);
+      setNotificationPreview([]);
+      setNotificationSummaryError("");
+      setNotificationSummaryLoading(false);
+      return;
+    }
+    setNotificationSummaryLoading(true);
+    try {
+      const [count, response] = await Promise.all([
+        notificationApi.getUnreadCount(),
+        notificationApi.getAll(false, 0, 5),
+      ]);
+      setNotificationUnreadCount(Number(count) || 0);
+      setNotificationPreview(Array.isArray(response) ? response : []);
+      setNotificationSummaryError("");
+    } catch (error) {
+      setNotificationSummaryError(error.message || "Unable to load notifications.");
+      throw error;
+    } finally {
+      setNotificationSummaryLoading(false);
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    refreshNotificationSummary().catch(() => {});
+  }, [refreshNotificationSummary]);
 
   // Live farms state from backend
   const [farms, setFarms] = useState([]);
@@ -487,8 +528,8 @@ function App() {
                       strokeWidth={active === item.label ? 2.2 : 1.8}
                     />
                     <span>{item.label}</span>
-                    {item.badge && (
-                      <span className="nav-badge">{item.badge}</span>
+                    {item.badge && notificationUnreadCount > 0 && (
+                      <span className="nav-badge">{notificationUnreadCount > 99 ? "99+" : notificationUnreadCount}</span>
                     )}
                     {item.dot && <span className="nav-notice-dot" />}
                   </button>
@@ -629,46 +670,58 @@ function App() {
                 }
                 aria-label="Notifications"
                 onClick={() => {
-                  setNotificationsOpen(!notificationsOpen);
+                  const nextOpen = !notificationsOpen;
+                  setNotificationsOpen(nextOpen);
+                  if (nextOpen) refreshNotificationSummary().catch(() => {});
                   setProfileOpen(false);
                 }}
               >
                 <Bell size={19} />
-                <i className="notification-dot" />
+                {notificationUnreadCount > 0 && <i className="notification-dot" />}
               </button>
               {notificationsOpen && (
                 <div className="notification-popover">
                   <div className="popover-heading">
                     <strong>Notifications</strong>
-                    <span>3 new</span>
+                    <span>{notificationUnreadCount > 0 ? notificationUnreadCount + " unread" : "All caught up"}</span>
                   </div>
-                  <div className="notification-row">
-                    <span className="notification-symbol gold">
-                      <CalendarDays size={16} />
-                    </span>
-                    <span>
-                      <strong>Harvest coming up</strong>
-                      <small>Spinach is almost ready · in 3 days</small>
-                    </span>
-                  </div>
-                  <div className="notification-row">
-                    <span className="notification-symbol green">
-                      <Droplets size={16} />
-                    </span>
-                    <span>
-                      <strong>Irrigation reminder</strong>
-                      <small>Check moisture in North Field</small>
-                    </span>
-                  </div>
-                  <div className="notification-row">
-                    <span className="notification-symbol blue">
-                      <Wallet size={16} />
-                    </span>
-                    <span>
-                      <strong>Weekly expenses ready</strong>
-                      <small>Your farm spending overview is updated</small>
-                    </span>
-                  </div>
+                  {notificationSummaryError ? (
+                    <div className="ifc-notification-preview-state">
+                      <span>{notificationSummaryError}</span>
+                      <button type="button" onClick={() => refreshNotificationSummary().catch(() => {})}>Retry</button>
+                    </div>
+                  ) : notificationSummaryLoading && notificationPreview.length === 0 ? (
+                    <div className="ifc-notification-preview-state">Loading your notifications…</div>
+                  ) : notificationPreview.length === 0 ? (
+                    <div className="ifc-notification-preview-state">No notifications yet. New crop milestones will appear here.</div>
+                  ) : (
+                    notificationPreview.map((item) => (
+                      <button
+                        type="button"
+                        className={"notification-row ifc-notification-preview-row" + (item.read ? " is-read" : "")}
+                        key={item.id}
+                        onClick={async () => {
+                          try {
+                            if (!item.read) await notificationApi.markRead(item.id);
+                            await refreshNotificationSummary();
+                          } catch (error) {
+                            notify(error.message || "Could not update this notification.");
+                          }
+                          setActive("Notifications");
+                          setNotificationsOpen(false);
+                        }}
+                      >
+                        <span className={"notification-symbol " + (item.eventType === "HARVEST" ? "gold" : "green")}>
+                          {item.eventType === "HARVEST" ? <Wheat size={16} /> : <Sprout size={16} />}
+                        </span>
+                        <span>
+                          <strong>{item.title}</strong>
+                          <small>{item.eventDate ? "Milestone: " + item.eventDate : formatNotificationPreviewTime(item.scheduledAt)}</small>
+                        </span>
+                        {!item.read && <i className="ifc-preview-unread-dot" />}
+                      </button>
+                    ))
+                  )}
                   <button
                     className="popover-footer"
                     onClick={() => {
@@ -746,6 +799,16 @@ function App() {
               onNavigate={setActive}
               notify={notify}
             />
+          ) : active === "Calendar" ? (
+            <CalendarPage />
+          ) : active === "Notifications" ? (
+            <NotificationsPage
+              unreadCount={notificationUnreadCount}
+              onNotificationsChanged={refreshNotificationSummary}
+              notify={notify}
+            />
+          ) : active === "Settings" ? (
+            <SettingsPage notify={notify} />
           ) : (
             <WorkspacePage
               active={active}
