@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { calendarApi, notificationApi } from "../api/client";
 import { SkeletonBlock } from "./ui/Skeleton";
+import { SkeletonBlock } from "./ui/Skeleton";
 import { useAuth } from "../context/AuthContext";
 
 const NOTIFICATION_PAGE_SIZE = 20;
@@ -258,7 +259,7 @@ export function CalendarPage() {
                 <h3>{displayDate(selectedDate, { weekday: "long", month: "long", day: "numeric" })}</h3>
                 <p>{selectedEvents.length} {selectedEvents.length === 1 ? "milestone" : "milestones"} scheduled</p>
               </div>
-              {loading && <div className="ifc-calendar-panel-state">Loading milestones…</div>}
+              {loading && <SkeletonBlock rows={4} />}
               {!loading && selectedEvents.length === 0 && (
                 <div className="ifc-calendar-panel-empty">
                   <CalendarDays size={22} />
