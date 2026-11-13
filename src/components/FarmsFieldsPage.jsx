@@ -69,6 +69,7 @@ export default function FarmsFieldsPage({
   const [name, setName] = useState("");
   const [area, setArea] = useState("");
   const [saving, setSaving] = useState(false);
+  const [formError, setFormError] = useState("");
   const [deletingId, setDeletingId] = useState(null);
   const [fields, setFields] = useState([]);
   const [fieldsLoading, setFieldsLoading] = useState(false);
@@ -140,6 +141,7 @@ export default function FarmsFieldsPage({
 
   function openCreate() {
     setEditing(null);
+    setFormError("");
     setName("");
     setArea("");
     setDialogOpen(true);
@@ -147,6 +149,7 @@ export default function FarmsFieldsPage({
 
   function openEdit(record) {
     setEditing(record);
+    setFormError("");
     setName(isFarmsPage ? record.name || "" : record.fieldName || "");
     setArea(record.totalArea == null ? "" : String(record.totalArea));
     setDialogOpen(true);
@@ -155,6 +158,7 @@ export default function FarmsFieldsPage({
   async function submitForm(event) {
     event.preventDefault();
     if (!name.trim()) return;
+    setFormError("");
     setSaving(true);
     try {
       if (isFarmsPage) {
@@ -189,11 +193,7 @@ export default function FarmsFieldsPage({
       setName("");
       setArea("");
     } catch (error) {
-      if (isFarmsPage) {
-        notify(error.message || "Unable to save this farm.");
-      } else {
-        setFieldsError(error.message || "Unable to save this field.");
-      }
+      setFormError(error.message || `Unable to save this ${isFarmsPage ? "farm" : "field"}.`);
     } finally {
       setSaving(false);
     }
@@ -377,6 +377,8 @@ export default function FarmsFieldsPage({
               </table>
             </div>
           )
+        ) : farmsLoading ? (
+          <div className="empty-state"><RefreshCw size={20} /><strong>Loading farms…</strong></div>
         ) : !selectedFarm?.id ? (
           <div className="empty-state">
             <MapPinned size={23} />
@@ -440,6 +442,7 @@ export default function FarmsFieldsPage({
               </div>
               <button type="button" className="icon-button" aria-label="Close dialog" onClick={() => setDialogOpen(false)} disabled={saving}><X size={19} /></button>
             </div>
+            {formError && <div className="ff-error" role="alert">{formError}</div>}
             {!isFarmsPage && (
               <div className="ff-form-context">
                 <span>Farm</span>
