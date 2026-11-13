@@ -1,4 +1,6 @@
 import { useCallback, useState, useEffect } from "react";
+import { useToast } from "./hooks/useToast";
+import ToastViewport from "./components/ui/ToastViewport";
 import {
   Activity,
   ArrowDownRight,
@@ -144,7 +146,7 @@ function App() {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [farmOpen, setFarmOpen] = useState(false);
-  const [toast, setToast] = useState("");
+  const { toast, notify, dismissToast } = useToast();
   const [notificationUnreadCount, setNotificationUnreadCount] = useState(0);
   const [notificationPreview, setNotificationPreview] = useState([]);
   const [notificationSummaryLoading, setNotificationSummaryLoading] = useState(false);
@@ -322,11 +324,6 @@ function App() {
     );
   }
   if (!isAuthenticated) return <LandingPage theme={theme} setTheme={setTheme} />;
-  function notify(message) {
-    setToast(message);
-    window.clearTimeout(window.__ifcToast);
-    window.__ifcToast = window.setTimeout(() => setToast(""), 2600);
-  }
   return (
     <div className="app-shell">
       {mobileNav && (
@@ -733,14 +730,7 @@ function App() {
           </footer>
         </div>
       </main>
-      {toast && (
-        <div role="status" className="toast-message">
-          <span>
-            <Check size={15} />
-          </span>
-          {toast}
-        </div>
-      )}
+      <ToastViewport toast={toast} onDismiss={dismissToast} />
       <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
