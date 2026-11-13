@@ -636,7 +636,7 @@ html[data-ifc-theme="dark"] .notification-symbol.gold{
 html[data-ifc-theme="dark"] .notification-symbol.blue{
   color:#c3d9ed;background:#2a3b4a
 }
-html[data-ifc-theme="dark"] .theme-toggle-button{
+.theme-toggle-button{
   display:inline-flex;
   align-items:center;
   justify-content:center;
