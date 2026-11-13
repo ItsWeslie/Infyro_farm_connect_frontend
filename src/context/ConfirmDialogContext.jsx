@@ -6,9 +6,11 @@ const ConfirmDialogContext = createContext(null);
 export function ConfirmDialogProvider({ children }) {
   const [dialog, setDialog] = useState(null);
   const resolverRef = useRef(null);
+  const previousFocusRef = useRef(null);
 
   const confirmDialog = useCallback((options = {}) => new Promise((resolve) => {
     if (resolverRef.current) resolverRef.current(false);
+    previousFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     resolverRef.current = resolve;
     setDialog({
       title: options.title || "Are you sure?",
@@ -25,6 +27,9 @@ export function ConfirmDialogProvider({ children }) {
     const resolve = resolverRef.current;
     resolverRef.current = null;
     resolve?.(confirmed);
+    const previousFocus = previousFocusRef.current;
+    previousFocusRef.current = null;
+    if (previousFocus?.isConnected) window.setTimeout(() => previousFocus.focus(), 0);
   }, []);
 
   useEffect(() => () => {
