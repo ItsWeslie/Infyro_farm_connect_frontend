@@ -444,7 +444,6 @@ function HarvestPage({
   const [plantings, setPlantings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pageError, setPageError] = useState("");
-  const [reloadKey, setReloadKey] = useState(0);
   const [selectedPlantingId, setSelectedPlantingId] = useState("");
   const [records, setRecords] = useState([]);
   const [recordsLoading, setRecordsLoading] = useState(false);
