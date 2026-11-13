@@ -21,8 +21,8 @@ npm run preview
 ## UI screens
 
 - **Overview:** dashboard hero, farm metrics, crop progress table, recent activity, field note, and an illustrative six-month income/expense comparison.
-- **Farms:** farm directory, acreage and field summaries, search/filter, add-farm dialog.
-- **Fields:** field directory, farm association, crop assignment, availability status.
+- **Farms:** live backend farm directory, land/field summaries, search, create, rename and delete.
+- **Fields:** live backend field directory scoped to a selected farm, with create, rename, delete, total area and available area.
 - **Crop management:** crop directory, growth progress, status filters, add-crop dialog.
 - **Activities:** activity log, completion status, search and filters.
 - **Calendar:** interactive month grid and agenda view with sample events.
@@ -57,4 +57,4 @@ The API client includes backend route mappings for farms, fields, crop types, cr
 
 ## Current scope
 
-The workspace screens still contain prototype/sample data and several create/edit interactions remain local UI placeholders. Phase 1 establishes the shared authentication and API-client foundation; subsequent phases connect each feature's data loading and CRUD workflows. The dashboard income chart remains illustrative until a backend sales/revenue module exists.
+The Farms and Fields screens now use backend data and CRUD endpoints. Farm records are named using the backend's `farmName` field; land area is calculated from the farm's field responses. Field creation sends `fieldName` and `totalArea`, while field editing changes the name only because the current backend update DTO does not support area changes. Other workspace screens still contain prototype/sample data and several create/edit interactions remain local UI placeholders. Phase 1 establishes the shared authentication and API-client foundation; Phase 2 connects Farms and Fields. The dashboard income chart remains illustrative until a backend sales/revenue module exists.
