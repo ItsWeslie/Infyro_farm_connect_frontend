@@ -44,6 +44,7 @@ import { useAuth } from "./context/AuthContext";
 import { AuthModal } from "./components/AuthModal";
 import LandingPage from "./components/LandingPage";
 import FarmsFieldsPage from "./components/FarmsFieldsPage";
+import CropManagementPage from "./components/CropManagementPage";
 import {
   farmApi,
   farmSummaryApi,
@@ -60,7 +61,7 @@ const navigation = [
       { label: "Overview", icon: LayoutDashboard },
       { label: "Farms", icon: Tractor },
       { label: "Fields", icon: MapPinned },
-      { label: "Crop management", icon: Sprout, badge: "4" },
+      { label: "Crop management", icon: Sprout },
       { label: "Activities", icon: ClipboardList },
       { label: "Calendar", icon: CalendarDays, dot: true },
     ],
@@ -193,8 +194,6 @@ function App() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [farmOpen, setFarmOpen] = useState(false);
   const [toast, setToast] = useState("");
-  const [showAdd, setShowAdd] = useState(false);
-  const [cropName, setCropName] = useState("");
 
   // Live farms state from backend
   const [farms, setFarms] = useState([]);
@@ -205,7 +204,7 @@ function App() {
   const [farmsError, setFarmsError] = useState("");
 
   // Fallback local crops for demo mode
-  const [localCrops, setLocalCrops] = useState(crops);
+  const localCrops = crops;
 
   const refreshFarms = useCallback(async (preferredFarmId) => {
     setFarmsLoading(true);
@@ -378,28 +377,6 @@ function App() {
     setToast(message);
     window.clearTimeout(window.__ifcToast);
     window.__ifcToast = window.setTimeout(() => setToast(""), 2600);
-  }
-  function addCrop(e) {
-    e.preventDefault();
-    if (!cropName.trim()) return;
-    setLocalCrops([
-      {
-        name: cropName.trim(),
-        variety: "Local variety",
-        field: "Unassigned field",
-        area: "—",
-        progress: 4,
-        status: "Planned",
-        harvest: "To be scheduled",
-        icon: "🌱",
-        tone: "new",
-      },
-      ...localCrops,
-    ]);
-    setCropName("");
-    setShowAdd(false);
-    setActive("Crop management");
-    notify("Your crop was added to the workspace");
   }
   return (
     <div className="app-shell">
@@ -732,7 +709,7 @@ function App() {
               cropCount={localCrops.length}
               search={search}
               setSearch={setSearch}
-              onAdd={() => setShowAdd(true)}
+              onAdd={() => setActive("Crop management")}
               onNavigate={setActive}
               notify={notify}
               summary={backendSummary}
@@ -750,12 +727,21 @@ function App() {
               onNavigate={setActive}
               notify={notify}
             />
+          ) : active === "Crop management" || active === "Activities" ? (
+            <CropManagementPage
+              active={active}
+              farms={farms}
+              selectedFarm={selectedFarm}
+              setSelectedFarm={setSelectedFarm}
+              onNavigate={setActive}
+              notify={notify}
+            />
           ) : (
             <WorkspacePage
               active={active}
               onNavigate={setActive}
               notify={notify}
-              onAdd={() => setShowAdd(true)}
+              onAdd={() => setActive("Crop management")}
               selectedFarm={selectedFarm}
               isLive={isLiveConnected}
             />
@@ -771,61 +757,6 @@ function App() {
           </footer>
         </div>
       </main>
-      {showAdd && (
-        <div
-          className="modal-overlay"
-          onMouseDown={(e) => {
-            if (e.target === e.currentTarget) setShowAdd(false);
-          }}
-        >
-          <form className="dialog-card" onSubmit={addCrop}>
-            <div className="dialog-heading">
-              <div>
-                <span className="section-kicker">GROW SOMETHING NEW</span>
-                <h2>Add a crop</h2>
-                <p>Start a new chapter for your farm.</p>
-              </div>
-              <button
-                type="button"
-                className="icon-button"
-                aria-label="Close dialog"
-                onClick={() => setShowAdd(false)}
-              >
-                <X size={19} />
-              </button>
-            </div>
-            <label className="form-label">
-              Crop name
-              <input
-                required
-                autoFocus
-                placeholder="e.g. Tomato, Okra, Spinach"
-                value={cropName}
-                onChange={(e) => setCropName(e.target.value)}
-              />
-            </label>
-            <div className="dialog-note">
-              <Sprout size={17} />
-              <span>
-                This demo entry will be added to your local crop directory.
-              </span>
-            </div>
-            <div className="dialog-actions">
-              <button
-                type="button"
-                className="button-secondary"
-                onClick={() => setShowAdd(false)}
-              >
-                Cancel
-              </button>
-              <button type="submit" className="button-primary">
-                <Plus size={16} />
-                Add crop
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
       {toast && (
         <div role="status" className="toast-message">
           <span>
