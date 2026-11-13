@@ -365,7 +365,6 @@ export default function CropManagementPage({
       setTypeDialogOpen(false);
       setEditingType(null);
       setTypeForm(INITIAL_TYPE_FORM);
-      refreshData();
       notify(editingType ? "Crop type updated" : "Crop type created");
     } catch (error) {
       notify(error.message || "Unable to save this crop type.", "error");
@@ -485,7 +484,6 @@ export default function CropManagementPage({
       }
       setPlantingDialogOpen(false);
       setEditingPlanting(null);
-      refreshData();
       notify(editingPlanting ? "Planting updated" : "Planting created");
     } catch (error) {
       notify(error.message || "Unable to save this planting.", "error");
@@ -594,7 +592,6 @@ export default function CropManagementPage({
       }
       setActivityDialogOpen(false);
       setEditingActivity(null);
-      setActivityReload((value) => value + 1);
       notify(editingActivity ? "Activity updated" : "Activity logged");
     } catch (error) {
       notify(error.message || "Unable to save this activity.", "error");
