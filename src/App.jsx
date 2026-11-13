@@ -1,4 +1,6 @@
 import { useCallback, useState, useEffect } from "react";
+import { useToast } from "./hooks/useToast";
+import ToastViewport from "./components/ui/ToastViewport";
 import {
   Activity,
   ArrowDownRight,
@@ -144,7 +146,7 @@ function App() {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [farmOpen, setFarmOpen] = useState(false);
-  const [toast, setToast] = useState("");
+  const { toast, notify, dismissToast } = useToast();
   const [notificationUnreadCount, setNotificationUnreadCount] = useState(0);
   const [notificationPreview, setNotificationPreview] = useState([]);
   const [notificationSummaryLoading, setNotificationSummaryLoading] = useState(false);
@@ -243,6 +245,7 @@ function App() {
         setFarms([]);
         setSelectedFarm(null);
         setFarmsError(error.message || "Unable to load your farms.");
+        notify(error.message || "Unable to load your farms.", "error");
         setIsLiveConnected(false);
       })
       .finally(() => {
@@ -250,7 +253,7 @@ function App() {
       });
 
     return () => { current = false; };
-  }, [isAuthenticated]);
+  }, [isAuthenticated, notify]);
 
   if (loading || !sessionMinimumElapsed) {
     return (
@@ -322,11 +325,6 @@ function App() {
     );
   }
   if (!isAuthenticated) return <LandingPage theme={theme} setTheme={setTheme} />;
-  function notify(message) {
-    setToast(message);
-    window.clearTimeout(window.__ifcToast);
-    window.__ifcToast = window.setTimeout(() => setToast(""), 2600);
-  }
   return (
     <div className="app-shell">
       {mobileNav && (
@@ -613,7 +611,7 @@ function App() {
                             if (!item.read) await notificationApi.markRead(item.id);
                             await refreshNotificationSummary();
                           } catch (error) {
-                            notify(error.message || "Could not update this notification.");
+                            notify(error.message || "Could not update this notification.", "error");
                           }
                           setActive("Notifications");
                           setNotificationsOpen(false);
@@ -671,11 +669,13 @@ function App() {
               farmCount={farms.length}
               onAdd={() => setActive("Crop management")}
               onNavigate={setActive}
+              notify={notify}
             />
           ) : active === "Farms" || active === "Fields" ? (
             <FarmsFieldsPage
               active={active}
               farms={farms}
+              setFarms={setFarms}
               farmsLoading={farmsLoading}
               farmsError={farmsError}
               selectedFarm={selectedFarm}
@@ -703,7 +703,7 @@ function App() {
               notify={notify}
             />
           ) : active === "Calendar" ? (
-            <CalendarPage />
+            <CalendarPage notify={notify} />
           ) : active === "Notifications" ? (
             <NotificationsPage
               unreadCount={notificationUnreadCount}
@@ -733,14 +733,7 @@ function App() {
           </footer>
         </div>
       </main>
-      {toast && (
-        <div role="status" className="toast-message">
-          <span>
-            <Check size={15} />
-          </span>
-          {toast}
-        </div>
-      )}
+      <ToastViewport toast={toast} onDismiss={dismissToast} />
       <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}

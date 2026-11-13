@@ -1,3 +1,4 @@
+import { SkeletonBlock, SkeletonCards } from "./ui/Skeleton";
 import { useEffect, useMemo, useState } from "react";
 import {
   Activity,
@@ -12,7 +13,6 @@ import {
   MapPinned,
   Plus,
   Receipt,
-  RefreshCw,
   Search,
   Sprout,
   Sun,
@@ -137,7 +137,7 @@ function eventKind(eventType) {
   return String(eventType || "").toUpperCase().includes("HARVEST") ? "harvest" : "planting";
 }
 
-function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd }) {
+function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }) {
   const { user } = useAuth();
   const userName = user?.name?.trim()?.split(/\s+/)[0] || user?.username?.split("@")[0] || "there";
   const [snapshot, setSnapshot] = useState(null);
@@ -290,13 +290,14 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd }) {
     loadOverview().catch((requestError) => {
       if (!current) return;
       setError(requestError.message || "Farm overview data could not be loaded.");
+      if (notify) notify(requestError.message || "Farm overview data could not be loaded.", "error");
       setLoading(false);
     });
 
     return () => {
       current = false;
     };
-  }, [farmId, selectedFarm?.name, refreshKey]);
+  }, [farmId, selectedFarm?.name, refreshKey, notify]);
 
   const filteredPlantings = useMemo(() => {
     const query = cropSearch.trim().toLowerCase();
@@ -361,9 +362,6 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd }) {
           </p>
         </div>
         <div className="ifc-overview-actions">
-          <button type="button" className="button-secondary" onClick={() => setRefreshKey((value) => value + 1)} disabled={loading}>
-            <RefreshCw size={14} className={loading ? "ifc-overview-spinning" : ""} /> Refresh
-          </button>
           <button type="button" className="button-primary" onClick={onAdd}>
             <Plus size={15} /> Add new crop
           </button>
@@ -479,10 +477,9 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd }) {
       )}
 
       {loading && !snapshot ? (
-        <div className="ifc-overview-loading surface-card" role="status">
-          <RefreshCw size={22} className="ifc-overview-spinning" />
-          <strong>Loading your farm records…</strong>
-          <span>Gathering fields, plantings, expenses, and upcoming milestones.</span>
+        <div className="surface-card" role="status" aria-label="Loading overview">
+          <SkeletonCards count={4} />
+          <SkeletonBlock rows={5} />
         </div>
       ) : snapshot ? (
         <>

@@ -6,7 +6,6 @@ import {
   Coins,
   Leaf,
   Plus,
-  RefreshCw,
   Search,
   Sprout,
   Ban,
@@ -19,6 +18,7 @@ import {
   harvestApi,
 } from "../api/client";
 import { ExpenseCategory, HarvestUnit } from "../types/enums";
+import { SkeletonBlock } from "./ui/Skeleton";
 
 const CATEGORIES = Object.values(ExpenseCategory);
 const UNITS = Object.values(HarvestUnit);
@@ -134,7 +134,6 @@ function ExpensePage({
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pageError, setPageError] = useState("");
-  const [reloadKey, setReloadKey] = useState(0);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ACTIVE");
   const [categoryFilter, setCategoryFilter] = useState("ALL");
@@ -174,13 +173,14 @@ function ExpensePage({
         setPlantings([]);
         setExpenses([]);
         setPageError(error.message || "Unable to load expense records.");
+        notify(error.message || "Unable to load expense records.", "error");
       })
       .finally(() => {
         if (current) setLoading(false);
       });
 
     return () => { current = false; };
-  }, [farmId, reloadKey]);
+  }, [farmId, notify]);
 
   const fieldById = useMemo(
     () => new Map(fields.map((field) => [String(field.id), field])),
@@ -216,10 +216,6 @@ function ExpensePage({
       return matchesSearch && matchesStatus && matchesCategory;
     });
   }, [expenses, plantingById, fieldById, search, statusFilter, categoryFilter]);
-
-  function refresh() {
-    setReloadKey((value) => value + 1);
-  }
 
   function openCreate() {
     setForm({
@@ -258,18 +254,24 @@ function ExpensePage({
 
     setSaving(true);
     try {
-      await expenseApi.create(farmId, {
+      const savedExpense = await expenseApi.create(farmId, {
         cropPlantingId,
         amount,
         expenseDate: form.expenseDate,
         category: form.category,
         description: form.description.trim(),
       });
+      const createdExpense = savedExpense?.data || savedExpense;
+      if (createdExpense && typeof createdExpense === "object" && createdExpense.id != null) {
+        setExpenses((current) => [createdExpense, ...current.filter((item) => item.id !== createdExpense.id)]);
+      } else {
+        setPageError("Expense saved, but the server response did not include the saved record. Reopen this page to sync it.");
+      }
       setDialogOpen(false);
       setForm(EMPTY_EXPENSE);
-      refresh();
       notify("Expense saved to " + farmName);
     } catch (error) {
+      notify(error.message || "Unable to save this expense.", "error");
       setFormError(error.message || "Unable to save this expense.");
     } finally {
       setSaving(false);
@@ -283,9 +285,10 @@ function ExpensePage({
     setPageError("");
     try {
       await expenseApi.void(farmId, expense.id);
-      refresh();
+      setExpenses((current) => current.map((item) => item.id === expense.id ? { ...item, voided: true } : item));
       notify("Expense voided; the audit record was retained.");
     } catch (error) {
+      notify(error.message || "Unable to void this expense.", "error");
       setPageError(error.message || "Unable to void this expense.");
     } finally {
       setVoidingId(null);
@@ -313,9 +316,6 @@ function ExpensePage({
               </select>
             </label>
           )}
-          <button className="button-secondary expense4-refresh" type="button" onClick={refresh} disabled={loading}>
-            <RefreshCw size={14} /> Refresh
-          </button>
           <button className="button-primary" type="button" onClick={openCreate}>
             <Plus size={15} /> Add expense
           </button>
@@ -360,7 +360,7 @@ function ExpensePage({
 
         {pageError && <div className="ff-error" role="alert">{pageError}</div>}
         {loading ? (
-          <div className="empty-state"><RefreshCw size={20} /><strong>Loading expense ledger…</strong></div>
+          <SkeletonBlock rows={5} />
         ) : filteredExpenses.length === 0 ? (
           <div className="empty-state">
             <Coins size={23} />
@@ -445,7 +445,6 @@ function HarvestPage({
   const [plantings, setPlantings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pageError, setPageError] = useState("");
-  const [reloadKey, setReloadKey] = useState(0);
   const [selectedPlantingId, setSelectedPlantingId] = useState("");
   const [records, setRecords] = useState([]);
   const [recordsLoading, setRecordsLoading] = useState(false);
@@ -484,12 +483,13 @@ function HarvestPage({
         setFields([]);
         setPlantings([]);
         setPageError(error.message || "Unable to load plantings for harvest.");
+        notify(error.message || "Unable to load plantings for harvest.", "error");
       })
       .finally(() => {
         if (current) setLoading(false);
       });
     return () => { current = false; };
-  }, [farmId, reloadKey]);
+  }, [farmId, notify]);
 
   const fieldById = useMemo(
     () => new Map(fields.map((field) => [String(field.id), field])),
@@ -536,12 +536,13 @@ function HarvestPage({
         if (!current) return;
         setRecords([]);
         setRecordsError(error.message || "Unable to load harvest records.");
+        notify(error.message || "Unable to load harvest records.", "error");
       })
       .finally(() => {
         if (current) setRecordsLoading(false);
       });
     return () => { current = false; };
-  }, [selectedPlanting?.id, reloadKey]);
+  }, [selectedPlanting?.id, notify]);
 
   const filteredRecords = records.filter((record) => {
     const normalized = search.toLowerCase();
@@ -557,10 +558,6 @@ function HarvestPage({
       || (statusFilter === "VOIDED" && record.voided);
     return matchesSearch && matchesStatus;
   });
-
-  function refresh() {
-    setReloadKey((value) => value + 1);
-  }
 
   function openCreate() {
     setForm({ ...EMPTY_HARVEST, harvestDate: todayIso() });
@@ -595,17 +592,23 @@ function HarvestPage({
 
     setSaving(true);
     try {
-      await harvestApi.create(selectedPlanting.id, {
+      const savedRecord = await harvestApi.create(selectedPlanting.id, {
         harvestDate: form.harvestDate,
         quantity,
         unit: form.unit,
         notes: form.notes.trim() || null,
       });
+      const createdRecord = savedRecord?.data || savedRecord;
+      if (createdRecord && typeof createdRecord === "object" && createdRecord.id != null) {
+        setRecords((current) => [createdRecord, ...current.filter((item) => item.id !== createdRecord.id)]);
+      } else {
+        setRecordsError("Harvest saved, but the server response did not include the saved record. Reopen this page to sync it.");
+      }
       setDialogOpen(false);
       setForm(EMPTY_HARVEST);
-      refresh();
       notify("Harvest record saved");
     } catch (error) {
+      notify(error.message || "Unable to save this harvest record.", "error");
       setFormError(error.message || "Unable to save this harvest record.");
     } finally {
       setSaving(false);
@@ -619,9 +622,10 @@ function HarvestPage({
     setRecordsError("");
     try {
       await harvestApi.void(selectedPlanting.id, record.id);
-      refresh();
+      setRecords((current) => current.map((item) => item.id === record.id ? { ...item, voided: true } : item));
       notify("Harvest record voided; the audit record was retained.");
     } catch (error) {
+      notify(error.message || "Unable to void this harvest record.", "error");
       setRecordsError(error.message || "Unable to void this harvest record.");
     } finally {
       setVoidingId(null);
@@ -649,9 +653,6 @@ function HarvestPage({
               </select>
             </label>
           )}
-          <button className="button-secondary expense4-refresh" type="button" onClick={refresh} disabled={loading || recordsLoading}>
-            <RefreshCw size={14} /> Refresh
-          </button>
           <button className="button-primary" type="button" onClick={openCreate} disabled={!canRecordHarvest}>
             <Plus size={15} /> Add harvest
           </button>
@@ -687,13 +688,13 @@ function HarvestPage({
         {recordsError && <div className="ff-error" role="alert">{recordsError}</div>}
 
         {loading ? (
-          <div className="empty-state"><RefreshCw size={20} /><strong>Loading harvest plantings…</strong></div>
+          <SkeletonBlock rows={4} />
         ) : farmPlantings.length === 0 ? (
           <div className="empty-state"><Sprout size={23} /><strong>No crop plantings in this farm</strong><span>Create a crop planting before recording a harvest.</span><button className="button-primary" type="button" onClick={() => onNavigate("Crop management")}><Plus size={14} /> Manage crops</button></div>
         ) : !selectedPlanting ? (
           <div className="empty-state"><Sprout size={23} /><strong>Select a planting</strong><span>Choose a crop above to view its harvest history.</span></div>
         ) : recordsLoading ? (
-          <div className="empty-state"><RefreshCw size={20} /><strong>Loading harvest records…</strong></div>
+          <SkeletonBlock rows={4} />
         ) : records.length === 0 ? (
           <div className="empty-state"><ClipboardList size={23} /><strong>No harvest records yet</strong><span>Record the first yield for this planting when it is ready.</span>{canRecordHarvest && <button className="button-primary" type="button" onClick={openCreate}><Plus size={14} /> Add harvest</button>}</div>
         ) : (

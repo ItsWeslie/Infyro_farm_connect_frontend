@@ -84,3 +84,12 @@ The Overview page loads data for the selected farm using the existing authentica
 ### Dashboard theme
 
 The landing page and authenticated workspace share the `ifc-landing-theme` preference (`light` or `dark`) and the `data-ifc-theme` document attribute. The dashboard top-bar theme switch persists the preference, and the landing page theme control updates the same shared state. Dark mode uses the landing page's forest-green palette across navigation, workspace panels, forms, tables, calendars, notifications, and settings.
+
+
+### Shared UX components and conventions
+
+- Reusable UI primitives live in `src/components/ui/`; the global toast lifecycle is managed by `src/hooks/useToast.js`.
+- Use the shared toast viewport for operation feedback. Call `notify(message, "success" | "error" | "warning" | "info")`; errors use assertive announcements and remain visible longer.
+- Use shared skeleton primitives for initial page and section loading. Keep already-rendered data visible during background revalidation and use action-level loading states for mutations.
+- Avoid page-level manual refresh controls. Retain contextual Retry actions only for recoverable loading failures.
+- Keep page modules in separate files and extract reusable UI into focused component files rather than growing a single application component.
