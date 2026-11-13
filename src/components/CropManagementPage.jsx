@@ -351,8 +351,17 @@ export default function CropManagementPage({
       defaultMaturityTimeInDays: maturityDays,
     };
     try {
-      if (editingType) await cropTypeApi.update(farmId, editingType.id, payload);
-      else await cropTypeApi.create(farmId, payload);
+      const response = editingType
+        ? await cropTypeApi.update(farmId, editingType.id, payload)
+        : await cropTypeApi.create(farmId, payload);
+      const savedType = response?.data || response;
+      if (savedType && typeof savedType === "object" && savedType.id != null) {
+        setCropTypes((current) => editingType
+          ? current.map((item) => item.id === editingType.id ? savedType : item)
+          : [savedType, ...current.filter((item) => item.id !== savedType.id)]);
+      } else {
+        refreshData();
+      }
       setTypeDialogOpen(false);
       setEditingType(null);
       setTypeForm(INITIAL_TYPE_FORM);
@@ -377,7 +386,7 @@ export default function CropManagementPage({
     setPageError("");
     try {
       await cropTypeApi.delete(farmId, cropType.id);
-      refreshData();
+      setCropTypes((current) => current.filter((item) => item.id !== cropType.id));
       notify("Crop type deleted");
     } catch (error) {
       notify(error.message || "Unable to delete this crop type.", "error");
@@ -462,11 +471,17 @@ export default function CropManagementPage({
     };
     setPlantingSaving(true);
     try {
-      if (editingPlanting) {
-        await cropPlantingApi.update(editingPlanting.id, payload);
+      if (!editingPlanting && !plantingForm.fieldId) throw new Error("Choose a field before creating a planting.");
+      const response = editingPlanting
+        ? await cropPlantingApi.update(editingPlanting.id, payload)
+        : await cropPlantingApi.create(Number(plantingForm.fieldId), payload);
+      const savedPlanting = response?.data || response;
+      if (savedPlanting && typeof savedPlanting === "object" && savedPlanting.id != null) {
+        setPlantings((current) => editingPlanting
+          ? current.map((item) => item.id === editingPlanting.id ? savedPlanting : item)
+          : [savedPlanting, ...current.filter((item) => item.id !== savedPlanting.id)]);
       } else {
-        if (!plantingForm.fieldId) throw new Error("Choose a field before creating a planting.");
-        await cropPlantingApi.create(Number(plantingForm.fieldId), payload);
+        refreshData();
       }
       setPlantingDialogOpen(false);
       setEditingPlanting(null);
@@ -484,8 +499,11 @@ export default function CropManagementPage({
     if (!nextStatus) return;
     setPageError("");
     try {
-      await cropPlantingApi.updateStatus(planting.id, nextStatus);
-      refreshData();
+      const response = await cropPlantingApi.updateStatus(planting.id, nextStatus);
+      const updatedPlanting = response?.data || response;
+      setPlantings((current) => current.map((item) => item.id === planting.id
+        ? { ...item, ...(updatedPlanting && typeof updatedPlanting === "object" ? updatedPlanting : {}), status: updatedPlanting?.status || nextStatus }
+        : item));
       notify("Planting status changed to " + humanize(nextStatus));
     } catch (error) {
       notify(error.message || "Unable to change planting status.", "error");
@@ -499,7 +517,7 @@ export default function CropManagementPage({
     setPageError("");
     try {
       await cropPlantingApi.delete(planting.id);
-      refreshData();
+      setPlantings((current) => current.filter((item) => item.id !== planting.id));
       notify("Planting deleted");
     } catch (error) {
       notify(error.message || "Unable to delete this planting.", "error");
@@ -563,8 +581,17 @@ export default function CropManagementPage({
     setActivitySaving(true);
     setActivityFormError("");
     try {
-      if (editingActivity) await cropActivityApi.update(editingActivity.id, payload);
-      else await cropActivityApi.create(payload);
+      const response = editingActivity
+        ? await cropActivityApi.update(editingActivity.id, payload)
+        : await cropActivityApi.create(payload);
+      const savedActivity = response?.data || response;
+      if (savedActivity && typeof savedActivity === "object" && savedActivity.id != null) {
+        setActivities((current) => editingActivity
+          ? current.map((item) => item.id === editingActivity.id ? savedActivity : item)
+          : [savedActivity, ...current.filter((item) => item.id !== savedActivity.id)]);
+      } else {
+        setActivityReload((value) => value + 1);
+      }
       setActivityDialogOpen(false);
       setEditingActivity(null);
       setActivityReload((value) => value + 1);
@@ -581,8 +608,11 @@ export default function CropManagementPage({
     if (!nextStatus) return;
     setActivityError("");
     try {
-      await cropActivityApi.updateStatus(activity.id, nextStatus);
-      setActivityReload((value) => value + 1);
+      const response = await cropActivityApi.updateStatus(activity.id, nextStatus);
+      const updatedActivity = response?.data || response;
+      setActivities((current) => current.map((item) => item.id === activity.id
+        ? { ...item, ...(updatedActivity && typeof updatedActivity === "object" ? updatedActivity : {}), status: updatedActivity?.status || nextStatus }
+        : item));
       notify("Activity status changed to " + humanize(nextStatus));
     } catch (error) {
       notify(error.message || "Unable to change activity status.", "error");
@@ -596,7 +626,7 @@ export default function CropManagementPage({
     setActivityError("");
     try {
       await cropActivityApi.delete(activity.id);
-      setActivityReload((value) => value + 1);
+      setActivities((current) => current.filter((item) => item.id !== activity.id));
       notify("Activity deleted");
     } catch (error) {
       notify(error.message || "Unable to delete this activity.", "error");
