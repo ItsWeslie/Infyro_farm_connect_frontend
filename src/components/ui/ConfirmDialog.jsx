@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { AlertTriangle, Ban, ShieldAlert, Trash2 } from "lucide-react";
+import { AlertTriangle, ShieldAlert, Trash2 } from "lucide-react";
 
 const TONE_ICONS = {
   danger: Trash2,
