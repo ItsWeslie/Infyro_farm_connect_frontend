@@ -122,7 +122,6 @@ function ExpensePage({
   farms,
   selectedFarm,
   setSelectedFarm,
-  onNavigate,
   notify,
 }) {
   const [fields, setFields] = useState([]);
@@ -689,8 +688,8 @@ function HarvestPage({
           <div className="empty-state"><Sprout size={23} /><strong>Select a planting</strong><span>Choose a crop above to view its harvest history.</span></div>
         ) : recordsLoading ? (
           <div className="empty-state"><RefreshCw size={20} /><strong>Loading harvest records…</strong></div>
-        ) : filteredRecords.length === 0 ? (
-          <div className="empty-state"><ClipboardList size={23} /><strong>{records.length === 0 ? "No harvest records yet" : "No matching harvest records"}</strong><span>{records.length === 0 ? "Record the first yield for this planting when it is ready." : "Try another search or status filter."}</span>{records.length === 0 && canRecordHarvest && <button className="button-primary" type="button" onClick={openCreate}><Plus size={14} /> Add harvest</button>}</div>
+        ) : records.length === 0 ? (
+          <div className="empty-state"><ClipboardList size={23} /><strong>No harvest records yet</strong><span>Record the first yield for this planting when it is ready.</span>{canRecordHarvest && <button className="button-primary" type="button" onClick={openCreate}><Plus size={14} /> Add harvest</button>}</div>
         ) : (
           <>
             <div className="workspace-stats expense4-harvest-stats">
@@ -723,6 +722,9 @@ function HarvestPage({
               </label>
               <span className="result-count">{filteredRecords.length} records</span>
             </div>
+            {filteredRecords.length === 0 ? (
+              <div className="empty-state"><Search size={22} /><strong>No matching harvest records</strong><span>Try another search or status filter.</span></div>
+            ) : (
             <div className="workspace-table-wrap">
               <table className="workspace-table expense4-table">
                 <thead><tr><th>HARVEST DATE</th><th>QUANTITY</th><th>UNIT</th><th>NOTES</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
@@ -744,6 +746,7 @@ function HarvestPage({
                 </tbody>
               </table>
             </div>
+            )}
           </>
         )}
         <div className="workspace-data-footer">
