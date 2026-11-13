@@ -200,6 +200,7 @@ export default function FarmsFieldsPage({
         });
       }
     } catch (error) {
+      notify(error.message || "Unable to save this record.", "error");
       setFormError(error.message || `Unable to save this ${isFarmsPage ? "farm" : "field"}.`);
     } finally {
       setSaving(false);
@@ -216,7 +217,7 @@ export default function FarmsFieldsPage({
         notify(`Farm deleted, but the directory could not refresh: ${error.message}`);
       });
     } catch (error) {
-      notify(error.message || "Unable to delete this farm.");
+      notify(error.message || "Unable to delete this farm.", "error");
     } finally {
       setDeletingId(null);
     }
@@ -234,6 +235,7 @@ export default function FarmsFieldsPage({
         setFieldsError(`Field deleted, but farm totals could not refresh: ${error.message}`);
       });
     } catch (error) {
+      notify(error.message || "Unable to delete this field.", "error");
       setFieldsError(error.message || "Unable to delete this field.");
     } finally {
       setDeletingId(null);
