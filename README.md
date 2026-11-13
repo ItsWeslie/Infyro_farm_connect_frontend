@@ -25,19 +25,19 @@ npm run preview
 - **Fields:** live backend field directory scoped to a selected farm, with create, rename, delete, total area and available area.
 - **Crop management:** live farm-scoped crop library and field plantings, with create/edit/delete, area validation, planting dates, expected harvest dates, and lifecycle status transitions.
 - **Activities:** live planting-specific activity journal with create/edit, crop-stage notes, nutrition/water and pest-control notes, and lifecycle status transitions.
-- **Calendar:** interactive month grid and agenda view with sample events.
+- **Calendar:** live month and agenda views of planting and expected-harvest milestones returned by the backend.
 - **Expenses:** live farm-scoped ledger with create, category/planting association, search, filters, and soft voiding.
 - **Harvest records:** live planting-scoped yield log with date, quantity, unit, notes, search, filters, and soft voiding.
-- **Notifications:** notification list and mark-all-read interaction.
-- **Settings:** local preferences for units, weather, reminders and weekly summary.
+- **Notifications:** live paginated inbox with backend unread count and individual mark-as-read actions.
+- **Settings:** authenticated account details and current-session / all-session sign-out actions. Profile and preference editing are not exposed by the backend.
 
 ## Design and interactions
 
-- React functional components and local state. The shared API client now supports backend authentication and route calls; workspace screens are still being migrated from sample data.
+- React functional components and local state with a shared authenticated API client. All operational workspace modules now use backend APIs; Overview still contains illustrative fallback data.
 - Lucide icons via `lucide-react`.
 - Responsive desktop, tablet, and mobile layouts.
-- Search, filters, table/card view switching, create/edit dialogs with controlled fields, record-detail modals, calendar event composer, toasts, calendar navigation, and settings toggles.
-- Crop management, Activities, Expenses, and Harvest records now use backend APIs. Overview still contains illustrative crop and summary fallback values; Calendar, Notifications, and Settings remain prototype/sample workflows.
+- Search, filters, table/card view switching, create/edit dialogs with controlled fields, record-detail modals, toasts, calendar navigation, and responsive account/session controls.
+- Farms, Fields, Crop management, Activities, Expenses, Harvest records, Calendar, and Notifications now use backend APIs. Overview still contains illustrative crop and summary fallback values. Settings exposes only backend-supported account and session actions; persistent profile and workspace preferences are not implemented because the API does not provide those endpoints.
 - Earth-inspired colors, accessible focus states, and reduced-motion support.
 
 ## Backend configuration
@@ -53,7 +53,7 @@ Set `VITE_API_BASE_URL` to the Spring Boot backend origin (for example, `http://
 - A protected request that receives 401 triggers one shared refresh attempt and one retry. If that fails, the app emits `ifc_auth_expired` and clears the local session.
 - Use HTTPS and secure cookies in production. For cross-site frontend/backend deployments, configure compatible SameSite/Secure cookie settings and the exact CORS origin.
 
-The API client includes route mappings for farms, fields, crop types, crop plantings, crop activities, expenses, harvest records, summaries, calendar events, and notifications. Farms/Fields, Crop management/Activities, Expenses, and Harvest records are currently wired to live data; Calendar, Notifications, and Settings are still being migrated.
+The API client includes route mappings for farms, fields, crop types, crop plantings, crop activities, expenses, harvest records, summaries, calendar events, and notifications. Farms/Fields, Crop management/Activities, Expenses, Harvest records, Calendar, and Notifications are wired to live data. Settings uses the authenticated session information and logout endpoints; there is no backend endpoint for profile or workspace-preference updates.
 
 ## Current scope
 
@@ -67,4 +67,10 @@ Expenses are loaded per farm from `/ifc/v1/farms/{farmId}/expenses`. Creating an
 
 Harvest records are loaded for the selected planting from `/ifc/v1/crop-plantings/{plantingId}/harvest-records`. Creating a record sends `harvestDate`, `quantity`, `unit`, and optional `notes`. The backend permits new records only for Active or Harvesting plantings, and harvest dates must be on or after planting date and not in the future. The DELETE route voids a record rather than physically deleting it; the UI retains voided entries and excludes them from active yield totals. Quantities are grouped by unit and are never added across unlike units.
 
-Phase 1 establishes authentication and the shared API client; Phase 2 connects Farms and Fields; Phase 3 connects Crop Types, Plantings, and Activities; Phase 4 connects Expenses and Harvest Records. Overview still has illustrative sample crop rows and the income chart remains illustrative until a backend sales/revenue module exists. Calendar, Notifications, and Settings remain future integration work.
+Calendar requests `/ifc/v1/calendar/events?from=YYYY-MM-DD&to=YYYY-MM-DD` for the visible month. The backend currently derives events from crop planting dates and expected harvest dates, with farm, field, and planting-status context. This is a read-only feed: custom calendar events and activity scheduling are not currently supported by the API.
+
+Notifications are loaded from `/api/notifications?unreadOnly=false&page={page}&size=20`; unread count comes from `/api/notifications/unread-count`, and a notification is marked read with `PATCH /api/notifications/{id}/read`. The API has no bulk mark-read endpoint, so the UI applies individual requests to the notifications loaded in the inbox. The header preview uses the same backend list and unread count.
+
+Settings displays the account identity returned by the authenticated session and supports the current-session logout and all-session logout endpoints. The backend does not expose profile-update or persisted user-preference endpoints, so the screen is read-only apart from session security actions.
+
+Phase 1 establishes authentication and the shared API client; Phase 2 connects Farms and Fields; Phase 3 connects Crop Types, Plantings, and Activities; Phase 4 connects Expenses and Harvest Records; Phase 5 connects Calendar, Notifications, and the supported account/session settings. Overview still has illustrative sample crop rows and the income chart remains illustrative until a backend sales/revenue module exists.
