@@ -4,6 +4,7 @@ import animatedChevronDown from "react-useanimations/lib/chevronDown";
 import animatedUser from "react-useanimations/lib/user";
 import animatedSettings from "react-useanimations/lib/settings";
 import animatedLogOut from "react-useanimations/lib/logOut";
+import notification3 from "react-useanimations/lib/notification3";
 import { useToast } from "./hooks/useToast";
 import ToastViewport from "./components/ui/ToastViewport";
 import {
@@ -587,6 +588,7 @@ function App() {
                   (notificationsOpen ? "icon-selected" : "")
                 }
                 aria-label="Notifications"
+                aria-expanded={notificationsOpen}
                 onClick={() => {
                   const nextOpen = !notificationsOpen;
                   setNotificationsOpen(nextOpen);
@@ -595,7 +597,7 @@ function App() {
                   setTopProfileOpen(false);
                 }}
               >
-                <Bell size={19} />
+                <UseAnimations animation={notification3} size={32} className="ifc-notification-bell-animation" />
                 {notificationUnreadCount > 0 && <i className="notification-dot" />}
               </button>
               {notificationsOpen && (
