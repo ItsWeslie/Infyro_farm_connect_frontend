@@ -1125,3 +1125,15 @@ html[data-ifc-theme="dark"] .ifc-confirm-copy .ifc-confirm-details{color:#9eae98
 html[data-ifc-theme="dark"] .ifc-confirm-icon-danger{background:#4a2926;color:#ffaaa0}
 html[data-ifc-theme="dark"] .ifc-confirm-icon-warning{background:#49391f;color:#f6cb78}
 html[data-ifc-theme="dark"] .ifc-confirm-icon-neutral{background:#2b412d;color:#c5e0b8}
+
+
+/* Option 1 brand lockup: circular artwork with reference-matched wordmark */
+.brand-logo{gap:9px;min-width:0;max-width:100%;align-items:center}
+.brand-logo-mark{position:relative;display:block;flex:0 0 44px;width:44px;height:44px;overflow:hidden;border:1.5px solid #65982e;border-radius:50%;background:#f3f0d9;box-shadow:0 2px 7px rgba(35,73,26,.12)}
+.brand-logo .brand-logo-mark img{position:absolute;display:block;left:-30px;top:-12.5px;width:183px;max-width:none;height:auto;max-height:none;object-fit:initial;object-position:initial}
+.brand-logo-copy{display:flex;flex:1 1 auto;min-width:0;flex-direction:column;align-items:flex-start;gap:3px}
+.brand-logo-name{display:flex;align-items:baseline;gap:4px;white-space:nowrap;font:800 18px/.95 Manrope,sans-serif;letter-spacing:-.8px}
+.brand-logo-infyro{color:#173f20}
+.brand-logo-farm{color:#6b9828}
+.brand-logo-tagline{color:#87501f;font:700 6.5px/1.2 'DM Sans',sans-serif;letter-spacing:.55px;white-space:nowrap}
+@media(max-width:360px){.brand-logo-name{font-size:17px}.brand-logo-mark{flex-basis:42px;width:42px;height:42px}.brand-logo .brand-logo-mark img{left:-28.7px;top:-11.9px;width:174.5px}}

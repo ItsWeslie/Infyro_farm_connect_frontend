@@ -37,6 +37,7 @@ import {
   LogIn,
 } from "lucide-react";
 import "./App.css";
+import { Brand } from "./components/layout/Brand";
 import { useAuth } from "./context/AuthContext";
 import { AuthModal } from "./components/AuthModal";
 import LandingPage from "./components/LandingPage";
@@ -75,22 +76,6 @@ const navigation = [
     ],
   },
 ];
-function Brand({ onHome }) {
-  return (
-    <button
-      type="button"
-      className="brand brand-logo"
-      aria-label="Infyro Farm home"
-      onClick={onHome}
-    >
-      <img
-        src="/infyro-farm-logo.png"
-        alt="Infyro Farm — Farm smarter. Grow better."
-        className=""
-      />
-    </button>
-  );
-}
 function Avatar({ small = false, name = "Ravi Kumar" }) {
   const initials = name
     .split(" ")
