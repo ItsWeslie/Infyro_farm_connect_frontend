@@ -650,6 +650,7 @@ function App() {
             </div>
             {isAuthenticated ? (
               <DropdownMenu
+                modal={false}
                 open={topProfileOpen}
                 onOpenChange={(open) => {
                   setTopProfileOpen(open);
