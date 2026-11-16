@@ -4,7 +4,6 @@ import animatedChevronDown from "react-useanimations/lib/chevronDown";
 import animatedUser from "react-useanimations/lib/user";
 import animatedSettings from "react-useanimations/lib/settings";
 import animatedLogOut from "react-useanimations/lib/logOut";
-import notification3 from "react-useanimations/lib/notification3";
 import { useToast } from "./hooks/useToast";
 import ToastViewport from "./components/ui/ToastViewport";
 import {
@@ -597,7 +596,7 @@ function App() {
                   setTopProfileOpen(false);
                 }}
               >
-                <UseAnimations animation={notification3} size={32} className="ifc-notification-bell-animation" />
+                <Bell size={19} />
                 {notificationUnreadCount > 0 && <i className="notification-dot" />}
               </button>
               {notificationsOpen && (

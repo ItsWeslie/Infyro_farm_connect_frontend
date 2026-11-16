@@ -1219,18 +1219,3 @@ html[data-ifc-theme="dark"] .top-profile:focus,html[data-ifc-theme="dark"] .top-
   height:16px;
 }
 
-
-/* Match the 32px notification3 artwork to the top-bar icon button. */
-.ifc-notification-bell-animation{
-  display:inline-flex;
-  width:32px;
-  height:32px;
-  align-items:center;
-  justify-content:center;
-  vertical-align:middle;
-}
-.ifc-notification-bell-animation svg{
-  display:block;
-  width:32px;
-  height:32px;
-}
