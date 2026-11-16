@@ -1,4 +1,9 @@
 import { useCallback, useState, useEffect } from "react";
+import UseAnimations from "react-useanimations";
+import animatedChevronDown from "react-useanimations/lib/chevronDown";
+import animatedUser from "react-useanimations/lib/user";
+import animatedSettings from "react-useanimations/lib/settings";
+import animatedLogOut from "react-useanimations/lib/logOut";
 import { useToast } from "./hooks/useToast";
 import ToastViewport from "./components/ui/ToastViewport";
 import {
@@ -667,7 +672,7 @@ function App() {
                     aria-label="Open profile menu"
                   >
                     <Avatar small name={user?.name || user?.username} />
-                    <ChevronDown size={14} aria-hidden="true" />
+                    <UseAnimations animation={animatedChevronDown} size={16} interaction="click-toggle" active={topProfileOpen} className="ifc-account-menu-animated-icon" aria-hidden="true" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" sideOffset={10} className="ifc-account-menu">
@@ -687,7 +692,7 @@ function App() {
                       setActive("Settings");
                     }}
                   >
-                    <CircleUserRound size={16} aria-hidden="true" />
+                    <UseAnimations animation={animatedUser} size={16} interaction="hover" className="ifc-account-menu-animated-icon" aria-hidden="true" />
                     <span>My Profile</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem
@@ -696,7 +701,7 @@ function App() {
                       setActive("Settings");
                     }}
                   >
-                    <Settings size={16} aria-hidden="true" />
+                    <UseAnimations animation={animatedSettings} size={16} interaction="hover" className="ifc-account-menu-animated-icon" aria-hidden="true" />
                     <span>Account Settings</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -706,7 +711,7 @@ function App() {
                       void handleLogout();
                     }}
                   >
-                    <LogOut size={16} aria-hidden="true" />
+                    <UseAnimations animation={animatedLogOut} size={16} interaction="hover" className="ifc-account-menu-animated-icon" aria-hidden="true" />
                     <span>Sign Out</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
