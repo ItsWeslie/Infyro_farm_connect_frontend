@@ -34,7 +34,7 @@ npm run preview
 ## Design and interactions
 
 - React functional components and local state with a shared authenticated API client. All operational workspace modules, including Overview, use backend APIs for farm records. The Overview income/profit view is intentionally omitted until the backend exposes sales/revenue records.
-- Lucide icons via `lucide-react`.
+- Lucide icons via `lucide-react`; animated account-menu icons via `react-useanimations` (hover and open/close interactions, with reduced-motion support).
 - Responsive desktop, tablet, and mobile layouts.
 - Search, filters, table/card view switching, create/edit dialogs with controlled fields, record-detail modals, toasts, calendar navigation, responsive account/session controls, and a persisted light/dark theme shared between the landing page and dashboard.
 - Farms, Fields, Crop management, Activities, Expenses, Harvest records, Calendar, Notifications, and Overview use backend APIs. Overview progress is estimated from planting and maturity dates; the backend does not return a measured progress percentage. Income/profit reporting is omitted until sales/revenue endpoints are available. Settings exposes only backend-supported account and session actions; persistent profile and workspace preferences are not implemented because the API does not provide those endpoints.
