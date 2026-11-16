@@ -1200,3 +1200,21 @@ html[data-ifc-theme="dark"] .top-profile:hover,html[data-ifc-theme="dark"] .top-
 html[data-ifc-theme="dark"] .top-profile:focus,html[data-ifc-theme="dark"] .top-profile:focus-visible{outline:none;box-shadow:none}
 @keyframes ifc-dropdown-enter{from{opacity:0;transform:scale(.97) translateY(-3px)}to{opacity:1;transform:scale(1) translateY(0)}}
 @media(prefers-reduced-motion:reduce){.ifc-dropdown-menu-content{animation:none}}
+
+
+/* useAnimations icons in the top-bar account dropdown */
+.ifc-account-menu-animated-icon{
+  display:inline-flex;
+  flex:0 0 16px;
+  width:16px;
+  height:16px;
+  align-items:center;
+  justify-content:center;
+  color:currentColor;
+  vertical-align:middle;
+}
+.ifc-account-menu-animated-icon svg{
+  display:block;
+  width:16px;
+  height:16px;
+}
