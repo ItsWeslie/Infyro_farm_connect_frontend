@@ -1168,7 +1168,20 @@ html[data-ifc-theme="dark"] .ifc-confirm-icon-neutral{background:#2b412d;color:#
 .ifc-account-menu-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}
 .ifc-account-menu-copy strong{overflow:hidden;color:#2c4031;font:700 12px/1.2 Manrope,sans-serif;text-overflow:ellipsis;white-space:nowrap}
 .ifc-account-menu-copy small{overflow:hidden;color:#879387;font-size:10px;font-weight:400;text-overflow:ellipsis;white-space:nowrap}
-.top-profile{border-radius:9px;transition:background .15s ease,color .15s ease}
+.top-profile{
+  display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;
+  gap:8px;min-width:0;min-height:36px;height:36px;padding:0 2px;
+  margin:0;border:0;border-radius:9px;line-height:0;white-space:nowrap;
+  vertical-align:middle;transition:color .15s ease;
+}
+.top-profile>.avatar{
+  display:grid;flex:0 0 31px;width:31px;height:31px;
+  margin:0;align-self:center;
+}
+.top-profile>svg{
+  display:block;flex:0 0 14px;width:14px;height:14px;
+  margin:0;align-self:center;overflow:visible;
+}
 .top-profile:hover,.top-profile-open{background:transparent;color:inherit}
 .top-profile:focus,.top-profile:focus-visible{outline:none;box-shadow:none}
 html[data-ifc-theme="dark"] .ifc-dropdown-menu-content{border-color:rgba(203,226,194,.16);background:#202d23;color:#e5f0dc;box-shadow:0 18px 48px rgba(0,0,0,.38)}
