@@ -37,6 +37,14 @@ import {
   LogIn,
 } from "lucide-react";
 import "./App.css";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./components/ui/dropdown-menu";
 import { Brand } from "./components/layout/Brand";
 import { useAuth } from "./context/AuthContext";
 import { AuthModal } from "./components/AuthModal";
@@ -130,8 +138,13 @@ function App() {
   const [mobileNav, setMobileNav] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [topProfileOpen, setTopProfileOpen] = useState(false);
   const [farmOpen, setFarmOpen] = useState(false);
   const { toast, notify, dismissToast } = useToast();
+  const handleLogout = useCallback(async () => {
+    await logout();
+    notify("Signed out successfully");
+  }, [logout, notify]);
   const [notificationUnreadCount, setNotificationUnreadCount] = useState(0);
   const [notificationPreview, setNotificationPreview] = useState([]);
   const [notificationSummaryLoading, setNotificationSummaryLoading] = useState(false);
@@ -309,7 +322,14 @@ function App() {
       </div>
     );
   }
-  if (!isAuthenticated) return <LandingPage theme={theme} setTheme={setTheme} />;
+  if (!isAuthenticated) {
+    return (
+      <>
+        <LandingPage theme={theme} setTheme={setTheme} />
+        <ToastViewport toast={toast} onDismiss={dismissToast} />
+      </>
+    );
+  }
   return (
     <div className="app-shell">
       {mobileNav && (
@@ -456,7 +476,10 @@ function App() {
             {isAuthenticated ? (
               <button
                 className="profile-button"
-                onClick={() => setProfileOpen(!profileOpen)}
+                onClick={() => {
+                  setProfileOpen((open) => !open);
+                  setTopProfileOpen(false);
+                }}
                 aria-expanded={profileOpen}
               >
                 <Avatar name={user?.name || user?.username} />
@@ -497,10 +520,9 @@ function App() {
                   <Settings size={16} /> Settings
                 </button>
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                     setProfileOpen(false);
-                    logout();
-                    notify("Signed out successfully");
+                    await handleLogout();
                   }}
                 >
                   <LogOut size={16} /> Sign out
@@ -565,6 +587,7 @@ function App() {
                   setNotificationsOpen(nextOpen);
                   if (nextOpen) refreshNotificationSummary().catch(() => {});
                   setProfileOpen(false);
+                  setTopProfileOpen(false);
                 }}
               >
                 <Bell size={19} />
@@ -626,17 +649,67 @@ function App() {
               )}
             </div>
             {isAuthenticated ? (
-              <button
-                className="top-profile"
-                aria-label="Open profile menu"
-                onClick={() => {
-                  setProfileOpen(!profileOpen);
-                  setNotificationsOpen(false);
+              <DropdownMenu
+                open={topProfileOpen}
+                onOpenChange={(open) => {
+                  setTopProfileOpen(open);
+                  if (open) {
+                    setProfileOpen(false);
+                    setNotificationsOpen(false);
+                  }
                 }}
               >
-                <Avatar small name={user?.name || user?.username} />
-                <ChevronDown size={14} />
-              </button>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    className={"top-profile" + (topProfileOpen ? " top-profile-open" : "")}
+                    aria-label="Open profile menu"
+                  >
+                    <Avatar small name={user?.name || user?.username} />
+                    <ChevronDown size={14} aria-hidden="true" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" sideOffset={10} className="ifc-account-menu">
+                  <DropdownMenuLabel className="ifc-account-menu-heading">
+                    <div className="ifc-account-menu-user">
+                      <Avatar name={user?.name || user?.username || "Farm user"} />
+                      <span className="ifc-account-menu-copy">
+                        <strong>{user?.name || user?.username || "Farm user"}</strong>
+                        <small>{user?.email || user?.username || "Infyro Farms account"}</small>
+                      </span>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      setProfileOpen(false);
+                      setActive("Settings");
+                    }}
+                  >
+                    <CircleUserRound size={16} aria-hidden="true" />
+                    <span>My Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      setProfileOpen(false);
+                      setActive("Settings");
+                    }}
+                  >
+                    <Settings size={16} aria-hidden="true" />
+                    <span>Account Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onSelect={() => {
+                      void handleLogout();
+                    }}
+                  >
+                    <LogOut size={16} aria-hidden="true" />
+                    <span>Sign Out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <button
                 className="button-primary top-auth-btn"
