@@ -12,6 +12,11 @@
     --canvas: #f7f8f4;
   }
 
+  /* Keep the page width stable when overlays or menus affect scrollability. */
+  html {
+    scrollbar-gutter: stable;
+  }
+
   body {
     font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: #26382e;
