@@ -1340,7 +1340,7 @@ html[data-ifc-theme="dark"] .ifc-overview-milestones-panel .ifc-overview-milesto
 .ifc-overview-crop-progress-item{display:flex;align-items:flex-start;gap:9px;padding:8px 2px;border-bottom:1px solid #eff2ed;min-width:0;transition:background .16s ease}
 .ifc-overview-crop-progress-item:first-child{padding-top:5px}
 .ifc-overview-crop-progress-item:last-child{border-bottom:0}
-.ifc-overview-crop-progress-item:hover{background:#f6faf4}
+.ifc-overview-crop-progress-item:hover{background:#f6faf4;border-radius:8px}
 .ifc-overview-crop-progress-monogram{width:34px;height:34px;display:grid;place-items:center;flex-shrink:0;border:1px solid #d4e9d4;border-radius:9px;background:#e5f2e5;color:#3b7951;font:800 11px Manrope,sans-serif;letter-spacing:.2px}
 .ifc-overview-crop-progress-content{min-width:0;flex:1;display:flex;flex-direction:column;gap:5px}
 .ifc-overview-crop-progress-title{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0}
