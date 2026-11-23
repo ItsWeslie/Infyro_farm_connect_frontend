@@ -1,19 +1,17 @@
 import { SkeletonBlock, SkeletonCards } from "./ui/Skeleton";
 import OverviewExpenseBreakdown from "./OverviewExpenseBreakdown";
+import OverviewRecentActivity from "./OverviewRecentActivity";
 import { useEffect, useMemo, useState } from "react";
 import {
-  Activity,
   ArrowRight,
   CalendarDays,
   CheckCircle2,
   CircleAlert,
-  Clock3,
   Coins,
   Flower2,
   Leaf,
   MapPinned,
   Plus,
-  Receipt,
   Search,
   Sprout,
   Sun,
@@ -22,9 +20,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import {
   calendarApi,
-  cropActivityApi,
   cropPlantingApi,
-  expenseApi,
   farmSummaryApi,
   fieldApi,
   overviewApi,
@@ -64,13 +60,6 @@ function dateLabel(value, options = {}) {
         month: "short",
         year: options.year === false ? undefined : "numeric",
       })
-    : "Date not available";
-}
-
-function timeLabel(value) {
-  const date = parseLocalDate(value);
-  return date
-    ? date.toLocaleString(undefined, { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" })
     : "Date not available";
 }
 
@@ -202,13 +191,12 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
         farmSummaryApi.getSummary(farmId),
         farmSummaryApi.getExpensesSummary(farmId, monthStart, today),
         farmSummaryApi.getHarvestsSummary(farmId, monthStart, today),
-        expenseApi.getByFarm(farmId),
         calendarApi.getEvents(today, nextMonthWindow),
       ]);
 
       if (!current) return;
 
-      const [fieldsResult, plantingsResult, summaryResult, monthExpensesResult, monthHarvestsResult, expensesResult, calendarResult] = results;
+      const [fieldsResult, plantingsResult, summaryResult, monthExpensesResult, monthHarvestsResult, calendarResult] = results;
 
       if (fieldsResult.status !== "fulfilled" || plantingsResult.status !== "fulfilled") {
         const failed = fieldsResult.status !== "fulfilled" ? fieldsResult.reason : plantingsResult.reason;
@@ -221,7 +209,6 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
 
       const fields = toList(fieldsResult.value);
       const fieldIds = new Set(fields.map((field) => String(field.id)));
-      const fieldById = new Map(fields.map((field) => [String(field.id), field]));
       const plantings = toList(plantingsResult.value)
         .filter((planting) => fieldIds.has(String(planting.fieldId)))
         .sort((left, right) => {
@@ -233,9 +220,6 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
       const summary = summaryResult.status === "fulfilled" ? summaryResult.value : null;
       const monthExpenses = monthExpensesResult.status === "fulfilled" ? monthExpensesResult.value : null;
       const monthHarvests = monthHarvestsResult.status === "fulfilled" ? monthHarvestsResult.value : null;
-      const expenses = expensesResult.status === "fulfilled"
-        ? toList(expensesResult.value).filter((expense) => !expense.voided)
-        : [];
       const events = calendarResult.status === "fulfilled"
         ? toList(calendarResult.value).filter((event) => {
             if (!event.eventDate || event.eventDate < today || event.eventDate > nextMonthWindow) return false;
@@ -243,45 +227,6 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
               String(event.farmName).trim().toLowerCase() === String(selectedFarm.name).trim().toLowerCase();
           }).sort((left, right) => String(left.eventDate).localeCompare(String(right.eventDate)))
         : [];
-
-      const activityTargets = plantings.slice(0, 12);
-      const activityResults = await Promise.allSettled(
-        activityTargets.map((planting) => cropActivityApi.getByPlanting(planting.id))
-      );
-
-      if (!current) return;
-
-      const recentActivities = [];
-      activityResults.forEach((result, index) => {
-        if (result.status !== "fulfilled") return;
-        const planting = activityTargets[index];
-        const field = fieldById.get(String(planting.fieldId));
-        toList(result.value).forEach((activity) => {
-          recentActivities.push({
-            id: "activity-" + activity.id,
-            kind: "activity",
-            title: activity.dailyActivity || humanize(activity.cropStage) || "Crop activity recorded",
-            detail: [planting.cropTypeName, field?.fieldName].filter(Boolean).join(" · "),
-            date: activity.createdAt || activity.updatedAt,
-            status: activity.status,
-          });
-        });
-      });
-
-      expenses.forEach((expense) => {
-        recentActivities.push({
-          id: "expense-" + expense.id,
-          kind: "expense",
-          title: expense.description || humanize(expense.category) || "Farm expense recorded",
-          detail: humanize(expense.category) + " · " + currencyLabel(expense.amount),
-          date: expense.expenseDate,
-          status: expense.statusLabel,
-        });
-      });
-
-      recentActivities.sort((left, right) => {
-        return (parseLocalDate(right.date)?.getTime() || 0) - (parseLocalDate(left.date)?.getTime() || 0);
-      });
 
       const totalArea = fields.reduce((sum, field) => sum + (Number(field.totalArea) || 0), 0);
       const availableArea = fields.reduce((sum, field) => sum + (Number(field.availableArea) || 0), 0);
@@ -293,9 +238,7 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
       if (summaryResult.status !== "fulfilled") nextWarnings.push("Farm totals are unavailable.");
       if (monthExpensesResult.status !== "fulfilled") nextWarnings.push("This-month expense summary is unavailable.");
       if (monthHarvestsResult.status !== "fulfilled") nextWarnings.push("This-month harvest summary is unavailable.");
-      if (expensesResult.status !== "fulfilled") nextWarnings.push("Recent expense entries are unavailable.");
       if (calendarResult.status !== "fulfilled") nextWarnings.push("Upcoming milestones are unavailable.");
-      if (activityResults.some((result) => result.status !== "fulfilled")) nextWarnings.push("Some crop activity logs could not be loaded.");
 
       setWarnings(nextWarnings);
       setSnapshot({
@@ -304,9 +247,7 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
         summary,
         monthExpenses,
         monthHarvests,
-        expenses,
         events,
-        recentActivities: recentActivities.slice(0, 8),
         totalArea,
         cultivatedArea: Math.max(0, totalArea - availableArea),
         activeCount,
@@ -622,43 +563,8 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
           <button type="button" className="button-secondary" onClick={() => setRefreshKey((value) => value + 1)}>Retry</button>
         </div>
       )}
-      <div className={"ifc-overview-bottom-grid" + (snapshot ? "" : " ifc-overview-bottom-grid--solo")}>
-        {snapshot && (
-            <section className="ifc-overview-panel surface-card">
-              <div className="ifc-overview-panel-heading">
-                <div>
-                  <span className="ifc-overview-kicker">LATEST RECORDS</span>
-                  <h2>Recent activity</h2>
-                  <p>Crop activities and expense entries recorded for this farm.</p>
-                </div>
-                <button type="button" className="ifc-overview-text-link" onClick={() => onNavigate("Activities")}>
-                  Activity log <ArrowRight size={14} />
-                </button>
-              </div>
-              {snapshot.recentActivities.length ? (
-                <div className="ifc-overview-activity-list">
-                  {snapshot.recentActivities.slice(0, 6).map((item) => (
-                    <article className="ifc-overview-activity" key={item.id}>
-                      <span className={"ifc-overview-activity-icon " + item.kind}>
-                        {item.kind === "expense" ? <Receipt size={16} /> : <Activity size={16} />}
-                      </span>
-                      <div>
-                        <strong>{item.title}</strong>
-                        <small>{item.detail || "Farm record"}</small>
-                      </div>
-                      <time>{timeLabel(item.date)}</time>
-                    </article>
-                  ))}
-                </div>
-              ) : (
-                <div className="ifc-overview-section-empty compact">
-                  <Activity size={21} />
-                  <strong>No recent activity yet</strong>
-                  <span>Crop logs and expense entries will appear here after they are recorded.</span>
-                </div>
-              )}
-            </section>
-        )}
+      <div className="ifc-overview-bottom-grid">
+        <OverviewRecentActivity onNavigate={onNavigate} />
         <OverviewExpenseBreakdown onNavigate={onNavigate} />
       </div>
 
