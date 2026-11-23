@@ -1307,8 +1307,9 @@ html[data-ifc-theme="dark"] .ifc-overview-recent-date{background:#493a2a;color:#
 .ifc-overview-main-grid--solo{grid-template-columns:minmax(0,1fr)}
 .ifc-overview-milestones-panel{display:flex;flex-direction:column;min-width:0}
 .ifc-overview-milestones-panel .ifc-overview-milestone-list{margin-bottom:8px}
-.ifc-overview-milestones-panel .ifc-overview-milestone-entry{align-items:center;padding:11px 0}
+.ifc-overview-milestones-panel .ifc-overview-milestone-entry{align-items:center;padding:11px 7px;border-radius:8px;transition:background .15s ease}
 .ifc-overview-milestones-panel .ifc-overview-milestone-entry:last-child{border-bottom:0}
+.ifc-overview-milestones-panel .ifc-overview-milestone-entry:hover{background:#f6faf4}
 .ifc-overview-milestones-panel .ifc-overview-panel-footer{margin-top:auto;border-top:1px solid #eff2ed;padding-top:12px}
 .ifc-overview-milestones-panel .ifc-overview-milestone-icon{width:40px;height:40px;border-radius:10px;flex-shrink:0}
 .ifc-overview-milestone-info{flex:1;min-width:0}
@@ -1325,12 +1326,13 @@ html[data-ifc-theme="dark"] .ifc-overview-recent-date{background:#493a2a;color:#
 .ifc-overview-milestones-error{margin-bottom:12px}
 .ifc-overview-milestones-error .button-secondary{flex-shrink:0;padding:5px 8px;font-size:9px}
 html[data-ifc-theme="dark"] .ifc-overview-milestones-panel .ifc-overview-panel-footer{border-top-color:rgba(203,226,194,.12)}
+html[data-ifc-theme="dark"] .ifc-overview-milestones-panel .ifc-overview-milestone-entry:hover{background:#26362a}
 html[data-ifc-theme="dark"] .ifc-overview-milestone-farm{background:#2c4532;color:#c0dfbd}
 html[data-ifc-theme="dark"] .ifc-overview-milestone-field{background:#303e34;color:#b7cabb}
 html[data-ifc-theme="dark"] .ifc-overview-milestones-panel .ifc-overview-milestone-date{background:#493a2a;color:#f0d4a6}
 @media(max-width:640px){
   .ifc-overview-milestone-title-row{gap:5px}
-  .ifc-overview-milestones-panel .ifc-overview-milestone-entry{padding:10px 0}
+  .ifc-overview-milestones-panel .ifc-overview-milestone-entry{padding:10px 7px}
 }
 
 /* Overview Crop Progress — five compact portfolio records with estimated bars. */
@@ -1388,3 +1390,11 @@ html[data-ifc-theme="dark"] .ifc-overview-crop-progress-harvest{background:#493a
   .ifc-overview-crop-progress-content{gap:5px}
   .ifc-overview-crop-progress-line{gap:6px}
 }
+
+/* Overview section header logos — aligned with existing headings and actions. */
+.ifc-overview-crop-progress-panel .ifc-overview-heading-title,
+.ifc-overview-recent-panel .ifc-overview-heading-title{display:flex;align-items:center;gap:8px;min-width:0}
+.ifc-overview-crop-progress-panel .ifc-overview-heading-logo,
+.ifc-overview-recent-panel .ifc-overview-heading-logo{width:25px;height:25px;flex-shrink:0;display:grid;place-items:center;border-radius:8px;background:#eaf4e9;color:#568052}
+html[data-ifc-theme="dark"] .ifc-overview-crop-progress-panel .ifc-overview-heading-logo,
+html[data-ifc-theme="dark"] .ifc-overview-recent-panel .ifc-overview-heading-logo{background:#2b412d;color:#c5e0b8}
