@@ -1269,7 +1269,7 @@ html[data-ifc-theme="dark"] .ifc-overview-donut-legend-item.is-active{background
 .ifc-overview-recent-row:first-child{padding-top:6px}
 .ifc-overview-recent-row:last-child{border-bottom:0}
 .ifc-overview-recent-row:hover{background:#f6faf4}
-.ifc-overview-recent-monogram{width:46px;height:46px;display:grid;place-items:center;border-radius:10px;background:#e5f2e5;border:1px solid #d4e9d4;color:#3b7951;font:800 12px Manrope,sans-serif;letter-spacing:.25px;flex-shrink:0}
+.ifc-overview-recent-monogram{width:42px;height:42px;display:grid;place-items:center;border-radius:10px;background:#e5f2e5;border:1px solid #d4e9d4;color:#3b7951;font:800 12px Manrope,sans-serif;letter-spacing:.25px;flex-shrink:0}
 .ifc-overview-recent-content{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
 .ifc-overview-recent-primary{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:nowrap;min-width:0}
 .ifc-overview-recent-primary>strong{font:800 11px Manrope,sans-serif;color:#405c46;line-height:1.4;flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1298,7 +1298,7 @@ html[data-ifc-theme="dark"] .ifc-overview-recent-field{background:#2b4431;color:
 html[data-ifc-theme="dark"] .ifc-overview-recent-date{background:#493a2a;color:#f0d4a6}
 @media(max-width:640px){
   .ifc-overview-recent-row{padding:11px 3px;gap:9px}
-  .ifc-overview-recent-monogram{width:46px;height:46px}
+  .ifc-overview-recent-monogram{width:42px;height:42px}
   .ifc-overview-recent-primary{align-items:center}
   .ifc-overview-recent-meta{gap:5px}
 }
