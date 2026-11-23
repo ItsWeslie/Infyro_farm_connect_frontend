@@ -251,6 +251,7 @@ export const harvestApi = {
 export const overviewApi = {
   getCards: () => apiRequest("/ifc/v1/overview/cards", { method: "GET" }),
   getExpenseBreakdown: () => apiRequest("/ifc/v1/overview/expense-breakdown", { method: "GET" }),
+  getRecentActivities: () => apiRequest("/ifc/v1/overview/recent-activities", { method: "GET" }),
 };
 
 // Farm Summary APIs (/ifc/v1/farms/{farmId})
