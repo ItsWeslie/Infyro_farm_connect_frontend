@@ -104,17 +104,17 @@ export default function OverviewRecentActivity({ onNavigate }) {
               <div className="ifc-overview-recent-content">
                 <div className="ifc-overview-recent-primary">
                   <strong>{activity.cropName || "Crop not recorded"}</strong>
-                  <span className={"ifc-overview-recent-stage " + stageTone(activity.cropStage)}>
-                    {stageLabel(activity.cropStage)}
+                  <span className="ifc-overview-recent-field" title={activity.cropField || "Field not recorded"}>
+                    <MapPin size={11} aria-hidden="true" />
+                    <span className="ifc-overview-recent-field-label">{activity.cropField || "Field not recorded"}</span>
                   </span>
                 </div>
                 <div className="ifc-overview-recent-meta">
-                  <span className="ifc-overview-recent-field">
-                    <MapPin size={12} aria-hidden="true" />
-                    {activity.cropField || "Field not recorded"}
+                  <span className={"ifc-overview-recent-stage " + stageTone(activity.cropStage)} title={stageLabel(activity.cropStage)}>
+                    {stageLabel(activity.cropStage)}
                   </span>
                   <time className="ifc-overview-recent-date" dateTime={activity.createdAt || undefined}>
-                    <Clock3 size={12} aria-hidden="true" />
+                    <Clock3 size={11} aria-hidden="true" />
                     {activityDate(activity.createdAt)}
                   </time>
                 </div>
