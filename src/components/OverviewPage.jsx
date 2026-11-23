@@ -352,34 +352,19 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
     }));
   }, [snapshot]);
 
-  if (!selectedFarm) {
-    return (
-      <section className="ifc-overview">
-        <div className="ifc-overview-empty surface-card">
-          <span className="ifc-overview-empty-icon"><Sprout size={25} /></span>
-          <h1>Start with your first farm</h1>
-          <p>Your overview will show field, crop, expense, and harvest information as soon as a farm is added.</p>
-          <button type="button" className="button-primary" onClick={() => onNavigate("Farms")}>
-            <Plus size={15} /> Add a farm
-          </button>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section className="ifc-overview">
       <section className="welcome-row ifc-overview-welcome">
         <div>
           <div className="page-eyebrow">
             <span className="eyebrow-pip" />
-            TODAY · {selectedFarm.name.toUpperCase()}
+            TODAY · YOUR FARM PORTFOLIO
           </div>
           <h1>
             Good day, {userName} <span className="wave">✳</span>
           </h1>
           <p>
-            Here’s what’s happening on your farm today.
+            Here’s what’s happening across your farms today.
             {snapshot?.loadedAt ? " Updated " + snapshot.loadedAt.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) + "." : ""}
           </p>
         </div>
@@ -709,6 +694,15 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
             {snapshot.cultivatedArea > 0 && <small>{numberLabel(snapshot.cultivatedArea)} acres in use</small>}
           </div>
         </>
+      ) : !selectedFarm ? (
+        <div className="ifc-overview-empty surface-card">
+          <span className="ifc-overview-empty-icon"><Sprout size={25} /></span>
+          <h2>Start with your first farm</h2>
+          <p>Add your first farm to start tracking fields, crops, expenses, and harvests.</p>
+          <button type="button" className="button-primary" onClick={() => onNavigate("Farms")}>
+            <Plus size={15} /> Add a farm
+          </button>
+        </div>
       ) : (
         <div className="ifc-overview-loading surface-card">
           <CircleAlert size={22} />
