@@ -4,6 +4,7 @@ import { cropPlantingApi, farmApi } from "../api/client";
 import { SkeletonBlock } from "./ui/Skeleton";
 
 const DAY_MS = 86400000;
+const MAX_VISIBLE_CROPS = 5;
 
 function toList(response) {
   if (Array.isArray(response)) return response;
@@ -155,7 +156,7 @@ export default function OverviewCropProgress({ onNavigate, onAdd }) {
           [planting.cropTypeName, planting.farmName, planting.fieldName, statusLabel(planting.status)]
             .filter(Boolean).join(" ").toLowerCase().includes(query))
       : (records || []);
-    return matched.slice(0, 5);
+    return matched.slice(0, MAX_VISIBLE_CROPS);
   }, [records, search]);
 
   return (
@@ -205,35 +206,34 @@ export default function OverviewCropProgress({ onNavigate, onAdd }) {
                   </div>
                   <div className="ifc-overview-crop-progress-meta">
                     <span className="ifc-overview-crop-progress-farm" title={planting.farmName || "Farm unavailable"}>
-                      <Tractor size={11} aria-hidden="true" />
+                      <Tractor size={10} aria-hidden="true" />
                       <span>{planting.farmName || "Farm unavailable"}</span>
                     </span>
                     <span className="ifc-overview-crop-progress-field" title={planting.fieldName || "Field unavailable"}>
-                      <MapPin size={11} aria-hidden="true" />
+                      <MapPin size={10} aria-hidden="true" />
                       <span>{planting.fieldName || "Field unavailable"}</span>
                     </span>
-                  </div>
-                  <div className="ifc-overview-crop-progress-estimate">
-                    <span>Estimated progress</span>
-                    <strong>{progress == null ? "Unavailable" : progress + "%"}</strong>
-                  </div>
-                  <div
-                    className={"ifc-overview-crop-progress-track" + (progress == null ? " is-unavailable" : "")}
-                    role={progress == null ? undefined : "progressbar"}
-                    aria-label={progress == null ? undefined : (planting.cropTypeName || "Crop") + " estimated progress"}
-                    aria-valuemin={progress == null ? undefined : 0}
-                    aria-valuemax={progress == null ? undefined : 100}
-                    aria-valuenow={progress == null ? undefined : progress}
-                  >
-                    <span style={{ width: (progress ?? 0) + "%" }} />
-                  </div>
-                  <div className="ifc-overview-crop-progress-footer">
                     <span className="ifc-overview-crop-progress-area">{formatArea(planting.cropArea)}</span>
                     <span className="ifc-overview-crop-progress-harvest" title="Expected harvest date">
-                      <CalendarDays size={11} aria-hidden="true" />
-                      <span>Expected harvest</span>
+                      <CalendarDays size={10} aria-hidden="true" />
                       <time dateTime={planting.expectedHarvestOn || undefined}>{formatHarvestDate(planting.expectedHarvestOn)}</time>
                     </span>
+                  </div>
+                  <div className="ifc-overview-crop-progress-line">
+                    <span className="ifc-overview-crop-progress-label">Estimated progress</span>
+                    <div
+                      className={"ifc-overview-crop-progress-track" + (progress == null ? " is-unavailable" : "")}
+                      role={progress == null ? undefined : "progressbar"}
+                      aria-label={progress == null ? undefined : (planting.cropTypeName || "Crop") + " estimated progress"}
+                      aria-valuemin={progress == null ? undefined : 0}
+                      aria-valuemax={progress == null ? undefined : 100}
+                      aria-valuenow={progress == null ? undefined : progress}
+                    >
+                      <span style={{ width: (progress ?? 0) + "%" }} />
+                    </div>
+                    <strong className="ifc-overview-crop-progress-value">
+                      {progress == null ? "N/A" : progress + "%"}
+                    </strong>
                   </div>
                 </div>
               </article>
