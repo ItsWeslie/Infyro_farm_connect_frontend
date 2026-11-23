@@ -1336,7 +1336,6 @@ html[data-ifc-theme="dark"] .ifc-overview-milestones-panel .ifc-overview-milesto
 /* Overview Crop Progress — five compact portfolio records with estimated bars. */
 .ifc-overview-crop-progress-panel{min-width:0}
 .ifc-overview-crop-progress-panel .ifc-overview-panel-heading{flex-wrap:wrap;margin-bottom:10px}
-.ifc-overview-crop-progress-panel .ifc-overview-search{margin-bottom:7px;padding:7px 9px}
 .ifc-overview-crop-progress-list{display:flex;flex-direction:column}
 .ifc-overview-crop-progress-item{display:flex;align-items:flex-start;gap:9px;padding:8px 2px;border-bottom:1px solid #eff2ed;min-width:0;transition:background .16s ease}
 .ifc-overview-crop-progress-item:first-child{padding-top:5px}
