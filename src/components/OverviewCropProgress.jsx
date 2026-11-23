@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, CalendarDays, CircleAlert, MapPin, Plus, Search, Sprout, Tractor } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowRight, CalendarDays, CircleAlert, MapPin, Plus, Sprout, Tractor } from "lucide-react";
 import { cropPlantingApi, farmApi } from "../api/client";
 import { SkeletonBlock } from "./ui/Skeleton";
 
@@ -107,7 +107,6 @@ function plantingSortTime(planting) {
 
 export default function OverviewCropProgress({ onNavigate, onAdd }) {
   const [records, setRecords] = useState(null);
-  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [retryKey, setRetryKey] = useState(0);
@@ -149,15 +148,7 @@ export default function OverviewCropProgress({ onNavigate, onAdd }) {
     };
   }, [retryKey]);
 
-  const visible = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    const matched = query
-      ? (records || []).filter((planting) =>
-          [planting.cropTypeName, planting.farmName, planting.fieldName, statusLabel(planting.status)]
-            .filter(Boolean).join(" ").toLowerCase().includes(query))
-      : (records || []);
-    return matched.slice(0, MAX_VISIBLE_CROPS);
-  }, [records, search]);
+  const visible = (records || []).slice(0, MAX_VISIBLE_CROPS);
 
   return (
     <section className="ifc-overview-panel ifc-overview-crop-progress-panel surface-card" aria-labelledby="ifc-overview-crop-progress-title">
@@ -171,11 +162,6 @@ export default function OverviewCropProgress({ onNavigate, onAdd }) {
           Manage crops <ArrowRight size={14} />
         </button>
       </div>
-
-      <label className="ifc-overview-search">
-        <Search size={15} />
-        <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search crop, farm, or field…" aria-label="Search crop, farm, or field" />
-      </label>
 
       {error && (
         <div className="ifc-overview-warning ifc-overview-crop-progress-error" role="alert">
@@ -243,9 +229,9 @@ export default function OverviewCropProgress({ onNavigate, onAdd }) {
       ) : !error ? (
         <div className="ifc-overview-section-empty">
           <Sprout size={22} />
-          <strong>{search ? "No matching crop plantings" : "No crop plantings yet"}</strong>
-          <span>{search ? "Try searching another crop, farm, or field." : "Add a crop to a field to start tracking its progress."}</span>
-          {!search && <button type="button" className="button-secondary" onClick={onAdd}><Plus size={14} /> Add crop</button>}
+          <strong>No crop plantings yet</strong>
+          <span>Add a crop to a field to start tracking its progress.</span>
+          <button type="button" className="button-secondary" onClick={onAdd}><Plus size={14} /> Add crop</button>
         </div>
       ) : null}
     </section>
