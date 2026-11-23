@@ -1,66 +1,23 @@
-import { SkeletonBlock, SkeletonCards } from "./ui/Skeleton";
+import { SkeletonCards } from "./ui/Skeleton";
+import OverviewCropProgress from "./OverviewCropProgress";
 import OverviewExpenseBreakdown from "./OverviewExpenseBreakdown";
 import OverviewRecentActivity from "./OverviewRecentActivity";
 import OverviewUpcomingMilestones from "./OverviewUpcomingMilestones";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   CheckCircle2,
   CircleAlert,
   Coins,
   Flower2,
-  Leaf,
   MapPinned,
   Plus,
-  Search,
   Sprout,
   Sun,
   Wheat,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import {
-  cropPlantingApi,
-  farmSummaryApi,
-  fieldApi,
-  overviewApi,
-} from "../api/client";
-
-function toList(response) {
-  if (Array.isArray(response)) return response;
-  if (Array.isArray(response?.data)) return response.data;
-  return [];
-}
-
-function localIsoDate(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return year + "-" + month + "-" + day;
-}
-
-function isoOffset(days) {
-  const date = new Date();
-  date.setHours(12, 0, 0, 0);
-  date.setDate(date.getDate() + days);
-  return localIsoDate(date);
-}
-
-function parseLocalDate(value) {
-  if (!value) return null;
-  const date = new Date(String(value).length === 10 ? value + "T12:00:00" : value);
-  return Number.isNaN(date.getTime()) ? null : date;
-}
-
-function dateLabel(value, options = {}) {
-  const date = parseLocalDate(value);
-  return date
-    ? date.toLocaleDateString(undefined, {
-        day: "numeric",
-        month: "short",
-        year: options.year === false ? undefined : "numeric",
-      })
-    : "Date not available";
-}
+import { overviewApi } from "../api/client";
 
 function currencyLabel(value) {
   if (value == null || !Number.isFinite(Number(value))) return "—";
@@ -76,62 +33,9 @@ function numberLabel(value, digits = 2) {
   return Number(value).toLocaleString("en-IN", { maximumFractionDigits: digits });
 }
 
-function humanize(value) {
-  return String(value || "")
-    .toLowerCase()
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
-}
-
-function statusLabel(value) {
-  const key = String(value || "").toUpperCase();
-  const labels = {
-    ACTIVE: "Growing",
-    HARVESTING: "Harvesting",
-    PLANNED: "Planned",
-    COMPLETED: "Completed",
-    CANCELLED: "Cancelled",
-    PAUSED: "Paused",
-  };
-  return labels[key] || humanize(value) || "Status unavailable";
-}
-
-function statusClass(value) {
-  const key = String(value || "").toUpperCase();
-  if (key === "COMPLETED" || key === "ACTIVE") return "is-positive";
-  if (key === "HARVESTING") return "is-harvest";
-  if (key === "PLANNED" || key === "PAUSED") return "is-pending";
-  return "is-neutral";
-}
-
-function progressFor(planting) {
-  const status = String(planting.status || "").toUpperCase();
-  if (status === "COMPLETED") return 100;
-  if (status === "PLANNED" || status === "CANCELLED") return null;
-
-  const start = parseLocalDate(planting.plantedOn);
-  if (!start) return null;
-
-  let totalDays = Number(planting.maturityTimeInDays);
-  if (!Number.isFinite(totalDays) || totalDays <= 0) {
-    const expected = parseLocalDate(planting.expectedHarvestOn);
-    totalDays = expected ? Math.round((expected.getTime() - start.getTime()) / 86400000) : 0;
-  }
-  if (totalDays <= 0) return null;
-
-  const elapsedDays = Math.floor((Date.now() - start.getTime()) / 86400000);
-  return Math.max(0, Math.min(99, Math.round((elapsedDays / totalDays) * 100)));
-}
-
-function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }) {
+function OverviewPage({ onNavigate, onAdd }) {
   const { user } = useAuth();
   const userName = user?.name?.trim()?.split(/\s+/)[0] || user?.username?.split("@")[0] || "there";
-  const [snapshot, setSnapshot] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [warnings, setWarnings] = useState([]);
-  const [refreshKey, setRefreshKey] = useState(0);
-  const [cropSearch, setCropSearch] = useState("");
   const [portfolioCards, setPortfolioCards] = useState(null);
   const [cardsLoading, setCardsLoading] = useState(true);
   const [cardsError, setCardsError] = useState("");
@@ -159,112 +63,6 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
     };
   }, [cardsRetryKey]);
 
-  const farmId = selectedFarm?.id;
-
-  useEffect(() => {
-    let current = true;
-
-    async function loadOverview() {
-      if (!farmId) {
-        setSnapshot(null);
-        setWarnings([]);
-        setError("");
-        setLoading(false);
-        return;
-      }
-
-      setLoading(true);
-      setError("");
-
-      const today = isoOffset(0);
-      const monthStart = today.slice(0, 8) + "01";
-
-      const results = await Promise.allSettled([
-        fieldApi.getByFarm(farmId),
-        cropPlantingApi.getAll(),
-        farmSummaryApi.getSummary(farmId),
-        farmSummaryApi.getExpensesSummary(farmId, monthStart, today),
-        farmSummaryApi.getHarvestsSummary(farmId, monthStart, today),
-      ]);
-
-      if (!current) return;
-
-      const [fieldsResult, plantingsResult, summaryResult, monthExpensesResult, monthHarvestsResult] = results;
-
-      if (fieldsResult.status !== "fulfilled" || plantingsResult.status !== "fulfilled") {
-        const failed = fieldsResult.status !== "fulfilled" ? fieldsResult.reason : plantingsResult.reason;
-        setError(failed?.message || "Farm overview data could not be loaded.");
-        setSnapshot(null);
-        setWarnings([]);
-        setLoading(false);
-        return;
-      }
-
-      const fields = toList(fieldsResult.value);
-      const fieldIds = new Set(fields.map((field) => String(field.id)));
-      const plantings = toList(plantingsResult.value)
-        .filter((planting) => fieldIds.has(String(planting.fieldId)))
-        .sort((left, right) => {
-          const leftDate = parseLocalDate(left.updatedAt || left.createdAt || left.plantedOn)?.getTime() || 0;
-          const rightDate = parseLocalDate(right.updatedAt || right.createdAt || right.plantedOn)?.getTime() || 0;
-          return rightDate - leftDate;
-        });
-
-      const summary = summaryResult.status === "fulfilled" ? summaryResult.value : null;
-      const monthExpenses = monthExpensesResult.status === "fulfilled" ? monthExpensesResult.value : null;
-      const monthHarvests = monthHarvestsResult.status === "fulfilled" ? monthHarvestsResult.value : null;
-
-      const totalArea = fields.reduce((sum, field) => sum + (Number(field.totalArea) || 0), 0);
-      const availableArea = fields.reduce((sum, field) => sum + (Number(field.availableArea) || 0), 0);
-      const activeCount = plantings.filter((planting) => {
-        return ["ACTIVE", "HARVESTING"].includes(String(planting.status || "").toUpperCase());
-      }).length;
-
-      const nextWarnings = [];
-      if (summaryResult.status !== "fulfilled") nextWarnings.push("Farm totals are unavailable.");
-      if (monthExpensesResult.status !== "fulfilled") nextWarnings.push("This-month expense summary is unavailable.");
-      if (monthHarvestsResult.status !== "fulfilled") nextWarnings.push("This-month harvest summary is unavailable.");
-
-      setWarnings(nextWarnings);
-      setSnapshot({
-        fields,
-        plantings,
-        summary,
-        monthExpenses,
-        monthHarvests,
-        totalArea,
-        cultivatedArea: Math.max(0, totalArea - availableArea),
-        activeCount,
-        loadedAt: new Date(),
-      });
-      setLoading(false);
-    }
-
-    loadOverview().catch((requestError) => {
-      if (!current) return;
-      setError(requestError.message || "Farm overview data could not be loaded.");
-      if (notify) notify(requestError.message || "Farm overview data could not be loaded.", "error");
-      setLoading(false);
-    });
-
-    return () => {
-      current = false;
-    };
-  }, [farmId, selectedFarm?.name, refreshKey, notify]);
-
-  const filteredPlantings = useMemo(() => {
-    const query = cropSearch.trim().toLowerCase();
-    if (!query) return snapshot?.plantings || [];
-    return (snapshot?.plantings || []).filter((planting) => {
-      const field = snapshot.fields.find((item) => String(item.id) === String(planting.fieldId));
-      return [planting.cropTypeName, field?.fieldName, statusLabel(planting.status)]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase()
-        .includes(query);
-    });
-  }, [cropSearch, snapshot]);
-
   return (
     <section className="ifc-overview">
       <section className="welcome-row ifc-overview-welcome">
@@ -278,7 +76,6 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
           </h1>
           <p>
             Here’s what’s happening across your farms today.
-            {snapshot?.loadedAt ? " Updated " + snapshot.loadedAt.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) + "." : ""}
           </p>
         </div>
         <div className="ifc-overview-actions">
@@ -382,20 +179,6 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
         </div>
       </section>
 
-      {error && (
-        <div className="ifc-overview-error" role="alert">
-          <CircleAlert size={17} />
-          <span>{error}</span>
-          <button type="button" className="button-secondary" onClick={() => setRefreshKey((value) => value + 1)}>Retry</button>
-        </div>
-      )}
-      {warnings.length > 0 && !error && (
-        <div className="ifc-overview-warning" role="status">
-          <CircleAlert size={15} />
-          <span>{warnings.join(" ")}</span>
-        </div>
-      )}
-
       {cardsError && (
         <div className="ifc-overview-warning" role="status">
           <CircleAlert size={15} />
@@ -433,11 +216,7 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
         </div>
       )}
 
-      {loading && !snapshot ? (
-        <div className="surface-card" role="status" aria-label="Loading overview sections">
-          <SkeletonBlock rows={5} />
-        </div>
-      ) : !snapshot && !selectedFarm ? (
+      {portfolioCards?.totalFarms === 0 && !cardsLoading && (
         <div className="ifc-overview-empty surface-card">
           <span className="ifc-overview-empty-icon"><Sprout size={25} /></span>
           <h2>Start with your first farm</h2>
@@ -446,67 +225,9 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
             <Plus size={15} /> Add a farm
           </button>
         </div>
-      ) : !snapshot ? (
-        <div className="ifc-overview-loading surface-card">
-          <CircleAlert size={22} />
-          <strong>Overview data is unavailable</strong>
-          <span>Retry the request or check that the backend is running.</span>
-          <button type="button" className="button-secondary" onClick={() => setRefreshKey((value) => value + 1)}>Retry</button>
-        </div>
-      ) : null}
-      <div className={"ifc-overview-main-grid" + (snapshot ? "" : " ifc-overview-main-grid--solo")}>
-        {snapshot && (
-            <section className="ifc-overview-panel surface-card">
-              <div className="ifc-overview-panel-heading">
-                <div>
-                  <span className="ifc-overview-kicker">GROWING NOW</span>
-                  <h2>Crop progress</h2>
-                  <p>Plantings and field allocation from your farm records.</p>
-                </div>
-                <button type="button" className="ifc-overview-text-link" onClick={() => onNavigate("Crop management")}>
-                  Manage crops <ArrowRight size={14} />
-                </button>
-              </div>
-              <label className="ifc-overview-search">
-                <Search size={15} />
-                <input value={cropSearch} onChange={(event) => setCropSearch(event.target.value)} placeholder="Search crop or field…" />
-              </label>
-              {filteredPlantings.length ? (
-                <div className="ifc-overview-crop-list">
-                  {filteredPlantings.slice(0, 7).map((planting) => {
-                    const field = snapshot.fields.find((item) => String(item.id) === String(planting.fieldId));
-                    const progress = progressFor(planting);
-                    return (
-                      <article className="ifc-overview-crop-row" key={planting.id}>
-                        <span className="ifc-overview-crop-icon"><Leaf size={17} /></span>
-                        <div className="ifc-overview-crop-copy">
-                          <div className="ifc-overview-crop-title">
-                            <strong>{planting.cropTypeName || "Crop planting"}</strong>
-                            <span className={"ifc-overview-status " + statusClass(planting.status)}>{statusLabel(planting.status)}</span>
-                          </div>
-                          <p>{field?.fieldName || "Field not available"} · {planting.cropArea == null ? "Area not recorded" : numberLabel(planting.cropArea) + " acres"}</p>
-                          <div className="ifc-overview-progress">
-                            <span><i style={{ width: progress == null ? "0%" : progress + "%" }} /></span>
-                            <small>{progress == null ? "Progress not available" : progress + "%"}</small>
-                          </div>
-                          <small className="ifc-overview-harvest-date">
-                            {planting.expectedHarvestOn ? "Expected harvest " + dateLabel(planting.expectedHarvestOn, { year: false }) : "No expected harvest date"}
-                          </small>
-                        </div>
-                      </article>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="ifc-overview-section-empty">
-                  <Sprout size={22} />
-                  <strong>{cropSearch ? "No matching plantings" : "No crop plantings yet"}</strong>
-                  <span>{cropSearch ? "Try another crop or field name." : "Add a crop to a field to start tracking its progress."}</span>
-                  {!cropSearch && <button type="button" className="button-secondary" onClick={onAdd}><Plus size={14} /> Add crop</button>}
-                </div>
-              )}
-            </section>
-        )}
+      )}
+      <div className="ifc-overview-main-grid">
+        <OverviewCropProgress onNavigate={onNavigate} onAdd={onAdd} />
         <OverviewUpcomingMilestones onNavigate={onNavigate} />
       </div>
 
@@ -515,13 +236,10 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
         <OverviewExpenseBreakdown onNavigate={onNavigate} />
       </div>
 
-      {snapshot && (
-          <div className="ifc-overview-footnote">
-            <CheckCircle2 size={14} />
-            <span>Overview values are read from your farm records. Income and profit are not shown because the backend does not yet provide sales or revenue records.</span>
-            {snapshot.cultivatedArea > 0 && <small>{numberLabel(snapshot.cultivatedArea)} acres in use</small>}
-          </div>
-      )}
+      <div className="ifc-overview-footnote">
+        <CheckCircle2 size={14} />
+        <span>Overview values are read from your farm records. Income and profit are not shown because the backend does not yet provide sales or revenue records.</span>
+      </div>
     </section>
   );
 }
