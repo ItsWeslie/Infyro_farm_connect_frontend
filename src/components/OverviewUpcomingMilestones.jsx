@@ -37,6 +37,7 @@ export default function OverviewUpcomingMilestones({ onNavigate }) {
     const to = dateKey(end);
 
     setLoading(true);
+    setEvents(null);
     setError("");
     calendarApi.getEvents(from, to)
       .then((result) => {
@@ -48,7 +49,10 @@ export default function OverviewUpcomingMilestones({ onNavigate }) {
         setEvents(upcoming);
       })
       .catch((requestError) => {
-        if (current) setError(requestError.message || "Upcoming milestones could not be loaded.");
+        if (current) {
+          setEvents([]);
+          setError(requestError.message || "Upcoming milestones could not be loaded.");
+        }
       })
       .finally(() => {
         if (current) setLoading(false);
@@ -95,27 +99,31 @@ export default function OverviewUpcomingMilestones({ onNavigate }) {
                   {harvest ? <Wheat size={15} /> : <Sprout size={15} />}
                 </span>
                 <div className="ifc-overview-milestone-info">
-                  <strong title={event.title || undefined}>
-                    {event.title || (harvest ? "Expected harvest" : "Planting milestone")}
-                  </strong>
-                  <div className="ifc-overview-milestone-meta">
-                    {event.farmName && (
-                      <span className="ifc-overview-milestone-farm" title={event.farmName}>
-                        <Tractor size={11} aria-hidden="true" />
-                        <span>{event.farmName}</span>
-                      </span>
-                    )}
-                    {event.fieldName && (
-                      <span className="ifc-overview-milestone-field" title={event.fieldName}>
-                        <MapPin size={11} aria-hidden="true" />
-                        <span>{event.fieldName}</span>
-                      </span>
-                    )}
+                  <div className="ifc-overview-milestone-title-row">
+                    <strong title={event.title || undefined}>
+                      {event.title || (harvest ? "Expected harvest" : "Planting milestone")}
+                    </strong>
                     <time className="ifc-overview-milestone-date" dateTime={event.eventDate}>
                       <CalendarDays size={11} aria-hidden="true" />
                       {eventDateLabel(event.eventDate)}
                     </time>
                   </div>
+                  {(event.farmName || event.fieldName) && (
+                    <div className="ifc-overview-milestone-meta">
+                      {event.farmName && (
+                        <span className="ifc-overview-milestone-farm" title={event.farmName}>
+                          <Tractor size={11} aria-hidden="true" />
+                          <span>{event.farmName}</span>
+                        </span>
+                      )}
+                      {event.fieldName && (
+                        <span className="ifc-overview-milestone-field" title={event.fieldName}>
+                          <MapPin size={11} aria-hidden="true" />
+                          <span>{event.fieldName}</span>
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
               </article>
             );
