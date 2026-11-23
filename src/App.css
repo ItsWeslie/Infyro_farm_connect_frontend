@@ -1337,18 +1337,18 @@ html[data-ifc-theme="dark"] .ifc-overview-milestones-panel .ifc-overview-milesto
 .ifc-overview-crop-progress-panel{min-width:0}
 .ifc-overview-crop-progress-panel .ifc-overview-panel-heading{flex-wrap:wrap;margin-bottom:10px}
 .ifc-overview-crop-progress-list{display:flex;flex-direction:column}
-.ifc-overview-crop-progress-item{display:flex;align-items:flex-start;gap:9px;padding:8px 2px;border-bottom:1px solid #eff2ed;min-width:0;transition:background .16s ease}
-.ifc-overview-crop-progress-item:first-child{padding-top:5px}
+.ifc-overview-crop-progress-item{display:flex;align-items:flex-start;gap:10px;padding:10px 9px;border-bottom:1px solid #eff2ed;min-width:0;transition:background .16s ease}
+.ifc-overview-crop-progress-item:first-child{padding-top:8px}
 .ifc-overview-crop-progress-item:last-child{border-bottom:0}
 .ifc-overview-crop-progress-item:hover{background:#f6faf4;border-radius:8px}
 .ifc-overview-crop-progress-monogram{width:34px;height:34px;display:grid;place-items:center;flex-shrink:0;border:1px solid #d4e9d4;border-radius:9px;background:#e5f2e5;color:#3b7951;font:800 11px Manrope,sans-serif;letter-spacing:.2px}
-.ifc-overview-crop-progress-content{min-width:0;flex:1;display:flex;flex-direction:column;gap:5px}
+.ifc-overview-crop-progress-content{min-width:0;flex:1;display:flex;flex-direction:column;gap:6px}
 .ifc-overview-crop-progress-title{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0}
 .ifc-overview-crop-progress-title strong{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:750 10px Manrope,sans-serif;color:#405c46;line-height:1.35}
 .ifc-overview-crop-progress-status{flex-shrink:0;border-radius:999px;padding:3px 7px;font-size:8px;line-height:1.3;font-weight:500;background:#f0f3ee;color:#697b6c}
 .ifc-overview-crop-progress-status.is-growing{background:#e8f4e7;color:#4a8254}
 .ifc-overview-crop-progress-status.is-harvest{background:#fff1d8;color:#9f742b}
-.ifc-overview-crop-progress-meta{display:flex;align-items:center;flex-wrap:wrap;gap:4px;min-width:0}
+.ifc-overview-crop-progress-meta{display:flex;align-items:center;flex-wrap:wrap;gap:6px;min-width:0}
 .ifc-overview-crop-progress-farm,.ifc-overview-crop-progress-field{display:inline-flex;align-items:center;gap:4px;padding:3px 6px;border-radius:5px;font-size:8px;font-weight:500;line-height:1.2;min-width:0;max-width:45%}
 .ifc-overview-crop-progress-farm{background:#eaf4e9;color:#53815a}
 .ifc-overview-crop-progress-field{background:#f0f3ef;color:#687e6d}
@@ -1358,7 +1358,7 @@ html[data-ifc-theme="dark"] .ifc-overview-milestones-panel .ifc-overview-milesto
 .ifc-overview-crop-progress-harvest{display:inline-flex;align-items:center;gap:4px;margin-left:auto;padding:3px 6px;border-radius:5px;background:#fdf1df;color:#906c36;font-size:8px;font-weight:500;line-height:1.2;max-width:100%}
 .ifc-overview-crop-progress-harvest time{white-space:nowrap;font-variant-numeric:tabular-nums}
 .ifc-overview-crop-progress-harvest svg{flex-shrink:0}
-.ifc-overview-crop-progress-line{display:grid;grid-template-columns:auto minmax(24px,1fr) auto;align-items:center;gap:7px;min-width:0}
+.ifc-overview-crop-progress-line{display:grid;grid-template-columns:auto minmax(24px,1fr) auto;align-items:center;gap:9px;min-width:0}
 .ifc-overview-crop-progress-label{font-size:8px;font-weight:500;color:#7a8c7e;line-height:1.25;white-space:nowrap}
 .ifc-overview-crop-progress-value{font-size:8px;font-weight:700;color:#55865b;line-height:1.25;white-space:nowrap;font-variant-numeric:tabular-nums}
 .ifc-overview-crop-progress-track{height:6px;min-width:0;overflow:hidden;border-radius:999px;background:#e8eee5}
@@ -1383,8 +1383,8 @@ html[data-ifc-theme="dark"] .ifc-overview-crop-progress-track>span{background:#8
 html[data-ifc-theme="dark"] .ifc-overview-crop-progress-area{color:#b0c0ad}
 html[data-ifc-theme="dark"] .ifc-overview-crop-progress-harvest{background:#493a2a;color:#f0d4a6}
 @media(max-width:640px){
-  .ifc-overview-crop-progress-item{gap:8px;padding:8px 2px}
+  .ifc-overview-crop-progress-item{gap:8px;padding:9px 7px}
   .ifc-overview-crop-progress-monogram{width:32px;height:32px}
   .ifc-overview-crop-progress-content{gap:5px}
-  .ifc-overview-crop-progress-line{gap:5px}
+  .ifc-overview-crop-progress-line{gap:6px}
 }
