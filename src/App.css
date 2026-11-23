@@ -1273,14 +1273,15 @@ html[data-ifc-theme="dark"] .ifc-overview-donut-legend-item.is-active{background
 .ifc-overview-recent-content{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
 .ifc-overview-recent-primary{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
 .ifc-overview-recent-primary>strong{font:800 11px Manrope,sans-serif;color:#405c46;line-height:1.4;overflow-wrap:anywhere}
-.ifc-overview-recent-stage{display:inline-flex;align-items:center;max-width:100%;padding:4px 8px;border-radius:999px;font-size:9px;font-weight:750;line-height:1.35;white-space:normal;background:#f0f3ee;color:#697b6c}
+.ifc-overview-recent-stage{display:inline-flex;align-items:center;flex:0 1 auto;min-width:0;max-width:100%;padding:4px 7px;border-radius:999px;font-size:8px;font-weight:500;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:#f0f3ee;color:#697b6c}
 .ifc-overview-recent-stage.is-growing{background:#e8f4e7;color:#4a8254}
 .ifc-overview-recent-stage.is-amber{background:#fff1d8;color:#9f742b}
 .ifc-overview-recent-stage.is-harvest{background:#eef0d7;color:#757b33}
-.ifc-overview-recent-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;min-width:0}
-.ifc-overview-recent-field,.ifc-overview-recent-date{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:6px;font-size:9px;font-weight:650;line-height:1.3;max-width:100%}
-.ifc-overview-recent-field{background:#edf5eb;color:#648066;overflow-wrap:anywhere}
-.ifc-overview-recent-date{margin-left:auto;background:#fdf1df;color:#916d37;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ifc-overview-recent-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:6px;min-width:0}
+.ifc-overview-recent-field,.ifc-overview-recent-date{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:6px;font-size:8px;font-weight:500;line-height:1.3;max-width:100%}
+.ifc-overview-recent-field{max-width:65%;min-width:0;background:#edf5eb;color:#648066}
+.ifc-overview-recent-date{flex-shrink:0;margin-left:auto;background:#fdf1df;color:#916d37;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ifc-overview-recent-field-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ifc-overview-recent-field svg,.ifc-overview-recent-date svg{flex-shrink:0}
 .ifc-overview-recent-loading{padding:10px 0}
 .ifc-overview-recent-error{margin-bottom:12px}
@@ -1299,6 +1300,5 @@ html[data-ifc-theme="dark"] .ifc-overview-recent-date{background:#493a2a;color:#
   .ifc-overview-recent-row{padding:11px 3px;gap:9px}
   .ifc-overview-recent-monogram{width:34px;height:34px}
   .ifc-overview-recent-primary{align-items:flex-start}
-  .ifc-overview-recent-date{margin-left:0}
-  .ifc-overview-recent-meta{justify-content:flex-start}
+  .ifc-overview-recent-meta{gap:5px}
 }
