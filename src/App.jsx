@@ -18,7 +18,6 @@ import {
   CircleHelp,
   Command,
   LayoutDashboard,
-  Leaf,
   Menu,
   Moon,
   Ellipsis,
@@ -144,7 +143,6 @@ function App() {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [topProfileOpen, setTopProfileOpen] = useState(false);
-  const [farmOpen, setFarmOpen] = useState(false);
   const { toast, notify, dismissToast } = useToast();
   const handleLogout = useCallback(async () => {
     await logout();
@@ -360,67 +358,6 @@ function App() {
             <X size={19} />
           </button>
         </div>
-        <button
-          className="farm-switch"
-          onClick={() => setFarmOpen(!farmOpen)}
-          aria-expanded={farmOpen}
-        >
-          <div className="farm-avatar">
-            <Leaf size={18} />
-          </div>
-          <span className="farm-meta">
-            <strong>{selectedFarm ? selectedFarm.name : farmsLoading ? "Loading farms…" : "No farms yet"}</strong>
-            <small>
-              {selectedFarm ? (
-                <span className="live-badge"><i></i> Live</span>
-              ) : isLiveConnected ? (
-                <span>No farms registered</span>
-              ) : (
-                <span>{farmsError ? "Farm data unavailable" : "Create your first farm"}</span>
-              )}
-            </small>
-          </span>
-          <ChevronDown size={15} className={farmOpen ? "rotate" : ""} />
-        </button>
-        {farmOpen && (
-          <div className="farm-popover">
-            <strong>My farms</strong>
-            {farms.length > 0 ? (
-              farms.map((f) => (
-                <button
-                  key={f.id}
-                  onClick={() => {
-                    setSelectedFarm(f);
-                    setFarmOpen(false);
-                    notify(`${f.name} selected`);
-                  }}
-                >
-                  <span className={"farm-dot " + (selectedFarm?.id === f.id ? "" : "farm-dot-muted")} />
-                  {f.name} {selectedFarm?.id === f.id && <Check size={14} />}
-                </button>
-              ))
-            ) : (
-              <button
-                onClick={() => {
-                  setFarmOpen(false);
-                  setActive("Farms");
-                }}
-              >
-                <span className="farm-dot farm-dot-muted" />
-                Create your first farm <Plus size={14} />
-              </button>
-            )}
-            <button
-              onClick={() => {
-                setFarmOpen(false);
-                setActive("Farms");
-              }}
-              className="popover-footer"
-            >
-              Manage all farms <ArrowRight size={13} />
-            </button>
-          </div>
-        )}
         <nav className="side-navigation" aria-label="Main navigation">
           {navigation.map((group) => (
             <div className="nav-group" key={group.section}>
