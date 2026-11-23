@@ -1310,7 +1310,7 @@ html[data-ifc-theme="dark"] .ifc-overview-recent-date{background:#493a2a;color:#
 .ifc-overview-milestones-panel .ifc-overview-milestone-entry{align-items:center;padding:11px 0}
 .ifc-overview-milestones-panel .ifc-overview-milestone-entry:last-child{border-bottom:0}
 .ifc-overview-milestones-panel .ifc-overview-panel-footer{margin-top:auto;border-top:1px solid #eff2ed;padding-top:12px}
-.ifc-overview-milestones-panel .ifc-overview-milestone-icon{width:44px;height:44px;border-radius:11px;flex-shrink:0}
+.ifc-overview-milestones-panel .ifc-overview-milestone-icon{width:40px;height:40px;border-radius:10px;flex-shrink:0}
 .ifc-overview-milestone-info{flex:1;min-width:0}
 .ifc-overview-milestone-title-row{display:flex;align-items:center;justify-content:space-between;gap:7px;min-width:0}
 .ifc-overview-milestones-panel .ifc-overview-milestone-title-row strong{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

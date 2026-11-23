@@ -96,7 +96,7 @@ export default function OverviewUpcomingMilestones({ onNavigate }) {
                 key={event.eventKey || [event.eventType, event.sourceId, event.eventDate, index].join("-")}
               >
                 <span className={"ifc-overview-milestone-icon " + (harvest ? "harvest" : "planting")} aria-hidden="true">
-                  {harvest ? <Wheat size={17} /> : <Sprout size={17} />}
+                  {harvest ? <Wheat size={16} /> : <Sprout size={16} />}
                 </span>
                 <div className="ifc-overview-milestone-info">
                   <div className="ifc-overview-milestone-title-row">
