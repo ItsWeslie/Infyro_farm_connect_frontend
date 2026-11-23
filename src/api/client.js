@@ -250,6 +250,7 @@ export const harvestApi = {
 // Portfolio Overview API (aggregated across all farms owned by the authenticated user)
 export const overviewApi = {
   getCards: () => apiRequest("/ifc/v1/overview/cards", { method: "GET" }),
+  getExpenseBreakdown: () => apiRequest("/ifc/v1/overview/expense-breakdown", { method: "GET" }),
 };
 
 // Farm Summary APIs (/ifc/v1/farms/{farmId})
