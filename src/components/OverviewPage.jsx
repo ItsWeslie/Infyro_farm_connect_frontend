@@ -1,10 +1,10 @@
 import { SkeletonBlock, SkeletonCards } from "./ui/Skeleton";
 import OverviewExpenseBreakdown from "./OverviewExpenseBreakdown";
 import OverviewRecentActivity from "./OverviewRecentActivity";
+import OverviewUpcomingMilestones from "./OverviewUpcomingMilestones";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
-  CalendarDays,
   CheckCircle2,
   CircleAlert,
   Coins,
@@ -19,7 +19,6 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import {
-  calendarApi,
   cropPlantingApi,
   farmSummaryApi,
   fieldApi,
@@ -124,10 +123,6 @@ function progressFor(planting) {
   return Math.max(0, Math.min(99, Math.round((elapsedDays / totalDays) * 100)));
 }
 
-function eventKind(eventType) {
-  return String(eventType || "").toUpperCase().includes("HARVEST") ? "harvest" : "planting";
-}
-
 function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }) {
   const { user } = useAuth();
   const userName = user?.name?.trim()?.split(/\s+/)[0] || user?.username?.split("@")[0] || "there";
@@ -183,7 +178,6 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
 
       const today = isoOffset(0);
       const monthStart = today.slice(0, 8) + "01";
-      const nextMonthWindow = isoOffset(30);
 
       const results = await Promise.allSettled([
         fieldApi.getByFarm(farmId),
@@ -191,12 +185,11 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
         farmSummaryApi.getSummary(farmId),
         farmSummaryApi.getExpensesSummary(farmId, monthStart, today),
         farmSummaryApi.getHarvestsSummary(farmId, monthStart, today),
-        calendarApi.getEvents(today, nextMonthWindow),
       ]);
 
       if (!current) return;
 
-      const [fieldsResult, plantingsResult, summaryResult, monthExpensesResult, monthHarvestsResult, calendarResult] = results;
+      const [fieldsResult, plantingsResult, summaryResult, monthExpensesResult, monthHarvestsResult] = results;
 
       if (fieldsResult.status !== "fulfilled" || plantingsResult.status !== "fulfilled") {
         const failed = fieldsResult.status !== "fulfilled" ? fieldsResult.reason : plantingsResult.reason;
@@ -220,13 +213,6 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
       const summary = summaryResult.status === "fulfilled" ? summaryResult.value : null;
       const monthExpenses = monthExpensesResult.status === "fulfilled" ? monthExpensesResult.value : null;
       const monthHarvests = monthHarvestsResult.status === "fulfilled" ? monthHarvestsResult.value : null;
-      const events = calendarResult.status === "fulfilled"
-        ? toList(calendarResult.value).filter((event) => {
-            if (!event.eventDate || event.eventDate < today || event.eventDate > nextMonthWindow) return false;
-            return !event.farmName || !selectedFarm?.name ||
-              String(event.farmName).trim().toLowerCase() === String(selectedFarm.name).trim().toLowerCase();
-          }).sort((left, right) => String(left.eventDate).localeCompare(String(right.eventDate)))
-        : [];
 
       const totalArea = fields.reduce((sum, field) => sum + (Number(field.totalArea) || 0), 0);
       const availableArea = fields.reduce((sum, field) => sum + (Number(field.availableArea) || 0), 0);
@@ -238,7 +224,6 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
       if (summaryResult.status !== "fulfilled") nextWarnings.push("Farm totals are unavailable.");
       if (monthExpensesResult.status !== "fulfilled") nextWarnings.push("This-month expense summary is unavailable.");
       if (monthHarvestsResult.status !== "fulfilled") nextWarnings.push("This-month harvest summary is unavailable.");
-      if (calendarResult.status !== "fulfilled") nextWarnings.push("Upcoming milestones are unavailable.");
 
       setWarnings(nextWarnings);
       setSnapshot({
@@ -247,7 +232,6 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
         summary,
         monthExpenses,
         monthHarvests,
-        events,
         totalArea,
         cultivatedArea: Math.max(0, totalArea - availableArea),
         activeCount,
@@ -453,9 +437,25 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
         <div className="surface-card" role="status" aria-label="Loading overview sections">
           <SkeletonBlock rows={5} />
         </div>
-      ) : snapshot ? (
-        <>
-          <div className="ifc-overview-main-grid">
+      ) : !snapshot && !selectedFarm ? (
+        <div className="ifc-overview-empty surface-card">
+          <span className="ifc-overview-empty-icon"><Sprout size={25} /></span>
+          <h2>Start with your first farm</h2>
+          <p>Add your first farm to start tracking fields, crops, expenses, and harvests.</p>
+          <button type="button" className="button-primary" onClick={() => onNavigate("Farms")}>
+            <Plus size={15} /> Add a farm
+          </button>
+        </div>
+      ) : !snapshot ? (
+        <div className="ifc-overview-loading surface-card">
+          <CircleAlert size={22} />
+          <strong>Overview data is unavailable</strong>
+          <span>Retry the request or check that the backend is running.</span>
+          <button type="button" className="button-secondary" onClick={() => setRefreshKey((value) => value + 1)}>Retry</button>
+        </div>
+      ) : null}
+      <div className={"ifc-overview-main-grid" + (snapshot ? "" : " ifc-overview-main-grid--solo")}>
+        {snapshot && (
             <section className="ifc-overview-panel surface-card">
               <div className="ifc-overview-panel-heading">
                 <div>
@@ -506,63 +506,10 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
                 </div>
               )}
             </section>
+        )}
+        <OverviewUpcomingMilestones onNavigate={onNavigate} />
+      </div>
 
-            <section className="ifc-overview-panel ifc-overview-side-panel surface-card">
-              <div className="ifc-overview-panel-heading">
-                <div>
-                  <span className="ifc-overview-kicker">NEXT 30 DAYS</span>
-                  <h2>Upcoming milestones</h2>
-                  <p>Planting and expected-harvest dates.</p>
-                </div>
-                <CalendarDays size={19} />
-              </div>
-              {snapshot.events.length ? (
-                <div className="ifc-overview-milestone-list">
-                  {snapshot.events.slice(0, 6).map((event) => {
-                    const kind = eventKind(event.eventType);
-                    return (
-                      <article className="ifc-overview-milestone" key={event.eventKey || String(event.sourceId) + event.eventDate}>
-                        <span className={"ifc-overview-milestone-icon " + kind}>{kind === "harvest" ? <Wheat size={15} /> : <Sprout size={15} />}</span>
-                        <div>
-                          <strong>{event.title || (kind === "harvest" ? "Expected harvest" : "Planting milestone")}</strong>
-                          <small>{[event.fieldName, event.farmName].filter(Boolean).join(" · ")}</small>
-                        </div>
-                        <time>{dateLabel(event.eventDate, { year: false })}</time>
-                      </article>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="ifc-overview-section-empty compact">
-                  <CalendarDays size={21} />
-                  <strong>No upcoming milestones</strong>
-                  <span>There are no planting or expected-harvest dates in the next 30 days.</span>
-                </div>
-              )}
-              <button type="button" className="ifc-overview-panel-footer" onClick={() => onNavigate("Calendar")}>
-                Open farm calendar <ArrowRight size={14} />
-              </button>
-            </section>
-          </div>
-
-        </>
-      ) : !selectedFarm ? (
-        <div className="ifc-overview-empty surface-card">
-          <span className="ifc-overview-empty-icon"><Sprout size={25} /></span>
-          <h2>Start with your first farm</h2>
-          <p>Add your first farm to start tracking fields, crops, expenses, and harvests.</p>
-          <button type="button" className="button-primary" onClick={() => onNavigate("Farms")}>
-            <Plus size={15} /> Add a farm
-          </button>
-        </div>
-      ) : (
-        <div className="ifc-overview-loading surface-card">
-          <CircleAlert size={22} />
-          <strong>Overview data is unavailable</strong>
-          <span>Retry the request or check that the backend is running.</span>
-          <button type="button" className="button-secondary" onClick={() => setRefreshKey((value) => value + 1)}>Retry</button>
-        </div>
-      )}
       <div className="ifc-overview-bottom-grid">
         <OverviewRecentActivity onNavigate={onNavigate} />
         <OverviewExpenseBreakdown onNavigate={onNavigate} />
