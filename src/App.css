@@ -1395,6 +1395,6 @@ html[data-ifc-theme="dark"] .ifc-overview-crop-progress-harvest{background:#493a
 .ifc-overview-crop-progress-panel .ifc-overview-heading-title,
 .ifc-overview-recent-panel .ifc-overview-heading-title{display:flex;align-items:center;gap:8px;min-width:0}
 .ifc-overview-crop-progress-panel .ifc-overview-heading-logo,
-.ifc-overview-recent-panel .ifc-overview-heading-logo{width:25px;height:25px;flex-shrink:0;display:grid;place-items:center;border-radius:8px;background:#eaf4e9;color:#568052}
+.ifc-overview-recent-panel .ifc-overview-heading-logo{width:25px;height:25px;flex-shrink:0;display:grid;place-items:center;color:#568052}
 html[data-ifc-theme="dark"] .ifc-overview-crop-progress-panel .ifc-overview-heading-logo,
-html[data-ifc-theme="dark"] .ifc-overview-recent-panel .ifc-overview-heading-logo{background:#2b412d;color:#c5e0b8}
+html[data-ifc-theme="dark"] .ifc-overview-recent-panel .ifc-overview-heading-logo{color:#c5e0b8}
