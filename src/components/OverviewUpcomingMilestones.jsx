@@ -96,17 +96,13 @@ export default function OverviewUpcomingMilestones({ onNavigate }) {
                 key={event.eventKey || [event.eventType, event.sourceId, event.eventDate, index].join("-")}
               >
                 <span className={"ifc-overview-milestone-icon " + (harvest ? "harvest" : "planting")} aria-hidden="true">
-                  {harvest ? <Wheat size={15} /> : <Sprout size={15} />}
+                  {harvest ? <Wheat size={18} /> : <Sprout size={18} />}
                 </span>
                 <div className="ifc-overview-milestone-info">
                   <div className="ifc-overview-milestone-title-row">
                     <strong title={event.title || undefined}>
                       {event.title || (harvest ? "Expected harvest" : "Planting milestone")}
                     </strong>
-                    <time className="ifc-overview-milestone-date" dateTime={event.eventDate}>
-                      <CalendarDays size={11} aria-hidden="true" />
-                      {eventDateLabel(event.eventDate)}
-                    </time>
                   </div>
                   {(event.farmName || event.fieldName) && (
                     <div className="ifc-overview-milestone-meta">
@@ -125,6 +121,10 @@ export default function OverviewUpcomingMilestones({ onNavigate }) {
                     </div>
                   )}
                 </div>
+                <time className="ifc-overview-milestone-date" dateTime={event.eventDate}>
+                  <CalendarDays size={11} aria-hidden="true" />
+                  {eventDateLabel(event.eventDate)}
+                </time>
               </article>
             );
           })}

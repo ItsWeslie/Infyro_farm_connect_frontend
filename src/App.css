@@ -1307,9 +1307,10 @@ html[data-ifc-theme="dark"] .ifc-overview-recent-date{background:#493a2a;color:#
 .ifc-overview-main-grid--solo{grid-template-columns:minmax(0,1fr)}
 .ifc-overview-milestones-panel{display:flex;flex-direction:column;min-width:0}
 .ifc-overview-milestones-panel .ifc-overview-milestone-list{margin-bottom:8px}
-.ifc-overview-milestones-panel .ifc-overview-milestone-entry{align-items:flex-start;padding:11px 0}
+.ifc-overview-milestones-panel .ifc-overview-milestone-entry{align-items:center;padding:11px 0}
 .ifc-overview-milestones-panel .ifc-overview-milestone-entry:last-child{border-bottom:0}
 .ifc-overview-milestones-panel .ifc-overview-panel-footer{margin-top:auto;border-top:1px solid #eff2ed;padding-top:12px}
+.ifc-overview-milestones-panel .ifc-overview-milestone-icon{width:48px;height:48px;border-radius:12px;flex-shrink:0}
 .ifc-overview-milestone-info{flex:1;min-width:0}
 .ifc-overview-milestone-title-row{display:flex;align-items:center;justify-content:space-between;gap:7px;min-width:0}
 .ifc-overview-milestones-panel .ifc-overview-milestone-title-row strong{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1317,7 +1318,7 @@ html[data-ifc-theme="dark"] .ifc-overview-recent-date{background:#493a2a;color:#
 .ifc-overview-milestone-farm,.ifc-overview-milestone-field,.ifc-overview-milestones-panel .ifc-overview-milestone-date{display:inline-flex;align-items:center;gap:4px;padding:4px 7px;border-radius:6px;font-size:8px;font-weight:500;line-height:1.35;max-width:100%}
 .ifc-overview-milestone-farm{background:#eaf4e9;color:#53815a}
 .ifc-overview-milestone-field{background:#f0f3ef;color:#687e6d}
-.ifc-overview-milestones-panel .ifc-overview-milestone-date{flex-shrink:0;background:#fdf1df;color:#906c36;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ifc-overview-milestones-panel .ifc-overview-milestone-date{align-self:center;justify-content:center;flex-shrink:0;background:#fdf1df;color:#906c36;white-space:nowrap;font-variant-numeric:tabular-nums}
 .ifc-overview-milestone-farm span,.ifc-overview-milestone-field span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ifc-overview-milestone-farm svg,.ifc-overview-milestone-field svg,.ifc-overview-milestone-date svg{flex-shrink:0}
 .ifc-overview-milestones-loading{padding:12px 0}
