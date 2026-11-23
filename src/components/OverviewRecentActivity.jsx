@@ -74,7 +74,10 @@ export default function OverviewRecentActivity({ onNavigate }) {
       <div className="ifc-overview-panel-heading">
         <div>
           <span className="ifc-overview-kicker">LATEST RECORDS</span>
-          <h2 id="ifc-overview-recent-title">Recent activity</h2>
+          <div className="ifc-overview-heading-title">
+            <h2 id="ifc-overview-recent-title">Recent activity</h2>
+            <span className="ifc-overview-heading-logo" aria-hidden="true"><Clock3 size={15} /></span>
+          </div>
           <p>Latest crop updates across all your farms.</p>
         </div>
         <button type="button" className="ifc-overview-text-link" onClick={() => onNavigate("Activities")}>
