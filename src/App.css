@@ -1332,3 +1332,59 @@ html[data-ifc-theme="dark"] .ifc-overview-milestones-panel .ifc-overview-milesto
   .ifc-overview-milestone-title-row{gap:5px}
   .ifc-overview-milestones-panel .ifc-overview-milestone-entry{padding:10px 0}
 }
+
+/* Overview Crop Progress — portfolio-wide crop rows with an estimated maturity bar. */
+.ifc-overview-crop-progress-panel{min-width:0}
+.ifc-overview-crop-progress-panel .ifc-overview-panel-heading{flex-wrap:wrap}
+.ifc-overview-crop-progress-list{display:flex;flex-direction:column}
+.ifc-overview-crop-progress-item{display:flex;align-items:flex-start;gap:11px;padding:13px 4px;border-bottom:1px solid #eff2ed;min-width:0;transition:background .16s ease}
+.ifc-overview-crop-progress-item:first-child{padding-top:7px}
+.ifc-overview-crop-progress-item:last-child{border-bottom:0}
+.ifc-overview-crop-progress-item:hover{background:#f6faf4}
+.ifc-overview-crop-progress-monogram{width:40px;height:40px;display:grid;place-items:center;flex-shrink:0;border:1px solid #d4e9d4;border-radius:10px;background:#e5f2e5;color:#3b7951;font:800 12px Manrope,sans-serif;letter-spacing:.25px}
+.ifc-overview-crop-progress-content{min-width:0;flex:1;display:flex;flex-direction:column;gap:8px}
+.ifc-overview-crop-progress-title{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+.ifc-overview-crop-progress-title strong{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:800 11px Manrope,sans-serif;color:#405c46;line-height:1.4}
+.ifc-overview-crop-progress-status{flex-shrink:0;border-radius:999px;padding:4px 8px;font-size:8px;line-height:1.35;font-weight:500;background:#f0f3ee;color:#697b6c}
+.ifc-overview-crop-progress-status.is-growing{background:#e8f4e7;color:#4a8254}
+.ifc-overview-crop-progress-status.is-harvest{background:#fff1d8;color:#9f742b}
+.ifc-overview-crop-progress-meta{display:flex;align-items:center;flex-wrap:wrap;gap:6px;min-width:0}
+.ifc-overview-crop-progress-farm,.ifc-overview-crop-progress-field{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:6px;font-size:8px;font-weight:500;line-height:1.35;min-width:0;max-width:100%}
+.ifc-overview-crop-progress-farm{background:#eaf4e9;color:#53815a}
+.ifc-overview-crop-progress-field{background:#f0f3ef;color:#687e6d}
+.ifc-overview-crop-progress-farm span,.ifc-overview-crop-progress-field span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ifc-overview-crop-progress-farm svg,.ifc-overview-crop-progress-field svg{flex-shrink:0}
+.ifc-overview-crop-progress-estimate{display:flex;align-items:center;justify-content:space-between;gap:7px;font-size:9px;color:#7a8c7e;line-height:1.4}
+.ifc-overview-crop-progress-estimate strong{font-size:9px;font-weight:700;color:#55865b;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ifc-overview-crop-progress-track{height:7px;overflow:hidden;border-radius:999px;background:#e8eee5}
+.ifc-overview-crop-progress-track>span{display:block;height:100%;border-radius:inherit;background:#79a76f;transition:width .22s ease}
+.ifc-overview-crop-progress-track.is-unavailable>span{display:none}
+.ifc-overview-crop-progress-footer{display:flex;align-items:center;justify-content:space-between;gap:7px;flex-wrap:wrap;min-width:0}
+.ifc-overview-crop-progress-area{font-size:9px;color:#819084}
+.ifc-overview-crop-progress-harvest{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:6px;background:#fdf1df;color:#906c36;font-size:8px;font-weight:500;line-height:1.35;max-width:100%}
+.ifc-overview-crop-progress-harvest time{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ifc-overview-crop-progress-harvest svg{flex-shrink:0}
+.ifc-overview-crop-progress-loading{padding:14px 0}
+.ifc-overview-crop-progress-error{margin-bottom:12px}
+.ifc-overview-crop-progress-error .button-secondary{flex-shrink:0;padding:5px 8px;font-size:9px}
+html[data-ifc-theme="dark"] .ifc-overview-crop-progress-item{border-color:rgba(203,226,194,.12)}
+html[data-ifc-theme="dark"] .ifc-overview-crop-progress-item:hover{background:#26362a}
+html[data-ifc-theme="dark"] .ifc-overview-crop-progress-monogram{background:#2d4732;border-color:#3b5b41;color:#c4e5c4}
+html[data-ifc-theme="dark"] .ifc-overview-crop-progress-title strong{color:#e5f0dc}
+html[data-ifc-theme="dark"] .ifc-overview-crop-progress-status{background:#303e32;color:#c3d0c0}
+html[data-ifc-theme="dark"] .ifc-overview-crop-progress-status.is-growing{background:#2e4b35;color:#bee2bc}
+html[data-ifc-theme="dark"] .ifc-overview-crop-progress-status.is-harvest{background:#4d402b;color:#f2d698}
+html[data-ifc-theme="dark"] .ifc-overview-crop-progress-farm{background:#2c4532;color:#c0dfbd}
+html[data-ifc-theme="dark"] .ifc-overview-crop-progress-field{background:#303e34;color:#b7cabb}
+html[data-ifc-theme="dark"] .ifc-overview-crop-progress-estimate{color:#b0c0ad}
+html[data-ifc-theme="dark"] .ifc-overview-crop-progress-estimate strong{color:#bfe2bb}
+html[data-ifc-theme="dark"] .ifc-overview-crop-progress-track{background:#334837}
+html[data-ifc-theme="dark"] .ifc-overview-crop-progress-track>span{background:#87b681}
+html[data-ifc-theme="dark"] .ifc-overview-crop-progress-area{color:#b0c0ad}
+html[data-ifc-theme="dark"] .ifc-overview-crop-progress-harvest{background:#493a2a;color:#f0d4a6}
+@media(max-width:640px){
+  .ifc-overview-crop-progress-item{gap:9px;padding:12px 3px}
+  .ifc-overview-crop-progress-monogram{width:38px;height:38px}
+  .ifc-overview-crop-progress-content{gap:7px}
+  .ifc-overview-crop-progress-harvest{margin-left:0}
+}
