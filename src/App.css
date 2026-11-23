@@ -1219,3 +1219,44 @@ html[data-ifc-theme="dark"] .top-profile:focus,html[data-ifc-theme="dark"] .top-
   height:16px;
 }
 
+/* Overview portfolio expense breakdown — doughnut and interactive legend. */
+.ifc-overview-bottom-grid--solo{grid-template-columns:minmax(0,1fr)}
+.ifc-overview-expense-panel{display:flex;flex-direction:column}
+.ifc-overview-expense-panel .ifc-overview-panel-footer{margin-top:auto}
+.ifc-overview-donut-layout{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);align-items:center;gap:11px;margin:4px 0 14px;min-width:0}
+.ifc-overview-donut-chart{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0}
+.ifc-overview-donut-chart svg{width:100%;max-width:214px;height:auto;overflow:visible}
+.ifc-overview-donut-track{stroke:#e5eee6}
+.ifc-overview-donut-segment{cursor:pointer;transition:stroke-width .18s ease,opacity .18s ease}
+.ifc-overview-donut-segment.is-muted{opacity:.4}
+.ifc-overview-donut-caption{font-size:9px;font-weight:700;letter-spacing:.2px;fill:#899b8b;pointer-events:none}
+.ifc-overview-donut-total{font-size:19px;font-weight:800;fill:#344e3b;pointer-events:none}
+.ifc-overview-donut-exact-total{font-size:9px;color:#788b7c;font-weight:600;text-align:center;line-height:1.5}
+.ifc-overview-donut-legend{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ifc-overview-donut-legend-item{width:100%;display:grid;grid-template-columns:9px minmax(0,1fr) auto;align-items:center;gap:7px;padding:7px 6px;text-align:left;border:1px solid transparent;border-radius:8px;background:transparent;color:inherit;cursor:pointer;transition:background .16s ease,border-color .16s ease,opacity .16s ease}
+.ifc-overview-donut-legend-item:hover,.ifc-overview-donut-legend-item.is-active{background:#f2f7ee;border-color:#e1ebdc}
+.ifc-overview-donut-legend-item.is-muted{opacity:.62}
+.ifc-overview-donut-legend-item:focus-visible{outline:2px solid #5d9062;outline-offset:1px}
+.ifc-overview-donut-swatch{display:block;width:9px;height:9px;border-radius:50%}
+.ifc-overview-donut-legend-copy{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ifc-overview-donut-legend-copy strong{font-size:10px;line-height:1.3;font-weight:700;color:#435a49;overflow-wrap:anywhere}
+.ifc-overview-donut-legend-copy small{font-size:9px;color:#879688;white-space:nowrap}
+.ifc-overview-donut-legend-percent{font-size:10px;font-weight:800;color:#526c58;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ifc-overview-expense-loading{padding:16px 0 24px}
+.ifc-overview-expense-error{margin-bottom:12px}
+.ifc-overview-expense-error .button-secondary{flex-shrink:0;padding:5px 8px;font-size:9px}
+html[data-ifc-theme="dark"] .ifc-overview-donut-track{stroke:#334837}
+html[data-ifc-theme="dark"] .ifc-overview-donut-caption,
+html[data-ifc-theme="dark"] .ifc-overview-donut-exact-total{fill:#a9bba6;color:#a9bba6}
+html[data-ifc-theme="dark"] .ifc-overview-donut-total{fill:#e8f2e5}
+html[data-ifc-theme="dark"] .ifc-overview-donut-legend-copy strong{color:#e2eddc}
+html[data-ifc-theme="dark"] .ifc-overview-donut-legend-copy small{color:#b0c0ad}
+html[data-ifc-theme="dark"] .ifc-overview-donut-legend-percent{color:#cbdcc5}
+html[data-ifc-theme="dark"] .ifc-overview-donut-legend-item:hover,
+html[data-ifc-theme="dark"] .ifc-overview-donut-legend-item.is-active{background:#2b3d2d;border-color:rgba(203,226,194,.16)}
+@media(max-width:640px){
+  .ifc-overview-donut-layout{grid-template-columns:1fr;gap:8px}
+  .ifc-overview-donut-chart svg{max-width:205px}
+  .ifc-overview-donut-legend{width:100%;max-width:360px;margin-inline:auto}
+  .ifc-overview-donut-legend-item{padding:8px 10px}
+}
