@@ -155,7 +155,10 @@ export default function OverviewCropProgress({ onNavigate, onAdd }) {
       <div className="ifc-overview-panel-heading">
         <div>
           <span className="ifc-overview-kicker">GROWING NOW</span>
-          <h2 id="ifc-overview-crop-progress-title">Crop progress</h2>
+          <div className="ifc-overview-heading-title">
+            <h2 id="ifc-overview-crop-progress-title">Crop progress</h2>
+            <span className="ifc-overview-heading-logo" aria-hidden="true"><Sprout size={15} /></span>
+          </div>
           <p>Latest crop plantings across all your farms.</p>
         </div>
         <button type="button" className="ifc-overview-text-link" onClick={() => onNavigate("Crop management")}>
