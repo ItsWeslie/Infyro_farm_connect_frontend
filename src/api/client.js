@@ -247,6 +247,11 @@ export const harvestApi = {
   void: (plantingId, id) => apiRequest(`/ifc/v1/crop-plantings/${plantingId}/harvest-records/${id}`, { method: "DELETE" }),
 };
 
+// Portfolio Overview API (aggregated across all farms owned by the authenticated user)
+export const overviewApi = {
+  getCards: () => apiRequest("/ifc/v1/overview/cards", { method: "GET" }),
+};
+
 // Farm Summary APIs (/ifc/v1/farms/{farmId})
 export const farmSummaryApi = {
   getSummary: (farmId) => apiRequest(`/ifc/v1/farms/${farmId}/summary`, { method: "GET" }),

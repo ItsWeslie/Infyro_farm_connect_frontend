@@ -26,6 +26,7 @@ import {
   expenseApi,
   farmSummaryApi,
   fieldApi,
+  overviewApi,
 } from "../api/client";
 
 function toList(response) {
@@ -146,6 +147,32 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
   const [warnings, setWarnings] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
   const [cropSearch, setCropSearch] = useState("");
+  const [portfolioCards, setPortfolioCards] = useState(null);
+  const [cardsLoading, setCardsLoading] = useState(true);
+  const [cardsError, setCardsError] = useState("");
+  const [cardsRetryKey, setCardsRetryKey] = useState(0);
+
+  // Portfolio totals are not tied to the farm selected for management pages.
+  useEffect(() => {
+    let current = true;
+    setCardsLoading(true);
+    setCardsError("");
+
+    overviewApi.getCards()
+      .then((response) => {
+        if (current) setPortfolioCards(response);
+      })
+      .catch((requestError) => {
+        if (current) setCardsError(requestError.message || "Portfolio totals could not be loaded.");
+      })
+      .finally(() => {
+        if (current) setCardsLoading(false);
+      });
+
+    return () => {
+      current = false;
+    };
+  }, [cardsRetryKey]);
 
   const farmId = selectedFarm?.id;
 
@@ -325,11 +352,6 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
     }));
   }, [snapshot]);
 
-  const totalExpenses = snapshot?.summary?.totalExpenses;
-  const totalHarvestRecords = snapshot?.summary?.harvestRecordCount;
-  const monthlyExpenseCount = snapshot?.monthExpenses?.recordCount;
-  const monthlyHarvestCount = snapshot?.monthHarvests?.recordCount;
-
   if (!selectedFarm) {
     return (
       <section className="ifc-overview">
@@ -476,44 +498,49 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
         </div>
       )}
 
-      {loading && !snapshot ? (
-        <div className="surface-card" role="status" aria-label="Loading overview">
+      {cardsError && (
+        <div className="ifc-overview-warning" role="status">
+          <CircleAlert size={15} />
+          <span>{cardsError}</span>
+          <button type="button" className="button-secondary" onClick={() => setCardsRetryKey((value) => value + 1)}>Retry</button>
+        </div>
+      )}
+
+      {cardsLoading && !portfolioCards ? (
+        <div className="surface-card" role="status" aria-label="Loading portfolio summary">
           <SkeletonCards count={4} />
+        </div>
+      ) : (
+        <div className="ifc-overview-stats">
+          <article className="ifc-overview-stat surface-card">
+            <div><span>Fields</span><i><MapPinned size={17} /></i></div>
+            <strong>{numberLabel(portfolioCards?.totalFields, 0)}</strong>
+            <small>{numberLabel(portfolioCards?.totalFarms, 0)} farms in your portfolio</small>
+          </article>
+          <article className="ifc-overview-stat surface-card">
+            <div><span>Active plantings</span><i><Sprout size={17} /></i></div>
+            <strong>{numberLabel(portfolioCards?.totalActivePlantings, 0)}</strong>
+            <small>{numberLabel(portfolioCards?.totalPlantings, 0)} total plantings across your farms</small>
+          </article>
+          <article className="ifc-overview-stat surface-card">
+            <div><span>Total expenses</span><i><Coins size={17} /></i></div>
+            <strong>{currencyLabel(portfolioCards?.totalExpenses)}</strong>
+            <small>{currencyLabel(portfolioCards?.totalExpensesCurrentMonth)} this month</small>
+          </article>
+          <article className="ifc-overview-stat surface-card">
+            <div><span>Harvest records</span><i><Wheat size={17} /></i></div>
+            <strong>{numberLabel(portfolioCards?.totalHarvestRecords, 0)}</strong>
+            <small>{numberLabel(portfolioCards?.totalHarvestCurrentMonth, 0)} recorded this month</small>
+          </article>
+        </div>
+      )}
+
+      {loading && !snapshot ? (
+        <div className="surface-card" role="status" aria-label="Loading overview sections">
           <SkeletonBlock rows={5} />
         </div>
       ) : snapshot ? (
         <>
-          <div className="ifc-overview-stats">
-            <article className="ifc-overview-stat surface-card">
-              <div><span>Fields</span><i><MapPinned size={17} /></i></div>
-              <strong>{snapshot.summary?.totalFields ?? snapshot.fields.length}</strong>
-              <small>{numberLabel(snapshot.totalArea)} acres total area</small>
-            </article>
-            <article className="ifc-overview-stat surface-card">
-              <div><span>Active plantings</span><i><Sprout size={17} /></i></div>
-              <strong>{snapshot.activeCount}</strong>
-              <small>{snapshot.plantings.length} total plantings in this farm</small>
-            </article>
-            <article className="ifc-overview-stat surface-card">
-              <div><span>Total expenses</span><i><Coins size={17} /></i></div>
-              <strong>{currencyLabel(totalExpenses)}</strong>
-              <small>
-                {monthlyExpenseCount == null
-                  ? "Lifetime total from farm summary"
-                  : numberLabel(monthlyExpenseCount, 0) + " records this month · " + currencyLabel(snapshot.monthExpenses?.totalAmount)}
-              </small>
-            </article>
-            <article className="ifc-overview-stat surface-card">
-              <div><span>Harvest records</span><i><Wheat size={17} /></i></div>
-              <strong>{totalHarvestRecords == null ? "—" : totalHarvestRecords}</strong>
-              <small>
-                {monthlyHarvestCount == null
-                  ? "Lifetime recorded harvests"
-                  : numberLabel(monthlyHarvestCount, 0) + " recorded this month"}
-              </small>
-            </article>
-          </div>
-
           <div className="ifc-overview-main-grid">
             <section className="ifc-overview-panel surface-card">
               <div className="ifc-overview-panel-heading">
