@@ -1,4 +1,5 @@
 import { SkeletonBlock, SkeletonCards } from "./ui/Skeleton";
+import OverviewExpenseBreakdown from "./OverviewExpenseBreakdown";
 import { useEffect, useMemo, useState } from "react";
 import {
   Activity,
@@ -339,19 +340,6 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
     });
   }, [cropSearch, snapshot]);
 
-  const expenseCategories = useMemo(() => {
-    const raw = snapshot?.summary?.expensesByCategory || {};
-    const rows = Object.entries(raw).map(([category, amount]) => ({
-      category,
-      amount: Number(amount) || 0,
-    })).filter((row) => row.amount > 0).sort((left, right) => right.amount - left.amount);
-    const maximum = rows[0]?.amount || 0;
-    return rows.slice(0, 5).map((row) => ({
-      ...row,
-      percent: maximum ? Math.max(5, Math.round((row.amount / maximum) * 100)) : 0,
-    }));
-  }, [snapshot]);
-
   return (
     <section className="ifc-overview">
       <section className="welcome-row ifc-overview-welcome">
@@ -616,7 +604,26 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
             </section>
           </div>
 
-          <div className="ifc-overview-bottom-grid">
+        </>
+      ) : !selectedFarm ? (
+        <div className="ifc-overview-empty surface-card">
+          <span className="ifc-overview-empty-icon"><Sprout size={25} /></span>
+          <h2>Start with your first farm</h2>
+          <p>Add your first farm to start tracking fields, crops, expenses, and harvests.</p>
+          <button type="button" className="button-primary" onClick={() => onNavigate("Farms")}>
+            <Plus size={15} /> Add a farm
+          </button>
+        </div>
+      ) : (
+        <div className="ifc-overview-loading surface-card">
+          <CircleAlert size={22} />
+          <strong>Overview data is unavailable</strong>
+          <span>Retry the request or check that the backend is running.</span>
+          <button type="button" className="button-secondary" onClick={() => setRefreshKey((value) => value + 1)}>Retry</button>
+        </div>
+      )}
+      <div className={"ifc-overview-bottom-grid" + (snapshot ? "" : " ifc-overview-bottom-grid--solo")}>
+        {snapshot && (
             <section className="ifc-overview-panel surface-card">
               <div className="ifc-overview-panel-heading">
                 <div>
@@ -651,65 +658,16 @@ function OverviewPage({ selectedFarm, farmCount = 0, onNavigate, onAdd, notify }
                 </div>
               )}
             </section>
+        )}
+        <OverviewExpenseBreakdown onNavigate={onNavigate} />
+      </div>
 
-            <section className="ifc-overview-panel surface-card">
-              <div className="ifc-overview-panel-heading">
-                <div>
-                  <span className="ifc-overview-kicker">COST CONTROL</span>
-                  <h2>Expense breakdown</h2>
-                  <p>Recorded totals by category, across this farm.</p>
-                </div>
-                <Coins size={19} />
-              </div>
-              {expenseCategories.length ? (
-                <div className="ifc-overview-expense-list">
-                  {expenseCategories.map((item) => (
-                    <div className="ifc-overview-expense" key={item.category}>
-                      <div><span>{humanize(item.category)}</span><strong>{currencyLabel(item.amount)}</strong></div>
-                      <span className="ifc-overview-expense-track"><i style={{ width: item.percent + "%" }} /></span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="ifc-overview-section-empty compact">
-                  <Receipt size={21} />
-                  <strong>No expense totals available</strong>
-                  <span>Category totals will appear after expenses are recorded.</span>
-                </div>
-              )}
-              <div className="ifc-overview-cost-summary">
-                <span>This month</span>
-                <strong>{currencyLabel(snapshot.monthExpenses?.totalAmount)}</strong>
-                <small>{snapshot.monthExpenses?.recordCount == null ? "Monthly summary unavailable" : numberLabel(snapshot.monthExpenses.recordCount, 0) + " expense records"}</small>
-              </div>
-              <button type="button" className="ifc-overview-panel-footer" onClick={() => onNavigate("Expenses")}>
-                View all expenses <ArrowRight size={14} />
-              </button>
-            </section>
-          </div>
-
+      {snapshot && (
           <div className="ifc-overview-footnote">
             <CheckCircle2 size={14} />
             <span>Overview values are read from your farm records. Income and profit are not shown because the backend does not yet provide sales or revenue records.</span>
             {snapshot.cultivatedArea > 0 && <small>{numberLabel(snapshot.cultivatedArea)} acres in use</small>}
           </div>
-        </>
-      ) : !selectedFarm ? (
-        <div className="ifc-overview-empty surface-card">
-          <span className="ifc-overview-empty-icon"><Sprout size={25} /></span>
-          <h2>Start with your first farm</h2>
-          <p>Add your first farm to start tracking fields, crops, expenses, and harvests.</p>
-          <button type="button" className="button-primary" onClick={() => onNavigate("Farms")}>
-            <Plus size={15} /> Add a farm
-          </button>
-        </div>
-      ) : (
-        <div className="ifc-overview-loading surface-card">
-          <CircleAlert size={22} />
-          <strong>Overview data is unavailable</strong>
-          <span>Retry the request or check that the backend is running.</span>
-          <button type="button" className="button-secondary" onClick={() => setRefreshKey((value) => value + 1)}>Retry</button>
-        </div>
       )}
     </section>
   );
