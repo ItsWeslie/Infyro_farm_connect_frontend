@@ -103,15 +103,15 @@ export default function OverviewRecentActivity({ onNavigate }) {
               </span>
               <div className="ifc-overview-recent-content">
                 <div className="ifc-overview-recent-primary">
-                  <strong>{activity.cropName || "Crop not recorded"}</strong>
-                  <span className="ifc-overview-recent-field" title={activity.cropField || "Field not recorded"}>
-                    <MapPin size={11} aria-hidden="true" />
-                    <span className="ifc-overview-recent-field-label">{activity.cropField || "Field not recorded"}</span>
+                  <strong title={activity.cropName || "Crop not recorded"}>{activity.cropName || "Crop not recorded"}</strong>
+                  <span className={"ifc-overview-recent-stage " + stageTone(activity.cropStage)} title={stageLabel(activity.cropStage)}>
+                    {stageLabel(activity.cropStage)}
                   </span>
                 </div>
                 <div className="ifc-overview-recent-meta">
-                  <span className={"ifc-overview-recent-stage " + stageTone(activity.cropStage)} title={stageLabel(activity.cropStage)}>
-                    {stageLabel(activity.cropStage)}
+                  <span className="ifc-overview-recent-field" title={activity.cropField || "Field not recorded"}>
+                    <MapPin size={11} aria-hidden="true" />
+                    <span className="ifc-overview-recent-field-label">{activity.cropField || "Field not recorded"}</span>
                   </span>
                   <time className="ifc-overview-recent-date" dateTime={activity.createdAt || undefined}>
                     <Clock3 size={11} aria-hidden="true" />
