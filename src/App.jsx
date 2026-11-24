@@ -589,7 +589,7 @@ function App() {
                           notificationBellRef.current?.focus();
                         }}
                       >
-                        <X size={18} strokeWidth={2} aria-hidden="true" />
+                        <X size={16} strokeWidth={2} aria-hidden="true" />
                       </button>
                     </div>
                   </div>
