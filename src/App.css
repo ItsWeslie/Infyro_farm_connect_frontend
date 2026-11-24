@@ -89,7 +89,7 @@ html[data-ifc-theme="dark"] .notification-popover .ifc-notification-close:hover{
 .ff-data-card .ff-farm-directory-title svg,.crop3-data-card .crop3-planting-title svg{flex-shrink:0;color:#568052}
 html[data-ifc-theme="dark"] .ff-data-card .ff-farm-directory-title svg,html[data-ifc-theme="dark"] .crop3-data-card .crop3-planting-title svg{color:#c5e0b8}
 /* shadcn/ui Pagination — compact Farm directory theme overrides. */
-.ff-data-card .ff-farm-pagination{padding:12px 0}
+:is(.ff-data-card,.crop3-data-card) .ff-farm-pagination{padding:12px 0}
 .ff-farm-pagination [data-slot="pagination-content"]{list-style:none;padding:0;margin:0;gap:4px}
 .ff-farm-pagination [data-slot="pagination-item"]{display:flex;align-items:center}
 .ff-farm-pagination [data-slot="pagination-link"]{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-width:28px;height:28px;padding:0 7px;border:1px solid transparent;border-radius:6px;background:transparent;color:#536b55;font-size:10px;font-weight:600;line-height:1;cursor:pointer;transition:background .16s ease,color .16s ease,border-color .16s ease}
@@ -1797,24 +1797,18 @@ html[data-ifc-theme="dark"] .workspace-table.ff-table thead th:first-child,html[
 html[data-ifc-theme="dark"] .workspace-table.ff-table thead th:last-child,html[data-ifc-theme="dark"] .workspace-table.crop3-table thead th:last-child{border-radius:0 6px 6px 0}
 
 /* Keep field pagination inline with the result count and selected farm. */
-.ff-data-card .ff-fields-footer{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px}
-.ff-data-card .ff-fields-footer>.ff-field-pagination{width:auto;padding:0;min-width:0;justify-self:center}
-.ff-data-card .ff-fields-footer>span:last-child{text-align:right}
+:is(.ff-data-card,.crop3-data-card) .ff-fields-footer{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px}
+:is(.ff-data-card,.crop3-data-card) .ff-fields-footer>.ff-field-pagination{width:auto;padding:0;min-width:0;justify-self:center}
+:is(.ff-data-card,.crop3-data-card) .ff-fields-footer>span:last-child{text-align:right}
 @media(max-width:650px){
-  .ff-data-card .ff-fields-footer{grid-template-columns:minmax(0,1fr) auto;gap:6px}
-  .ff-data-card .ff-fields-footer>.ff-field-pagination{justify-self:end}
-  .ff-data-card .ff-fields-footer>span:last-child{display:none}
+  :is(.ff-data-card,.crop3-data-card) .ff-fields-footer{grid-template-columns:minmax(0,1fr) auto;gap:6px}
+  :is(.ff-data-card,.crop3-data-card) .ff-fields-footer>.ff-field-pagination{justify-self:end}
+  :is(.ff-data-card,.crop3-data-card) .ff-fields-footer>span:last-child{display:none}
   .ff-field-pagination [data-slot="pagination-content"]{flex-wrap:wrap;justify-content:flex-end;gap:2px}
 }
 
-/* Crop directory footer follows the Fields pagination layout. */
-.crop3-data-card .crop3-pagination-footer{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px}
-.crop3-pagination-center{min-width:0;justify-self:center}
-.crop3-pagination-center .crop3-pagination{width:auto;padding:0;min-width:0}
-.crop3-pagination-footer>span:last-child{text-align:right;overflow-wrap:anywhere}
+/* Keep the farm label on the right even when there are no crop results. */
+.crop3-data-card .ff-fields-footer>span:last-child{grid-column:3;grid-row:1;overflow-wrap:anywhere}
 @media(max-width:650px){
-  .crop3-data-card .crop3-pagination-footer{grid-template-columns:minmax(0,1fr) auto;gap:6px}
-  .crop3-pagination-center{grid-column:2;grid-row:1;justify-self:end}
-  .crop3-pagination-footer>span:last-child{display:block;grid-column:1/-1;text-align:left}
-  .crop3-pagination [data-slot="pagination-content"]{flex-wrap:wrap;justify-content:flex-end;gap:2px}
+  .crop3-data-card .ff-fields-footer>span:last-child{display:none;grid-column:auto;grid-row:auto}
 }
