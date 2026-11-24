@@ -3,6 +3,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs";
 import FarmDetailsOverview from "./FarmDetailsOverview";
 import FarmDetailsFields from "./FarmDetailsFields";
 import FarmDetailsCrops from "./FarmDetailsCrops";
+import FarmDetailsActivities from "./FarmDetailsActivities";
 import {
   Dialog,
   DialogContent,
@@ -36,7 +37,7 @@ export default function FarmDetailsDialog({ farm, onClose, triggerRef }) {
             <TabsTrigger value="overview"><LayoutDashboard size={15} aria-hidden="true" />Overview</TabsTrigger>
             <TabsTrigger value="fields"><MapPinned size={15} aria-hidden="true" />Fields</TabsTrigger>
             <TabsTrigger value="crops"><Sprout size={15} aria-hidden="true" />Crops</TabsTrigger>
-            <TabsTrigger value="activities" disabled><ClipboardList size={15} aria-hidden="true" />Activities</TabsTrigger>
+            <TabsTrigger value="activities"><ClipboardList size={15} aria-hidden="true" />Activities</TabsTrigger>
             <TabsTrigger value="expenses" disabled><Wallet size={15} aria-hidden="true" />Expenses</TabsTrigger>
             <TabsTrigger value="harvests" disabled><Wheat size={15} aria-hidden="true" />Harvests</TabsTrigger>
           </TabsList>
@@ -48,6 +49,9 @@ export default function FarmDetailsDialog({ farm, onClose, triggerRef }) {
           </TabsContent>
           <TabsContent value="crops">
             <FarmDetailsCrops farm={farm} />
+          </TabsContent>
+          <TabsContent value="activities">
+            <FarmDetailsActivities farm={farm} />
           </TabsContent>
         </Tabs>
       </DialogContent>
