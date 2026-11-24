@@ -479,12 +479,15 @@
 @media(max-width:640px){.ifc-overview-heading{align-items:flex-start;flex-direction:column}.ifc-overview-actions{width:100%}.ifc-overview-actions button{flex:1;justify-content:center}.ifc-overview-stats{gap:8px}.ifc-overview-stat{padding:12px}.ifc-overview-stat>strong{font-size:19px}.ifc-overview-panel{padding:13px}.ifc-overview-panel-heading{flex-wrap:wrap}.ifc-overview-milestone time,.ifc-overview-activity time{font-size:7px}}
 
 /* Keep the restored Overview hero aligned with the live dashboard panels. */
-.ifc-overview-welcome{margin-bottom:0}
-.ifc-overview-welcome .ifc-overview-actions{display:flex;align-items:center;align-self:flex-end;gap:8px}
+.ifc-overview-welcome{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:18px;row-gap:0;margin-bottom:0}
+.ifc-overview-welcome>div:first-child{grid-column:1 / -1;min-width:0}
+.ifc-overview-welcome-subtitle{grid-column:1;grid-row:2;align-self:center;min-width:0}
+.ifc-overview-welcome .ifc-overview-actions{grid-column:2;grid-row:2;display:flex;align-items:center;align-self:center;justify-self:end;width:auto;gap:8px}
 .ifc-overview-hero{margin-bottom:0}
 @media(max-width:650px){
-  .ifc-overview-welcome .ifc-overview-actions{width:100%}
-  .ifc-overview-welcome .ifc-overview-actions button{flex:1;justify-content:center}
+  .ifc-overview-welcome{column-gap:10px}
+  .ifc-overview-welcome .ifc-overview-actions{width:auto}
+  .ifc-overview-welcome .ifc-overview-actions button{flex:0 0 auto;justify-content:center}
 }
 
 
@@ -1396,5 +1399,5 @@ html[data-ifc-theme="dark"] .ifc-overview-crop-progress-panel .ifc-overview-head
 html[data-ifc-theme="dark"] .ifc-overview-recent-panel .ifc-overview-heading-logo{color:#c5e0b8}
 
 /* Compact Overview header navigation button, including on narrow screens. */
-.ifc-overview-welcome .ifc-overview-actions .ifc-overview-farms-button{position:relative;top:10px;min-height:32px;min-width:0;width:auto;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:5px 10px;font-size:10px;line-height:1.3}
+.ifc-overview-welcome .ifc-overview-actions .ifc-overview-farms-button{min-height:32px;min-width:0;width:auto;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:5px 10px;font-size:10px;line-height:1.3}
 .ifc-overview-farms-button>div{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
