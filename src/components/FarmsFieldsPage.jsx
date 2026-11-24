@@ -622,7 +622,7 @@ export default function FarmsFieldsPage({
                 <h2>{editing ? `Edit ${isFarmsPage ? "farm" : "field"}` : isFarmsPage ? "Add a farm" : "Add a field"}</h2>
                 <p>{isFarmsPage ? "Give this farm a name you will recognize." : `Add a field under ${selectedFarm?.name || "your selected farm"}.`}</p>
               </div>
-              <button type="button" className={(isFarmsPage && editing) || (!isFarmsPage && !editing) ? "icon-button ff-edit-farm-close" : "icon-button"} aria-label="Close dialog" onClick={() => setDialogOpen(false)} disabled={dialogBusy}><X size={19} /></button>
+              <button type="button" className={editing || !isFarmsPage ? "icon-button ff-edit-farm-close" : "icon-button"} aria-label="Close dialog" onClick={() => setDialogOpen(false)} disabled={dialogBusy}><X size={19} /></button>
             </div>
             {formError && <div className="ff-error" role="alert">{formError}</div>}
             {!isFarmsPage && (
@@ -646,7 +646,7 @@ export default function FarmsFieldsPage({
             {!isFarmsPage && editing && (
               <Alert className="ff-field-area-warning" role="note">
                 <span className="ff-field-area-warning-icon" aria-hidden="true">
-                  <UseAnimations animation={alertCircle} size={16} strokeColor="#806522" interaction="hover" render={(eventProps, animationProps) => <span {...eventProps} {...animationProps} />} />
+                  <UseAnimations animation={alertCircle} size={22} strokeColor="#806522" interaction="loop" render={(eventProps, animationProps) => <span {...eventProps} {...animationProps} />} />
                 </span>
                 <AlertDescription>Once a field's area is assigned, it cannot be changed, as crop plantings may already be linked to it.</AlertDescription>
               </Alert>
