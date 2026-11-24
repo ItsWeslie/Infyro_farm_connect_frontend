@@ -1688,3 +1688,14 @@ html[data-ifc-theme="dark"] .ff-details-harvest-ledger [data-harvest-status="can
 .dialog-heading .ff-edit-farm-close{align-self:flex-start;flex:0 0 28px;width:28px;height:28px;padding:0;border-radius:6px}
 .dialog-heading .ff-edit-farm-close svg{flex-shrink:0}
 html[data-ifc-theme="dark"] .dialog-heading .ff-edit-farm-close:hover:not(:disabled){background:#344b35;color:#e5f0dc}
+
+/* Edit farm submit button: stable dimensions for loading and success states. */
+.dialog-actions .ff-edit-farm-save{min-width:120px;min-height:39px;gap:6px;padding:9px 12px}
+.dialog-actions .ff-edit-farm-save-animation{display:inline-flex;align-items:center;justify-content:center;flex:0 0 19px;width:19px;height:19px;pointer-events:none}
+.dialog-actions .ff-edit-farm-save-animation>span{display:inline-flex}
+.dialog-actions .ff-edit-farm-save:disabled{cursor:not-allowed;transform:none}
+.dialog-actions .ff-edit-farm-save[data-save-state="loading"]:disabled,.dialog-actions .ff-edit-farm-save[data-save-state="success"]:disabled{opacity:1;background:#286044;border-color:#286044;color:#fff}
+.dialog-actions .ff-edit-farm-save[data-save-state="success"]:disabled{background:#46734c;border-color:#46734c}
+html[data-ifc-theme="dark"] .dialog-actions .ff-edit-farm-save[data-save-state="loading"]:disabled{background:#67992d;border-color:#67992d;color:#fff}
+html[data-ifc-theme="dark"] .dialog-actions .ff-edit-farm-save[data-save-state="success"]:disabled{background:#578943;border-color:#578943;color:#fff}
+@media(prefers-reduced-motion:reduce){.dialog-actions .ff-edit-farm-save{transition:none}}
