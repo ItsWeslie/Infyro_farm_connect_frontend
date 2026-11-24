@@ -85,6 +85,8 @@ html[data-ifc-theme="dark"] .notification-popover .ifc-notification-close:hover{
 
 /* Live Farms & Fields workspace */
 .ff-data-card { padding-bottom: 0; }
+.ff-data-card .ff-farm-directory-title{display:flex;align-items:center;gap:6px}
+.ff-data-card .ff-farm-directory-title svg{flex-shrink:0;color:currentColor}
 .ff-table td:last-child { min-width: 170px; }
 .ff-row-actions { display: inline-flex; align-items: center; gap: 6px; }
 .ff-action-button, .ff-icon-button {
