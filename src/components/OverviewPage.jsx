@@ -129,8 +129,9 @@ function OverviewPage({ onNavigate, onAdd }) {
               </linearGradient>
               <radialGradient id="overviewSunHalo">
                 <stop offset="0%" stopColor="#fbd77d" stopOpacity="0.45" />
-                <stop offset="60%" stopColor="#fbd77d" stopOpacity="0.38" />
-                <stop offset="82%" stopColor="#fce5a8" stopOpacity="0.18" />
+                <stop offset="55%" stopColor="#fbd77d" stopOpacity="0.38" />
+                <stop offset="78%" stopColor="#fce5a8" stopOpacity="0.17" />
+                <stop offset="92%" stopColor="#fce5a8" stopOpacity="0" />
                 <stop offset="100%" stopColor="#fce5a8" stopOpacity="0" />
               </radialGradient>
               <linearGradient id="overviewHillBackGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -143,8 +144,8 @@ function OverviewPage({ onNavigate, onAdd }) {
               </linearGradient>
             </defs>
 
-            <circle className="ifc-overview-hero-sun-halo" cx="370" cy="56" r="68" fill="url(#overviewSunHalo)" opacity="0.8" />
-            <circle cx="370" cy="56" r="44" fill="url(#overviewSunGlow)" />
+            <circle className="ifc-overview-hero-sun-halo" cx="370" cy="72" r="60" fill="url(#overviewSunHalo)" opacity="0.8" />
+            <circle cx="370" cy="72" r="44" fill="url(#overviewSunGlow)" />
 
             <g opacity="0.8" fill="#ffffff">
               <path className="ifc-overview-hero-cloud ifc-overview-hero-cloud--first" d="M210 50 a12 12 0 0 1 20 -4 a16 16 0 0 1 28 2 a10 10 0 0 1 12 10 l-60 0 a8 8 0 0 1 0 -8 z" />
