@@ -4,6 +4,7 @@ import loading2 from "react-useanimations/lib/loading2";
 import checkmark from "react-useanimations/lib/checkmark";
 import edit from "react-useanimations/lib/edit";
 import trash2 from "react-useanimations/lib/trash2";
+import alertCircle from "react-useanimations/lib/alertCircle";
 import {
   ArrowRight,
   Building2,
@@ -20,6 +21,7 @@ import {
 } from "lucide-react";
 import { farmApi, fieldApi } from "../api/client";
 import { SkeletonBlock } from "./ui/Skeleton";
+import { Alert, AlertDescription } from "./ui/alert";
 import FarmDetailsDialog from "./farm-details/FarmDetailsDialog";
 import FieldFarmSelector from "./FieldFarmSelector";
 import {
@@ -624,7 +626,7 @@ export default function FarmsFieldsPage({
             </div>
             {formError && <div className="ff-error" role="alert">{formError}</div>}
             {!isFarmsPage && (
-              <div className="ff-form-context">
+              <div className={editing ? "ff-form-context ff-edit-field-context" : "ff-form-context"}>
                 <span>Farm</span>
                 <strong>{selectedFarm?.name || "No farm selected"}</strong>
               </div>
@@ -642,10 +644,12 @@ export default function FarmsFieldsPage({
               </>
             )}
             {!isFarmsPage && editing && (
-              <div className="dialog-note">
-                <Ruler size={16} />
-                <span>Current area: {areaLabel(editing.totalArea)}. The backend currently allows field name changes only; area is read-only.</span>
-              </div>
+              <Alert className="ff-field-area-warning" role="note">
+                <span className="ff-field-area-warning-icon" aria-hidden="true">
+                  <UseAnimations animation={alertCircle} size={16} strokeColor="#806522" interaction="hover" render={(eventProps, animationProps) => <span {...eventProps} {...animationProps} />} />
+                </span>
+                <AlertDescription>Once a field's area is assigned, it cannot be changed, as crop plantings may already be linked to it.</AlertDescription>
+              </Alert>
             )}
             <div className="dialog-actions">
               <button type="button" className="button-secondary" disabled={dialogBusy} onClick={() => setDialogOpen(false)}>Cancel</button>
