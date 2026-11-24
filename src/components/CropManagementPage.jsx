@@ -797,9 +797,6 @@ export default function CropManagementPage({
               <ChevronDown size={13} />
             </label>
           )}
-          <span className="result-count">
-            {isActivities ? activities.filter((item) => [item.dailyActivity, item.cropStage, item.status].join(" ").toLowerCase().includes(search.toLowerCase())).length : farmDataPending ? "…" : isTypes ? filteredTypes.length : filteredPlantings.length} records
-          </span>
         </div>
 
         {((!farmDataPending && pageError) || (isActivities && activityError)) && <div className="ff-error" role="alert">{isActivities ? activityError || pageError : pageError}</div>}
@@ -912,7 +909,7 @@ export default function CropManagementPage({
 
         <div className="workspace-data-footer">
           <span>Showing <strong>{isActivities ? activities.length : farmDataPending ? "…" : isTypes ? filteredTypes.length : filteredPlantings.length}</strong> {isActivities ? "activity logs" : isTypes ? "crop types" : "plantings"}</span>
-          <span>{selectedFarm.name} · data from IFC backend</span>
+          <span>{selectedFarm.name}</span>
         </div>
       </div>
 
