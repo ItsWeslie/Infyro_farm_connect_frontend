@@ -345,6 +345,10 @@ html[data-ifc-theme="dark"] .notification-popover .ifc-notification-close:hover{
 .ifc-notification-state .button-secondary{font-size:10px}
 .ifc-notifications-footnote{padding:12px 17px}
 .ifc-notification-preview-row{position:relative;cursor:pointer;text-align:left;border:0;background:#fff;width:100%;color:inherit;border-radius:8px}
+.notification-popover .ifc-notification-preview-row{align-items:center;gap:8px;padding:8px 2px}
+.notification-popover .ifc-notification-preview-row .notification-symbol{width:28px;height:28px;border-radius:8px}
+.notification-popover .ifc-notification-preview-row .notification-symbol svg{width:14px;height:14px}
+.notification-popover .ifc-notification-preview-row small{margin-top:2px}
 .ifc-notification-preview-row:hover{background:#f8faf6}
 .ifc-notification-preview-row.is-read{opacity:.78}
 .ifc-preview-unread-dot{width:6px;height:6px;border-radius:50%;background:#6a9a62;flex-shrink:0;margin-left:auto}
