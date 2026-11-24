@@ -2,12 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   Building2,
+  LandPlot,
   MapPinned,
   Pencil,
   Plus,
   Ruler,
   Search,
   Sprout,
+  Tractor,
   Trash2,
   X,
 } from "lucide-react";
@@ -278,7 +280,7 @@ export default function FarmsFieldsPage({
       </div>
       <div className="workspace-title-row">
         <div className="workspace-title-icon">
-          {isFarmsPage ? <Building2 size={23} /> : <MapPinned size={23} />}
+          {isFarmsPage ? <Tractor size={23} /> : <MapPinned size={23} />}
         </div>
         <div className="workspace-title-copy">
           <h1>{isFarmsPage ? "Your farms" : "Field directory"}</h1>
@@ -302,8 +304,8 @@ export default function FarmsFieldsPage({
 
       {isFarmsPage ? (
         <div className="workspace-stats">
-          <Stat label="Total farms" value={farmStats.farms} detail="registered farms" icon={Building2} />
-          <Stat label="Total land" value={areaLabel(farmStats.totalArea)} detail="sum of registered field areas" icon={Ruler} />
+          <Stat label="Total farms" value={farmStats.farms} detail="registered farms" icon={Tractor} />
+          <Stat label="Total land" value={areaLabel(farmStats.totalArea)} detail="sum of registered field areas" icon={LandPlot} />
           <Stat label="Total fields" value={farmStats.fields} detail="across all farms" icon={MapPinned} />
           <Stat label="Available land" value={areaLabel(farmStats.availableArea)} detail="not assigned to plantings" icon={Sprout} />
         </div>
@@ -322,7 +324,7 @@ export default function FarmsFieldsPage({
             <h2>{isFarmsPage ? "Farm directory" : "Fields in this farm"}</h2>
             <p>
               {isFarmsPage
-                ? "Only farms returned by the backend are shown here."
+                ? "View and manage all your registered farms in one place."
                 : "Area values are provided by the farm backend."}
             </p>
           </div>
