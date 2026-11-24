@@ -725,7 +725,7 @@ function App() {
             />
           )}
           <footer className="app-footer">
-            <span>© 2026 Infyro Farm Connect</span>
+            <span>© 2026 Infyro Farms</span>
             <span className="footer-status">
               <i /> Your farm, growing with you
             </span>
