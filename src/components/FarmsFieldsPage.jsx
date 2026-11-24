@@ -23,6 +23,7 @@ import {
 import { farmApi, fieldApi } from "../api/client";
 import { SkeletonBlock } from "./ui/Skeleton";
 import FarmDetailsDialog from "./farm-details/FarmDetailsDialog";
+import FieldFarmSelector from "./FieldFarmSelector";
 import {
   Pagination,
   PaginationContent,
@@ -115,6 +116,8 @@ export default function FarmsFieldsPage({
   const [deletingId, setDeletingId] = useState(null);
   const [fields, setFields] = useState([]);
   const [fieldsLoading, setFieldsLoading] = useState(false);
+  const [loadedFieldsFarmId, setLoadedFieldsFarmId] = useState(null);
+  const fieldsPending = Boolean(selectedFarm?.id) && (fieldsLoading || String(loadedFieldsFarmId) !== String(selectedFarm.id));
   const [fieldsError, setFieldsError] = useState("");
   const [fieldReload, setFieldReload] = useState(0);
 
@@ -131,12 +134,14 @@ export default function FarmsFieldsPage({
     let current = true;
     if (!farmId) {
       setFields([]);
+      setLoadedFieldsFarmId(null);
       setFieldsLoading(false);
       setFieldsError("");
       return undefined;
     }
 
     setFieldsLoading(true);
+    setFields([]);
     setFieldsError("");
     fieldApi.getByFarm(farmId)
       .then((response) => {
@@ -149,7 +154,10 @@ export default function FarmsFieldsPage({
         notify(error.message || "Unable to load fields for this farm.", "error");
       })
       .finally(() => {
-        if (current) setFieldsLoading(false);
+        if (current) {
+          setLoadedFieldsFarmId(farmId);
+          setFieldsLoading(false);
+        }
       });
 
     return () => { current = false; };
@@ -374,7 +382,10 @@ export default function FarmsFieldsPage({
               : "Manage field names and land area within each of your farms."}
           </p>
         </div>
-        <div className="workspace-title-actions">
+        <div className={isFarmsPage ? "workspace-title-actions" : "workspace-title-actions ff-field-title-actions"}>
+          {!isFarmsPage && farms.length > 0 && (
+            <FieldFarmSelector farms={farms} selectedFarm={selectedFarm} onSelect={setSelectedFarm} disabled={farmsLoading || dialogOpen || dialogBusy || deletingId != null} />
+          )}
           <button
             className="button-primary"
             type="button"
@@ -395,10 +406,10 @@ export default function FarmsFieldsPage({
         </div>
       ) : (
         <div className="workspace-stats">
-          <Stat label="Total fields" value={fieldStats.count} detail="in the selected farm" icon={MapPinned} />
-          <Stat label="Total area" value={areaLabel(fieldStats.totalArea)} detail="registered field area" icon={Ruler} />
-          <Stat label="Available area" value={areaLabel(fieldStats.availableArea)} detail="available across selected fields" icon={Sprout} />
-          <Stat label="Allocated area" value={areaLabel(fieldStats.usedArea)} detail="currently allocated" icon={Building2} />
+          <Stat label="Total fields" value={fieldsPending ? "…" : fieldsError ? "—" : fieldStats.count} detail="in the selected farm" icon={MapPinned} />
+          <Stat label="Total area" value={fieldsPending ? "…" : fieldsError ? "—" : areaLabel(fieldStats.totalArea)} detail="registered field area" icon={Ruler} />
+          <Stat label="Available area" value={fieldsPending ? "…" : fieldsError ? "—" : areaLabel(fieldStats.availableArea)} detail="available across selected fields" icon={Sprout} />
+          <Stat label="Allocated area" value={fieldsPending ? "…" : fieldsError ? "—" : areaLabel(fieldStats.usedArea)} detail="currently allocated" icon={Building2} />
         </div>
       )}
 
@@ -415,22 +426,6 @@ export default function FarmsFieldsPage({
                 : "Area values are provided by the farm backend."}
             </p>
           </div>
-          {!isFarmsPage && farms.length > 0 && (
-            <label className="ff-farm-select">
-              <span>Farm</span>
-              <select
-                value={selectedFarm?.id || ""}
-                onChange={(event) => {
-                  const nextFarm = farms.find((farm) => String(farm.id) === event.target.value);
-                  if (nextFarm) setSelectedFarm(nextFarm);
-                }}
-              >
-                {farms.map((farm) => (
-                  <option key={farm.id} value={farm.id}>{farm.name}</option>
-                ))}
-              </select>
-            </label>
-          )}
         </div>
 
         <div className="workspace-toolbar">
@@ -448,7 +443,7 @@ export default function FarmsFieldsPage({
             )}
           </label>
           {!isFarmsPage && (
-            <span className="result-count">{filteredFields.length} records</span>
+            <span className="result-count">{fieldsPending ? "…" : filteredFields.length} records</span>
           )}
         </div>
 
@@ -530,7 +525,7 @@ export default function FarmsFieldsPage({
             <span>Create a farm first, then add fields to it.</span>
             <button type="button" className="button-secondary" onClick={() => onNavigate("Farms")}>Go to farms <ArrowRight size={14} /></button>
           </div>
-        ) : fieldsLoading ? (
+        ) : fieldsPending ? (
           <SkeletonBlock rows={4} />
         ) : filteredFields.length === 0 ? (
           <div className="empty-state">
@@ -590,7 +585,7 @@ export default function FarmsFieldsPage({
         {!isFarmsPage && (
           <div className="workspace-data-footer">
             <span>
-              Showing <strong>{filteredFields.length}</strong> fields
+              Showing <strong>{fieldsPending ? "…" : filteredFields.length}</strong> fields
             </span>
             <span>{selectedFarm?.name || "Select a farm"}</span>
           </div>
