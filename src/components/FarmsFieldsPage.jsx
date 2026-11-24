@@ -4,6 +4,7 @@ import loading2 from "react-useanimations/lib/loading2";
 import checkmark from "react-useanimations/lib/checkmark";
 import edit from "react-useanimations/lib/edit";
 import trash2 from "react-useanimations/lib/trash2";
+import alertCircle from "react-useanimations/lib/alertCircle";
 import {
   ArrowRight,
   Building2,
@@ -16,7 +17,6 @@ import {
   Search,
   Sprout,
   Tractor,
-  TriangleAlert,
   X,
 } from "lucide-react";
 import { farmApi, fieldApi } from "../api/client";
@@ -645,7 +645,9 @@ export default function FarmsFieldsPage({
             )}
             {!isFarmsPage && editing && (
               <Alert className="ff-field-area-warning" role="note">
-                <TriangleAlert size={16} aria-hidden="true" />
+                <span className="ff-field-area-warning-icon" aria-hidden="true">
+                  <UseAnimations animation={alertCircle} size={16} strokeColor="#806522" interaction="hover" render={(eventProps, animationProps) => <span {...eventProps} {...animationProps} />} />
+                </span>
                 <AlertDescription>Once a field's area is assigned, it cannot be changed, as crop plantings may already be linked to it.</AlertDescription>
               </Alert>
             )}
