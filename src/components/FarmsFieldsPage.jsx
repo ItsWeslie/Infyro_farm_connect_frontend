@@ -620,7 +620,7 @@ export default function FarmsFieldsPage({
                 <h2>{editing ? `Edit ${isFarmsPage ? "farm" : "field"}` : isFarmsPage ? "Add a farm" : "Add a field"}</h2>
                 <p>{isFarmsPage ? "Give this farm a name you will recognize." : `Add a field under ${selectedFarm?.name || "your selected farm"}.`}</p>
               </div>
-              <button type="button" className={isFarmsPage && editing ? "icon-button ff-edit-farm-close" : "icon-button"} aria-label="Close dialog" onClick={() => setDialogOpen(false)} disabled={dialogBusy}><X size={19} /></button>
+              <button type="button" className={(isFarmsPage && editing) || (!isFarmsPage && !editing) ? "icon-button ff-edit-farm-close" : "icon-button"} aria-label="Close dialog" onClick={() => setDialogOpen(false)} disabled={dialogBusy}><X size={19} /></button>
             </div>
             {formError && <div className="ff-error" role="alert">{formError}</div>}
             {!isFarmsPage && (
@@ -639,10 +639,6 @@ export default function FarmsFieldsPage({
                   Total area
                   <input required type="number" min="0.01" step="0.01" value={area} onChange={(event) => setArea(event.target.value)} placeholder="e.g. 1.25" />
                 </label>
-                <div className="dialog-note">
-                  <Ruler size={16} />
-                  <span>The current backend stores a numeric area without a unit field. Use one consistent unit for all fields in this farm.</span>
-                </div>
               </>
             )}
             {!isFarmsPage && editing && (
