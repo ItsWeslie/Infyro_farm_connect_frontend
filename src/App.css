@@ -639,14 +639,14 @@ html[data-ifc-theme="dark"] .notification-symbol.blue{
   display:inline-flex;
   align-items:center;
   justify-content:space-between;
-  flex:0 0 46px;
-  width:46px;
+  flex:0 0 54px;
+  width:54px;
   height:26px;
   min-height:26px;
   padding:0 5px;
   border:1px solid #cbdac5;
   border-radius:999px;
-  background:#e9f1e4;
+  background:transparent;
   color:#648161;
   cursor:pointer;
   transition:background .28s ease,border-color .28s ease;
@@ -675,20 +675,20 @@ html[data-ifc-theme="dark"] .notification-symbol.blue{
 }
 .theme-toggle-button .theme-toggle-sun{color:#a87922;transform:rotate(0)}
 .theme-toggle-button .theme-toggle-moon{color:#668064;opacity:.8}
-.theme-toggle-button:hover{border-color:#92af86;background:#e2eddc}
+.theme-toggle-button:hover{border-color:#92af86;background:transparent}
 .theme-toggle-button.is-dark{
-  background:#263b2e;
+  background:transparent;
   border-color:#435d46;
   color:#e0edd9;
 }
 .theme-toggle-button.is-dark .theme-toggle-thumb{
-  transform:translateX(20px);
+  transform:translateX(28px);
   background:#c7e1b9;
   box-shadow:0 1px 4px rgba(0,0,0,.25);
 }
 .theme-toggle-button.is-dark .theme-toggle-sun{color:#e0c080;transform:rotate(35deg);opacity:.85}
 .theme-toggle-button.is-dark .theme-toggle-moon{color:#284b36;opacity:1}
-.theme-toggle-button.is-dark:hover{background:#304a36;border-color:#6b8966}
+.theme-toggle-button.is-dark:hover{background:transparent;border-color:#6b8966}
 .theme-toggle-button:focus-visible{
   outline:3px solid #d8a94e;
   outline-offset:3px;
