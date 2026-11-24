@@ -2,6 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   Building2,
+  ChevronLeft,
+  ChevronRight,
+  Folder,
   LandPlot,
   MapPinned,
   Pencil,
@@ -38,6 +41,19 @@ function totalArea(fields, key = "totalArea") {
   return fields.reduce((sum, field) => sum + numeric(field?.[key]), 0);
 }
 
+const FARMS_PER_PAGE = 5;
+
+function farmPageItems(page, totalPages) {
+  const pages = [...new Set([1, page - 1, page, page + 1, totalPages])]
+    .filter((value) => value >= 1 && value <= totalPages)
+    .sort((a, b) => a - b);
+  return pages.flatMap((value, index) => (
+    index > 0 && value - pages[index - 1] > 1
+      ? [`gap-${value}`, value]
+      : [value]
+  ));
+}
+
 function Stat({ label, value, detail, icon: Icon }) {
   return (
     <article className="workspace-stat surface-card">
@@ -69,6 +85,7 @@ export default function FarmsFieldsPage({
   const confirmDialog = useConfirmDialog();
   const isFarmsPage = active === "Farms";
   const [query, setQuery] = useState("");
+  const [farmPage, setFarmPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [name, setName] = useState("");
@@ -120,6 +137,7 @@ export default function FarmsFieldsPage({
 
   useEffect(() => {
     setQuery("");
+    setFarmPage(1);
     setDialogOpen(false);
     setEditing(null);
   }, [active]);
@@ -144,6 +162,18 @@ export default function FarmsFieldsPage({
   const filteredFarms = useMemo(() => farms.filter((farm) => (
     [farm.name, String(farm.id)].join(" ").toLowerCase().includes(query.toLowerCase())
   )), [farms, query]);
+
+  const farmPageCount = Math.max(1, Math.ceil(filteredFarms.length / FARMS_PER_PAGE));
+  const currentFarmPage = Math.min(farmPage, farmPageCount);
+  const paginatedFarms = filteredFarms.slice(
+    (currentFarmPage - 1) * FARMS_PER_PAGE,
+    currentFarmPage * FARMS_PER_PAGE,
+  );
+
+  function changeQuery(value) {
+    setQuery(value);
+    setFarmPage(1);
+  }
 
   const filteredFields = useMemo(() => fields.filter((field) => (
     [field.fieldName, selectedFarm?.name, field.totalArea, field.availableArea]
@@ -185,7 +215,10 @@ export default function FarmsFieldsPage({
           setFarms((current) => wasEditing
             ? current.map((farm) => farm.id === editing.id ? savedFarm : farm)
             : [savedFarm, ...current.filter((farm) => farm.id !== savedFarm.id)]);
-          if (!wasEditing) setSelectedFarm(savedFarm);
+          if (!wasEditing) {
+            setSelectedFarm(savedFarm);
+            setFarmPage(1);
+          }
           else if (selectedFarm?.id === savedFarm.id) setSelectedFarm(savedFarm);
         } else {
           refreshFarms(response?.id || (wasEditing ? editing.id : undefined)).catch((error) => notify(error.message || "Unable to sync the farm list.", "error"));
@@ -243,6 +276,7 @@ export default function FarmsFieldsPage({
     try {
       await farmApi.delete(farm.id);
       setFarms((current) => current.filter((item) => item.id !== farm.id));
+      setFarmPage(Math.min(currentFarmPage, Math.max(1, Math.ceil(filteredFarms.filter((item) => item.id !== farm.id).length / FARMS_PER_PAGE))));
       if (selectedFarm?.id === farm.id) {
         const nextFarm = farms.find((item) => item.id !== farm.id) || null;
         setSelectedFarm(nextFarm);
@@ -321,7 +355,10 @@ export default function FarmsFieldsPage({
       <div className="workspace-data-card surface-card ff-data-card">
         <div className="workspace-data-heading">
           <div>
-            <h2>{isFarmsPage ? "Farm directory" : "Fields in this farm"}</h2>
+            <h2 className={isFarmsPage ? "ff-farm-directory-title" : undefined}>
+              {isFarmsPage && <Folder size={14} aria-hidden="true" />}
+              {isFarmsPage ? "Farm directory" : "Fields in this farm"}
+            </h2>
             <p>
               {isFarmsPage
                 ? "View and manage all your registered farms in one place."
@@ -351,11 +388,11 @@ export default function FarmsFieldsPage({
             <Search size={15} />
             <input
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => changeQuery(event.target.value)}
               placeholder={`Search ${isFarmsPage ? "farms" : "fields"}...`}
             />
             {query && (
-              <button type="button" aria-label="Clear search" onClick={() => setQuery("")}>
+              <button type="button" aria-label="Clear search" onClick={() => changeQuery("")}>
                 <X size={14} />
               </button>
             )}
@@ -388,7 +425,7 @@ export default function FarmsFieldsPage({
                   <tr><th>FARM NAME</th><th>LAND AREA</th><th>FIELDS</th><th>AVAILABLE AREA</th><th>ACTIONS</th></tr>
                 </thead>
                 <tbody>
-                  {filteredFarms.map((farm) => {
+                  {paginatedFarms.map((farm) => {
                     const farmFields = farm.fields || [];
                     return (
                       <tr key={farm.id}>
@@ -454,6 +491,22 @@ export default function FarmsFieldsPage({
               </tbody>
             </table>
           </div>
+        )}
+
+        {isFarmsPage && !farmsLoading && filteredFarms.length > 0 && (
+          <nav className="ff-farm-pagination" aria-label="Farm directory pagination">
+            <button type="button" className="ff-page-button ff-page-direction" disabled={currentFarmPage === 1} onClick={() => setFarmPage(currentFarmPage - 1)} aria-label="Previous page">
+              <ChevronLeft size={14} aria-hidden="true" /> Previous
+            </button>
+            {farmPageItems(currentFarmPage, farmPageCount).map((item) => (
+              typeof item === "number" ? (
+                <button key={item} type="button" className="ff-page-button" aria-label={`Page ${item}`} aria-current={currentFarmPage === item ? "page" : undefined} onClick={() => setFarmPage(item)}>{item}</button>
+              ) : <span key={item} className="ff-page-ellipsis" aria-hidden="true">…</span>
+            ))}
+            <button type="button" className="ff-page-button ff-page-direction" disabled={currentFarmPage === farmPageCount} onClick={() => setFarmPage(currentFarmPage + 1)} aria-label="Next page">
+              Next <ChevronRight size={14} aria-hidden="true" />
+            </button>
+          </nav>
         )}
 
         {!isFarmsPage && (
