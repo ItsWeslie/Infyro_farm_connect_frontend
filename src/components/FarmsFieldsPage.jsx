@@ -1,4 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import UseAnimations from "react-useanimations";
+import loading2 from "react-useanimations/lib/loading2";
+import checkmark from "react-useanimations/lib/checkmark";
 import {
   ArrowRight,
   Building2,
@@ -102,6 +105,10 @@ export default function FarmsFieldsPage({
   const [name, setName] = useState("");
   const [area, setArea] = useState("");
   const [saving, setSaving] = useState(false);
+  const [farmSaveSuccess, setFarmSaveSuccess] = useState(false);
+  const dialogVersionRef = useRef(0);
+  const submitLockRef = useRef(false);
+  const dialogBusy = saving || farmSaveSuccess;
   const [formError, setFormError] = useState("");
   const [deletingId, setDeletingId] = useState(null);
   const [fields, setFields] = useState([]);
@@ -150,9 +157,22 @@ export default function FarmsFieldsPage({
     setQuery("");
     setFarmPage(1);
     setDetailsFarm(null);
+    dialogVersionRef.current += 1;
+    setFarmSaveSuccess(false);
     setDialogOpen(false);
     setEditing(null);
   }, [active]);
+
+  useEffect(() => {
+    if (!farmSaveSuccess || !dialogOpen || !isFarmsPage || !editing) return;
+    const timer = setTimeout(() => {
+      setDialogOpen(false);
+      setEditing(null);
+      setName("");
+      setFarmSaveSuccess(false);
+    }, 1600);
+    return () => clearTimeout(timer);
+  }, [farmSaveSuccess, dialogOpen, isFarmsPage, editing]);
 
   const farmStats = useMemo(() => {
     const allFields = farms.flatMap((farm) => farm.fields || []);
@@ -195,6 +215,8 @@ export default function FarmsFieldsPage({
   )), [fields, query, selectedFarm?.name]);
 
   function openCreate() {
+    dialogVersionRef.current += 1;
+    setFarmSaveSuccess(false);
     setEditing(null);
     setFormError("");
     setName("");
@@ -203,6 +225,8 @@ export default function FarmsFieldsPage({
   }
 
   function openEdit(record) {
+    dialogVersionRef.current += 1;
+    setFarmSaveSuccess(false);
     setEditing(record);
     setFormError("");
     setName(isFarmsPage ? record.name || "" : record.fieldName || "");
@@ -212,7 +236,9 @@ export default function FarmsFieldsPage({
 
   async function submitForm(event) {
     event.preventDefault();
-    if (!name.trim()) return;
+    if (!name.trim() || dialogBusy || submitLockRef.current) return;
+    submitLockRef.current = true;
+    const dialogVersion = dialogVersionRef.current;
     setFormError("");
     setSaving(true);
     const wasEditing = Boolean(editing);
@@ -235,10 +261,16 @@ export default function FarmsFieldsPage({
         } else {
           refreshFarms(response?.id || (wasEditing ? editing.id : undefined)).catch((error) => notify(error.message || "Unable to sync the farm list.", "error"));
         }
-        setDialogOpen(false);
-        setEditing(null);
-        setName("");
-        notify(wasEditing ? "Farm updated successfully" : "Farm created successfully");
+        if (wasEditing) {
+          // Only show success in the same Edit farm dialog that submitted the request.
+          if (dialogVersionRef.current === dialogVersion) setFarmSaveSuccess(true);
+          notify("Farm updated successfully");
+        } else {
+          setDialogOpen(false);
+          setEditing(null);
+          setName("");
+          notify("Farm created successfully");
+        }
       } else {
         if (!selectedFarm?.id) {
           throw new Error("Choose a farm before adding a field.");
@@ -275,8 +307,12 @@ export default function FarmsFieldsPage({
       }
     } catch (error) {
       notify(error.message || "Unable to save this record.", "error");
-      setFormError(error.message || `Unable to save this ${isFarmsPage ? "farm" : "field"}.`);
+      if (dialogVersionRef.current === dialogVersion) {
+        setFarmSaveSuccess(false);
+        setFormError(error.message || `Unable to save this ${isFarmsPage ? "farm" : "field"}.`);
+      }
     } finally {
+      submitLockRef.current = false;
       setSaving(false);
     }
   }
@@ -543,7 +579,7 @@ export default function FarmsFieldsPage({
 
       {dialogOpen && (
         <div className="modal-overlay" onMouseDown={(event) => {
-          if (event.target === event.currentTarget && !saving) setDialogOpen(false);
+          if (event.target === event.currentTarget && !dialogBusy) setDialogOpen(false);
         }}>
           <form className="dialog-card" onSubmit={submitForm}>
             <div className="dialog-heading">
@@ -552,7 +588,7 @@ export default function FarmsFieldsPage({
                 <h2>{editing ? `Edit ${isFarmsPage ? "farm" : "field"}` : isFarmsPage ? "Add a farm" : "Add a field"}</h2>
                 <p>{isFarmsPage ? "Give this farm a name you will recognize." : `Add a field under ${selectedFarm?.name || "your selected farm"}.`}</p>
               </div>
-              <button type="button" className={isFarmsPage && editing ? "icon-button ff-edit-farm-close" : "icon-button"} aria-label="Close dialog" onClick={() => setDialogOpen(false)} disabled={saving}><X size={19} /></button>
+              <button type="button" className={isFarmsPage && editing ? "icon-button ff-edit-farm-close" : "icon-button"} aria-label="Close dialog" onClick={() => setDialogOpen(false)} disabled={dialogBusy}><X size={19} /></button>
             </div>
             {formError && <div className="ff-error" role="alert">{formError}</div>}
             {!isFarmsPage && (
@@ -563,7 +599,7 @@ export default function FarmsFieldsPage({
             )}
             <label className="form-label">
               {isFarmsPage ? "Farm name" : "Field name"}
-              <input autoFocus required maxLength={120} value={name} onChange={(event) => setName(event.target.value)} placeholder={isFarmsPage ? "e.g. Green Valley Farm" : "e.g. North Field"} />
+              <input autoFocus required maxLength={120} disabled={Boolean(isFarmsPage && editing && dialogBusy)} value={name} onChange={(event) => setName(event.target.value)} placeholder={isFarmsPage ? "e.g. Green Valley Farm" : "e.g. North Field"} />
             </label>
             {!isFarmsPage && !editing && (
               <>
@@ -584,10 +620,21 @@ export default function FarmsFieldsPage({
               </div>
             )}
             <div className="dialog-actions">
-              <button type="button" className="button-secondary" disabled={saving} onClick={() => setDialogOpen(false)}>Cancel</button>
-              <button type="submit" className="button-primary" disabled={saving || !name.trim()}>
-                <Plus size={15} /> {saving ? "Saving…" : editing ? "Save changes" : "Create"}
-              </button>
+              <button type="button" className="button-secondary" disabled={dialogBusy} onClick={() => setDialogOpen(false)}>Cancel</button>
+              {isFarmsPage && editing ? (
+                <button type="submit" className="button-primary ff-edit-farm-save" data-save-state={farmSaveSuccess ? "success" : saving ? "loading" : "idle"} disabled={dialogBusy || !name.trim()} aria-busy={saving}>
+                  {farmSaveSuccess ? (
+                    <><span className="ff-edit-farm-save-animation" aria-hidden="true"><UseAnimations key="saved" animation={checkmark} size={19} strokeColor="#ffffff" autoplay loop={false} render={(_, animationProps) => <span {...animationProps} />} /></span><span>Saved</span></>
+                  ) : saving ? (
+                    <><span className="ff-edit-farm-save-animation" aria-hidden="true"><UseAnimations key="saving" animation={loading2} size={19} strokeColor="#ffffff" autoplay loop render={(_, animationProps) => <span {...animationProps} />} /></span><span>Saving…</span></>
+                  ) : "Save changes"}
+                </button>
+              ) : (
+                <button type="submit" className="button-primary" disabled={saving || !name.trim()}>
+                  <Plus size={15} /> {saving ? "Saving…" : editing ? "Save changes" : "Create"}
+                </button>
+              )}
+              {isFarmsPage && editing && <span className="sr-only" role="status">{farmSaveSuccess ? "Farm saved successfully." : saving ? "Saving farm changes." : ""}</span>}
             </div>
           </form>
         </div>
