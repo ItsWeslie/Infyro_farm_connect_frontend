@@ -117,9 +117,9 @@ export default function FarmDetailsExpenses({ farm }) {
 
   const metrics = expenseMetrics(records);
   const stats = [
-    { label: "Total expenses", value: currencyLabel(metrics.total), icon: Wallet, detail: "All time · excludes voided" },
+    { label: "Total expenses", value: currencyLabel(metrics.total), icon: Wallet, detail: "All time · excludes cancelled" },
     { label: "Active expenses", value: metrics.unknownStatus ? "—" : metrics.active, icon: ClipboardList },
-    { label: "Voided entries", value: metrics.unknownStatus ? "—" : metrics.voided, icon: Ban },
+    { label: "Cancelled entries", value: metrics.unknownStatus ? "—" : metrics.voided, icon: Ban },
     { label: "Crop-linked", value: metrics.unknownStatus ? "—" : metrics.cropLinked, icon: Leaf, detail: "Active entries only" },
   ];
   const retry = () => setRetryKey((key) => key + 1);
@@ -211,7 +211,7 @@ export default function FarmDetailsExpenses({ farm }) {
                         ) : lookupLoading ? "Loading…" : "Crop-linked"}
                       </TableCell>
                       <TableCell className="ff-details-expense-amount">{currencyLabel(amountInPaise(record.amount))}</TableCell>
-                      <TableCell><Badge variant="secondary" className="ff-details-crop-status ff-details-expense-status" data-status={status}>{status === "voided" ? "Voided" : status === "active" ? "Active" : "Unavailable"}</Badge></TableCell>
+                      <TableCell><Badge variant="secondary" className="ff-details-crop-status ff-details-expense-status" data-status={status}>{status === "voided" ? "Cancelled" : status === "active" ? "Active" : "Unavailable"}</Badge></TableCell>
                     </TableRow>
                   );
                 })}
