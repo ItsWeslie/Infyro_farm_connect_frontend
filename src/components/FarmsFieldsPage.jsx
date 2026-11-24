@@ -8,6 +8,7 @@ import {
   Ruler,
   Search,
   Sprout,
+  Tractor,
   Trash2,
   X,
 } from "lucide-react";
@@ -278,7 +279,7 @@ export default function FarmsFieldsPage({
       </div>
       <div className="workspace-title-row">
         <div className="workspace-title-icon">
-          {isFarmsPage ? <Building2 size={23} /> : <MapPinned size={23} />}
+          {isFarmsPage ? <Tractor size={23} /> : <MapPinned size={23} />}
         </div>
         <div className="workspace-title-copy">
           <h1>{isFarmsPage ? "Your farms" : "Field directory"}</h1>
