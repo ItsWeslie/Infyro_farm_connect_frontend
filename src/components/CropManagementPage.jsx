@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { SkeletonBlock } from "./ui/Skeleton";
 import FieldFarmSelector from "./FieldFarmSelector";
+import ActivityPlantingSelector from "./ActivityPlantingSelector";
 import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "./ui/select";
 import { useConfirmDialog } from "../context/ConfirmDialogContext";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "./ui/pagination";
@@ -197,7 +198,9 @@ export default function CropManagementPage({
   const [plantingError, setPlantingError] = useState("");
   const [plantingSaving, setPlantingSaving] = useState(false);
 
-  const [selectedPlantingId, setSelectedPlantingId] = useState("");
+  const [requestedPlantingId, setRequestedPlantingId] = useState("");
+  const [activityPlantingData, setActivityPlantingData] = useState({ key: null, entries: [], error: "" });
+  const [loadedActivityKey, setLoadedActivityKey] = useState(null);
   const [activities, setActivities] = useState([]);
   const [activitiesLoading, setActivitiesLoading] = useState(false);
   const [activityError, setActivityError] = useState("");
@@ -209,7 +212,11 @@ export default function CropManagementPage({
   const [activityFormError, setActivityFormError] = useState("");
   const [deletingId, setDeletingId] = useState(null);
 
+  const isActivities = active === "Activities";
   const farmId = selectedFarm?.id;
+  const activityFarmIds = JSON.stringify([...new Set(farms.filter((farm) => farm.id != null).map((farm) => String(farm.id)))].sort());
+  const activityPlantingKey = JSON.stringify([activityFarmIds, reloadKey]);
+  const activityPlantingsPending = isActivities && activityPlantingData.key !== activityPlantingKey;
   const farmDataPending = Boolean(farmId) && (loading || String(loadedFarmId) !== String(farmId));
   const switchDisabled = typeDialogOpen || plantingDialogOpen || activityDialogOpen || typeSaving || plantingSaving || activitySaving || deletingId !== null || pendingStatusChanges > 0;
 
@@ -227,6 +234,7 @@ export default function CropManagementPage({
 
   useEffect(() => {
     let current = true;
+    if (isActivities) return undefined;
     if (!farmId) {
       setFields([]);
       setCropTypes([]);
@@ -266,7 +274,7 @@ export default function CropManagementPage({
       });
 
     return () => { current = false; };
-  }, [farmId, reloadKey, notify]);
+  }, [farmId, reloadKey, notify, isActivities]);
 
   const fieldById = useMemo(
     () => new Map(fields.map((field) => [String(field.id), field])),
@@ -278,28 +286,90 @@ export default function CropManagementPage({
     [plantings, fieldById],
   );
 
-  const selectedPlanting = useMemo(
-    () => farmPlantings.find((planting) => String(planting.id) === String(selectedPlantingId)) || null,
-    [farmPlantings, selectedPlantingId],
-  );
+  // Activities are independent of the globally selected farm.
+  useEffect(() => {
+    if (!isActivities) return undefined;
+    let current = true;
+    const ids = JSON.parse(activityFarmIds);
+    if (!ids.length) {
+      setActivityPlantingData({ key: activityPlantingKey, entries: [], error: "" });
+      return undefined;
+    }
+
+    Promise.all([
+      cropPlantingApi.getAll(),
+      Promise.allSettled(ids.map((id) => fieldApi.getByFarm(id))),
+    ]).then(([plantingResponse, fieldResults]) => {
+      if (!current) return;
+      const contexts = new Map();
+      fieldResults.forEach((result, index) => {
+        if (result.status !== "fulfilled") return;
+        toList(result.value).forEach((field) => {
+          contexts.set(String(field.id), { farmId: ids[index], field });
+        });
+      });
+      const entries = toList(plantingResponse).flatMap((planting) => {
+        const context = contexts.get(String(planting.fieldId));
+        return context ? [{ planting, ...context }] : [];
+      });
+      const failed = fieldResults.filter((result) => result.status === "rejected").length;
+      setActivityPlantingData({
+        key: activityPlantingKey,
+        entries,
+        error: failed ? "Unable to load fields for some farms. Only available plantings are shown." : "",
+      });
+    }).catch((error) => {
+      if (!current) return;
+      setActivityPlantingData({ key: activityPlantingKey, entries: [], error: error.message || "Unable to load plantings." });
+    });
+    return () => { current = false; };
+  }, [isActivities, activityFarmIds, activityPlantingKey]);
+
+  const activityPlantingOptions = useMemo(() => {
+    if (activityPlantingsPending) return [];
+    const names = new Map(farms.map((farm) => [String(farm.id), farm.name]));
+    return activityPlantingData.entries.map(({ planting, farmId: entryFarmId, field }) => ({
+      id: String(planting.id),
+      planting,
+      farmId: entryFarmId,
+      farmName: names.get(entryFarmId) || "Unnamed farm",
+      fieldName: field.fieldName || "Field",
+      cropName: planting.cropTypeName || "Crop",
+      plantedOn: dateLabel(planting.plantedOn),
+      status: humanize(planting.status),
+    })).sort((a, b) => a.farmName.localeCompare(b.farmName) || a.cropName.localeCompare(b.cropName) || a.fieldName.localeCompare(b.fieldName) || a.id.localeCompare(b.id));
+  }, [activityPlantingData.entries, activityPlantingsPending, farms]);
+
+  const selectedActivityOption = activityPlantingOptions.find((option) => option.id === requestedPlantingId) || activityPlantingOptions[0] || null;
+  const selectedPlanting = selectedActivityOption?.planting || null;
+  const selectedPlantingId = selectedActivityOption?.id || "";
+  const activityRequestKey = JSON.stringify([selectedPlantingId, activityPlantingKey, activityReload]);
+  const activityLogsPending = isActivities && Boolean(selectedPlantingId) && (activitiesLoading || loadedActivityKey !== activityRequestKey);
 
   useEffect(() => {
-    setSelectedPlantingId((current) => (
-      farmPlantings.some((planting) => String(planting.id) === String(current))
-        ? current
-        : String(farmPlantings[0]?.id || "")
-    ));
-  }, [farmPlantings]);
+    if (isActivities && !activityPlantingsPending) {
+      setRequestedPlantingId(selectedPlantingId);
+    }
+  }, [isActivities, activityPlantingsPending, selectedPlantingId]);
+
+  function selectActivityPlanting(id) {
+    if (switchDisabled || id === selectedPlantingId) return;
+    setRequestedPlantingId(id);
+    setSearch("");
+    setActivityError("");
+  }
 
   useEffect(() => {
-    if (active !== "Activities" || !selectedPlantingId) {
+    if (!isActivities || !selectedPlantingId) {
       setActivities([]);
       setActivityError("");
       setActivitiesLoading(false);
+      setLoadedActivityKey(null);
       return undefined;
     }
 
     let current = true;
+    setActivities([]);
     setActivitiesLoading(true);
     setActivityError("");
     cropActivityApi.getByPlanting(selectedPlantingId)
@@ -313,11 +383,14 @@ export default function CropManagementPage({
         notify(error.message || "Unable to load activity logs.", "error");
       })
       .finally(() => {
-        if (current) setActivitiesLoading(false);
+        if (current) {
+          setLoadedActivityKey(activityRequestKey);
+          setActivitiesLoading(false);
+        }
       });
 
     return () => { current = false; };
-  }, [active, selectedPlantingId, reloadKey, activityReload, notify]);
+  }, [isActivities, selectedPlantingId, activityRequestKey, notify]);
 
   useEffect(() => {
     setSearch("");
@@ -664,6 +737,7 @@ export default function CropManagementPage({
 
   async function changeActivityStatus(activity, nextStatus) {
     if (!nextStatus) return;
+    setPendingStatusChanges((count) => count + 1);
     setActivityError("");
     try {
       const response = await cropActivityApi.updateStatus(activity.id, nextStatus);
@@ -675,6 +749,8 @@ export default function CropManagementPage({
     } catch (error) {
       notify(error.message || "Unable to change activity status.", "error");
       setActivityError(error.message || "Unable to change activity status.");
+    } finally {
+      setPendingStatusChanges((count) => count - 1);
     }
   }
 
@@ -695,7 +771,7 @@ export default function CropManagementPage({
     }
   }
 
-  if (!selectedFarm?.id) {
+  if (!isActivities && !selectedFarm?.id) {
     return (
       <section className="workspace-page">
         <div className="page-eyebrow"><span className="eyebrow-pip" /> CROP WORKSPACE</div>
@@ -711,7 +787,6 @@ export default function CropManagementPage({
     );
   }
 
-  const isActivities = active === "Activities";
   const isTypes = !isActivities && section === "types";
 
   return (
@@ -728,7 +803,7 @@ export default function CropManagementPage({
             <FieldFarmSelector farms={farms} selectedFarm={selectedFarm} onSelect={switchFarm} disabled={switchDisabled} />
           )}
           {isActivities ? (
-            <button className="button-primary" type="button" onClick={openCreateActivity} disabled={!selectedPlanting}>
+            <button className="button-primary" type="button" onClick={openCreateActivity} disabled={!selectedPlanting || activityPlantingsPending || activityLogsPending}>
               <Plus size={15} /> Log activity
             </button>
           ) : isTypes ? (
@@ -742,6 +817,18 @@ export default function CropManagementPage({
           )}
         </div>
       </div>
+
+      {isActivities && (
+        <div className="crop3-activity-planting-row">
+          <ActivityPlantingSelector
+            options={activityPlantingOptions}
+            selected={selectedActivityOption}
+            onSelect={selectActivityPlanting}
+            loading={activityPlantingsPending}
+            disabled={switchDisabled}
+          />
+        </div>
+      )}
 
       {!isActivities && (
         <div className="crop3-tabs" role="tablist" aria-label="Crop management sections">
@@ -771,35 +858,23 @@ export default function CropManagementPage({
         </div>
       ) : (
         <div className="workspace-stats">
-          <Stat label="Activity entries" value={activities.length} detail="for selected planting" icon={ClipboardList} />
-          <Stat label="In progress" value={activities.filter((item) => item.status === "IN_PROGRESS").length} detail="work underway" icon={Sprout} />
-          <Stat label="Completed" value={activities.filter((item) => item.status === "COMPLETED").length} detail="activities finished" icon={Check} />
-          <Stat label="Planned" value={activities.filter((item) => item.status === "PLANNED").length} detail="upcoming work" icon={CalendarDays} />
+          <Stat label="Activity entries" value={activityPlantingsPending || activityLogsPending ? "…" : activities.length} detail="for selected planting" icon={ClipboardList} />
+          <Stat label="In progress" value={activityPlantingsPending || activityLogsPending ? "…" : activities.filter((item) => item.status === "IN_PROGRESS").length} detail="work underway" icon={Sprout} />
+          <Stat label="Completed" value={activityPlantingsPending || activityLogsPending ? "…" : activities.filter((item) => item.status === "COMPLETED").length} detail="activities finished" icon={Check} />
+          <Stat label="Planned" value={activityPlantingsPending || activityLogsPending ? "…" : activities.filter((item) => item.status === "PLANNED").length} detail="upcoming work" icon={CalendarDays} />
         </div>
       )}
 
       <div className="workspace-data-card surface-card crop3-data-card">
         <div className="workspace-data-heading">
           <div>
-            <h2 className={!isActivities ? "crop3-planting-title" : undefined}>
-              {!isActivities && (isTypes ? <Leaf size={14} aria-hidden="true" /> : <Sprout size={14} aria-hidden="true" />)}
-              {isActivities ? "Activities for this planting" : isTypes ? "Crop library" : "Plantings in " + selectedFarm.name}
+            <h2 className="crop3-planting-title">
+              {isActivities ? <ClipboardList size={14} aria-hidden="true" /> : isTypes ? <Leaf size={14} aria-hidden="true" /> : <Sprout size={14} aria-hidden="true" />}
+              {isActivities ? (selectedPlanting ? "Activities for " + selectedActivityOption.cropName : "Activities for this planting") : isTypes ? "Crop library" : "Plantings in " + selectedFarm.name}
             </h2>
-            <p>{isActivities ? "Choose a planting to view its chronological activity history." : isTypes ? "Crop types are configured separately for each farm." : "Planting area is reserved against the selected field by the backend."}</p>
+            <p>{isActivities ? "View and manage the activity history of the selected planting." : isTypes ? "Crop types are configured separately for each farm." : "Planting area is reserved against the selected field by the backend."}</p>
           </div>
-          {isActivities && (
-            <label className="crop3-planting-select">
-              <span>Planting</span>
-              <select value={selectedPlantingId} onChange={(event) => setSelectedPlantingId(event.target.value)}>
-                <option value="">Choose a planting</option>
-                {farmPlantings.map((planting) => (
-                  <option key={planting.id} value={planting.id}>
-                    {planting.cropTypeName} · {fieldById.get(String(planting.fieldId))?.fieldName || "Field"} · {dateLabel(planting.plantedOn)}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
+
         </div>
 
         <div className="workspace-toolbar">
@@ -824,9 +899,14 @@ export default function CropManagementPage({
           )}
         </div>
 
-        {((!farmDataPending && pageError) || (isActivities && activityError)) && <div className="ff-error" role="alert">{isActivities ? activityError || pageError : pageError}</div>}
+        {isActivities ? (
+          <>
+            {!activityPlantingsPending && activityPlantingData.error && <div className="ff-error" role="alert">{activityPlantingData.error}</div>}
+            {!activityLogsPending && activityError && <div className="ff-error" role="alert">{activityError}</div>}
+          </>
+        ) : !farmDataPending && pageError && <div className="ff-error" role="alert">{pageError}</div>}
 
-        {(isActivities ? loading : farmDataPending) ? (
+        {(isActivities ? activityPlantingsPending : farmDataPending) ? (
           <SkeletonBlock rows={5} />
         ) : !isActivities && !isTypes && fields.length === 0 ? (
           <div className="empty-state"><MapPinned size={23} /><strong>No fields in this farm</strong><span>Add a field before creating a crop planting.</span><button className="button-secondary" type="button" onClick={() => onNavigate("Fields")}>Manage fields <ArrowRight size={14} /></button></div>
@@ -878,7 +958,7 @@ export default function CropManagementPage({
             </div>
           )
         ) : isActivities ? (
-          activitiesLoading ? (
+          activityLogsPending ? (
             <SkeletonBlock rows={4} />
           ) : !selectedPlanting ? (
             <div className="empty-state"><Sprout size={23} /><strong>No plantings available</strong><span>Create a planting first, then log field activity against it.</span><button className="button-primary" type="button" onClick={() => onNavigate("Crop management")}>Go to crop management <ArrowRight size={14} /></button></div>
@@ -996,7 +1076,7 @@ export default function CropManagementPage({
 
         <div className={isActivities ? "workspace-data-footer" : "workspace-data-footer ff-fields-footer"}>
           <span>
-            Showing <strong>{isActivities ? activities.length : farmDataPending ? "…" : filteredCropCount ? `${cropPageStart + 1}–${Math.min(cropPageStart + CROPS_PER_PAGE, filteredCropCount)} of ${filteredCropCount}` : "0"}</strong> {isActivities ? "activity logs" : isTypes ? "crop types" : "plantings"}
+            Showing <strong>{isActivities ? (activityPlantingsPending || activityLogsPending ? "…" : activities.length) : farmDataPending ? "…" : filteredCropCount ? `${cropPageStart + 1}–${Math.min(cropPageStart + CROPS_PER_PAGE, filteredCropCount)} of ${filteredCropCount}` : "0"}</strong> {isActivities ? "activity logs" : isTypes ? "crop types" : "plantings"}
           </span>
           {!isActivities && !farmDataPending && filteredCropCount > 0 && (
             <Pagination className="ff-farm-pagination ff-field-pagination" aria-label={isTypes ? "Crop library pagination" : "Plantings pagination"}>
@@ -1019,7 +1099,7 @@ export default function CropManagementPage({
               </PaginationContent>
             </Pagination>
           )}
-          <span>{selectedFarm.name}</span>
+          <span>{isActivities ? selectedActivityOption?.farmName || "No planting selected" : selectedFarm.name}</span>
         </div>
       </div>
 
@@ -1059,7 +1139,7 @@ export default function CropManagementPage({
       {activityDialogOpen && (
         <div className="modal-overlay" onMouseDown={(event) => { if (event.target === event.currentTarget && !activitySaving) setActivityDialogOpen(false); }}>
           <form className="dialog-card crop3-dialog" onSubmit={submitActivity}>
-            <div className="dialog-heading"><div><span className="section-kicker">FIELD JOURNAL</span><h2>{editingActivity ? "Edit activity" : "Log an activity"}</h2><p>{selectedPlanting?.cropTypeName} · {fieldById.get(String(selectedPlanting?.fieldId))?.fieldName || "Field"}</p></div><button type="button" className="icon-button" aria-label="Close dialog" disabled={activitySaving} onClick={() => setActivityDialogOpen(false)}><X size={19} /></button></div>
+            <div className="dialog-heading"><div><span className="section-kicker">FIELD JOURNAL</span><h2>{editingActivity ? "Edit activity" : "Log an activity"}</h2><p>{selectedActivityOption?.cropName} · {selectedActivityOption?.farmName} · {selectedActivityOption?.fieldName}</p></div><button type="button" className="icon-button" aria-label="Close dialog" disabled={activitySaving} onClick={() => setActivityDialogOpen(false)}><X size={19} /></button></div>
             {activityFormError && <div className="ff-error" role="alert">{activityFormError}</div>}
             <div className="crop3-form-grid">
               <label className="form-label">Crop-cycle day<input type="number" required min="1" step="1" value={activityForm.dayNumber} onChange={(event) => setActivityForm({ ...activityForm, dayNumber: event.target.value })} /></label>
