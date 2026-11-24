@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   Building2,
+  Eye,
   Folder,
   LandPlot,
   MapPinned,
@@ -16,6 +17,7 @@ import {
 } from "lucide-react";
 import { farmApi, fieldApi } from "../api/client";
 import { SkeletonBlock } from "./ui/Skeleton";
+import FarmDetailsDialog from "./farm-details/FarmDetailsDialog";
 import {
   Pagination,
   PaginationContent,
@@ -93,6 +95,8 @@ export default function FarmsFieldsPage({
   const isFarmsPage = active === "Farms";
   const [query, setQuery] = useState("");
   const [farmPage, setFarmPage] = useState(1);
+  const [detailsFarm, setDetailsFarm] = useState(null);
+  const detailsTriggerRef = useRef(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [name, setName] = useState("");
@@ -145,6 +149,7 @@ export default function FarmsFieldsPage({
   useEffect(() => {
     setQuery("");
     setFarmPage(1);
+    setDetailsFarm(null);
     setDialogOpen(false);
     setEditing(null);
   }, [active]);
@@ -442,8 +447,8 @@ export default function FarmsFieldsPage({
                         <td>{areaLabel(totalArea(farmFields, "availableArea"))}</td>
                         <td>
                           <div className="ff-row-actions">
-                            <button type="button" className="ff-action-button" onClick={() => { setSelectedFarm(farm); onNavigate("Fields"); }}>
-                              View fields <ArrowRight size={13} />
+                            <button type="button" className="ff-action-button" aria-haspopup="dialog" aria-label={`View details for ${farm.name}`} onClick={(event) => { detailsTriggerRef.current = event.currentTarget; setDetailsFarm(farm); }}>
+                              <Eye size={13} aria-hidden="true" /> View details
                             </button>
                             <button type="button" className="ff-icon-button" aria-label={`Edit ${farm.name}`} onClick={() => openEdit(farm)}><Pencil size={14} /></button>
                             <button type="button" className="ff-icon-button ff-danger" aria-label={`Delete ${farm.name}`} disabled={deletingId === farm.id} onClick={() => deleteFarm(farm)}><Trash2 size={14} /></button>
@@ -531,6 +536,10 @@ export default function FarmsFieldsPage({
           </div>
         )}
       </div>
+
+      {isFarmsPage && (
+        <FarmDetailsDialog farm={detailsFarm} onClose={() => setDetailsFarm(null)} triggerRef={detailsTriggerRef} />
+      )}
 
       {dialogOpen && (
         <div className="modal-overlay" onMouseDown={(event) => {
