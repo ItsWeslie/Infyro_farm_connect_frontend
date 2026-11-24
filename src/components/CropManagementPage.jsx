@@ -760,7 +760,10 @@ export default function CropManagementPage({
       <div className="workspace-data-card surface-card crop3-data-card">
         <div className="workspace-data-heading">
           <div>
-            <h2>{isActivities ? "Activities for this planting" : isTypes ? "Crop library" : "Plantings in " + selectedFarm.name}</h2>
+            <h2 className={!isActivities && !isTypes ? "crop3-planting-title" : undefined}>
+              {!isActivities && !isTypes && <Sprout size={14} aria-hidden="true" />}
+              {isActivities ? "Activities for this planting" : isTypes ? "Crop library" : "Plantings in " + selectedFarm.name}
+            </h2>
             <p>{isActivities ? "Choose a planting to view its chronological activity history." : isTypes ? "Crop types are configured separately for each farm." : "Planting area is reserved against the selected field by the backend."}</p>
           </div>
           {isActivities && (
