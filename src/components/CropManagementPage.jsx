@@ -818,18 +818,6 @@ export default function CropManagementPage({
         </div>
       </div>
 
-      {isActivities && (
-        <div className="crop3-activity-planting-row">
-          <ActivityPlantingSelector
-            options={activityPlantingOptions}
-            selected={selectedActivityOption}
-            onSelect={selectActivityPlanting}
-            loading={activityPlantingsPending}
-            disabled={switchDisabled}
-          />
-        </div>
-      )}
-
       {!isActivities && (
         <div className="crop3-tabs" role="tablist" aria-label="Crop management sections">
           <button type="button" role="tab" aria-selected={!isTypes} className={!isTypes ? "selected" : ""} onClick={() => { setSection("plantings"); setSearch(""); }}>
@@ -874,7 +862,17 @@ export default function CropManagementPage({
             </h2>
             <p>{isActivities ? "View and manage the activity history of the selected planting." : isTypes ? "Crop types are configured separately for each farm." : "Planting area is reserved against the selected field by the backend."}</p>
           </div>
-
+          {isActivities && (
+            <div className="crop3-activity-planting-row">
+              <ActivityPlantingSelector
+                options={activityPlantingOptions}
+                selected={selectedActivityOption}
+                onSelect={selectActivityPlanting}
+                loading={activityPlantingsPending}
+                disabled={switchDisabled}
+              />
+            </div>
+          )}
         </div>
 
         <div className="workspace-toolbar">
