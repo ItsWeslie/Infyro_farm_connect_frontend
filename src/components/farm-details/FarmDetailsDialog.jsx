@@ -1,4 +1,11 @@
-import { Tractor } from "lucide-react";
+import { Tractor, LayoutDashboard, MapPinned, Sprout, ClipboardList, Wallet, Wheat } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs";
+import FarmDetailsOverview from "./FarmDetailsOverview";
+import FarmDetailsFields from "./FarmDetailsFields";
+import FarmDetailsCrops from "./FarmDetailsCrops";
+import FarmDetailsActivities from "./FarmDetailsActivities";
+import FarmDetailsExpenses from "./FarmDetailsExpenses";
+import FarmDetailsHarvests from "./FarmDetailsHarvests";
 import {
   Dialog,
   DialogContent,
@@ -27,6 +34,34 @@ export default function FarmDetailsDialog({ farm, onClose, triggerRef }) {
             <DialogDescription>Explore the details of this farm.</DialogDescription>
           </div>
         </DialogHeader>
+        <Tabs key={farm?.id} defaultValue="overview" className="ff-details-tabs">
+          <TabsList variant="line" aria-label="Farm details sections">
+            <TabsTrigger value="overview"><LayoutDashboard size={15} aria-hidden="true" />Overview</TabsTrigger>
+            <TabsTrigger value="fields"><MapPinned size={15} aria-hidden="true" />Fields</TabsTrigger>
+            <TabsTrigger value="crops"><Sprout size={15} aria-hidden="true" />Crops</TabsTrigger>
+            <TabsTrigger value="activities"><ClipboardList size={15} aria-hidden="true" />Activities</TabsTrigger>
+            <TabsTrigger value="expenses"><Wallet size={15} aria-hidden="true" />Expenses</TabsTrigger>
+            <TabsTrigger value="harvests"><Wheat size={15} aria-hidden="true" />Harvests</TabsTrigger>
+          </TabsList>
+          <TabsContent value="overview">
+            <FarmDetailsOverview farm={farm} />
+          </TabsContent>
+          <TabsContent value="fields">
+            <FarmDetailsFields farm={farm} />
+          </TabsContent>
+          <TabsContent value="crops">
+            <FarmDetailsCrops farm={farm} />
+          </TabsContent>
+          <TabsContent value="activities">
+            <FarmDetailsActivities farm={farm} />
+          </TabsContent>
+          <TabsContent value="expenses">
+            <FarmDetailsExpenses farm={farm} />
+          </TabsContent>
+          <TabsContent value="harvests">
+            <FarmDetailsHarvests farm={farm} />
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );
