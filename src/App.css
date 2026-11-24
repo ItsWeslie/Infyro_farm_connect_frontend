@@ -473,13 +473,10 @@
 .ifc-overview-warning{background:#fbf8ed;border:1px solid #eee5c8;color:#8c7842}
 .ifc-overview-error span,.ifc-overview-warning span{flex:1}
 .ifc-overview-error .button-secondary{padding:6px 9px;font-size:9px}
-.ifc-overview-footnote{display:flex;align-items:flex-start;gap:7px;padding:11px 2px;color:#8e9a8f;font-size:8px;line-height:1.6}
-.ifc-overview-footnote svg{flex-shrink:0;color:#7d9a72;margin-top:1px}
-.ifc-overview-footnote small{margin-left:auto;white-space:nowrap}
 .ifc-overview-spinning{animation:ifc-overview-spin 1s linear infinite}
 @keyframes ifc-overview-spin{to{transform:rotate(360deg)}}
 @media(max-width:1050px){.ifc-overview-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.ifc-overview-main-grid,.ifc-overview-bottom-grid{grid-template-columns:1fr}}
-@media(max-width:640px){.ifc-overview-heading{align-items:flex-start;flex-direction:column}.ifc-overview-actions{width:100%}.ifc-overview-actions button{flex:1;justify-content:center}.ifc-overview-stats{gap:8px}.ifc-overview-stat{padding:12px}.ifc-overview-stat>strong{font-size:19px}.ifc-overview-panel{padding:13px}.ifc-overview-panel-heading{flex-wrap:wrap}.ifc-overview-milestone time,.ifc-overview-activity time{font-size:7px}.ifc-overview-footnote{flex-wrap:wrap}.ifc-overview-footnote small{margin-left:21px}}
+@media(max-width:640px){.ifc-overview-heading{align-items:flex-start;flex-direction:column}.ifc-overview-actions{width:100%}.ifc-overview-actions button{flex:1;justify-content:center}.ifc-overview-stats{gap:8px}.ifc-overview-stat{padding:12px}.ifc-overview-stat>strong{font-size:19px}.ifc-overview-panel{padding:13px}.ifc-overview-panel-heading{flex-wrap:wrap}.ifc-overview-milestone time,.ifc-overview-activity time{font-size:7px}}
 
 /* Keep the restored Overview hero aligned with the live dashboard panels. */
 .ifc-overview-welcome{margin-bottom:0}
@@ -824,7 +821,6 @@ html[data-ifc-theme="dark"] .ifc-overview-text-link,
 html[data-ifc-theme="dark"] .ifc-overview-panel-footer{color:#b6d99f}
 html[data-ifc-theme="dark"] .ifc-overview-section-empty strong{color:#dce9d6}
 html[data-ifc-theme="dark"] .ifc-overview-section-empty span{color:#aebda8}
-html[data-ifc-theme="dark"] .ifc-overview-footnote{color:#aebda8}
 html[data-ifc-theme="dark"] .ifc-overview-warning{
   background:#393321;border-color:#5e5030;color:#f1d89c;
 }
