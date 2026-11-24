@@ -150,20 +150,20 @@ function OverviewPage({ onNavigate, onAdd }) {
 
             <g transform="translate(265, 125)">
               <path d="M12 90 Q10 40 4 0" stroke="#3d6339" strokeWidth="3" strokeLinecap="round" fill="none" />
-              <path d="M6 55 C-8 45 -12 25 2 20 C10 32 8 48 6 55 Z" fill="#58854d" />
-              <path d="M8 35 C20 26 25 8 12 5 C4 18 6 30 8 35 Z" fill="#6c9b5f" />
-              <path d="M4 12 C-4 2 -2 -10 6 -8 C10 -2 7 8 4 12 Z" fill="#7eae6f" />
+              <path d="M10 55 C-2 52 -13 35 -7 23 C7 25 14 41 10 55 Z" fill="#58854d" />
+              <path d="M8.3 35 C20 31 27 17 23 7 C11 8 5 22 8.3 35 Z" fill="#6c9b5f" />
+              <path d="M5.7 12 C-3 4 -6 -7 3 -12 C12 -7 11 3 5.7 12 Z" fill="#7eae6f" />
             </g>
             <g transform="translate(325, 140)">
               <path d="M10 80 Q14 35 18 0" stroke="#365832" strokeWidth="3.2" strokeLinecap="round" fill="none" />
-              <path d="M13 50 C28 42 32 24 20 18 C12 28 12 44 13 50 Z" fill="#507c46" />
-              <path d="M11 32 C-2 25 -6 9 6 6 C13 16 12 28 11 32 Z" fill="#66945a" />
-              <path d="M17 12 C28 2 28 -12 18 -10 C12 -2 15 8 17 12 Z" fill="#79a86b" />
+              <path d="M12.8 50 C27 46 33 30 27 18 C13 20 9 37 12.8 50 Z" fill="#507c46" />
+              <path d="M14.6 32 C0 30 -8 16 -3 5 C10 7 18 20 14.6 32 Z" fill="#66945a" />
+              <path d="M16.7 12 C25 5 29 -6 21 -12 C12 -8 10 3 16.7 12 Z" fill="#79a86b" />
             </g>
             <g transform="translate(385, 155)">
               <path d="M8 70 Q5 35 0 5" stroke="#3d6339" strokeWidth="2.8" strokeLinecap="round" fill="none" />
-              <path d="M5 45 C-6 38 -9 22 2 18 C8 26 6 39 5 45 Z" fill="#58854d" />
-              <path d="M4 25 C14 18 17 4 7 2 C1 11 3 20 4 25 Z" fill="#6ca061" />
+              <path d="M5.5 45 C-6 42 -13 29 -8 18 C4 20 10 33 5.5 45 Z" fill="#58854d" />
+              <path d="M3 25 C14 23 19 12 15 2 C4 3 -1 15 3 25 Z" fill="#6ca061" />
             </g>
             <g transform="translate(445, 142)">
               <path d="M6 75 Q4 45 6 18" stroke="#4b7042" strokeWidth="2.5" strokeLinecap="round" fill="none" />
