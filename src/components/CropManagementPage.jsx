@@ -579,6 +579,11 @@ export default function CropManagementPage({
       setPlantingError("Choose the planting date.");
       return;
     }
+    // Existing historical plantings remain editable without changing their original date.
+    if (plantingForm.plantedOn < todayIso() && plantingForm.plantedOn !== editingPlanting?.plantedOn) {
+      setPlantingError("Planting date must be today or a future date.");
+      return;
+    }
     if (plantingForm.expectedHarvestOn && plantingForm.expectedHarvestOn < plantingForm.plantedOn) {
       setPlantingError("Expected harvest date cannot be before the planting date.");
       return;
@@ -1150,7 +1155,7 @@ export default function CropManagementPage({
             <div className="crop3-form-grid">
               <div className="form-label">
                 <label htmlFor="planting-date">Planting date</label>
-                <DatePicker id="planting-date" required disabled={plantingSaving} value={plantingForm.plantedOn} onChange={(value) => setPlantingForm((current) => ({ ...current, plantedOn: value, expectedHarvestOn: current.expectedHarvestOn && current.expectedHarvestOn < value ? "" : current.expectedHarvestOn }))} />
+                <DatePicker id="planting-date" required disabled={plantingSaving} min={todayIso()} value={plantingForm.plantedOn} onChange={(value) => setPlantingForm((current) => ({ ...current, plantedOn: value, expectedHarvestOn: current.expectedHarvestOn && current.expectedHarvestOn < value ? "" : current.expectedHarvestOn }))} />
               </div>
               <div className="form-label">
                 <label htmlFor="planting-harvest-date">Expected harvest <span className="crop3-optional">(optional)</span></label>
