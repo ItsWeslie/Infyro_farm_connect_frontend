@@ -1,4 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
+import UseAnimations from "react-useanimations";
+import edit from "react-useanimations/lib/edit";
+import trash2 from "react-useanimations/lib/trash2";
 import {
   ArrowRight,
   CalendarDays,
@@ -6,12 +9,10 @@ import {
   ClipboardList,
   Leaf,
   MapPinned,
-  Pencil,
   Plus,
   Ruler,
   Search,
   Sprout,
-  Trash2,
   X,
 } from "lucide-react";
 import { SkeletonBlock } from "./ui/Skeleton";
@@ -828,8 +829,26 @@ export default function CropManagementPage({
                         <td>{cropType.defaultMaturityTimeInDays ? cropType.defaultMaturityTimeInDays + " days" : "Not set"}</td>
                         <td>{used}</td>
                         <td><div className="ff-row-actions">
-                          <button type="button" className="ff-icon-button" aria-label={"Edit " + cropType.name} onClick={() => openEditType(cropType)}><Pencil size={14} /></button>
-                          <button type="button" className="ff-icon-button ff-danger" aria-label={"Delete " + cropType.name} disabled={used > 0 || deletingId === "type-" + cropType.id} onClick={() => deleteType(cropType)}><Trash2 size={14} /></button>
+                          <UseAnimations
+                            animation={edit}
+                            size={14}
+                            interaction="hover"
+                            render={(eventProps, animationProps) => (
+                              <button {...eventProps} type="button" className="ff-icon-button" aria-label={"Edit " + cropType.name} onClick={() => openEditType(cropType)}>
+                                <span {...animationProps} aria-hidden="true" />
+                              </button>
+                            )}
+                          />
+                          <UseAnimations
+                            animation={trash2}
+                            size={14}
+                            interaction="hover"
+                            render={(eventProps, animationProps) => (
+                              <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label={"Delete " + cropType.name} disabled={used > 0 || deletingId === "type-" + cropType.id} onClick={() => deleteType(cropType)}>
+                                <span {...animationProps} aria-hidden="true" />
+                              </button>
+                            )}
+                          />
                         </div></td>
                       </tr>
                     );
@@ -858,7 +877,16 @@ export default function CropManagementPage({
                       <td>{activity.createdAt ? new Date(activity.createdAt).toLocaleDateString() : "—"}</td>
                       <td><StatusPill status={activity.status} /></td>
                       <td><div className="ff-row-actions">
-                        <button type="button" className="ff-icon-button" aria-label="Edit activity" onClick={() => openEditActivity(activity)} disabled={["COMPLETED", "CANCELLED"].includes(activity.status)}><Pencil size={14} /></button>
+                        <UseAnimations
+                          animation={edit}
+                          size={14}
+                          interaction="hover"
+                          render={(eventProps, animationProps) => (
+                            <button {...eventProps} type="button" className="ff-icon-button" aria-label="Edit activity" onClick={() => openEditActivity(activity)} disabled={["COMPLETED", "CANCELLED"].includes(activity.status)}>
+                              <span {...animationProps} aria-hidden="true" />
+                            </button>
+                          )}
+                        />
                         {ACTIVITY_TRANSITIONS[activity.status]?.length > 0 && (
                           <Select value="" onValueChange={(next) => changeActivityStatus(activity, next)}>
                             <SelectTrigger className="crop3-action-select" aria-label="Change activity status">
@@ -869,7 +897,16 @@ export default function CropManagementPage({
                             </SelectContent>
                           </Select>
                         )}
-                        <button type="button" className="ff-icon-button ff-danger" aria-label="Delete activity" disabled={activity.status !== "PLANNED" || deletingId === "activity-" + activity.id} onClick={() => deleteActivity(activity)}><Trash2 size={14} /></button>
+                        <UseAnimations
+                          animation={trash2}
+                          size={14}
+                          interaction="hover"
+                          render={(eventProps, animationProps) => (
+                            <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label="Delete activity" disabled={activity.status !== "PLANNED" || deletingId === "activity-" + activity.id} onClick={() => deleteActivity(activity)}>
+                              <span {...animationProps} aria-hidden="true" />
+                            </button>
+                          )}
+                        />
                       </div></td>
                     </tr>
                   ))}
@@ -898,7 +935,16 @@ export default function CropManagementPage({
                       <td>{dateLabel(planting.expectedHarvestOn)}</td>
                       <td><StatusPill status={planting.status} /></td>
                       <td><div className="ff-row-actions">
-                        <button type="button" className="ff-icon-button" aria-label={"Edit " + planting.cropTypeName + " planting"} disabled={["COMPLETED", "CANCELLED"].includes(planting.status)} onClick={() => openEditPlanting(planting)}><Pencil size={14} /></button>
+                        <UseAnimations
+                          animation={edit}
+                          size={14}
+                          interaction="hover"
+                          render={(eventProps, animationProps) => (
+                            <button {...eventProps} type="button" className="ff-icon-button" aria-label={"Edit " + planting.cropTypeName + " planting"} disabled={["COMPLETED", "CANCELLED"].includes(planting.status)} onClick={() => openEditPlanting(planting)}>
+                              <span {...animationProps} aria-hidden="true" />
+                            </button>
+                          )}
+                        />
                         {transitions.length > 0 && (
                           <Select value="" onValueChange={(next) => changePlantingStatus(planting, next)}>
                             <SelectTrigger className="crop3-action-select" aria-label="Change planting status">
@@ -909,7 +955,16 @@ export default function CropManagementPage({
                             </SelectContent>
                           </Select>
                         )}
-                        <button type="button" className="ff-icon-button ff-danger" aria-label={"Delete " + planting.cropTypeName + " planting"} disabled={planting.status !== "PLANNED" || deletingId === "planting-" + planting.id} onClick={() => deletePlanting(planting)}><Trash2 size={14} /></button>
+                        <UseAnimations
+                          animation={trash2}
+                          size={14}
+                          interaction="hover"
+                          render={(eventProps, animationProps) => (
+                            <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label={"Delete " + planting.cropTypeName + " planting"} disabled={planting.status !== "PLANNED" || deletingId === "planting-" + planting.id} onClick={() => deletePlanting(planting)}>
+                              <span {...animationProps} aria-hidden="true" />
+                            </button>
+                          )}
+                        />
                       </div></td>
                     </tr>
                   );
