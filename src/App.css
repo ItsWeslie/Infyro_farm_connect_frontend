@@ -1845,18 +1845,18 @@ html[data-ifc-theme="dark"] .crop3-planting-group-heading,html[data-ifc-theme="d
 .crop3-optional{font-weight:400;color:#849185}
 .crop3-planting-dialog .crop3-area-info{margin:10px 0 12px;align-items:center;background:#eef5fb;border-color:#d6e5f1;color:#356488;padding:9px 11px}
 .crop3-planting-dialog .crop3-area-info>svg{margin:0}
-.ifc-date-popover[data-slot="popover-content"]{z-index:110;box-sizing:border-box;width:166px;max-width:var(--radix-popover-content-available-width);padding:5px;border:1px solid #e5ebe2;border-radius:8px;background:#fff;color:#405443;box-shadow:0 12px 30px #14291e20;outline:none}
-.ifc-shadcn-calendar{--rdp-accent-color:#315d3e;--rdp-accent-background-color:#edf4e8;--rdp-day-width:22px;--rdp-day-height:22px;--rdp-day_button-width:20px;--rdp-day_button-height:20px;--rdp-nav-height:24px;--rdp-nav_button-width:20px;--rdp-nav_button-height:20px;--rdp-day_button-border-radius:4px;--rdp-selected-border:0 solid transparent;font-size:10px}
-.ifc-shadcn-calendar .rdp-month_caption{font-size:11px;font-weight:700;height:24px}
+.ifc-date-popover[data-slot="popover-content"]{z-index:110;box-sizing:border-box;width:182px;max-width:var(--radix-popover-content-available-width);padding:6px;border:1px solid #e5ebe2;border-radius:8px;background:#fff;color:#405443;box-shadow:0 12px 30px #14291e20;outline:none}
+.ifc-shadcn-calendar{--rdp-accent-color:#315d3e;--rdp-accent-background-color:#edf4e8;--rdp-day-width:24px;--rdp-day-height:24px;--rdp-day_button-width:22px;--rdp-day_button-height:22px;--rdp-nav-height:26px;--rdp-nav_button-width:22px;--rdp-nav_button-height:22px;--rdp-day_button-border-radius:4px;--rdp-selected-border:0 solid transparent;font-size:10px}
+.ifc-shadcn-calendar .rdp-month_caption{font-size:11px;font-weight:700;height:26px}
 .ifc-shadcn-calendar .rdp-weekday{font-size:9px;padding:2px 0}
 .ifc-shadcn-calendar .rdp-chevron{width:14px;height:14px}
 .ifc-shadcn-calendar .rdp-disabled{opacity:.35;cursor:not-allowed}
 .ifc-shadcn-calendar .rdp-disabled .rdp-day_button{cursor:not-allowed}
-.ifc-date-popover .ifc-shadcn-calendar,.ifc-date-popover .rdp-months,.ifc-date-popover .rdp-month{width:100%;max-width:154px;min-width:0}
+.ifc-date-popover .ifc-shadcn-calendar,.ifc-date-popover .rdp-months,.ifc-date-popover .rdp-month{width:100%;max-width:168px;min-width:0}
 .ifc-date-popover .rdp-month_grid{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0}
 .ifc-date-popover .rdp-day,.ifc-date-popover .rdp-weekday{width:calc(100% / 7);padding-inline:0}
-.ifc-date-popover .rdp-day{height:22px;padding:0;text-align:center;vertical-align:middle}
-.ifc-date-popover .ifc-shadcn-calendar .rdp-day_button{box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:20px;height:20px;min-width:20px;max-width:20px;min-height:20px;max-height:20px;aspect-ratio:1 / 1;padding:0;margin:0 auto;font-size:10px;line-height:1;color:inherit;border-radius:3px;flex:none}
+.ifc-date-popover .rdp-day{height:24px;padding:0;text-align:center;vertical-align:middle}
+.ifc-date-popover .ifc-shadcn-calendar .rdp-day_button{box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:22px;height:22px;min-width:22px;max-width:22px;min-height:22px;max-height:22px;aspect-ratio:1 / 1;padding:0;margin:0 auto;font-size:10px;line-height:1;color:inherit;border-radius:3px;flex:none}
 .ifc-shadcn-calendar .rdp-day_button:hover:not(:disabled){background:#edf4e8;color:#315d3e}
 .ifc-shadcn-calendar .rdp-today .rdp-day_button{background:#e1eedb;color:#315d3e;border:0;box-shadow:none;font-weight:700}
 .ifc-shadcn-calendar .rdp-today .rdp-day_button:hover:not(:disabled){background:#cfe3c5;color:#284d32}
