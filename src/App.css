@@ -1650,3 +1650,24 @@ html[data-ifc-theme="dark"] .ff-details-crop-status[data-status="cancelled"]{bac
 .ff-details-activity-status[data-status="in_progress"]{background:#fbf2df;color:#98733b}
 html[data-ifc-theme="dark"] .ff-details-activity-copy p,html[data-ifc-theme="dark"] .ff-details-activity-crop small{color:#b3c1ad}
 html[data-ifc-theme="dark"] .ff-details-activity-status[data-status="in_progress"]{background:#4a4028;color:#f0d595}
+
+/* Farm details Expenses tab — shadcn cards, progress, table and badges. */
+.ff-details-expenses{display:flex;flex-direction:column;gap:10px;min-width:0}
+.ff-details-expense-breakdown{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 20px}
+.ff-details-expense-category{display:flex;flex-direction:column;gap:7px;min-width:0}
+.ff-details-expense-category>div:first-child{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10px;color:#748575}
+.ff-details-expense-category>div:first-child span{overflow-wrap:anywhere}
+.ff-details-expense-category strong{font:700 11px/1.4 Manrope,sans-serif;color:#405443;white-space:nowrap}
+.ff-details-expense-category [data-slot="progress"]{height:6px}
+.ff-details-expense-ledger .ff-details-table{min-width:740px}
+.ff-details-expense-ledger [data-slot="table-cell"]{vertical-align:top}
+.ff-details-expense-description{min-width:130px;max-width:230px}
+.ff-details-expense-amount{font-weight:700;font-variant-numeric:tabular-nums}
+.ff-details-expense-ledger [data-expense-status="voided"] .ff-details-expense-amount{text-decoration:line-through;color:#849185}
+.ff-details-expense-status[data-status="voided"]{background:#f6eae6;color:#a45d53}
+.ff-details-expense-note{margin-top:10px!important}
+html[data-ifc-theme="dark"] .ff-details-expense-category>div:first-child{color:#b3c1ad}
+html[data-ifc-theme="dark"] .ff-details-expense-category strong{color:#e5f0dc}
+html[data-ifc-theme="dark"] .ff-details-expense-ledger [data-expense-status="voided"] .ff-details-expense-amount{color:#a3b29f}
+html[data-ifc-theme="dark"] .ff-details-expense-status[data-status="voided"]{background:#48342e;color:#f0bca8}
+@media(max-width:650px){.ff-details-expense-breakdown{grid-template-columns:minmax(0,1fr)}}
