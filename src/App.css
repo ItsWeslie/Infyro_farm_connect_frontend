@@ -207,6 +207,14 @@ html[data-ifc-theme="dark"] .dialog-card .ff-form-context strong { color: #e5f0d
 .ifc-select-scroll{display:flex;align-items:center;justify-content:center;height:22px;color:inherit}
 .crop3-status-filter{height:34px;min-width:145px}
 .crop3-status-label{font-size:9px;color:#748575}
+/* Radix Select locks body scrolling and compensates for the removed scrollbar.
+   The document already reserves a stable scrollbar gutter; keep its scrollbar
+   and avoid a second width adjustment while this non-dialog filter is open. */
+body[data-scroll-locked="1"]:has(.crop3-status-filter[data-state="open"]){
+  overflow:visible!important;
+  margin-right:0!important;
+  --removed-body-scroll-bar-size:0px!important;
+}
 html[data-ifc-theme="dark"] .ifc-select-trigger,html[data-ifc-theme="dark"] .ifc-select-content{background:#26352a;color:#e5f0dc;border-color:rgba(203,226,194,.15)}
 html[data-ifc-theme="dark"] .ifc-select-trigger:hover:not(:disabled),html[data-ifc-theme="dark"] .ifc-select-trigger[data-state="open"]{background:#344b35;border-color:#59745b}
 html[data-ifc-theme="dark"] .crop3-status-label,html[data-ifc-theme="dark"] .ifc-select-trigger [data-slot="select-icon"]{color:#b3c1ad}
