@@ -5,6 +5,7 @@ import FarmDetailsFields from "./FarmDetailsFields";
 import FarmDetailsCrops from "./FarmDetailsCrops";
 import FarmDetailsActivities from "./FarmDetailsActivities";
 import FarmDetailsExpenses from "./FarmDetailsExpenses";
+import FarmDetailsHarvests from "./FarmDetailsHarvests";
 import {
   Dialog,
   DialogContent,
@@ -40,7 +41,7 @@ export default function FarmDetailsDialog({ farm, onClose, triggerRef }) {
             <TabsTrigger value="crops"><Sprout size={15} aria-hidden="true" />Crops</TabsTrigger>
             <TabsTrigger value="activities"><ClipboardList size={15} aria-hidden="true" />Activities</TabsTrigger>
             <TabsTrigger value="expenses"><Wallet size={15} aria-hidden="true" />Expenses</TabsTrigger>
-            <TabsTrigger value="harvests" disabled><Wheat size={15} aria-hidden="true" />Harvests</TabsTrigger>
+            <TabsTrigger value="harvests"><Wheat size={15} aria-hidden="true" />Harvests</TabsTrigger>
           </TabsList>
           <TabsContent value="overview">
             <FarmDetailsOverview farm={farm} />
@@ -56,6 +57,9 @@ export default function FarmDetailsDialog({ farm, onClose, triggerRef }) {
           </TabsContent>
           <TabsContent value="expenses">
             <FarmDetailsExpenses farm={farm} />
+          </TabsContent>
+          <TabsContent value="harvests">
+            <FarmDetailsHarvests farm={farm} />
           </TabsContent>
         </Tabs>
       </DialogContent>
