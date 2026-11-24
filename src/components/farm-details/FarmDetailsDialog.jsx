@@ -1,6 +1,7 @@
 import { Tractor, LayoutDashboard, MapPinned, Sprout, ClipboardList, Wallet, Wheat } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs";
 import FarmDetailsOverview from "./FarmDetailsOverview";
+import FarmDetailsFields from "./FarmDetailsFields";
 import {
   Dialog,
   DialogContent,
@@ -32,7 +33,7 @@ export default function FarmDetailsDialog({ farm, onClose, triggerRef }) {
         <Tabs key={farm?.id} defaultValue="overview" className="ff-details-tabs">
           <TabsList variant="line" aria-label="Farm details sections">
             <TabsTrigger value="overview"><LayoutDashboard size={15} aria-hidden="true" />Overview</TabsTrigger>
-            <TabsTrigger value="fields" disabled><MapPinned size={15} aria-hidden="true" />Fields</TabsTrigger>
+            <TabsTrigger value="fields"><MapPinned size={15} aria-hidden="true" />Fields</TabsTrigger>
             <TabsTrigger value="crops" disabled><Sprout size={15} aria-hidden="true" />Crops</TabsTrigger>
             <TabsTrigger value="activities" disabled><ClipboardList size={15} aria-hidden="true" />Activities</TabsTrigger>
             <TabsTrigger value="expenses" disabled><Wallet size={15} aria-hidden="true" />Expenses</TabsTrigger>
@@ -40,6 +41,9 @@ export default function FarmDetailsDialog({ farm, onClose, triggerRef }) {
           </TabsList>
           <TabsContent value="overview">
             <FarmDetailsOverview farm={farm} />
+          </TabsContent>
+          <TabsContent value="fields">
+            <FarmDetailsFields farm={farm} />
           </TabsContent>
         </Tabs>
       </DialogContent>
