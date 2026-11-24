@@ -3,7 +3,6 @@ import {
   ArrowRight,
   CalendarDays,
   Check,
-  ChevronDown,
   ClipboardList,
   Leaf,
   MapPinned,
@@ -17,6 +16,7 @@ import {
 } from "lucide-react";
 import { SkeletonBlock } from "./ui/Skeleton";
 import FieldFarmSelector from "./FieldFarmSelector";
+import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "./ui/select";
 import { useConfirmDialog } from "../context/ConfirmDialogContext";
 import {
   cropActivityApi,
@@ -788,18 +788,19 @@ export default function CropManagementPage({
             {search && <button type="button" aria-label="Clear search" onClick={() => setSearch("")}><X size={14} /></button>}
           </label>
           {!isActivities && !isTypes && (
-            <label className="workspace-filter crop3-status-filter">
-              <span>Status</span>
-              <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-                <option value="ALL">All statuses</option>
-                {["PLANNED", "ACTIVE", "HARVESTING", "COMPLETED", "CANCELLED"].map((status) => <option key={status} value={status}>{humanize(status)}</option>)}
-              </select>
-              <ChevronDown size={13} />
-            </label>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="crop3-status-filter" aria-label="Filter plantings by status">
+                <span className="crop3-status-label">Status</span>
+                <SelectValue placeholder="All statuses" />
+              </SelectTrigger>
+              <SelectContent className="crop3-status-menu" align="start">
+                <SelectItem value="ALL">All statuses</SelectItem>
+                {["PLANNED", "ACTIVE", "HARVESTING", "COMPLETED", "CANCELLED"].map((status) => (
+                  <SelectItem key={status} value={status}>{humanize(status)}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           )}
-          <span className="result-count">
-            {isActivities ? activities.filter((item) => [item.dailyActivity, item.cropStage, item.status].join(" ").toLowerCase().includes(search.toLowerCase())).length : farmDataPending ? "…" : isTypes ? filteredTypes.length : filteredPlantings.length} records
-          </span>
         </div>
 
         {((!farmDataPending && pageError) || (isActivities && activityError)) && <div className="ff-error" role="alert">{isActivities ? activityError || pageError : pageError}</div>}
@@ -912,7 +913,7 @@ export default function CropManagementPage({
 
         <div className="workspace-data-footer">
           <span>Showing <strong>{isActivities ? activities.length : farmDataPending ? "…" : isTypes ? filteredTypes.length : filteredPlantings.length}</strong> {isActivities ? "activity logs" : isTypes ? "crop types" : "plantings"}</span>
-          <span>{selectedFarm.name} · data from IFC backend</span>
+          <span>{selectedFarm.name}</span>
         </div>
       </div>
 
