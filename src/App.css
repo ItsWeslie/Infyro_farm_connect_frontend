@@ -1806,3 +1806,15 @@ html[data-ifc-theme="dark"] .workspace-table.ff-table thead th:last-child,html[d
   .ff-data-card .ff-fields-footer>span:last-child{display:none}
   .ff-field-pagination [data-slot="pagination-content"]{flex-wrap:wrap;justify-content:flex-end;gap:2px}
 }
+
+/* Crop directory footer follows the Fields pagination layout. */
+.crop3-data-card .crop3-pagination-footer{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px}
+.crop3-pagination-center{min-width:0;justify-self:center}
+.crop3-pagination-center .crop3-pagination{width:auto;padding:0;min-width:0}
+.crop3-pagination-footer>span:last-child{text-align:right;overflow-wrap:anywhere}
+@media(max-width:650px){
+  .crop3-data-card .crop3-pagination-footer{grid-template-columns:minmax(0,1fr) auto;gap:6px}
+  .crop3-pagination-center{grid-column:2;grid-row:1;justify-self:end}
+  .crop3-pagination-footer>span:last-child{display:block;grid-column:1/-1;text-align:left}
+  .crop3-pagination [data-slot="pagination-content"]{flex-wrap:wrap;justify-content:flex-end;gap:2px}
+}
