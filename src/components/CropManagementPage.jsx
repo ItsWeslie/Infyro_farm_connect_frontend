@@ -16,6 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { SkeletonBlock } from "./ui/Skeleton";
+import FieldFarmSelector from "./FieldFarmSelector";
 import { useConfirmDialog } from "../context/ConfirmDialogContext";
 import {
   cropActivityApi,
@@ -162,6 +163,8 @@ export default function CropManagementPage({
   const [cropTypes, setCropTypes] = useState([]);
   const [plantings, setPlantings] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadedFarmId, setLoadedFarmId] = useState(null);
+  const [pendingStatusChanges, setPendingStatusChanges] = useState(0);
   const [pageError, setPageError] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
   const [search, setSearch] = useState("");
@@ -193,6 +196,20 @@ export default function CropManagementPage({
   const [deletingId, setDeletingId] = useState(null);
 
   const farmId = selectedFarm?.id;
+  const farmDataPending = Boolean(farmId) && (loading || String(loadedFarmId) !== String(farmId));
+  const switchDisabled = typeDialogOpen || plantingDialogOpen || activityDialogOpen || typeSaving || plantingSaving || activitySaving || deletingId !== null || pendingStatusChanges > 0;
+
+  function switchFarm(farm) {
+    if (switchDisabled || String(farm.id) === String(farmId)) return;
+    setSearch("");
+    setStatusFilter("ALL");
+    setPageError("");
+    setSelectedFarm(farm);
+  }
+
+  function farmStat(value) {
+    return farmDataPending ? "…" : pageError && !fields.length && !cropTypes.length && !plantings.length ? "—" : value;
+  }
 
   useEffect(() => {
     let current = true;
@@ -200,6 +217,7 @@ export default function CropManagementPage({
       setFields([]);
       setCropTypes([]);
       setPlantings([]);
+      setLoadedFarmId(null);
       setLoading(false);
       setPageError("");
       return undefined;
@@ -227,7 +245,10 @@ export default function CropManagementPage({
         notify(error.message || "Unable to load crop management data.", "error");
       })
       .finally(() => {
-        if (current) setLoading(false);
+        if (current) {
+          setLoadedFarmId(farmId);
+          setLoading(false);
+        }
       });
 
     return () => { current = false; };
@@ -499,6 +520,7 @@ export default function CropManagementPage({
 
   async function changePlantingStatus(planting, nextStatus) {
     if (!nextStatus) return;
+    setPendingStatusChanges((count) => count + 1);
     setPageError("");
     try {
       const response = await cropPlantingApi.updateStatus(planting.id, nextStatus);
@@ -510,6 +532,8 @@ export default function CropManagementPage({
     } catch (error) {
       notify(error.message || "Unable to change planting status.", "error");
       setPageError(error.message || "Unable to change planting status.");
+    } finally {
+      setPendingStatusChanges((count) => count - 1);
     }
   }
 
@@ -667,8 +691,11 @@ export default function CropManagementPage({
           <h1>{isActivities ? "Crop activity log" : "Crop management"}</h1>
           <p>{isActivities ? "Record the work, observations, and care behind each planting." : "Manage farm crop types and track every planting through its growing cycle."}</p>
         </div>
-        <div className="workspace-title-actions crop3-title-actions">
-          {farms.length > 1 && (
+        <div className={`workspace-title-actions crop3-title-actions${isActivities ? "" : " ff-field-title-actions"}`}>
+          {!isActivities && farms.length > 0 && (
+            <FieldFarmSelector farms={farms} selectedFarm={selectedFarm} onSelect={switchFarm} disabled={switchDisabled} />
+          )}
+          {isActivities && farms.length > 1 && (
             <label className="ff-farm-select">
               <span>Farm</span>
               <select value={selectedFarm.id} onChange={(event) => {
@@ -684,11 +711,11 @@ export default function CropManagementPage({
               <Plus size={15} /> Log activity
             </button>
           ) : isTypes ? (
-            <button className="button-primary" type="button" onClick={openCreateType}>
+            <button className="button-primary" type="button" onClick={openCreateType} disabled={farmDataPending}>
               <Plus size={15} /> Add crop type
             </button>
           ) : (
-            <button className="button-primary" type="button" onClick={openCreatePlanting} disabled={!fields.length || !cropTypes.length}>
+            <button className="button-primary" type="button" onClick={openCreatePlanting} disabled={farmDataPending || !fields.length || !cropTypes.length}>
               <Plus size={15} /> Add planting
             </button>
           )}
@@ -709,17 +736,17 @@ export default function CropManagementPage({
 
       {!isActivities && !isTypes ? (
         <div className="workspace-stats">
-          <Stat label="Plantings" value={farmPlantings.length} detail="in this farm" icon={Sprout} />
-          <Stat label="Active crops" value={activePlantings} detail="growing or harvesting" icon={Leaf} />
-          <Stat label="Crop types" value={cropTypes.length} detail="available in this farm" icon={ClipboardList} />
-          <Stat label="Fields" value={fields.length} detail="ready for planting" icon={MapPinned} />
+          <Stat label="Plantings" value={farmStat(farmPlantings.length)} detail="in this farm" icon={Sprout} />
+          <Stat label="Active crops" value={farmStat(activePlantings)} detail="growing or harvesting" icon={Leaf} />
+          <Stat label="Crop types" value={farmStat(cropTypes.length)} detail="available in this farm" icon={ClipboardList} />
+          <Stat label="Fields" value={farmStat(fields.length)} detail="ready for planting" icon={MapPinned} />
         </div>
       ) : isTypes ? (
         <div className="workspace-stats">
-          <Stat label="Crop types" value={cropTypes.length} detail="registered in this farm" icon={Leaf} />
-          <Stat label="With maturity defaults" value={cropTypes.filter((item) => item.defaultMaturityTimeInDays).length} detail="ready for quick planting" icon={CalendarDays} />
-          <Stat label="Used by plantings" value={new Set(farmPlantings.map((item) => item.cropTypeId)).size} detail="crop varieties in use" icon={Sprout} />
-          <Stat label="Fields" value={fields.length} detail="in this farm" icon={MapPinned} />
+          <Stat label="Crop types" value={farmStat(cropTypes.length)} detail="registered in this farm" icon={Leaf} />
+          <Stat label="With maturity defaults" value={farmStat(cropTypes.filter((item) => item.defaultMaturityTimeInDays).length)} detail="ready for quick planting" icon={CalendarDays} />
+          <Stat label="Used by plantings" value={farmStat(new Set(farmPlantings.map((item) => item.cropTypeId)).size)} detail="crop varieties in use" icon={Sprout} />
+          <Stat label="Fields" value={farmStat(fields.length)} detail="in this farm" icon={MapPinned} />
         </div>
       ) : (
         <div className="workspace-stats">
@@ -768,13 +795,13 @@ export default function CropManagementPage({
             </label>
           )}
           <span className="result-count">
-            {isActivities ? activities.filter((item) => [item.dailyActivity, item.cropStage, item.status].join(" ").toLowerCase().includes(search.toLowerCase())).length : isTypes ? filteredTypes.length : filteredPlantings.length} records
+            {isActivities ? activities.filter((item) => [item.dailyActivity, item.cropStage, item.status].join(" ").toLowerCase().includes(search.toLowerCase())).length : farmDataPending ? "…" : isTypes ? filteredTypes.length : filteredPlantings.length} records
           </span>
         </div>
 
-        {(pageError || (isActivities && activityError)) && <div className="ff-error" role="alert">{isActivities ? activityError || pageError : pageError}</div>}
+        {((!farmDataPending && pageError) || (isActivities && activityError)) && <div className="ff-error" role="alert">{isActivities ? activityError || pageError : pageError}</div>}
 
-        {loading ? (
+        {(isActivities ? loading : farmDataPending) ? (
           <SkeletonBlock rows={5} />
         ) : !isActivities && !isTypes && fields.length === 0 ? (
           <div className="empty-state"><MapPinned size={23} /><strong>No fields in this farm</strong><span>Add a field before creating a crop planting.</span><button className="button-secondary" type="button" onClick={() => onNavigate("Fields")}>Manage fields <ArrowRight size={14} /></button></div>
@@ -881,7 +908,7 @@ export default function CropManagementPage({
         )}
 
         <div className="workspace-data-footer">
-          <span>Showing <strong>{isActivities ? activities.length : isTypes ? filteredTypes.length : filteredPlantings.length}</strong> {isActivities ? "activity logs" : isTypes ? "crop types" : "plantings"}</span>
+          <span>Showing <strong>{isActivities ? activities.length : farmDataPending ? "…" : isTypes ? filteredTypes.length : filteredPlantings.length}</strong> {isActivities ? "activity logs" : isTypes ? "crop types" : "plantings"}</span>
           <span>{selectedFarm.name} · data from IFC backend</span>
         </div>
       </div>
