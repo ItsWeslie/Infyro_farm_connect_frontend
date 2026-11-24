@@ -1790,9 +1790,9 @@ html[data-ifc-theme="dark"] .dialog-card .ff-field-area-warning{background:#3933
 
 /* Dark theme: comfortable header height and rounded header ends for Farms and Fields. */
 html[data-ifc-theme="dark"] .workspace-table.ff-table{border-collapse:separate;border-spacing:0}
-html[data-ifc-theme="dark"] .workspace-table.ff-table thead th{height:36px;box-sizing:border-box;padding:10px 9px;line-height:16px;vertical-align:middle}
-html[data-ifc-theme="dark"] .workspace-table.ff-table thead th:first-child{border-radius:6px 0 0 6px}
-html[data-ifc-theme="dark"] .workspace-table.ff-table thead th:last-child{border-radius:0 6px 6px 0}
+html[data-ifc-theme="dark"] .workspace-table.ff-table thead th,html[data-ifc-theme="dark"] .workspace-table.crop3-table thead th{height:36px;box-sizing:border-box;padding:10px 9px;line-height:16px;vertical-align:middle}
+html[data-ifc-theme="dark"] .workspace-table.ff-table thead th:first-child,html[data-ifc-theme="dark"] .workspace-table.crop3-table thead th:first-child{border-radius:6px 0 0 6px}
+html[data-ifc-theme="dark"] .workspace-table.ff-table thead th:last-child,html[data-ifc-theme="dark"] .workspace-table.crop3-table thead th:last-child{border-radius:0 6px 6px 0}
 
 /* Keep field pagination inline with the result count and selected farm. */
 .ff-data-card .ff-fields-footer{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px}
