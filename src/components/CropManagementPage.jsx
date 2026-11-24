@@ -19,12 +19,24 @@ import { SkeletonBlock } from "./ui/Skeleton";
 import FieldFarmSelector from "./FieldFarmSelector";
 import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "./ui/select";
 import { useConfirmDialog } from "../context/ConfirmDialogContext";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "./ui/pagination";
 import {
   cropActivityApi,
   cropPlantingApi,
   cropTypeApi,
   fieldApi,
 } from "../api/client";
+
+const CROPS_PER_PAGE = 5;
+
+function cropPageItems(page, totalPages) {
+  const pages = [...new Set([1, page - 1, page, page + 1, totalPages])]
+    .filter((value) => value >= 1 && value <= totalPages)
+    .sort((a, b) => a - b);
+  return pages.flatMap((value, index) =>
+    index > 0 && value - pages[index - 1] > 1 ? [`gap-${value}`, value] : [value]
+  );
+}
 
 const PLANTING_TRANSITIONS = {
   PLANNED: ["ACTIVE", "CANCELLED"],
@@ -171,6 +183,7 @@ export default function CropManagementPage({
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [section, setSection] = useState("plantings");
+  const [cropPage, setCropPage] = useState(1);
 
   const [typeDialogOpen, setTypeDialogOpen] = useState(false);
   const [editingType, setEditingType] = useState(null);
@@ -329,6 +342,24 @@ export default function CropManagementPage({
   const filteredTypes = useMemo(() => cropTypes.filter((cropType) => (
     [cropType.name, cropType.description].join(" ").toLowerCase().includes(search.toLowerCase())
   )), [cropTypes, search]);
+
+  const isCropLibrary = section === "types";
+  const filteredCropCount = isCropLibrary ? filteredTypes.length : filteredPlantings.length;
+  const cropPageCount = Math.max(1, Math.ceil(filteredCropCount / CROPS_PER_PAGE));
+  const currentCropPage = Math.min(cropPage, cropPageCount);
+  const cropPageStart = (currentCropPage - 1) * CROPS_PER_PAGE;
+  const paginatedTypes = filteredTypes.slice(cropPageStart, cropPageStart + CROPS_PER_PAGE);
+  const paginatedPlantings = filteredPlantings.slice(cropPageStart, cropPageStart + CROPS_PER_PAGE);
+
+  useEffect(() => {
+    setCropPage(1);
+  }, [farmId, active, section, search, statusFilter]);
+
+  useEffect(() => {
+    if (!farmDataPending && active !== "Activities") {
+      setCropPage((page) => Math.min(page, cropPageCount));
+    }
+  }, [farmDataPending, active, cropPageCount]);
 
   const activePlantings = farmPlantings.filter((planting) => (
     ["ACTIVE", "HARVESTING"].includes(planting.status)
@@ -820,7 +851,7 @@ export default function CropManagementPage({
               <table className="workspace-table crop3-table">
                 <thead><tr><th>CROP TYPE</th><th>DESCRIPTION</th><th>DEFAULT MATURITY</th><th>PLANTINGS</th><th>ACTIONS</th></tr></thead>
                 <tbody>
-                  {filteredTypes.map((cropType) => {
+                  {paginatedTypes.map((cropType) => {
                     const used = farmPlantings.filter((item) => String(item.cropTypeId) === String(cropType.id)).length;
                     return (
                       <tr key={cropType.id}>
@@ -923,7 +954,7 @@ export default function CropManagementPage({
             <table className="workspace-table crop3-table">
               <thead><tr><th>CROP</th><th>FIELD</th><th>AREA</th><th>PLANTED</th><th>EXPECTED HARVEST</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
               <tbody>
-                {filteredPlantings.map((planting) => {
+                {paginatedPlantings.map((planting) => {
                   const field = fieldById.get(String(planting.fieldId));
                   const transitions = PLANTING_TRANSITIONS[planting.status] || [];
                   return (
@@ -974,8 +1005,35 @@ export default function CropManagementPage({
           </div>
         )}
 
-        <div className="workspace-data-footer">
-          <span>Showing <strong>{isActivities ? activities.length : farmDataPending ? "…" : isTypes ? filteredTypes.length : filteredPlantings.length}</strong> {isActivities ? "activity logs" : isTypes ? "crop types" : "plantings"}</span>
+        <div className={isActivities ? "workspace-data-footer" : "workspace-data-footer crop3-pagination-footer"}>
+          <span>
+            Showing <strong>{isActivities ? activities.length : farmDataPending ? "…" : filteredCropCount ? `${cropPageStart + 1}–${Math.min(cropPageStart + CROPS_PER_PAGE, filteredCropCount)} of ${filteredCropCount}` : "0"}</strong> {isActivities ? "activity logs" : isTypes ? "crop types" : "plantings"}
+          </span>
+          {!isActivities && (
+            <div className="crop3-pagination-center">
+              {!farmDataPending && filteredCropCount > 0 && (
+                <Pagination className="ff-farm-pagination crop3-pagination" aria-label={isTypes ? "Crop library pagination" : "Plantings pagination"}>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious disabled={currentCropPage === 1} onClick={() => setCropPage(currentCropPage - 1)} />
+                    </PaginationItem>
+                    {cropPageItems(currentCropPage, cropPageCount).map((item) => (
+                      <PaginationItem key={item}>
+                        {typeof item === "number" ? (
+                          <PaginationLink isActive={currentCropPage === item} aria-label={`Page ${item}`} onClick={() => setCropPage(item)}>{item}</PaginationLink>
+                        ) : (
+                          <PaginationEllipsis />
+                        )}
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext disabled={currentCropPage === cropPageCount} onClick={() => setCropPage(currentCropPage + 1)} />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              )}
+            </div>
+          )}
           <span>{selectedFarm.name}</span>
         </div>
       </div>
