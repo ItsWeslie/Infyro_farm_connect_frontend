@@ -583,12 +583,6 @@ export default function FarmsFieldsPage({
                 <span>Current area: {areaLabel(editing.totalArea)}. The backend currently allows field name changes only; area is read-only.</span>
               </div>
             )}
-            {isFarmsPage && editing && (
-              <div className="dialog-note">
-                <MapPinned size={16} />
-                <span>Farm area is calculated from its fields. The current backend does not support changing an existing field’s area.</span>
-              </div>
-            )}
             <div className="dialog-actions">
               <button type="button" className="button-secondary" disabled={saving} onClick={() => setDialogOpen(false)}>Cancel</button>
               <button type="submit" className="button-primary" disabled={saving || !name.trim()}>
