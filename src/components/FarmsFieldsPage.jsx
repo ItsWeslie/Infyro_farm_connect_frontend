@@ -596,28 +596,6 @@ export default function FarmsFieldsPage({
           </div>
         )}
 
-        {!isFarmsPage && !farmsLoading && !fieldsPending && selectedFarm?.id && filteredFields.length > 0 && (
-          <Pagination className="ff-farm-pagination" aria-label="Fields pagination">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious disabled={currentFieldPage === 1} onClick={() => setFieldPage(currentFieldPage - 1)} />
-              </PaginationItem>
-              {farmPageItems(currentFieldPage, fieldPageCount).map((item) => (
-                <PaginationItem key={item}>
-                  {typeof item === "number" ? (
-                    <PaginationLink isActive={currentFieldPage === item} aria-label={`Page ${item}`} onClick={() => setFieldPage(item)}>{item}</PaginationLink>
-                  ) : (
-                    <PaginationEllipsis />
-                  )}
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                <PaginationNext disabled={currentFieldPage === fieldPageCount} onClick={() => setFieldPage(currentFieldPage + 1)} />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        )}
-
         {isFarmsPage && !farmsLoading && filteredFarms.length > 0 && (
           <Pagination className="ff-farm-pagination" aria-label="Farm directory pagination">
             <PaginationContent>
@@ -641,10 +619,31 @@ export default function FarmsFieldsPage({
         )}
 
         {!isFarmsPage && (
-          <div className="workspace-data-footer">
+          <div className="workspace-data-footer ff-fields-footer">
             <span>
               Showing <strong>{fieldsPending ? "…" : filteredFields.length ? `${(currentFieldPage - 1) * FIELDS_PER_PAGE + 1}–${Math.min(currentFieldPage * FIELDS_PER_PAGE, filteredFields.length)} of ${filteredFields.length}` : "0"}</strong> fields
             </span>
+            {!isFarmsPage && !farmsLoading && !fieldsPending && selectedFarm?.id && filteredFields.length > 0 && (
+              <Pagination className="ff-farm-pagination ff-field-pagination" aria-label="Fields pagination">
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious disabled={currentFieldPage === 1} onClick={() => setFieldPage(currentFieldPage - 1)} />
+                  </PaginationItem>
+                  {farmPageItems(currentFieldPage, fieldPageCount).map((item) => (
+                    <PaginationItem key={item}>
+                      {typeof item === "number" ? (
+                        <PaginationLink isActive={currentFieldPage === item} aria-label={`Page ${item}`} onClick={() => setFieldPage(item)}>{item}</PaginationLink>
+                      ) : (
+                        <PaginationEllipsis />
+                      )}
+                    </PaginationItem>
+                  ))}
+                  <PaginationItem>
+                    <PaginationNext disabled={currentFieldPage === fieldPageCount} onClick={() => setFieldPage(currentFieldPage + 1)} />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
             <span>{selectedFarm?.name || "Select a farm"}</span>
           </div>
         )}
