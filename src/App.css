@@ -1498,3 +1498,27 @@ html[data-ifc-theme="dark"] .ifc-overview-recent-panel .ifc-overview-heading-log
 @media(prefers-reduced-motion:reduce){
   .ifc-overview-hero .ifc-overview-hero-sun-halo{animation:none;opacity:.85}
 }
+
+/* shadcn Dialog primitives and farm details foundation. */
+.ifc-shadcn-dialog-overlay{position:fixed;inset:0;z-index:80;background:#17271d66;backdrop-filter:blur(4px);animation:ifc-dialog-fade-in .18s ease-out}
+.ifc-shadcn-dialog-content{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:81;width:min(420px,calc(100% - 32px));max-height:85vh;max-height:85dvh;overflow:auto;background:#fff;border:1px solid #e8ede5;border-radius:16px;padding:23px;box-shadow:0 25px 80px #14291e2b;outline:none;animation:ifc-shadcn-dialog-in .18s ease-out}
+.ifc-shadcn-dialog-close{position:absolute;top:16px;right:16px;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;padding:0;border:0;border-radius:6px;background:transparent;color:#627963;cursor:pointer}
+.ifc-shadcn-dialog-close svg{width:16px;height:16px;flex-shrink:0;pointer-events:none}
+.ifc-shadcn-dialog-close:hover{background:#edf4e8;color:#355b40}
+.ifc-shadcn-dialog-close:focus-visible{outline:2px solid #6c9b62;outline-offset:2px}
+html[data-ifc-theme="dark"] .ifc-shadcn-dialog-content{background:#202b24;border-color:rgba(203,226,194,.15);color:#e5f0dc;box-shadow:0 25px 80px #0006}
+html[data-ifc-theme="dark"] .ifc-shadcn-dialog-close{color:#dce9d6}
+html[data-ifc-theme="dark"] .ifc-shadcn-dialog-close:hover{background:#344b35;color:#e5f0dc}
+.ff-farm-details-dialog{width:min(900px,calc(100% - 32px));padding:20px}
+.ff-farm-details-header{display:flex;flex-direction:row;align-items:center;gap:12px;padding-right:36px;text-align:left}
+.ff-farm-details-icon{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border-radius:10px;background:#eaf2e5;color:#46734c}
+.ff-farm-details-heading{min-width:0}
+.ff-farm-details-heading [data-slot="dialog-title"]{font:800 20px/1.2 Manrope,sans-serif;margin:5px 0;color:#2b4131;overflow-wrap:anywhere}
+.ff-farm-details-heading [data-slot="dialog-description"]{margin:0;color:#849185;font-size:11px}
+html[data-ifc-theme="dark"] .ff-farm-details-icon{background:#2c472f;color:#c4e1b4}
+html[data-ifc-theme="dark"] .ff-farm-details-heading [data-slot="dialog-title"]{color:#e5f0dc}
+html[data-ifc-theme="dark"] .ff-farm-details-heading [data-slot="dialog-description"]{color:#b3c1ad}
+@keyframes ifc-dialog-fade-in{from{opacity:0}to{opacity:1}}
+@keyframes ifc-shadcn-dialog-in{from{opacity:0;transform:translate(-50%,-50%) scale(.98)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@media(max-width:650px){.ff-farm-details-dialog{padding:16px}.ff-farm-details-heading [data-slot="dialog-title"]{font-size:18px}}
+@media(prefers-reduced-motion:reduce){.ifc-shadcn-dialog-overlay,.ifc-shadcn-dialog-content{animation:none}}
