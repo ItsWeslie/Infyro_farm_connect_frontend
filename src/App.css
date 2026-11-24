@@ -162,6 +162,11 @@ html[data-ifc-theme="dark"] .ff-farm-pagination [data-slot="pagination-ellipsis"
   font-size: 10px;
 }
 .ff-form-context strong { color: #466348; }
+html[data-ifc-theme="dark"] .dialog-card .ff-form-context {
+  background: #2b412d;
+  color: #b9c9b2;
+}
+html[data-ifc-theme="dark"] .dialog-card .ff-form-context strong { color: #e5f0dc; }
 .ff-data-card .empty-state .button-primary,
 .ff-data-card .empty-state .button-secondary { margin-top: 8px; }
 .ff-data-card .empty-state button { display: inline-flex; align-items: center; gap: 6px; }
