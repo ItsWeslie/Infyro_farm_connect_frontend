@@ -444,7 +444,7 @@ export default function FarmsFieldsPage({
             <p>
               {isFarmsPage
                 ? "View and manage all your registered farms in one place."
-                : "Area values are provided by the farm backend."}
+                : "View and manage your farm's fields, track total land area, and monitor available space for planting."}
             </p>
           </div>
         </div>
