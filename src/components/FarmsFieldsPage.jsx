@@ -360,9 +360,9 @@ export default function FarmsFieldsPage({
               </button>
             )}
           </label>
-          <span className="result-count">
-            {isFarmsPage ? filteredFarms.length : filteredFields.length} records
-          </span>
+          {!isFarmsPage && (
+            <span className="result-count">{filteredFields.length} records</span>
+          )}
         </div>
 
         {(isFarmsPage ? farmsError : fieldsError) && (
@@ -456,12 +456,14 @@ export default function FarmsFieldsPage({
           </div>
         )}
 
-        <div className="workspace-data-footer">
-          <span>
-            Showing <strong>{isFarmsPage ? filteredFarms.length : filteredFields.length}</strong> {isFarmsPage ? "farms" : "fields"}
-          </span>
-          <span>{isFarmsPage ? "Farm data from IFC backend" : selectedFarm?.name || "Select a farm"}</span>
-        </div>
+        {!isFarmsPage && (
+          <div className="workspace-data-footer">
+            <span>
+              Showing <strong>{filteredFields.length}</strong> fields
+            </span>
+            <span>{selectedFarm?.name || "Select a farm"}</span>
+          </div>
+        )}
       </div>
 
       {dialogOpen && (
