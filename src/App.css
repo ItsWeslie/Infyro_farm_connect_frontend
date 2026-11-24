@@ -1398,3 +1398,23 @@ html[data-ifc-theme="dark"] .ifc-overview-recent-panel .ifc-overview-heading-log
 /* Compact Overview header navigation button, including on narrow screens. */
 .ifc-overview-welcome .ifc-overview-actions .ifc-overview-farms-button{min-height:32px;min-width:0;width:auto;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:5px 10px;font-size:10px;line-height:1.3}
 .ifc-overview-farms-button>div{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* Gentle horizontal movement for the Overview hero SVG clouds. */
+.ifc-overview-hero .ifc-overview-hero-cloud{animation-timing-function:ease-in-out;animation-iteration-count:infinite;animation-direction:alternate}
+.ifc-overview-hero .ifc-overview-hero-cloud--first{animation-name:ifc-overview-cloud-drift-first;animation-duration:14s}
+.ifc-overview-hero .ifc-overview-hero-cloud--second{animation-name:ifc-overview-cloud-drift-second;animation-duration:19s;animation-delay:-5s}
+@keyframes ifc-overview-cloud-drift-first{from{transform:translateX(-7px)}to{transform:translateX(7px)}}
+@keyframes ifc-overview-cloud-drift-second{from{transform:translateX(5px)}to{transform:translateX(-5px)}}
+@media(prefers-reduced-motion:reduce){
+  .ifc-overview-hero .ifc-overview-hero-cloud{animation:none;transform:none}
+}
+
+/* Subtle golden halo around the Overview sun. */
+.ifc-overview-hero .ifc-overview-hero-sun-halo{animation:ifc-overview-sun-glow 8s ease-in-out infinite}
+@keyframes ifc-overview-sun-glow{
+  0%,100%{opacity:.72}
+  50%{opacity:1}
+}
+@media(prefers-reduced-motion:reduce){
+  .ifc-overview-hero .ifc-overview-hero-sun-halo{animation:none;opacity:.85}
+}
