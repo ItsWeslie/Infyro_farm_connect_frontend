@@ -34,7 +34,8 @@ function DatePicker({ id, value, onChange, min, required = false, disabled = fal
       </PopoverTrigger>
       <PopoverContent className="ifc-date-popover" align="start" sideOffset={5} collisionPadding={12}>
         <Calendar mode="single" selected={selected} required={required}
-          defaultMonth={selected || minimum} disabled={minimum ? { before: minimum } : undefined}
+          defaultMonth={minimum && (!selected || selected < minimum) ? minimum : selected}
+          startMonth={minimum} disabled={minimum ? { before: minimum } : undefined}
           onSelect={(date) => { onChange(date ? toDateValue(date) : ""); setOpen(false); }} />
         {!required && selected && (
           <button type="button" className="ifc-date-clear" onClick={() => { onChange(""); setOpen(false); }}>Clear date</button>
