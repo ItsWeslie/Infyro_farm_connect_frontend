@@ -1683,3 +1683,8 @@ html[data-ifc-theme="dark"] .ff-details-expense-status[data-status="voided"]{bac
 .ff-details-insight .ff-details-harvest-note{margin-top:10px;font-size:10px}
 html[data-ifc-theme="dark"] .ff-details-harvest-copy p{color:#b3c1ad}
 html[data-ifc-theme="dark"] .ff-details-harvest-ledger [data-harvest-status="cancelled"] .ff-details-harvest-quantity{color:#a3b29f}
+
+/* Keep Edit farm close hover within the icon button, not the header height. */
+.dialog-heading .ff-edit-farm-close{align-self:flex-start;flex:0 0 28px;width:28px;height:28px;padding:0;border-radius:6px}
+.dialog-heading .ff-edit-farm-close svg{flex-shrink:0}
+html[data-ifc-theme="dark"] .dialog-heading .ff-edit-farm-close:hover:not(:disabled){background:#344b35;color:#e5f0dc}
