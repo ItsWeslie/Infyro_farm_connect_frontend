@@ -303,7 +303,7 @@ export default function FarmsFieldsPage({
 
       {isFarmsPage ? (
         <div className="workspace-stats">
-          <Stat label="Total farms" value={farmStats.farms} detail="registered farms" icon={Building2} />
+          <Stat label="Total farms" value={farmStats.farms} detail="registered farms" icon={Tractor} />
           <Stat label="Total land" value={areaLabel(farmStats.totalArea)} detail="sum of registered field areas" icon={Ruler} />
           <Stat label="Total fields" value={farmStats.fields} detail="across all farms" icon={MapPinned} />
           <Stat label="Available land" value={areaLabel(farmStats.availableArea)} detail="not assigned to plantings" icon={Sprout} />
