@@ -7,15 +7,18 @@ import {
   CalendarDays,
   Check,
   ClipboardList,
+  Info,
   Leaf,
   MapPinned,
   Plus,
-  Ruler,
   Search,
   Sprout,
   X,
 } from "lucide-react";
 import { SkeletonBlock } from "./ui/Skeleton";
+import { Input } from "./ui/input";
+import { DatePicker } from "./ui/calendar";
+import { Alert, AlertDescription } from "./ui/alert";
 import FieldFarmSelector from "./FieldFarmSelector";
 import ActivityPlantingSelector from "./ActivityPlantingSelector";
 import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "./ui/select";
@@ -153,14 +156,12 @@ function StatusPill({ status }) {
 
 function FieldSelect({ fields, value, onChange, disabled = false }) {
   return (
-    <select className="form-select" value={value} onChange={onChange} disabled={disabled}>
-      <option value="">Choose a field</option>
-      {fields.map((field) => (
-        <option key={field.id} value={field.id}>
-          {field.fieldName} · {numberLabel(field.availableArea)} available
-        </option>
-      ))}
-    </select>
+    <Select value={value} onValueChange={onChange} disabled={disabled} required>
+      <SelectTrigger id="planting-field" className="ifc-form-select"><SelectValue placeholder="Choose a field" /></SelectTrigger>
+      <SelectContent align="start">
+        {fields.map((field) => <SelectItem key={field.id} value={String(field.id)}>{field.fieldName} · {numberLabel(field.availableArea)} available</SelectItem>)}
+      </SelectContent>
+    </Select>
   );
 }
 
@@ -1116,19 +1117,50 @@ export default function CropManagementPage({
 
       {plantingDialogOpen && (
         <div className="modal-overlay" onMouseDown={(event) => { if (event.target === event.currentTarget && !plantingSaving) setPlantingDialogOpen(false); }}>
-          <form className="dialog-card crop3-dialog" onSubmit={submitPlanting}>
-            <div className="dialog-heading"><div><span className="section-kicker">PLANTING RECORD</span><h2>{editingPlanting ? "Edit planting" : "Add planting"}</h2><p>Assign a crop type and area to a field in {selectedFarm.name}.</p></div><button type="button" className="icon-button" aria-label="Close dialog" disabled={plantingSaving} onClick={() => setPlantingDialogOpen(false)}><X size={19} /></button></div>
+          <form className="dialog-card crop3-dialog crop3-planting-dialog" onSubmit={submitPlanting}>
+            <div className="dialog-heading"><div><span className="section-kicker">PLANTING RECORD</span><h2>{editingPlanting ? "Edit planting" : "Add planting"}</h2><p>Assign a crop type and area to a field in {selectedFarm.name}.</p></div><button type="button" className="icon-button ff-edit-farm-close" aria-label="Close dialog" disabled={plantingSaving} onClick={() => setPlantingDialogOpen(false)}><X size={19} /></button></div>
             {plantingError && <div className="ff-error" role="alert">{plantingError}</div>}
-            {!editingPlanting && <label className="form-label">Field<FieldSelect fields={fields} value={plantingForm.fieldId} onChange={(event) => setPlantingForm({ ...plantingForm, fieldId: event.target.value })} /></label>}
-            <label className="form-label">Crop type<select className="form-select" required value={plantingForm.cropTypeId} onChange={(event) => { const cropType = cropTypes.find((item) => String(item.id) === event.target.value); setPlantingForm({ ...plantingForm, cropTypeId: event.target.value, maturityTimeInDays: cropType?.defaultMaturityTimeInDays ? String(cropType.defaultMaturityTimeInDays) : "" }); }}><option value="">Choose a crop type</option>{cropTypes.map((cropType) => <option key={cropType.id} value={cropType.id}>{cropType.name}</option>)}</select></label>
-            <label className="form-label">Crop area<input type="number" required min="0.01" step="0.01" value={plantingForm.cropArea} onChange={(event) => setPlantingForm({ ...plantingForm, cropArea: event.target.value })} placeholder="e.g. 0.75" /></label>
-            {plantingForm.fieldId && !editingPlanting && <div className="dialog-note"><Ruler size={16} /><span>Available field area: {numberLabel(fields.find((field) => String(field.id) === String(plantingForm.fieldId))?.availableArea)}. Use the same area unit as the field; the backend validates reservations when saving.</span></div>}
-            <div className="crop3-form-grid">
-              <label className="form-label">Planting date<input type="date" required value={plantingForm.plantedOn} onChange={(event) => setPlantingForm({ ...plantingForm, plantedOn: event.target.value })} /></label>
-              <label className="form-label">Expected harvest<input type="date" min={plantingForm.plantedOn || undefined} value={plantingForm.expectedHarvestOn} onChange={(event) => setPlantingForm({ ...plantingForm, expectedHarvestOn: event.target.value })} /></label>
+            {!editingPlanting && (
+              <div className="form-label">
+                <label htmlFor="planting-field">Field</label>
+                <FieldSelect fields={fields} value={plantingForm.fieldId} disabled={plantingSaving} onChange={(value) => setPlantingForm((current) => ({ ...current, fieldId: value }))} />
+              </div>
+            )}
+            <div className="form-label">
+              <label htmlFor="planting-crop-type">Crop type</label>
+              <Select required disabled={plantingSaving} value={plantingForm.cropTypeId} onValueChange={(value) => {
+                const cropType = cropTypes.find((item) => String(item.id) === value);
+                setPlantingForm((current) => ({ ...current, cropTypeId: value, maturityTimeInDays: cropType?.defaultMaturityTimeInDays ? String(cropType.defaultMaturityTimeInDays) : "" }));
+              }}>
+                <SelectTrigger id="planting-crop-type" className="ifc-form-select"><SelectValue placeholder="Choose a crop type" /></SelectTrigger>
+                <SelectContent align="start">
+                  {cropTypes.map((cropType) => <SelectItem key={cropType.id} value={String(cropType.id)}>{cropType.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
-            <label className="form-label">Maturity time (days)<input type="number" min="1" step="1" value={plantingForm.maturityTimeInDays} onChange={(event) => setPlantingForm({ ...plantingForm, maturityTimeInDays: event.target.value })} placeholder="Uses crop type default when blank" /></label>
-            <div className="dialog-note"><CalendarDays size={16} /><span>Leave expected harvest empty to let the backend calculate it from the planting date and maturity time.</span></div>
+            <label className="form-label">Crop area
+              <Input type="number" required min="0.01" step="0.01" disabled={plantingSaving} value={plantingForm.cropArea} onChange={(event) => setPlantingForm((current) => ({ ...current, cropArea: event.target.value }))} placeholder="e.g. 0.75" />
+            </label>
+            {plantingForm.fieldId && !editingPlanting && (
+              <Alert className="crop3-area-info" variant="info" role="status">
+                <Info size={16} aria-hidden="true" />
+                <AlertDescription>Available field area: <strong>{numberLabel(fields.find((field) => String(field.id) === String(plantingForm.fieldId))?.availableArea)}</strong></AlertDescription>
+              </Alert>
+            )}
+            <div className="crop3-form-grid">
+              <div className="form-label">
+                <label htmlFor="planting-date">Planting date</label>
+                <DatePicker id="planting-date" required disabled={plantingSaving} value={plantingForm.plantedOn} onChange={(value) => setPlantingForm((current) => ({ ...current, plantedOn: value, expectedHarvestOn: current.expectedHarvestOn && current.expectedHarvestOn < value ? "" : current.expectedHarvestOn }))} />
+              </div>
+              <div className="form-label">
+                <label htmlFor="planting-harvest-date">Expected harvest <span className="crop3-optional">(optional)</span></label>
+                <DatePicker id="planting-harvest-date" disabled={plantingSaving} value={plantingForm.expectedHarvestOn} min={plantingForm.plantedOn} onChange={(value) => setPlantingForm((current) => ({ ...current, expectedHarvestOn: value }))} />
+              </div>
+            </div>
+            <label className="form-label">Maturity time (days)
+              <Input type="number" min="1" step="1" disabled={plantingSaving} value={plantingForm.maturityTimeInDays} onChange={(event) => setPlantingForm((current) => ({ ...current, maturityTimeInDays: event.target.value }))} placeholder="Uses crop type default when blank" />
+            </label>
+            <div className="dialog-note"><CalendarDays size={16} /><span>Leave expected harvest empty to calculate it from the planting date and maturity time.</span></div>
             <div className="dialog-actions"><button type="button" className="button-secondary" disabled={plantingSaving} onClick={() => setPlantingDialogOpen(false)}>Cancel</button><button type="submit" className="button-primary" disabled={plantingSaving || !cropTypes.length || !fields.length}><Plus size={15} /> {plantingSaving ? "Saving…" : editingPlanting ? "Save changes" : "Create planting"}</button></div>
           </form>
         </div>
