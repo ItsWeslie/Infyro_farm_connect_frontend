@@ -1742,3 +1742,18 @@ html[data-ifc-theme="dark"] .ff-field-farm-popover [data-slot="command-item"][da
 html[data-ifc-theme="dark"] .ff-field-farm-popover [data-slot="command-item"][data-selected="true"]{background:#3b563c}
 @media(max-width:650px){.ff-field-title-actions .ff-field-farm-trigger{flex:1;width:auto}.ff-field-title-actions .button-primary{flex:0 0 auto}}
 @media(prefers-reduced-motion:reduce){.ff-field-farm-trigger{transition:none}}
+
+/* Shadcn Alert, adapted to the application theme. */
+.ifc-shadcn-alert{display:grid;grid-template-columns:minmax(0,1fr);align-items:start;gap:3px;width:100%;border:1px solid #e5ebe2;border-radius:8px;padding:10px 12px;background:#fff;color:#405443;font-size:11px;line-height:1.5}
+.ifc-shadcn-alert:has(>svg){grid-template-columns:16px minmax(0,1fr);column-gap:9px}
+.ifc-shadcn-alert>svg{width:16px;height:16px;flex-shrink:0;grid-column:1;grid-row:1/span 2;margin-top:1px}
+.ifc-shadcn-alert:has(>svg) .ifc-shadcn-alert-title,.ifc-shadcn-alert:has(>svg) .ifc-shadcn-alert-description{grid-column:2}
+.ifc-shadcn-alert-title{font-weight:700}
+.ifc-shadcn-alert[data-variant="destructive"]{color:#a45d53}
+html[data-ifc-theme="dark"] .ifc-shadcn-alert{background:#26352a;border-color:rgba(203,226,194,.15);color:#e5f0dc}
+html[data-ifc-theme="dark"] .ifc-shadcn-alert[data-variant="destructive"]{color:#f0a89d}
+.dialog-card .ff-edit-field-context{background:#eaf3e7}
+html[data-ifc-theme="dark"] .dialog-card .ff-edit-field-context{background:#2b412d;color:#b9c9b2}
+html[data-ifc-theme="dark"] .dialog-card .ff-edit-field-context strong{color:#e5f0dc}
+.dialog-card .ff-field-area-warning{margin-top:15px;background:#fbf8ed;border-color:#eee5c8;color:#806522;font-size:10px}
+html[data-ifc-theme="dark"] .dialog-card .ff-field-area-warning{background:#393321;border-color:#5e5030;color:#f1d89c}
