@@ -1132,6 +1132,10 @@ html[data-ifc-theme="dark"] .ifc-confirm-icon-neutral{background:#2b412d;color:#
 .brand-logo-infyro{color:#173f20}
 .brand-logo-farm{color:#6b9828}
 .brand-logo-tagline{color:#87501f;font:700 6.5px/1.2 'DM Sans',sans-serif;letter-spacing:.55px;white-space:nowrap}
+/* Keep sidebar brand text readable against the dark theme. */
+html[data-ifc-theme="dark"] .brand-logo-infyro{color:#edf4e9}
+html[data-ifc-theme="dark"] .brand-logo-farm{color:#a8d568}
+html[data-ifc-theme="dark"] .brand-logo-tagline{color:#c6ad80}
 @media(max-width:360px){.brand-logo-name{font-size:17px}.brand-logo-mark{flex-basis:42px;width:42px;height:42px}.brand-logo .brand-logo-mark img{left:-28.7px;top:-11.9px;width:174.5px}}
 
 
