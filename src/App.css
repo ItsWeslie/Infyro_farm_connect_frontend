@@ -1408,3 +1408,13 @@ html[data-ifc-theme="dark"] .ifc-overview-recent-panel .ifc-overview-heading-log
 @media(prefers-reduced-motion:reduce){
   .ifc-overview-hero .ifc-overview-hero-cloud{animation:none;transform:none}
 }
+
+/* Subtle golden halo around the Overview sun. */
+.ifc-overview-hero .ifc-overview-hero-sun-halo{animation:ifc-overview-sun-glow 8s ease-in-out infinite}
+@keyframes ifc-overview-sun-glow{
+  0%,100%{opacity:.72}
+  50%{opacity:1}
+}
+@media(prefers-reduced-motion:reduce){
+  .ifc-overview-hero .ifc-overview-hero-sun-halo{animation:none;opacity:.85}
+}
