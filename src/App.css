@@ -1812,3 +1812,16 @@ html[data-ifc-theme="dark"] .workspace-table.ff-table thead th:last-child,html[d
 @media(max-width:650px){
   .crop3-data-card .ff-fields-footer>span:last-child{display:none;grid-column:auto;grid-row:auto}
 }
+
+/* Independent activity planting chooser, using the farm combobox theme. */
+.crop3-activity-planting-row{display:flex;align-items:center;margin:0 0 14px}
+.ff-field-farm-trigger.crop3-activity-planting-trigger{width:100%;min-height:54px;padding:8px 12px}
+.crop3-activity-planting-trigger .ff-field-farm-icon{width:36px;height:36px;flex-basis:36px}
+.crop3-activity-planting-trigger .ff-field-farm-copy>span{white-space:normal;overflow-wrap:anywhere}
+.ff-field-farm-popover.crop3-activity-planting-popover[data-slot="popover-content"]{width:min(440px,var(--radix-popover-trigger-width));max-width:var(--radix-popover-content-available-width)}
+.crop3-activity-planting-popover [data-slot="command-list"]{max-height:min(320px,calc(var(--radix-popover-content-available-height) - 48px))}
+.crop3-planting-group-heading{display:flex;align-items:center;gap:6px;color:#748575;font-size:10px;font-weight:700;overflow-wrap:anywhere}
+.crop3-planting-option-copy{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0;overflow-wrap:anywhere}
+.crop3-planting-option-copy strong{font-size:11px;font-weight:700}
+.crop3-planting-option-copy small{font-size:9px;font-weight:400;color:#748575}
+html[data-ifc-theme="dark"] .crop3-planting-group-heading,html[data-ifc-theme="dark"] .crop3-planting-option-copy small{color:#b3c1ad}
