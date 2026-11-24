@@ -324,7 +324,7 @@ export default function FarmsFieldsPage({
             <h2>{isFarmsPage ? "Farm directory" : "Fields in this farm"}</h2>
             <p>
               {isFarmsPage
-                ? "Only farms returned by the backend are shown here."
+                ? "View and manage all your registered farms in one place."
                 : "Area values are provided by the farm backend."}
             </p>
           </div>
