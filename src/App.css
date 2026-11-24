@@ -1699,3 +1699,38 @@ html[data-ifc-theme="dark"] .dialog-heading .ff-edit-farm-close:hover:not(:disab
 html[data-ifc-theme="dark"] .dialog-actions .ff-edit-farm-save[data-save-state="loading"]:disabled{background:#67992d;border-color:#67992d;color:#fff}
 html[data-ifc-theme="dark"] .dialog-actions .ff-edit-farm-save[data-save-state="success"]:disabled{background:#578943;border-color:#578943;color:#fff}
 @media(prefers-reduced-motion:reduce){.dialog-actions .ff-edit-farm-save{transition:none}}
+
+/* Fields page: selected-farm shadcn Popover + Command combobox. */
+.ff-field-title-actions{min-width:0}
+.ff-field-farm-trigger{display:flex;align-items:center;gap:9px;text-align:left;padding:6px 9px;border:1px solid #e5ebe2;border-radius:9px;background:#fff;color:#344a38;min-width:0;width:210px;max-width:100%;cursor:pointer;transition:background .18s,border-color .18s}
+.ff-field-farm-trigger:hover:not(:disabled),.ff-field-farm-trigger[data-state="open"]{background:#f5f8f2;border-color:#cadbc4}
+.ff-field-farm-trigger:disabled{opacity:.55;cursor:not-allowed}
+.ff-field-farm-trigger:focus-visible{outline:2px solid #719b62;outline-offset:2px}
+.ff-field-farm-icon{display:grid;place-items:center;width:31px;height:31px;flex:0 0 31px;border-radius:8px;background:#eaf2e5;color:#568052}
+.ff-field-farm-copy{display:flex;flex:1;flex-direction:column;min-width:0;gap:2px}
+.ff-field-farm-copy small{font-size:8px;font-weight:700;letter-spacing:.5px;color:#748575}
+.ff-field-farm-copy strong{font:750 11px/1.3 Manrope,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ff-field-farm-copy>span{font-size:9px;line-height:1.2;color:#849185}
+.ff-field-farm-chevron{flex-shrink:0;color:#748575}
+.ff-field-farm-popover[data-slot="popover-content"]{z-index:90;width:260px;max-width:var(--radix-popover-content-available-width);padding:5px;border:1px solid #e5ebe2;border-radius:10px;background:#fff;color:#405443;box-shadow:0 12px 30px #14291e20;outline:none}
+.ff-field-farm-popover [data-slot="command"]{background:transparent;color:inherit}
+.ff-field-farm-popover [data-slot="command-input-wrapper"]{height:34px;border-color:#e5ebe2;color:#748575;padding:0 8px}
+.ff-field-farm-popover [data-slot="command-input"]{height:32px;font-size:11px;padding:0;color:inherit;border:0;outline:none}
+.ff-field-farm-popover [data-slot="command-list"]{max-height:min(240px,calc(var(--radix-popover-content-available-height) - 48px))}
+.ff-field-farm-popover [data-slot="command-empty"]{font-size:11px;color:#748575;padding:14px 8px}
+.ff-field-farm-popover [data-slot="command-item"]{display:flex;align-items:center;gap:8px;min-height:32px;padding:7px 8px;font-size:11px;color:#405443;cursor:pointer;border-radius:6px}
+.ff-field-farm-popover [data-slot="command-item"] svg{width:15px;height:15px;color:#568052}
+.ff-field-farm-popover [data-slot="command-item"][data-current-farm="true"]{font-weight:700;background:#edf4e8}
+.ff-field-farm-popover [data-slot="command-item"][data-selected="true"]{background:#e1eedb}
+.ff-field-farm-option-name{flex:1;min-width:0;overflow-wrap:anywhere}
+.ff-field-farm-check{flex-shrink:0}
+html[data-ifc-theme="dark"] .ff-field-farm-trigger,html[data-ifc-theme="dark"] .ff-field-farm-popover[data-slot="popover-content"]{background:#26352a;color:#e5f0dc;border-color:rgba(203,226,194,.15)}
+html[data-ifc-theme="dark"] .ff-field-farm-trigger:hover:not(:disabled),html[data-ifc-theme="dark"] .ff-field-farm-trigger[data-state="open"]{background:#344b35;border-color:#59745b}
+html[data-ifc-theme="dark"] .ff-field-farm-icon{background:#2c472f;color:#c5e0b8}
+html[data-ifc-theme="dark"] .ff-field-farm-copy small,html[data-ifc-theme="dark"] .ff-field-farm-copy>span,html[data-ifc-theme="dark"] .ff-field-farm-chevron,html[data-ifc-theme="dark"] .ff-field-farm-popover [data-slot="command-empty"],html[data-ifc-theme="dark"] .ff-field-farm-popover [data-slot="command-input-wrapper"]{color:#b3c1ad;border-color:rgba(203,226,194,.15)}
+html[data-ifc-theme="dark"] .ff-field-farm-popover [data-slot="command-item"]{color:#e5f0dc}
+html[data-ifc-theme="dark"] .ff-field-farm-popover [data-slot="command-item"] svg{color:#c5e0b8}
+html[data-ifc-theme="dark"] .ff-field-farm-popover [data-slot="command-item"][data-current-farm="true"]{background:#2c472f}
+html[data-ifc-theme="dark"] .ff-field-farm-popover [data-slot="command-item"][data-selected="true"]{background:#3b563c}
+@media(max-width:650px){.ff-field-title-actions .ff-field-farm-trigger{flex:1;width:auto}.ff-field-title-actions .button-primary{flex:0 0 auto}}
+@media(prefers-reduced-motion:reduce){.ff-field-farm-trigger{transition:none}}
