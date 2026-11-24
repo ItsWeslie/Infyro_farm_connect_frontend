@@ -1671,3 +1671,15 @@ html[data-ifc-theme="dark"] .ff-details-expense-category strong{color:#e5f0dc}
 html[data-ifc-theme="dark"] .ff-details-expense-ledger [data-expense-status="voided"] .ff-details-expense-amount{color:#a3b29f}
 html[data-ifc-theme="dark"] .ff-details-expense-status[data-status="voided"]{background:#48342e;color:#f0bca8}
 @media(max-width:650px){.ff-details-expense-breakdown{grid-template-columns:minmax(0,1fr)}}
+
+/* Farm details Harvests tab — shadcn summary cards, unit totals and ledger. */
+.ff-details-harvests{display:flex;flex-direction:column;gap:10px;min-width:0}
+.ff-details-harvest-ledger .ff-details-table{min-width:690px}
+.ff-details-harvest-ledger [data-slot="table-cell"]{vertical-align:top}
+.ff-details-harvest-quantity{font-weight:700;font-variant-numeric:tabular-nums}
+.ff-details-harvest-copy{min-width:120px;max-width:240px;white-space:normal;overflow-wrap:anywhere;line-height:1.5}
+.ff-details-harvest-copy p{margin:4px 0 0;color:#748575;font-size:10px}
+.ff-details-harvest-ledger [data-harvest-status="cancelled"] .ff-details-harvest-quantity{text-decoration:line-through;color:#849185}
+.ff-details-insight .ff-details-harvest-note{margin-top:10px;font-size:10px}
+html[data-ifc-theme="dark"] .ff-details-harvest-copy p{color:#b3c1ad}
+html[data-ifc-theme="dark"] .ff-details-harvest-ledger [data-harvest-status="cancelled"] .ff-details-harvest-quantity{color:#a3b29f}
