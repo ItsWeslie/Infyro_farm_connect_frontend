@@ -1394,3 +1394,7 @@ html[data-ifc-theme="dark"] .ifc-overview-crop-progress-harvest{background:#493a
 .ifc-overview-recent-panel .ifc-overview-heading-logo{width:25px;height:25px;flex-shrink:0;display:grid;place-items:center;color:#568052}
 html[data-ifc-theme="dark"] .ifc-overview-crop-progress-panel .ifc-overview-heading-logo,
 html[data-ifc-theme="dark"] .ifc-overview-recent-panel .ifc-overview-heading-logo{color:#c5e0b8}
+
+/* Compact Overview header navigation button, including on narrow screens. */
+.ifc-overview-welcome .ifc-overview-actions .ifc-overview-farms-button{min-height:32px;min-width:0;width:auto;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:5px 10px;font-size:10px;line-height:1.3}
+.ifc-overview-farms-button>div{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
