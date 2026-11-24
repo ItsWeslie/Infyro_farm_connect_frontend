@@ -727,17 +727,6 @@ export default function CropManagementPage({
           {!isActivities && farms.length > 0 && (
             <FieldFarmSelector farms={farms} selectedFarm={selectedFarm} onSelect={switchFarm} disabled={switchDisabled} />
           )}
-          {isActivities && farms.length > 1 && (
-            <label className="ff-farm-select">
-              <span>Farm</span>
-              <select value={selectedFarm.id} onChange={(event) => {
-                const nextFarm = farms.find((farm) => String(farm.id) === event.target.value);
-                if (nextFarm) setSelectedFarm(nextFarm);
-              }}>
-                {farms.map((farm) => <option key={farm.id} value={farm.id}>{farm.name}</option>)}
-              </select>
-            </label>
-          )}
           {isActivities ? (
             <button className="button-primary" type="button" onClick={openCreateActivity} disabled={!selectedPlanting}>
               <Plus size={15} /> Log activity
