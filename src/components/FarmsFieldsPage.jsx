@@ -57,6 +57,7 @@ function totalArea(fields, key = "totalArea") {
 }
 
 const FARMS_PER_PAGE = 5;
+const FIELDS_PER_PAGE = 5;
 
 function farmPageItems(page, totalPages) {
   const pages = [...new Set([1, page - 1, page, page + 1, totalPages])]
@@ -101,6 +102,7 @@ export default function FarmsFieldsPage({
   const isFarmsPage = active === "Farms";
   const [query, setQuery] = useState("");
   const [farmPage, setFarmPage] = useState(1);
+  const [fieldPage, setFieldPage] = useState(1);
   const [detailsFarm, setDetailsFarm] = useState(null);
   const detailsTriggerRef = useRef(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -166,6 +168,7 @@ export default function FarmsFieldsPage({
   useEffect(() => {
     setQuery("");
     setFarmPage(1);
+    setFieldPage(1);
     setDetailsFarm(null);
     dialogVersionRef.current += 1;
     setFarmSaveSuccess(false);
@@ -215,6 +218,7 @@ export default function FarmsFieldsPage({
   function changeQuery(value) {
     setQuery(value);
     setFarmPage(1);
+    setFieldPage(1);
   }
 
   const filteredFields = useMemo(() => fields.filter((field) => (
@@ -223,6 +227,23 @@ export default function FarmsFieldsPage({
       .toLowerCase()
       .includes(query.toLowerCase())
   )), [fields, query, selectedFarm?.name]);
+
+  const fieldPageCount = Math.max(1, Math.ceil(filteredFields.length / FIELDS_PER_PAGE));
+  const currentFieldPage = Math.min(fieldPage, fieldPageCount);
+  const paginatedFields = filteredFields.slice(
+    (currentFieldPage - 1) * FIELDS_PER_PAGE,
+    currentFieldPage * FIELDS_PER_PAGE,
+  );
+
+  useEffect(() => {
+    setFieldPage(1);
+  }, [selectedFarm?.id]);
+
+  useEffect(() => {
+    if (!isFarmsPage && !fieldsPending && !fieldsError && !farmsLoading) {
+      setFieldPage((page) => Math.min(page, fieldPageCount));
+    }
+  }, [isFarmsPage, fieldsPending, fieldsError, farmsLoading, fieldPageCount]);
 
   function openCreate() {
     dialogVersionRef.current += 1;
@@ -538,7 +559,7 @@ export default function FarmsFieldsPage({
                 <tr><th>FIELD NAME</th><th>FARM</th><th>TOTAL AREA</th><th>AVAILABLE AREA</th><th>ACTIONS</th></tr>
               </thead>
               <tbody>
-                {filteredFields.map((field) => (
+                {paginatedFields.map((field) => (
                   <tr key={field.id}>
                     <td><strong className="workspace-cell-title">{field.fieldName}</strong></td>
                     <td>{selectedFarm.name}</td>
@@ -575,6 +596,28 @@ export default function FarmsFieldsPage({
           </div>
         )}
 
+        {!isFarmsPage && !farmsLoading && !fieldsPending && selectedFarm?.id && filteredFields.length > 0 && (
+          <Pagination className="ff-farm-pagination" aria-label="Fields pagination">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious disabled={currentFieldPage === 1} onClick={() => setFieldPage(currentFieldPage - 1)} />
+              </PaginationItem>
+              {farmPageItems(currentFieldPage, fieldPageCount).map((item) => (
+                <PaginationItem key={item}>
+                  {typeof item === "number" ? (
+                    <PaginationLink isActive={currentFieldPage === item} aria-label={`Page ${item}`} onClick={() => setFieldPage(item)}>{item}</PaginationLink>
+                  ) : (
+                    <PaginationEllipsis />
+                  )}
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext disabled={currentFieldPage === fieldPageCount} onClick={() => setFieldPage(currentFieldPage + 1)} />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
+
         {isFarmsPage && !farmsLoading && filteredFarms.length > 0 && (
           <Pagination className="ff-farm-pagination" aria-label="Farm directory pagination">
             <PaginationContent>
@@ -600,7 +643,7 @@ export default function FarmsFieldsPage({
         {!isFarmsPage && (
           <div className="workspace-data-footer">
             <span>
-              Showing <strong>{fieldsPending ? "…" : filteredFields.length}</strong> fields
+              Showing <strong>{fieldsPending ? "…" : filteredFields.length ? `${(currentFieldPage - 1) * FIELDS_PER_PAGE + 1}–${Math.min(currentFieldPage * FIELDS_PER_PAGE, filteredFields.length)} of ${filteredFields.length}` : "0"}</strong> fields
             </span>
             <span>{selectedFarm?.name || "Select a farm"}</span>
           </div>
