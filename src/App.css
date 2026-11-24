@@ -338,6 +338,14 @@
 .ifc-preview-unread-dot{width:6px;height:6px;border-radius:50%;background:#6a9a62;flex-shrink:0;margin-left:auto}
 .ifc-notification-preview-state{padding:15px 5px;color:#8a968c;font-size:10px;line-height:1.5}
 .ifc-notification-preview-state button{display:block;border:0;background:none;padding:7px 0 0;color:#3c754b;font-size:10px;font-weight:700}
+/* Dashboard bell dropdown: keep preview rows on the dark popover surface. */
+html[data-ifc-theme="dark"] .notification-popover .ifc-notification-preview-row{background:transparent;color:#e5f0dc}
+html[data-ifc-theme="dark"] .notification-popover .ifc-notification-preview-row:hover,
+html[data-ifc-theme="dark"] .notification-popover .ifc-notification-preview-row:focus-visible{background:#29382b}
+html[data-ifc-theme="dark"] .notification-popover .ifc-notification-preview-row.is-read{opacity:1}
+html[data-ifc-theme="dark"] .notification-popover .ifc-notification-preview-row.is-read strong{color:#b3c1ad}
+html[data-ifc-theme="dark"] .notification-popover .ifc-notification-preview-state{color:#b3c1ad}
+html[data-ifc-theme="dark"] .notification-popover .ifc-notification-preview-state button{color:#c4e1b4}
 .ifc-settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
 .ifc-settings-card{padding:19px}
 .ifc-settings-card-heading{display:flex;align-items:center;gap:11px;padding-bottom:15px;border-bottom:1px solid #edf0eb}
