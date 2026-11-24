@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   Building2,
+  Folder,
   LandPlot,
   MapPinned,
   Pencil,
@@ -321,7 +322,10 @@ export default function FarmsFieldsPage({
       <div className="workspace-data-card surface-card ff-data-card">
         <div className="workspace-data-heading">
           <div>
-            <h2>{isFarmsPage ? "Farm directory" : "Fields in this farm"}</h2>
+            <h2 className={isFarmsPage ? "ff-farm-directory-title" : undefined}>
+              {isFarmsPage ? "Farm directory" : "Fields in this farm"}
+              {isFarmsPage && <Folder size={14} aria-hidden="true" />}
+            </h2>
             <p>
               {isFarmsPage
                 ? "View and manage all your registered farms in one place."
