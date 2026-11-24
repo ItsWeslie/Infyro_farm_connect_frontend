@@ -437,8 +437,8 @@ export default function FarmsFieldsPage({
       <div className="workspace-data-card surface-card ff-data-card">
         <div className="workspace-data-heading">
           <div>
-            <h2 className={isFarmsPage ? "ff-farm-directory-title" : undefined}>
-              {isFarmsPage && <FolderOpen size={14} aria-hidden="true" />}
+            <h2 className="ff-farm-directory-title">
+              {isFarmsPage ? <FolderOpen size={14} aria-hidden="true" /> : <MapPinned size={14} aria-hidden="true" />}
               {isFarmsPage ? "Farm directory" : "Fields in this farm"}
             </h2>
             <p>
