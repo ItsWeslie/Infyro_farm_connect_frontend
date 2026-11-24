@@ -4,6 +4,8 @@ import OverviewExpenseBreakdown from "./OverviewExpenseBreakdown";
 import OverviewRecentActivity from "./OverviewRecentActivity";
 import OverviewUpcomingMilestones from "./OverviewUpcomingMilestones";
 import { useEffect, useState } from "react";
+import UseAnimations from "react-useanimations";
+import arrowRight from "react-useanimations/lib/arrowRight";
 import {
   ArrowRight,
   CircleAlert,
@@ -79,7 +81,7 @@ function OverviewPage({ onNavigate, onAdd }) {
         </div>
         <div className="ifc-overview-actions">
           <button type="button" className="button-primary" onClick={() => onNavigate("Farms")}>
-            <MapPinned size={15} /> View farms
+            <UseAnimations animation={arrowRight} size={32} strokeColor="currentColor" /> View farms
           </button>
         </div>
       </section>
