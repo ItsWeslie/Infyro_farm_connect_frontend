@@ -16,10 +16,12 @@ import {
   Search,
   Sprout,
   Tractor,
+  TriangleAlert,
   X,
 } from "lucide-react";
 import { farmApi, fieldApi } from "../api/client";
 import { SkeletonBlock } from "./ui/Skeleton";
+import { Alert, AlertDescription } from "./ui/alert";
 import FarmDetailsDialog from "./farm-details/FarmDetailsDialog";
 import FieldFarmSelector from "./FieldFarmSelector";
 import {
@@ -624,7 +626,7 @@ export default function FarmsFieldsPage({
             </div>
             {formError && <div className="ff-error" role="alert">{formError}</div>}
             {!isFarmsPage && (
-              <div className="ff-form-context">
+              <div className={editing ? "ff-form-context ff-edit-field-context" : "ff-form-context"}>
                 <span>Farm</span>
                 <strong>{selectedFarm?.name || "No farm selected"}</strong>
               </div>
@@ -642,10 +644,10 @@ export default function FarmsFieldsPage({
               </>
             )}
             {!isFarmsPage && editing && (
-              <div className="dialog-note">
-                <Ruler size={16} />
-                <span>Current area: {areaLabel(editing.totalArea)}. The backend currently allows field name changes only; area is read-only.</span>
-              </div>
+              <Alert className="ff-field-area-warning" role="note">
+                <TriangleAlert size={16} aria-hidden="true" />
+                <AlertDescription>Once a field's area is assigned, it cannot be changed, as crop plantings may already be linked to it.</AlertDescription>
+              </Alert>
             )}
             <div className="dialog-actions">
               <button type="button" className="button-secondary" disabled={dialogBusy} onClick={() => setDialogOpen(false)}>Cancel</button>
