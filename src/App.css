@@ -481,8 +481,8 @@
 /* Keep the restored Overview hero aligned with the live dashboard panels. */
 .ifc-overview-welcome{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:18px;row-gap:0;margin-bottom:0}
 .ifc-overview-welcome>div:first-child{grid-column:1 / -1;min-width:0}
-.ifc-overview-welcome-subtitle{grid-column:1;grid-row:2;align-self:center;min-width:0}
-.ifc-overview-welcome .ifc-overview-actions{grid-column:2;grid-row:2;display:flex;align-items:center;align-self:center;justify-self:end;width:auto;gap:8px}
+.ifc-overview-welcome-subtitle{grid-column:1;grid-row:2;align-self:end;min-width:0}
+.ifc-overview-welcome .ifc-overview-actions{grid-column:2;grid-row:2;display:flex;align-items:center;align-self:end;justify-self:end;width:auto;gap:8px}
 .ifc-overview-hero{margin-bottom:0}
 @media(max-width:650px){
   .ifc-overview-welcome{column-gap:10px}
