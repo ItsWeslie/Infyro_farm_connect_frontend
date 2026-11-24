@@ -100,6 +100,12 @@ function Avatar({ small = false, name = "Ravi Kumar" }) {
     .toUpperCase() || "IF";
   return <div className={small ? "avatar avatar-small" : "avatar"}>{initials}</div>;
 }
+function formatNotificationMilestoneDate(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})(?:$|T)/.exec(value);
+  if (!match) return value;
+  const [, year, month, day] = match;
+  return `${day}/${month}/${year}`;
+}
 function formatNotificationPreviewTime(value) {
   if (!value) return "Recently received";
   const date = new Date(value);
@@ -619,7 +625,7 @@ function App() {
                         </span>
                         <span>
                           <strong>{item.title}</strong>
-                          <small>{item.eventDate ? "Milestone: " + item.eventDate : formatNotificationPreviewTime(item.scheduledAt)}</small>
+                          <small>{item.eventDate ? "Milestone: " + formatNotificationMilestoneDate(item.eventDate) : formatNotificationPreviewTime(item.scheduledAt)}</small>
                         </span>
                         {!item.read && <i className="ifc-preview-unread-dot" />}
                       </button>
