@@ -78,8 +78,8 @@ function OverviewPage({ onNavigate, onAdd }) {
           </p>
         </div>
         <div className="ifc-overview-actions">
-          <button type="button" className="button-primary" onClick={onAdd}>
-            <Plus size={15} /> Add new crop
+          <button type="button" className="button-primary" onClick={() => onNavigate("Farms")}>
+            <MapPinned size={15} /> View farms
           </button>
         </div>
       </section>
