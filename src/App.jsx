@@ -590,7 +590,7 @@ function App() {
                           notificationBellRef.current?.focus();
                         }}
                       >
-                        <UseAnimations animation={animatedClose} size={18} interaction="hover" strokeColor="currentColor" aria-hidden="true" />
+                        <UseAnimations animation={animatedClose} size={28} interaction="hover" strokeColor="currentColor" className="ifc-notification-close-icon" aria-hidden="true" />
                       </button>
                     </div>
                   </div>
