@@ -80,8 +80,8 @@ function OverviewPage({ onNavigate, onAdd }) {
           </p>
         </div>
         <div className="ifc-overview-actions">
-          <button type="button" className="button-primary" onClick={() => onNavigate("Farms")}>
-            <UseAnimations animation={arrowRight} size={32} strokeColor="currentColor" /> View farms
+          <button type="button" className="button-primary ifc-overview-farms-button" onClick={() => onNavigate("Farms")}>
+            View farms <UseAnimations animation={arrowRight} size={22} strokeColor="currentColor" />
           </button>
         </div>
       </section>
