@@ -1717,6 +1717,7 @@ html[data-ifc-theme="dark"] .dialog-actions .ff-edit-farm-save[data-save-state="
 .ff-field-farm-popover [data-slot="command-input-wrapper"]{height:34px;border-color:#e5ebe2;color:#748575;padding:0 8px}
 .ff-field-farm-popover [data-slot="command-input"]{height:32px;font-size:11px;padding:0;color:inherit;border:0;outline:none}
 .ff-field-farm-popover [data-slot="command-list"]{max-height:min(240px,calc(var(--radix-popover-content-available-height) - 48px))}
+.ff-field-farm-popover [data-slot="command-group"] [cmdk-group-items]{display:flex;flex-direction:column;gap:4px}
 .ff-field-farm-popover [data-slot="command-empty"]{font-size:11px;color:#748575;padding:14px 8px}
 .ff-field-farm-popover [data-slot="command-item"]{display:flex;align-items:center;gap:8px;min-height:32px;padding:7px 8px;font-size:11px;color:#405443;cursor:pointer;border-radius:6px}
 .ff-field-farm-popover [data-slot="command-item"] svg{width:15px;height:15px;color:#568052}
