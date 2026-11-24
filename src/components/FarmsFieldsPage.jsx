@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import UseAnimations from "react-useanimations";
 import loading2 from "react-useanimations/lib/loading2";
 import checkmark from "react-useanimations/lib/checkmark";
+import edit from "react-useanimations/lib/edit";
+import trash2 from "react-useanimations/lib/trash2";
 import {
   ArrowRight,
   Building2,
@@ -486,8 +488,30 @@ export default function FarmsFieldsPage({
                             <button type="button" className="ff-action-button" aria-haspopup="dialog" aria-label={`View details for ${farm.name}`} onClick={(event) => { detailsTriggerRef.current = event.currentTarget; setDetailsFarm(farm); }}>
                               <Eye size={13} aria-hidden="true" /> View details
                             </button>
-                            <button type="button" className="ff-icon-button" aria-label={`Edit ${farm.name}`} onClick={() => openEdit(farm)}><Pencil size={14} /></button>
-                            <button type="button" className="ff-icon-button ff-danger" aria-label={`Delete ${farm.name}`} disabled={deletingId === farm.id} onClick={() => deleteFarm(farm)}><Trash2 size={14} /></button>
+                            <UseAnimations
+                              animation={edit}
+                              size={14}
+                              interaction="hover"
+                              onClick={() => openEdit(farm)}
+                              aria-label={`Edit ${farm.name}`}
+                              render={(eventProps, animationProps) => (
+                                <button {...eventProps} type="button" className="ff-icon-button" aria-label={`Edit ${farm.name}`}>
+                                  <span {...animationProps} aria-hidden="true" />
+                                </button>
+                              )}
+                            />
+                            <UseAnimations
+                              animation={trash2}
+                              size={14}
+                              interaction="hover"
+                              onClick={() => deleteFarm(farm)}
+                              aria-label={`Delete ${farm.name}`}
+                              render={(eventProps, animationProps) => (
+                                <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label={`Delete ${farm.name}`} disabled={deletingId === farm.id}>
+                                  <span {...animationProps} aria-hidden="true" />
+                                </button>
+                              )}
+                            />
                           </div>
                         </td>
                       </tr>
