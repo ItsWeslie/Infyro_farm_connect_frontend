@@ -4,7 +4,6 @@ import animatedChevronDown from "react-useanimations/lib/chevronDown";
 import animatedUser from "react-useanimations/lib/user";
 import animatedSettings from "react-useanimations/lib/settings";
 import animatedLogOut from "react-useanimations/lib/logOut";
-import animatedClose from "react-useanimations/lib/xSquare";
 import animatedArrowRight from "react-useanimations/lib/arrowRight";
 import { useToast } from "./hooks/useToast";
 import ToastViewport from "./components/ui/ToastViewport";
@@ -590,7 +589,7 @@ function App() {
                           notificationBellRef.current?.focus();
                         }}
                       >
-                        <UseAnimations animation={animatedClose} size={28} interaction="hover" strokeColor="currentColor" className="ifc-notification-close-icon" aria-hidden="true" />
+                        <X size={18} strokeWidth={2} aria-hidden="true" />
                       </button>
                     </div>
                   </div>
