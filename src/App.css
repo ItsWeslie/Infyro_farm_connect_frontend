@@ -1838,7 +1838,10 @@ html[data-ifc-theme="dark"] .crop3-planting-group-heading,html[data-ifc-theme="d
 .ifc-date-trigger>span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ifc-date-trigger svg{color:#748575;flex-shrink:0}
 .crop3-planting-dialog .dialog-heading .ff-edit-farm-close{align-self:flex-start;width:28px;height:28px;flex:0 0 28px;padding:0;border-radius:6px}
-.crop3-planting-dialog .form-label{min-width:0}
+.crop3-planting-dialog .form-label{min-width:0;margin-top:14px}
+.crop3-planting-dialog .crop3-form-grid{margin-top:14px}
+.crop3-planting-dialog .crop3-form-grid .form-label{margin-top:0}
+@media(max-width:520px){.crop3-planting-dialog .crop3-form-grid .form-label+.form-label{margin-top:14px}}
 .crop3-optional{font-weight:400;color:#849185}
 .crop3-planting-dialog .crop3-area-info{margin:10px 0 12px;align-items:center;background:#eef5fb;border-color:#d6e5f1;color:#356488;padding:9px 11px}
 .crop3-planting-dialog .crop3-area-info>svg{margin:0}
