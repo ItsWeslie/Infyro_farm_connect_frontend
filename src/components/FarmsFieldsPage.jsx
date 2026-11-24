@@ -620,7 +620,7 @@ export default function FarmsFieldsPage({
                 <h2>{editing ? `Edit ${isFarmsPage ? "farm" : "field"}` : isFarmsPage ? "Add a farm" : "Add a field"}</h2>
                 <p>{isFarmsPage ? "Give this farm a name you will recognize." : `Add a field under ${selectedFarm?.name || "your selected farm"}.`}</p>
               </div>
-              <button type="button" className={isFarmsPage && editing ? "icon-button ff-edit-farm-close" : "icon-button"} aria-label="Close dialog" onClick={() => setDialogOpen(false)} disabled={dialogBusy}><X size={19} /></button>
+              <button type="button" className={(isFarmsPage && editing) || (!isFarmsPage && !editing) ? "icon-button ff-edit-farm-close" : "icon-button"} aria-label="Close dialog" onClick={() => setDialogOpen(false)} disabled={dialogBusy}><X size={19} /></button>
             </div>
             {formError && <div className="ff-error" role="alert">{formError}</div>}
             {!isFarmsPage && (
