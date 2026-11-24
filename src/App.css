@@ -1623,3 +1623,16 @@ html[data-ifc-theme="dark"] .ff-details-field-utilization>span,html[data-ifc-the
 html[data-ifc-theme="dark"] .ff-details-fields-empty strong{color:#e5f0dc}
 html[data-ifc-theme="dark"] .ff-details-fields-empty svg{color:#c5e0b8}
 @media(prefers-reduced-motion:reduce){.ff-details-fields [data-slot="table-row"]{transition:none}}
+
+/* Farm details Crops tab: shadcn status badges. */
+.ff-details-crops .ff-details-table{min-width:710px}
+.ff-details-crop-status[data-slot="badge"]{font-size:9px;font-weight:700;line-height:1.5;padding:3px 8px;border:1px solid transparent;border-radius:999px;background:#edf0eb;color:#748575}
+.ff-details-crop-status[data-status="active"],.ff-details-crop-status[data-status="completed"]{background:#eaf2e5;color:#46734c}
+.ff-details-crop-status[data-status="harvesting"]{background:#fbf2df;color:#98733b}
+.ff-details-crop-status[data-status="planned"]{background:#e9eff6;color:#566f8e}
+.ff-details-crop-status[data-status="cancelled"]{background:#f6eae6;color:#a45d53}
+html[data-ifc-theme="dark"] .ff-details-crop-status[data-slot="badge"]{background:#364239;color:#c0cabe}
+html[data-ifc-theme="dark"] .ff-details-crop-status[data-status="active"],html[data-ifc-theme="dark"] .ff-details-crop-status[data-status="completed"]{background:#2c472f;color:#c5e0b8}
+html[data-ifc-theme="dark"] .ff-details-crop-status[data-status="harvesting"]{background:#4a4028;color:#f0d595}
+html[data-ifc-theme="dark"] .ff-details-crop-status[data-status="planned"]{background:#303e50;color:#b9d0eb}
+html[data-ifc-theme="dark"] .ff-details-crop-status[data-status="cancelled"]{background:#48342e;color:#f0bca8}
