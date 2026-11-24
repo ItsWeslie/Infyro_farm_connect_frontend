@@ -141,8 +141,8 @@ function OverviewPage({ onNavigate, onAdd }) {
             <circle cx="370" cy="56" r="54" fill="#fef3c7" opacity="0.35" />
 
             <g opacity="0.8" fill="#ffffff">
-              <path d="M210 50 a12 12 0 0 1 20 -4 a16 16 0 0 1 28 2 a10 10 0 0 1 12 10 l-60 0 a8 8 0 0 1 0 -8 z" />
-              <path d="M430 78 a9 9 0 0 1 15 -3 a12 12 0 0 1 21 2 a8 8 0 0 1 9 8 l-45 0 a6 6 0 0 1 0 -7 z" opacity="0.65" />
+              <path className="ifc-overview-hero-cloud ifc-overview-hero-cloud--first" d="M210 50 a12 12 0 0 1 20 -4 a16 16 0 0 1 28 2 a10 10 0 0 1 12 10 l-60 0 a8 8 0 0 1 0 -8 z" />
+              <path className="ifc-overview-hero-cloud ifc-overview-hero-cloud--second" d="M430 78 a9 9 0 0 1 15 -3 a12 12 0 0 1 21 2 a8 8 0 0 1 9 8 l-45 0 a6 6 0 0 1 0 -7 z" opacity="0.65" />
             </g>
 
             <path d="M120 230 C200 130 340 105 520 160 L520 230 Z" fill="url(#overviewHillBackGrad)" />
