@@ -1636,3 +1636,17 @@ html[data-ifc-theme="dark"] .ff-details-crop-status[data-status="active"],html[d
 html[data-ifc-theme="dark"] .ff-details-crop-status[data-status="harvesting"]{background:#4a4028;color:#f0d595}
 html[data-ifc-theme="dark"] .ff-details-crop-status[data-status="planned"]{background:#303e50;color:#b9d0eb}
 html[data-ifc-theme="dark"] .ff-details-crop-status[data-status="cancelled"]{background:#48342e;color:#f0bca8}
+
+/* Farm details Activities tab — shadcn table and status badges. */
+.ff-details-activities .ff-details-table{min-width:690px}
+.ff-details-activities [data-slot="table-cell"]{vertical-align:top}
+.ff-details-activity-copy{min-width:200px;max-width:340px;white-space:normal;overflow-wrap:anywhere;line-height:1.5}
+.ff-details-activity-copy>strong,.ff-details-activity-crop>strong{font:700 11px/1.5 Manrope,sans-serif}
+.ff-details-activity-copy p{margin:4px 0 0;font-size:10px;color:#748575}
+.ff-details-activity-copy b{font-weight:650}
+.ff-details-activity-crop{display:flex;flex-direction:column;gap:3px;white-space:normal;min-width:95px;max-width:150px;overflow-wrap:anywhere}
+.ff-details-activity-crop small{font-size:10px;color:#748575}
+.ff-details-activities-warning{margin-bottom:10px}
+.ff-details-activity-status[data-status="in_progress"]{background:#fbf2df;color:#98733b}
+html[data-ifc-theme="dark"] .ff-details-activity-copy p,html[data-ifc-theme="dark"] .ff-details-activity-crop small{color:#b3c1ad}
+html[data-ifc-theme="dark"] .ff-details-activity-status[data-status="in_progress"]{background:#4a4028;color:#f0d595}
