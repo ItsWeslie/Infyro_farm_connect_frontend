@@ -32,7 +32,7 @@ function DatePicker({ id, value, onChange, min, required = false, disabled = fal
           <ChevronDown size={13} aria-hidden="true" />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="ifc-date-popover" align="start" sideOffset={5} collisionPadding={12}>
+      <PopoverContent className="ifc-date-popover" side="top" align="start" sideOffset={5} collisionPadding={12}>
         <Calendar mode="single" selected={selected} required={required}
           defaultMonth={minimum && (!selected || selected < minimum) ? minimum : selected}
           startMonth={minimum} disabled={minimum ? { before: minimum } : undefined}
