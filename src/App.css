@@ -1756,4 +1756,7 @@ html[data-ifc-theme="dark"] .ifc-shadcn-alert[data-variant="destructive"]{color:
 html[data-ifc-theme="dark"] .dialog-card .ff-edit-field-context{background:#2b412d;color:#b9c9b2}
 html[data-ifc-theme="dark"] .dialog-card .ff-edit-field-context strong{color:#e5f0dc}
 .dialog-card .ff-field-area-warning{margin-top:15px;background:#fbf8ed;border-color:#eee5c8;color:#806522;font-size:10px}
+.dialog-card .ff-field-area-warning{grid-template-columns:16px minmax(0,1fr);align-items:center;column-gap:9px}
+.ff-field-area-warning-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;align-self:center;flex-shrink:0}
+.ff-field-area-warning-icon svg [stroke]:not([stroke="none"]){stroke:currentColor}
 html[data-ifc-theme="dark"] .dialog-card .ff-field-area-warning{background:#393321;border-color:#5e5030;color:#f1d89c}
