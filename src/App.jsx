@@ -1,9 +1,11 @@
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import UseAnimations from "react-useanimations";
 import animatedChevronDown from "react-useanimations/lib/chevronDown";
 import animatedUser from "react-useanimations/lib/user";
 import animatedSettings from "react-useanimations/lib/settings";
 import animatedLogOut from "react-useanimations/lib/logOut";
+import animatedClose from "react-useanimations/lib/xSquare";
+import animatedArrowRight from "react-useanimations/lib/arrowRight";
 import { useToast } from "./hooks/useToast";
 import ToastViewport from "./components/ui/ToastViewport";
 import {
@@ -98,6 +100,12 @@ function Avatar({ small = false, name = "Ravi Kumar" }) {
     .toUpperCase() || "IF";
   return <div className={small ? "avatar avatar-small" : "avatar"}>{initials}</div>;
 }
+function formatNotificationMilestoneDate(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})(?:$|T)/.exec(value);
+  if (!match) return value;
+  const [, year, month, day] = match;
+  return `${day}/${month}/${year}`;
+}
 function formatNotificationPreviewTime(value) {
   if (!value) return "Recently received";
   const date = new Date(value);
@@ -141,6 +149,32 @@ function App() {
   const [search, setSearch] = useState("");
   const [mobileNav, setMobileNav] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const notificationPopoverRef = useRef(null);
+  const notificationBellRef = useRef(null);
+
+  useEffect(() => {
+    if (!notificationsOpen) return;
+
+    function handleOutsidePointerDown(event) {
+      if (notificationPopoverRef.current && !notificationPopoverRef.current.contains(event.target)) {
+        setNotificationsOpen(false);
+      }
+    }
+
+    function handleEscape(event) {
+      if (event.key === "Escape") {
+        setNotificationsOpen(false);
+        notificationBellRef.current?.focus();
+      }
+    }
+
+    document.addEventListener("pointerdown", handleOutsidePointerDown, true);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("pointerdown", handleOutsidePointerDown, true);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [notificationsOpen]);
   const [profileOpen, setProfileOpen] = useState(false);
   const [topProfileOpen, setTopProfileOpen] = useState(false);
   const { toast, notify, dismissToast } = useToast();
@@ -520,8 +554,9 @@ function App() {
               <Moon className="theme-toggle-moon" size={12} aria-hidden="true" />
               <span className="theme-toggle-thumb" aria-hidden="true" />
             </button>
-            <div className="popover-anchor">
+            <div className="popover-anchor" ref={notificationPopoverRef}>
               <button
+                ref={notificationBellRef}
                 className={
                   "icon-button top-icon " +
                   (notificationsOpen ? "icon-selected" : "")
@@ -543,7 +578,21 @@ function App() {
                 <div className="notification-popover">
                   <div className="popover-heading">
                     <strong>Notifications</strong>
-                    <span>{notificationUnreadCount > 0 ? notificationUnreadCount + " unread" : "All caught up"}</span>
+                    <div className="ifc-notification-header-actions">
+                      <span>{notificationUnreadCount > 0 ? notificationUnreadCount + " unread" : "All caught up"}</span>
+                      <button
+                        type="button"
+                        className="ifc-notification-close"
+                        aria-label="Close notifications"
+                        title="Close notifications"
+                        onClick={() => {
+                          setNotificationsOpen(false);
+                          notificationBellRef.current?.focus();
+                        }}
+                      >
+                        <UseAnimations animation={animatedClose} size={18} interaction="hover" strokeColor="currentColor" aria-hidden="true" />
+                      </button>
+                    </div>
                   </div>
                   {notificationSummaryError ? (
                     <div className="ifc-notification-preview-state">
@@ -576,7 +625,7 @@ function App() {
                         </span>
                         <span>
                           <strong>{item.title}</strong>
-                          <small>{item.eventDate ? "Milestone: " + item.eventDate : formatNotificationPreviewTime(item.scheduledAt)}</small>
+                          <small>{item.eventDate ? "Milestone: " + formatNotificationMilestoneDate(item.eventDate) : formatNotificationPreviewTime(item.scheduledAt)}</small>
                         </span>
                         {!item.read && <i className="ifc-preview-unread-dot" />}
                       </button>
@@ -589,7 +638,7 @@ function App() {
                       setNotificationsOpen(false);
                     }}
                   >
-                    View all notifications <ArrowRight size={14} />
+                    View all notifications <UseAnimations animation={animatedArrowRight} size={14} interaction="hover" strokeColor="currentColor" className="ifc-notification-footer-arrow" aria-hidden="true" />
                   </button>
                 </div>
               )}
