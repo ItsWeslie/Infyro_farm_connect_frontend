@@ -11,13 +11,11 @@ import {
   FolderOpen,
   LandPlot,
   MapPinned,
-  Pencil,
   Plus,
   Ruler,
   Search,
   Sprout,
   Tractor,
-  Trash2,
   X,
 } from "lucide-react";
 import { farmApi, fieldApi } from "../api/client";
@@ -546,8 +544,26 @@ export default function FarmsFieldsPage({
                     <td>{areaLabel(field.availableArea)}</td>
                     <td>
                       <div className="ff-row-actions">
-                        <button type="button" className="ff-icon-button" aria-label={`Edit ${field.fieldName}`} onClick={() => openEdit(field)}><Pencil size={14} /></button>
-                        <button type="button" className="ff-icon-button ff-danger" aria-label={`Delete ${field.fieldName}`} disabled={deletingId === field.id} onClick={() => deleteField(field)}><Trash2 size={14} /></button>
+                        <UseAnimations
+                          animation={edit}
+                          size={14}
+                          interaction="hover"
+                          render={(eventProps, animationProps) => (
+                            <button {...eventProps} type="button" className="ff-icon-button" aria-label={`Edit ${field.fieldName}`} onClick={() => openEdit(field)}>
+                              <span {...animationProps} aria-hidden="true" />
+                            </button>
+                          )}
+                        />
+                        <UseAnimations
+                          animation={trash2}
+                          size={14}
+                          interaction="hover"
+                          render={(eventProps, animationProps) => (
+                            <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label={`Delete ${field.fieldName}`} disabled={deletingId === field.id} onClick={() => deleteField(field)}>
+                              <span {...animationProps} aria-hidden="true" />
+                            </button>
+                          )}
+                        />
                       </div>
                     </td>
                   </tr>
