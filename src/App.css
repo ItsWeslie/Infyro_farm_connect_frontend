@@ -1827,3 +1827,34 @@ html[data-ifc-theme="dark"] .workspace-table.ff-table thead th:last-child,html[d
 .crop3-planting-option-copy strong{font-size:11px;font-weight:700}
 .crop3-planting-option-copy small{font-size:9px;font-weight:400;color:#748575}
 html[data-ifc-theme="dark"] .crop3-planting-group-heading,html[data-ifc-theme="dark"] .crop3-planting-option-copy small{color:#b3c1ad}
+
+/* Planting dialog: shared shadcn controls and dashboard theme. */
+.ifc-shadcn-input{width:100%;min-width:0;height:42px;border:1px solid #dfe7dc;border-radius:8px;padding:0 11px;background:#fff;color:#34473a;font:inherit;font-size:12px;outline:none;transition:border-color .18s,box-shadow .18s}
+.ifc-shadcn-input:focus-visible,.ifc-form-select:focus-visible,.ifc-date-trigger:focus-visible{border-color:#8aab8c;box-shadow:0 0 0 3px rgba(112,151,117,.12);outline:none}
+.ifc-shadcn-input:disabled,.ifc-date-trigger:disabled{opacity:.55;cursor:not-allowed}
+.ifc-select-trigger.ifc-form-select,.ifc-date-trigger{display:flex;align-items:center;gap:8px;width:100%;min-width:0;height:42px;min-height:42px;border:1px solid #dfe7dc;border-radius:8px;padding:0 11px;background:#fff;color:#34473a;font:inherit;font-size:12px;font-weight:400;text-align:left;cursor:pointer}
+.ifc-select-trigger.ifc-form-select:hover:not(:disabled),.ifc-date-trigger:hover:not(:disabled),.ifc-date-trigger[data-state="open"]{background:#f5f8f2;border-color:#cadbc4}
+.ifc-form-select[data-placeholder],.ifc-date-trigger[data-placeholder="true"]{color:#849185}
+.ifc-date-trigger>span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ifc-date-trigger svg{color:#748575;flex-shrink:0}
+.crop3-planting-dialog .dialog-heading .ff-edit-farm-close{align-self:flex-start;width:28px;height:28px;flex:0 0 28px;padding:0;border-radius:6px}
+.crop3-planting-dialog .form-label{min-width:0}
+.crop3-optional{font-weight:400;color:#849185}
+.crop3-planting-dialog .crop3-area-info{margin:10px 0 12px;align-items:center;background:#eef5fb;border-color:#d6e5f1;color:#356488;padding:9px 11px}
+.crop3-planting-dialog .crop3-area-info>svg{margin:0}
+.ifc-date-popover[data-slot="popover-content"]{z-index:110;width:auto;max-width:var(--radix-popover-content-available-width);padding:10px;border:1px solid #e5ebe2;border-radius:10px;background:#fff;color:#405443;box-shadow:0 12px 30px #14291e20;outline:none}
+.ifc-shadcn-calendar{--rdp-accent-color:#315d3e;--rdp-accent-background-color:#edf4e8;--rdp-day-width:34px;--rdp-day-height:34px;--rdp-day_button-width:32px;--rdp-day_button-height:32px;--rdp-day_button-border-radius:6px;--rdp-selected-border:1px solid #568052;font-size:11px}
+.ifc-shadcn-calendar .rdp-month_caption{font-size:12px;font-weight:700}
+.ifc-shadcn-calendar .rdp-day_button{font-size:11px;color:inherit}
+.ifc-shadcn-calendar .rdp-day_button:hover:not(:disabled){background:#edf4e8}
+.ifc-shadcn-calendar .rdp-selected .rdp-day_button{background:#286044;color:#fff}
+.ifc-shadcn-calendar .rdp-day_button:focus-visible{outline:2px solid #719b62;outline-offset:-2px}
+.ifc-shadcn-calendar .rdp-chevron{fill:currentColor}
+.ifc-date-clear{display:block;margin-top:6px;width:100%;padding:7px;border:0;border-radius:6px;background:#edf4e8;color:#315d3e;font-size:11px}
+html[data-ifc-theme="dark"] .ifc-shadcn-input,html[data-ifc-theme="dark"] .ifc-select-trigger.ifc-form-select,html[data-ifc-theme="dark"] .ifc-date-trigger,html[data-ifc-theme="dark"] .ifc-date-popover[data-slot="popover-content"]{background:#26352a;color:#e5f0dc;border-color:rgba(203,226,194,.15)}
+html[data-ifc-theme="dark"] .ifc-select-trigger.ifc-form-select:hover:not(:disabled),html[data-ifc-theme="dark"] .ifc-date-trigger:hover:not(:disabled),html[data-ifc-theme="dark"] .ifc-date-trigger[data-state="open"]{background:#344b35;border-color:#59745b}
+html[data-ifc-theme="dark"] .ifc-date-trigger svg,html[data-ifc-theme="dark"] .crop3-optional,html[data-ifc-theme="dark"] .ifc-form-select[data-placeholder],html[data-ifc-theme="dark"] .ifc-date-trigger[data-placeholder="true"]{color:#b3c1ad}
+html[data-ifc-theme="dark"] .crop3-planting-dialog .crop3-area-info{background:#243847;border-color:#395364;color:#b8d8ee}
+html[data-ifc-theme="dark"] .ifc-shadcn-calendar{--rdp-accent-color:#c5e0b8;--rdp-accent-background-color:#344b35;--rdp-selected-border:1px solid #719b62}
+html[data-ifc-theme="dark"] .ifc-shadcn-calendar .rdp-day_button:hover:not(:disabled),html[data-ifc-theme="dark"] .ifc-date-clear{background:#344b35;color:#e5f0dc}
+html[data-ifc-theme="dark"] .ifc-shadcn-calendar .rdp-selected .rdp-day_button{background:#49634a;color:#fff}
