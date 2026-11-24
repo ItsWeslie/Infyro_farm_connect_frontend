@@ -367,7 +367,7 @@ export default function FarmsFieldsPage({
           {isFarmsPage ? <Tractor size={23} /> : <MapPinned size={23} />}
         </div>
         <div className="workspace-title-copy">
-          <h1>{isFarmsPage ? "Your farms" : "Field directory"}</h1>
+          <h1>{isFarmsPage ? "Your farms" : "Your fields"}</h1>
           <p>
             {isFarmsPage
               ? "Create and manage the farms connected to your account."
