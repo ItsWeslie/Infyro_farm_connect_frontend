@@ -860,10 +860,14 @@ export default function CropManagementPage({
                       <td><div className="ff-row-actions">
                         <button type="button" className="ff-icon-button" aria-label="Edit activity" onClick={() => openEditActivity(activity)} disabled={["COMPLETED", "CANCELLED"].includes(activity.status)}><Pencil size={14} /></button>
                         {ACTIVITY_TRANSITIONS[activity.status]?.length > 0 && (
-                          <select className="crop3-action-select" aria-label="Change activity status" defaultValue="" onChange={(event) => { changeActivityStatus(activity, event.target.value); event.target.value = ""; }}>
-                            <option value="" disabled>Move to…</option>
-                            {ACTIVITY_TRANSITIONS[activity.status].map((next) => <option key={next} value={next}>{humanize(next)}</option>)}
-                          </select>
+                          <Select value="" onValueChange={(next) => changeActivityStatus(activity, next)}>
+                            <SelectTrigger className="crop3-action-select" aria-label="Change activity status">
+                              <SelectValue placeholder="Move to…" />
+                            </SelectTrigger>
+                            <SelectContent className="crop3-action-menu" align="end">
+                              {ACTIVITY_TRANSITIONS[activity.status].map((next) => <SelectItem key={next} value={next}>{humanize(next)}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
                         )}
                         <button type="button" className="ff-icon-button ff-danger" aria-label="Delete activity" disabled={activity.status !== "PLANNED" || deletingId === "activity-" + activity.id} onClick={() => deleteActivity(activity)}><Trash2 size={14} /></button>
                       </div></td>
@@ -896,10 +900,14 @@ export default function CropManagementPage({
                       <td><div className="ff-row-actions">
                         <button type="button" className="ff-icon-button" aria-label={"Edit " + planting.cropTypeName + " planting"} disabled={["COMPLETED", "CANCELLED"].includes(planting.status)} onClick={() => openEditPlanting(planting)}><Pencil size={14} /></button>
                         {transitions.length > 0 && (
-                          <select className="crop3-action-select" aria-label="Change planting status" defaultValue="" onChange={(event) => { changePlantingStatus(planting, event.target.value); event.target.value = ""; }}>
-                            <option value="" disabled>Move to…</option>
-                            {transitions.map((next) => <option key={next} value={next}>{humanize(next)}</option>)}
-                          </select>
+                          <Select value="" onValueChange={(next) => changePlantingStatus(planting, next)}>
+                            <SelectTrigger className="crop3-action-select" aria-label="Change planting status">
+                              <SelectValue placeholder="Move to…" />
+                            </SelectTrigger>
+                            <SelectContent className="crop3-action-menu" align="end">
+                              {transitions.map((next) => <SelectItem key={next} value={next}>{humanize(next)}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
                         )}
                         <button type="button" className="ff-icon-button ff-danger" aria-label={"Delete " + planting.cropTypeName + " planting"} disabled={planting.status !== "PLANNED" || deletingId === "planting-" + planting.id} onClick={() => deletePlanting(planting)}><Trash2 size={14} /></button>
                       </div></td>

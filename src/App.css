@@ -191,7 +191,6 @@ html[data-ifc-theme="dark"] .dialog-card .ff-form-context strong { color: #e5f0d
 .crop3-planting-select select{height:36px;max-width:310px;border:1px solid #e8ece5;border-radius:8px;padding:0 10px;background:#fff;color:#526454;font-size:10px}
 .crop3-description{max-width:260px;white-space:normal;line-height:1.45}
 .crop3-subtext{display:block;max-width:260px;margin-top:4px;color:#99a39a;font-size:9px;white-space:normal;line-height:1.45}
-.crop3-action-select{height:29px;max-width:105px;border:1px solid #e5ebe2;border-radius:7px;padding:0 5px;background:#fff;color:#58735b;font-size:9px}
 .ifc-select-trigger{display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:0 9px;border:1px solid #e5ebe2;border-radius:7px;background:#fff;color:#526454;font:inherit;font-size:10px;cursor:pointer;text-align:left;white-space:nowrap;transition:background .16s,border-color .16s}
 .ifc-select-trigger [data-slot="select-value"]{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .ifc-select-trigger [data-slot="select-icon"]{display:grid;place-items:center;flex-shrink:0;color:#748575}
@@ -206,11 +205,14 @@ html[data-ifc-theme="dark"] .dialog-card .ff-form-context strong { color: #e5f0d
 .ifc-select-indicator{position:absolute;right:8px;display:grid;place-items:center}
 .ifc-select-scroll{display:flex;align-items:center;justify-content:center;height:22px;color:inherit}
 .crop3-status-filter{height:34px;min-width:145px}
+.ifc-select-trigger.crop3-action-select{height:29px;min-height:29px;width:94px;max-width:105px;padding:0 7px;gap:5px;font-size:9px;flex-shrink:0}
+.ifc-select-trigger.crop3-action-select [data-slot="select-value"]{flex:1}
+.ifc-select-content.crop3-action-menu{min-width:max(120px,var(--radix-select-trigger-width))}
 .crop3-status-label{font-size:9px;color:#748575}
 /* Radix Select locks body scrolling and compensates for the removed scrollbar.
    The document already reserves a stable scrollbar gutter; keep its scrollbar
    and avoid a second width adjustment while this non-dialog filter is open. */
-body[data-scroll-locked="1"]:has(.crop3-status-filter[data-state="open"]){
+body[data-scroll-locked="1"]:has(:is(.crop3-status-filter,.crop3-action-select)[data-state="open"]){
   overflow:visible!important;
   margin-right:0!important;
   --removed-body-scroll-bar-size:0px!important;
@@ -244,7 +246,7 @@ html[data-ifc-theme="dark"] .ifc-select-item[data-highlighted]{background:#3b563
   .crop3-data-card .workspace-table{min-width:900px}
   .crop3-data-card .workspace-toolbar{align-items:stretch}
   .crop3-status-filter{flex:1}
-  .crop3-action-select{max-width:88px}
+  .ifc-select-trigger.crop3-action-select{width:88px;max-width:88px}
 }
 
 /* Phase 4: backend-backed expense ledger and harvest records */
@@ -1788,11 +1790,11 @@ html[data-ifc-theme="dark"] .dialog-card .ff-edit-field-context strong{color:#e5
 .ff-field-area-warning-icon svg [stroke]:not([stroke="none"]){stroke:currentColor}
 html[data-ifc-theme="dark"] .dialog-card .ff-field-area-warning{background:#393321;border-color:#5e5030;color:#f1d89c}
 
-/* Dark theme: comfortable header height and rounded header ends for Farms and Fields. */
-html[data-ifc-theme="dark"] .workspace-table.ff-table{border-collapse:separate;border-spacing:0}
-html[data-ifc-theme="dark"] .workspace-table.ff-table thead th{height:36px;box-sizing:border-box;padding:10px 9px;line-height:16px;vertical-align:middle}
-html[data-ifc-theme="dark"] .workspace-table.ff-table thead th:first-child{border-radius:6px 0 0 6px}
-html[data-ifc-theme="dark"] .workspace-table.ff-table thead th:last-child{border-radius:0 6px 6px 0}
+/* Dark theme: comfortable header height and rounded header ends for Farms, Fields and Crops. */
+html[data-ifc-theme="dark"] .workspace-table.ff-table,html[data-ifc-theme="dark"] .workspace-table.crop3-table{border-collapse:separate;border-spacing:0}
+html[data-ifc-theme="dark"] .workspace-table.ff-table thead th,html[data-ifc-theme="dark"] .workspace-table.crop3-table thead th{height:36px;box-sizing:border-box;padding:10px 9px;line-height:16px;vertical-align:middle}
+html[data-ifc-theme="dark"] .workspace-table.ff-table thead th:first-child,html[data-ifc-theme="dark"] .workspace-table.crop3-table thead th:first-child{border-radius:6px 0 0 6px}
+html[data-ifc-theme="dark"] .workspace-table.ff-table thead th:last-child,html[data-ifc-theme="dark"] .workspace-table.crop3-table thead th:last-child{border-radius:0 6px 6px 0}
 
 /* Keep field pagination inline with the result count and selected farm. */
 .ff-data-card .ff-fields-footer{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px}
