@@ -75,10 +75,10 @@ function OverviewPage({ onNavigate, onAdd }) {
           <h1>
             Good day, {userName} <span className="wave">✳</span>
           </h1>
+          <p>
+            Here’s what’s happening across your farms today.
+          </p>
         </div>
-        <p className="ifc-overview-welcome-subtitle">
-          Here’s what’s happening across your farms today.
-        </p>
         <div className="ifc-overview-actions">
           <button type="button" className="button-primary ifc-overview-farms-button" onClick={() => onNavigate("Farms")}>
             View farms <UseAnimations animation={arrowRight} size={22} strokeColor="currentColor" />
