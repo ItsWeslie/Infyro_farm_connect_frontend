@@ -2,8 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   Building2,
-  ChevronLeft,
-  ChevronRight,
   Folder,
   LandPlot,
   MapPinned,
@@ -18,6 +16,15 @@ import {
 } from "lucide-react";
 import { farmApi, fieldApi } from "../api/client";
 import { SkeletonBlock } from "./ui/Skeleton";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationEllipsis,
+} from "./ui/pagination";
 import { useConfirmDialog } from "../context/ConfirmDialogContext";
 
 function unwrapList(response) {
@@ -494,19 +501,25 @@ export default function FarmsFieldsPage({
         )}
 
         {isFarmsPage && !farmsLoading && filteredFarms.length > 0 && (
-          <nav className="ff-farm-pagination" aria-label="Farm directory pagination">
-            <button type="button" className="ff-page-button ff-page-direction" disabled={currentFarmPage === 1} onClick={() => setFarmPage(currentFarmPage - 1)} aria-label="Previous page">
-              <ChevronLeft size={14} aria-hidden="true" /> Previous
-            </button>
-            {farmPageItems(currentFarmPage, farmPageCount).map((item) => (
-              typeof item === "number" ? (
-                <button key={item} type="button" className="ff-page-button" aria-label={`Page ${item}`} aria-current={currentFarmPage === item ? "page" : undefined} onClick={() => setFarmPage(item)}>{item}</button>
-              ) : <span key={item} className="ff-page-ellipsis" aria-hidden="true">…</span>
-            ))}
-            <button type="button" className="ff-page-button ff-page-direction" disabled={currentFarmPage === farmPageCount} onClick={() => setFarmPage(currentFarmPage + 1)} aria-label="Next page">
-              Next <ChevronRight size={14} aria-hidden="true" />
-            </button>
-          </nav>
+          <Pagination className="ff-farm-pagination" aria-label="Farm directory pagination">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious disabled={currentFarmPage === 1} onClick={() => setFarmPage(currentFarmPage - 1)} />
+              </PaginationItem>
+              {farmPageItems(currentFarmPage, farmPageCount).map((item) => (
+                <PaginationItem key={item}>
+                  {typeof item === "number" ? (
+                    <PaginationLink isActive={currentFarmPage === item} aria-label={`Page ${item}`} onClick={() => setFarmPage(item)}>{item}</PaginationLink>
+                  ) : (
+                    <PaginationEllipsis />
+                  )}
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext disabled={currentFarmPage === farmPageCount} onClick={() => setFarmPage(currentFarmPage + 1)} />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         )}
 
         {!isFarmsPage && (
