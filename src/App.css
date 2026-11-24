@@ -86,7 +86,8 @@ html[data-ifc-theme="dark"] .notification-popover .ifc-notification-close:hover{
 /* Live Farms & Fields workspace */
 .ff-data-card { padding-bottom: 0; }
 .ff-data-card .ff-farm-directory-title{display:flex;align-items:center;gap:6px}
-.ff-data-card .ff-farm-directory-title svg{flex-shrink:0;color:currentColor}
+.ff-data-card .ff-farm-directory-title svg{flex-shrink:0;color:#568052}
+html[data-ifc-theme="dark"] .ff-data-card .ff-farm-directory-title svg{color:#c5e0b8}
 /* shadcn/ui Pagination — compact Farm directory theme overrides. */
 .ff-data-card .ff-farm-pagination{padding:12px 0}
 .ff-farm-pagination [data-slot="pagination-content"]{list-style:none;padding:0;margin:0;gap:4px}
