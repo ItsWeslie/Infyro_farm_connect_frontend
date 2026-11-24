@@ -1523,3 +1523,40 @@ html[data-ifc-theme="dark"] .ff-farm-details-heading [data-slot="dialog-descript
 @keyframes ifc-shadcn-dialog-in{from{opacity:0;transform:translate(-50%,-50%) scale(.98)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
 @media(max-width:650px){.ff-farm-details-dialog{padding:16px}.ff-farm-details-heading [data-slot="dialog-title"]{font-size:18px}}
 @media(prefers-reduced-motion:reduce){.ifc-shadcn-dialog-overlay,.ifc-shadcn-dialog-content{animation:none}}
+
+/* shadcn Tabs: shared primitives and farm detail layout. */
+.ifc-shadcn-tabs{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ifc-shadcn-tabs[data-orientation="vertical"]{flex-direction:row}
+.ifc-shadcn-tabs-list{display:flex;align-items:center;gap:4px;padding:3px;background:#edf4e8;border-radius:8px;min-width:0}
+.ifc-shadcn-tabs[data-orientation="vertical"] .ifc-shadcn-tabs-list{flex-direction:column;align-items:stretch}
+.ifc-shadcn-tabs-trigger{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:6px;flex:0 0 auto;min-height:34px;padding:7px 12px;border:0;border-radius:6px;background:transparent;color:#627963;font-size:11px;font-weight:650;white-space:nowrap;cursor:pointer;transition:color .18s ease,background .18s ease}
+.ifc-shadcn-tabs-trigger svg{flex-shrink:0}
+.ifc-shadcn-tabs-trigger[data-state="active"]{color:#315d3e;background:#fff}
+.ifc-shadcn-tabs-trigger:disabled{opacity:.5;cursor:default}
+.ifc-shadcn-tabs-trigger:hover:not(:disabled){color:#315d3e}
+.ifc-shadcn-tabs-trigger:focus-visible,.ifc-shadcn-tabs-content:focus-visible{outline:2px solid #6c9b62;outline-offset:-2px}
+.ifc-shadcn-tabs-line{border-radius:0;padding:0;background:transparent;border-bottom:1px solid #e5ebe2}
+.ifc-shadcn-tabs-line .ifc-shadcn-tabs-trigger{border-radius:0;border-bottom:2px solid transparent}
+.ifc-shadcn-tabs-line .ifc-shadcn-tabs-trigger[data-state="active"]{background:transparent;border-color:#568052}
+.ifc-shadcn-tabs-content{min-width:0;flex:1;outline:none}
+html[data-ifc-theme="dark"] .ifc-shadcn-tabs-list{background:#26382b}
+html[data-ifc-theme="dark"] .ifc-shadcn-tabs-trigger{color:#b3c1ad}
+html[data-ifc-theme="dark"] .ifc-shadcn-tabs-trigger[data-state="active"]{background:#344b35;color:#e5f0dc}
+html[data-ifc-theme="dark"] .ifc-shadcn-tabs-trigger:hover:not(:disabled){color:#e5f0dc}
+html[data-ifc-theme="dark"] .ifc-shadcn-tabs-line{background:transparent;border-color:rgba(203,226,194,.15)}
+html[data-ifc-theme="dark"] .ifc-shadcn-tabs-line .ifc-shadcn-tabs-trigger[data-state="active"]{background:transparent;border-color:#a8d568}
+.ff-details-tabs{margin-top:18px}
+.ff-details-tabs [data-slot="tabs-list"]{overflow-x:auto;max-width:100%;justify-content:flex-start}
+.ff-details-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ff-details-stat[data-slot="card"]{display:flex;flex-direction:column;gap:10px;padding:12px;border:1px solid #e5ebe2;border-radius:10px;background:#fff;color:#344a38;box-shadow:none;min-width:0}
+.ff-details-stat [data-slot="card-header"]{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0}
+.ff-details-stat [data-slot="card-title"]{font-size:11px;font-weight:650;line-height:1.4}
+.ff-details-stat [data-slot="card-action"]{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;border-radius:8px;background:#eaf2e5;color:#568052}
+.ff-details-stat [data-slot="card-content"]{padding:0}
+.ff-details-stat [data-slot="card-content"] strong{font:800 22px/1.2 Manrope,sans-serif;overflow-wrap:anywhere}
+.ff-details-note{font-size:11px;color:#849185;margin:10px 0 0}
+html[data-ifc-theme="dark"] .ff-details-stat[data-slot="card"]{background:#26352a;border-color:rgba(203,226,194,.15);color:#e5f0dc}
+html[data-ifc-theme="dark"] .ff-details-stat [data-slot="card-action"]{background:#2c472f;color:#c5e0b8}
+html[data-ifc-theme="dark"] .ff-details-note{color:#b3c1ad}
+@media(max-width:650px){.ff-details-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ifc-shadcn-tabs-trigger{padding:7px 9px}.ff-details-stat [data-slot="card-content"] strong{font-size:19px}}
+@media(prefers-reduced-motion:reduce){.ifc-shadcn-tabs-trigger{transition:none}}
