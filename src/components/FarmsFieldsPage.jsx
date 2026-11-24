@@ -323,8 +323,8 @@ export default function FarmsFieldsPage({
         <div className="workspace-data-heading">
           <div>
             <h2 className={isFarmsPage ? "ff-farm-directory-title" : undefined}>
-              {isFarmsPage ? "Farm directory" : "Fields in this farm"}
               {isFarmsPage && <Folder size={14} aria-hidden="true" />}
+              {isFarmsPage ? "Farm directory" : "Fields in this farm"}
             </h2>
             <p>
               {isFarmsPage
