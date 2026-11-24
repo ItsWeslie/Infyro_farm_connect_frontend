@@ -170,6 +170,8 @@ export default function CropManagementPage({
   farms,
   selectedFarm,
   setSelectedFarm,
+  requestedPlantingId,
+  setRequestedPlantingId,
   onNavigate,
   notify,
 }) {
@@ -199,7 +201,7 @@ export default function CropManagementPage({
   const [plantingError, setPlantingError] = useState("");
   const [plantingSaving, setPlantingSaving] = useState(false);
 
-  const [requestedPlantingId, setRequestedPlantingId] = useState("");
+  const [activityPage, setActivityPage] = useState(1);
   const [activityPlantingData, setActivityPlantingData] = useState({ key: null, entries: [], error: "" });
   const [loadedActivityKey, setLoadedActivityKey] = useState(null);
   const [activities, setActivities] = useState([]);
@@ -348,10 +350,10 @@ export default function CropManagementPage({
   const activityLogsPending = isActivities && Boolean(selectedPlantingId) && (activitiesLoading || loadedActivityKey !== activityRequestKey);
 
   useEffect(() => {
-    if (isActivities && !activityPlantingsPending) {
+    if (isActivities && !activityPlantingsPending && !activityPlantingData.error && selectedPlantingId) {
       setRequestedPlantingId(selectedPlantingId);
     }
-  }, [isActivities, activityPlantingsPending, selectedPlantingId]);
+  }, [isActivities, activityPlantingsPending, activityPlantingData.error, selectedPlantingId, setRequestedPlantingId]);
 
   function selectActivityPlanting(id) {
     if (switchDisabled || id === selectedPlantingId) return;
@@ -424,6 +426,31 @@ export default function CropManagementPage({
   const cropPageStart = (currentCropPage - 1) * CROPS_PER_PAGE;
   const paginatedTypes = filteredTypes.slice(cropPageStart, cropPageStart + CROPS_PER_PAGE);
   const paginatedPlantings = filteredPlantings.slice(cropPageStart, cropPageStart + CROPS_PER_PAGE);
+
+  const filteredActivities = useMemo(() => activities.filter((item) => (
+    [item.dailyActivity, item.cropStage, item.status, item.dayNumber].join(" ").toLowerCase().includes(search.toLowerCase())
+  )), [activities, search]);
+  const activityPageCount = Math.max(1, Math.ceil(filteredActivities.length / CROPS_PER_PAGE));
+  const currentActivityPage = Math.min(activityPage, activityPageCount);
+  const activityPageStart = (currentActivityPage - 1) * CROPS_PER_PAGE;
+  const paginatedActivities = filteredActivities.slice(activityPageStart, activityPageStart + CROPS_PER_PAGE);
+
+  useEffect(() => {
+    setActivityPage(1);
+  }, [active, selectedPlantingId, search]);
+
+  useEffect(() => {
+    if (isActivities && !activityPlantingsPending && !activityLogsPending) {
+      setActivityPage((page) => Math.min(page, activityPageCount));
+    }
+  }, [isActivities, activityPlantingsPending, activityLogsPending, activityPageCount]);
+
+  const tablePending = isActivities ? activityPlantingsPending || activityLogsPending : farmDataPending;
+  const tableCount = isActivities ? filteredActivities.length : filteredCropCount;
+  const tablePage = isActivities ? currentActivityPage : currentCropPage;
+  const tablePageCount = isActivities ? activityPageCount : cropPageCount;
+  const tablePageStart = isActivities ? activityPageStart : cropPageStart;
+  const setTablePage = isActivities ? setActivityPage : setCropPage;
 
   useEffect(() => {
     setCropPage(1);
@@ -968,12 +995,14 @@ export default function CropManagementPage({
             <div className="empty-state"><Sprout size={23} /><strong>No plantings available</strong><span>Create a planting first, then log field activity against it.</span><button className="button-primary" type="button" onClick={() => onNavigate("Crop management")}>Go to crop management <ArrowRight size={14} /></button></div>
           ) : activities.length === 0 ? (
             <div className="empty-state"><ClipboardList size={23} /><strong>No activity logs yet</strong><span>Start a daily journal for {selectedPlanting.cropTypeName}.</span><button className="button-primary" type="button" onClick={openCreateActivity}><Plus size={14} /> Log first activity</button></div>
+          ) : filteredActivities.length === 0 ? (
+            <div className="empty-state"><Search size={23} /><strong>No matching activities</strong><span>Try changing your search.</span></div>
           ) : (
             <div className="workspace-table-wrap">
               <table className="workspace-table crop3-table">
                 <thead><tr><th>DAY</th><th>GROWTH STAGE</th><th>ACTIVITY</th><th>CREATED</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
                 <tbody>
-                  {activities.filter((item) => [item.dailyActivity, item.cropStage, item.status, item.dayNumber].join(" ").toLowerCase().includes(search.toLowerCase())).map((activity) => (
+                  {paginatedActivities.map((activity) => (
                     <tr key={activity.id}>
                       <td>Day {activity.dayNumber}</td>
                       <td>{activity.cropStage ? humanize(activity.cropStage) : "—"}</td>
@@ -1078,27 +1107,27 @@ export default function CropManagementPage({
           </div>
         )}
 
-        <div className={isActivities ? "workspace-data-footer" : "workspace-data-footer ff-fields-footer"}>
+        <div className="workspace-data-footer ff-fields-footer">
           <span>
-            Showing <strong>{isActivities ? (activityPlantingsPending || activityLogsPending ? "…" : activities.length) : farmDataPending ? "…" : filteredCropCount ? `${cropPageStart + 1}–${Math.min(cropPageStart + CROPS_PER_PAGE, filteredCropCount)} of ${filteredCropCount}` : "0"}</strong> {isActivities ? "activity logs" : isTypes ? "crop types" : "plantings"}
+            Showing <strong>{tablePending ? "…" : tableCount ? `${tablePageStart + 1}–${Math.min(tablePageStart + CROPS_PER_PAGE, tableCount)} of ${tableCount}` : "0"}</strong> {isActivities ? "activity logs" : isTypes ? "crop types" : "plantings"}
           </span>
-          {!isActivities && !farmDataPending && filteredCropCount > 0 && (
-            <Pagination className="ff-farm-pagination ff-field-pagination" aria-label={isTypes ? "Crop library pagination" : "Plantings pagination"}>
+          {!tablePending && tableCount > 0 && (
+            <Pagination className="ff-farm-pagination ff-field-pagination" aria-label={isActivities ? "Activity logs pagination" : isTypes ? "Crop library pagination" : "Plantings pagination"}>
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationPrevious disabled={currentCropPage === 1} onClick={() => setCropPage(currentCropPage - 1)} />
+                  <PaginationPrevious disabled={tablePage === 1} onClick={() => setTablePage(tablePage - 1)} />
                 </PaginationItem>
-                {cropPageItems(currentCropPage, cropPageCount).map((item) => (
+                {cropPageItems(tablePage, tablePageCount).map((item) => (
                   <PaginationItem key={item}>
                     {typeof item === "number" ? (
-                      <PaginationLink isActive={currentCropPage === item} aria-label={`Page ${item}`} onClick={() => setCropPage(item)}>{item}</PaginationLink>
+                      <PaginationLink isActive={tablePage === item} aria-label={`Page ${item}`} onClick={() => setTablePage(item)}>{item}</PaginationLink>
                     ) : (
                       <PaginationEllipsis />
                     )}
                   </PaginationItem>
                 ))}
                 <PaginationItem>
-                  <PaginationNext disabled={currentCropPage === cropPageCount} onClick={() => setCropPage(currentCropPage + 1)} />
+                  <PaginationNext disabled={tablePage === tablePageCount} onClick={() => setTablePage(tablePage + 1)} />
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
