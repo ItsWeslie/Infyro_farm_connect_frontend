@@ -1005,34 +1005,30 @@ export default function CropManagementPage({
           </div>
         )}
 
-        <div className={isActivities ? "workspace-data-footer" : "workspace-data-footer crop3-pagination-footer"}>
+        <div className={isActivities ? "workspace-data-footer" : "workspace-data-footer ff-fields-footer"}>
           <span>
             Showing <strong>{isActivities ? activities.length : farmDataPending ? "…" : filteredCropCount ? `${cropPageStart + 1}–${Math.min(cropPageStart + CROPS_PER_PAGE, filteredCropCount)} of ${filteredCropCount}` : "0"}</strong> {isActivities ? "activity logs" : isTypes ? "crop types" : "plantings"}
           </span>
-          {!isActivities && (
-            <div className="crop3-pagination-center">
-              {!farmDataPending && filteredCropCount > 0 && (
-                <Pagination className="ff-farm-pagination crop3-pagination" aria-label={isTypes ? "Crop library pagination" : "Plantings pagination"}>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious disabled={currentCropPage === 1} onClick={() => setCropPage(currentCropPage - 1)} />
-                    </PaginationItem>
-                    {cropPageItems(currentCropPage, cropPageCount).map((item) => (
-                      <PaginationItem key={item}>
-                        {typeof item === "number" ? (
-                          <PaginationLink isActive={currentCropPage === item} aria-label={`Page ${item}`} onClick={() => setCropPage(item)}>{item}</PaginationLink>
-                        ) : (
-                          <PaginationEllipsis />
-                        )}
-                      </PaginationItem>
-                    ))}
-                    <PaginationItem>
-                      <PaginationNext disabled={currentCropPage === cropPageCount} onClick={() => setCropPage(currentCropPage + 1)} />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              )}
-            </div>
+          {!isActivities && !farmDataPending && filteredCropCount > 0 && (
+            <Pagination className="ff-farm-pagination ff-field-pagination" aria-label={isTypes ? "Crop library pagination" : "Plantings pagination"}>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious disabled={currentCropPage === 1} onClick={() => setCropPage(currentCropPage - 1)} />
+                </PaginationItem>
+                {cropPageItems(currentCropPage, cropPageCount).map((item) => (
+                  <PaginationItem key={item}>
+                    {typeof item === "number" ? (
+                      <PaginationLink isActive={currentCropPage === item} aria-label={`Page ${item}`} onClick={() => setCropPage(item)}>{item}</PaginationLink>
+                    ) : (
+                      <PaginationEllipsis />
+                    )}
+                  </PaginationItem>
+                ))}
+                <PaginationItem>
+                  <PaginationNext disabled={currentCropPage === cropPageCount} onClick={() => setCropPage(currentCropPage + 1)} />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           )}
           <span>{selectedFarm.name}</span>
         </div>
