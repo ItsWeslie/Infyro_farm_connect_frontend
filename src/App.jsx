@@ -509,13 +509,16 @@ function App() {
             <div className="top-divider" />
             <button
               type="button"
-              className="theme-toggle-button"
+              className={"theme-toggle-button" + (theme === "dark" ? " is-dark" : "")}
               onClick={() => setTheme((current) => current === "light" ? "dark" : "light")}
-              aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
+              role="switch"
+              aria-label="Dark mode"
+              aria-checked={theme === "dark"}
               title={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
             >
-              {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
-              <span>{theme === "light" ? "Dark" : "Light"}</span>
+              <Sun className="theme-toggle-sun" size={12} aria-hidden="true" />
+              <Moon className="theme-toggle-moon" size={12} aria-hidden="true" />
+              <span className="theme-toggle-thumb" aria-hidden="true" />
             </button>
             <div className="popover-anchor">
               <button
