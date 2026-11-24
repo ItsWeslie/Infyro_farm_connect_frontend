@@ -6,7 +6,6 @@ import OverviewUpcomingMilestones from "./OverviewUpcomingMilestones";
 import { useEffect, useState } from "react";
 import {
   ArrowRight,
-  CheckCircle2,
   CircleAlert,
   Coins,
   Flower2,
@@ -236,10 +235,6 @@ function OverviewPage({ onNavigate, onAdd }) {
         <OverviewExpenseBreakdown onNavigate={onNavigate} />
       </div>
 
-      <div className="ifc-overview-footnote">
-        <CheckCircle2 size={14} />
-        <span>Overview values are read from your farm records. Income and profit are not shown because the backend does not yet provide sales or revenue records.</span>
-      </div>
     </section>
   );
 }
