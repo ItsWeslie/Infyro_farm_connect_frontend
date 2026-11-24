@@ -442,9 +442,6 @@ export default function FarmsFieldsPage({
               </button>
             )}
           </label>
-          {!isFarmsPage && (
-            <span className="result-count">{fieldsPending ? "…" : filteredFields.length} records</span>
-          )}
         </div>
 
         {(isFarmsPage ? farmsError : fieldsError) && (
