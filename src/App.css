@@ -211,8 +211,8 @@ html[data-ifc-theme="dark"] .dialog-card .ff-form-context strong { color: #e5f0d
 .crop3-status-label{font-size:9px;color:#748575}
 /* Radix Select locks body scrolling and compensates for the removed scrollbar.
    The document already reserves a stable scrollbar gutter; keep its scrollbar
-   and avoid a second width adjustment while this non-dialog filter is open. */
-body[data-scroll-locked="1"]:has(:is(.crop3-status-filter,.crop3-action-select)[data-state="open"]){
+   and avoid a second width adjustment while a crop filter or form select is open. */
+body[data-scroll-locked="1"]:has(:is(.crop3-status-filter,.crop3-action-select,.crop3-planting-dialog .ifc-form-select)[data-state="open"]){
   overflow:visible!important;
   margin-right:0!important;
   --removed-body-scroll-bar-size:0px!important;
@@ -1842,9 +1842,13 @@ html[data-ifc-theme="dark"] .crop3-planting-group-heading,html[data-ifc-theme="d
 .crop3-optional{font-weight:400;color:#849185}
 .crop3-planting-dialog .crop3-area-info{margin:10px 0 12px;align-items:center;background:#eef5fb;border-color:#d6e5f1;color:#356488;padding:9px 11px}
 .crop3-planting-dialog .crop3-area-info>svg{margin:0}
-.ifc-date-popover[data-slot="popover-content"]{z-index:110;width:auto;max-width:var(--radix-popover-content-available-width);padding:10px;border:1px solid #e5ebe2;border-radius:10px;background:#fff;color:#405443;box-shadow:0 12px 30px #14291e20;outline:none}
-.ifc-shadcn-calendar{--rdp-accent-color:#315d3e;--rdp-accent-background-color:#edf4e8;--rdp-day-width:34px;--rdp-day-height:34px;--rdp-day_button-width:32px;--rdp-day_button-height:32px;--rdp-day_button-border-radius:6px;--rdp-selected-border:1px solid #568052;font-size:11px}
-.ifc-shadcn-calendar .rdp-month_caption{font-size:12px;font-weight:700}
+.ifc-date-popover[data-slot="popover-content"]{z-index:110;width:auto;max-width:var(--radix-popover-content-available-width);padding:7px;border:1px solid #e5ebe2;border-radius:10px;background:#fff;color:#405443;box-shadow:0 12px 30px #14291e20;outline:none}
+.ifc-shadcn-calendar{--rdp-accent-color:#315d3e;--rdp-accent-background-color:#edf4e8;--rdp-day-width:28px;--rdp-day-height:28px;--rdp-day_button-width:26px;--rdp-day_button-height:26px;--rdp-nav-height:28px;--rdp-nav_button-width:26px;--rdp-nav_button-height:26px;--rdp-day_button-border-radius:6px;--rdp-selected-border:1px solid #568052;font-size:11px}
+.ifc-shadcn-calendar .rdp-month_caption{font-size:11px;font-weight:700;height:28px}
+.ifc-shadcn-calendar .rdp-weekday{font-size:9px;padding:3px 0}
+.ifc-shadcn-calendar .rdp-chevron{width:14px;height:14px}
+.ifc-shadcn-calendar .rdp-disabled{opacity:.35;cursor:not-allowed}
+.ifc-shadcn-calendar .rdp-disabled .rdp-day_button{cursor:not-allowed}
 .ifc-shadcn-calendar .rdp-day_button{font-size:11px;color:inherit}
 .ifc-shadcn-calendar .rdp-day_button:hover:not(:disabled){background:#edf4e8}
 .ifc-shadcn-calendar .rdp-selected .rdp-day_button{background:#286044;color:#fff}
