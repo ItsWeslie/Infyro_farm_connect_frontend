@@ -1160,7 +1160,6 @@ export default function CropManagementPage({
             <label className="form-label">Maturity time (days)
               <Input type="number" min="1" step="1" disabled={plantingSaving} value={plantingForm.maturityTimeInDays} onChange={(event) => setPlantingForm((current) => ({ ...current, maturityTimeInDays: event.target.value }))} placeholder="Uses crop type default when blank" />
             </label>
-            <div className="dialog-note"><CalendarDays size={16} /><span>Leave expected harvest empty to calculate it from the planting date and maturity time.</span></div>
             <div className="dialog-actions"><button type="button" className="button-secondary" disabled={plantingSaving} onClick={() => setPlantingDialogOpen(false)}>Cancel</button><button type="submit" className="button-primary" disabled={plantingSaving || !cropTypes.length || !fields.length}><Plus size={15} /> {plantingSaving ? "Saving…" : editingPlanting ? "Save changes" : "Create planting"}</button></div>
           </form>
         </div>
