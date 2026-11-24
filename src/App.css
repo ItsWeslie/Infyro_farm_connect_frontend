@@ -1814,7 +1814,9 @@ html[data-ifc-theme="dark"] .workspace-table.ff-table thead th:last-child,html[d
 }
 
 /* Independent activity planting chooser, using the farm combobox theme. */
-.crop3-activity-planting-row{display:flex;align-items:center;margin:0 0 14px}
+.crop3-data-card .workspace-data-heading:has(.crop3-activity-planting-row){align-items:center;flex-wrap:wrap}
+.crop3-activity-planting-row{display:flex;align-items:center;flex:0 1 330px;min-width:0;max-width:100%;margin-left:auto}
+@media(max-width:650px){.crop3-activity-planting-row{flex:1 1 100%;margin-left:0}}
 .ff-field-farm-trigger.crop3-activity-planting-trigger{width:100%;min-height:54px;padding:8px 12px}
 .crop3-activity-planting-trigger .ff-field-farm-icon{width:36px;height:36px;flex-basis:36px}
 .crop3-activity-planting-trigger .ff-field-farm-copy>span{white-space:normal;overflow-wrap:anywhere}
