@@ -3,7 +3,7 @@ import {
   ArrowRight,
   Building2,
   Eye,
-  Folder,
+  FolderOpen,
   LandPlot,
   MapPinned,
   Pencil,
@@ -368,7 +368,7 @@ export default function FarmsFieldsPage({
         <div className="workspace-data-heading">
           <div>
             <h2 className={isFarmsPage ? "ff-farm-directory-title" : undefined}>
-              {isFarmsPage && <Folder size={14} aria-hidden="true" />}
+              {isFarmsPage && <FolderOpen size={14} aria-hidden="true" />}
               {isFarmsPage ? "Farm directory" : "Fields in this farm"}
             </h2>
             <p>
