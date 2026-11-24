@@ -5,6 +5,7 @@ import animatedUser from "react-useanimations/lib/user";
 import animatedSettings from "react-useanimations/lib/settings";
 import animatedLogOut from "react-useanimations/lib/logOut";
 import animatedClose from "react-useanimations/lib/xSquare";
+import animatedArrowRight from "react-useanimations/lib/arrowRight";
 import { useToast } from "./hooks/useToast";
 import ToastViewport from "./components/ui/ToastViewport";
 import {
@@ -631,7 +632,7 @@ function App() {
                       setNotificationsOpen(false);
                     }}
                   >
-                    View all notifications <ArrowRight size={14} />
+                    View all notifications <UseAnimations animation={animatedArrowRight} size={14} interaction="hover" strokeColor="currentColor" className="ifc-notification-footer-arrow" aria-hidden="true" />
                   </button>
                 </div>
               )}
