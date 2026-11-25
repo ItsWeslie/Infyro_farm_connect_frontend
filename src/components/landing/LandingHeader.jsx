@@ -1,4 +1,5 @@
-import { X, Menu, Moon, Sun, ArrowRight } from "lucide-react";
+import { X, Menu, ArrowRight } from "lucide-react";
+import { ThemeToggle } from "../ui/ThemeToggle";
 import { BrandMark } from "./BrandMark";
 
 export function LandingHeader({ mobileMenuOpen, setMobileMenuOpen, theme, setTheme, openAuth }) {
@@ -48,20 +49,7 @@ export function LandingHeader({ mobileMenuOpen, setMobileMenuOpen, theme, setThe
                   Contact
                 </a>
                 <div className="landing-nav-actions">
-                  <button
-                    className="landing-theme-toggle"
-                    type="button"
-                    onClick={() =>
-                      setTheme((current) =>
-                        current === "light" ? "dark" : "light",
-                      )
-                    }
-                    aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
-                    title={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
-                  >
-                    {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
-                    <span>{theme === "light" ? "Dark" : "Light"}</span>
-                  </button>
+                  <ThemeToggle theme={theme} setTheme={setTheme} />
                   <button
                     className="landing-signin"
                     type="button"

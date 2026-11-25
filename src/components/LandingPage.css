@@ -2594,3 +2594,16 @@ html[data-ifc-theme="dark"] .landing-contact-form-note { color: #aebba9; }
 .landing-testimonial-card:nth-child(3) { transition-delay: .16s; }
 
 /* Feature card visibility is controlled by the scroll-reveal state above. */
+
+/* Shared dashboard brand in public header and footer. */
+.landing-page .ifc-landing-brand.brand-logo{display:inline-flex;flex:0 0 auto;width:fit-content;min-width:0;max-width:100%;gap:9px;border-radius:6px}
+.landing-page .ifc-landing-brand .brand-logo-copy{flex:0 1 auto}
+.landing-page .ifc-landing-brand .brand-logo-name{font-size:17px}
+.landing-page .ifc-landing-brand .brand-logo-tagline{font-size:6.5px;letter-spacing:.55px}
+.landing-footer-premium .ifc-landing-brand .brand-logo-infyro{color:#edf4e9}
+.landing-footer-premium .ifc-landing-brand .brand-logo-farm{color:#a8d568}
+.landing-footer-premium .ifc-landing-brand .brand-logo-tagline{color:#c6ad80}
+html[data-ifc-theme="light"] .landing-footer-premium .ifc-landing-brand .brand-logo-infyro{color:#173f20}
+html[data-ifc-theme="light"] .landing-footer-premium .ifc-landing-brand .brand-logo-farm{color:#6b9828}
+html[data-ifc-theme="light"] .landing-footer-premium .ifc-landing-brand .brand-logo-tagline{color:#87501f}
+@media(max-width:360px){.landing-page .ifc-landing-brand .brand-logo-name{font-size:16px}.landing-page .ifc-landing-brand .brand-logo-tagline{font-size:6px;letter-spacing:.3px}}
