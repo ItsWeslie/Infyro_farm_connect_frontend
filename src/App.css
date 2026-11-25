@@ -1898,6 +1898,8 @@ html[data-ifc-theme="dark"] .ifc-shadcn-textarea::placeholder{color:#b3c1ad}
 html[data-ifc-theme="dark"] .crop3-activity-dialog .form-label .ifc-shadcn-textarea{background:#26352a;color:#e5f0dc;border-color:rgba(203,226,194,.15)}
 @media(max-width:520px){.crop3-activity-dialog{padding:16px}.crop3-activity-dialog .crop3-form-grid .form-label+.form-label{margin-top:10px}}
 /* Calendar milestone information, matching the field edit area notice palette. */
-.ifc-calendar-info-wrap{padding:10px 19px 14px}
-.ifc-calendar-info-wrap .ifc-calendar-info{display:flex;align-items:center;gap:9px;background:transparent;border:0;color:#806522;padding:0;font-size:11px;line-height:1.5}
+.ifc-calendar-info-wrap{box-sizing:border-box;width:fit-content;max-width:100%;min-width:0;padding:6px 2px 0}
+.ifc-calendar-agenda .ifc-calendar-info-wrap{padding:10px 2px}
+.ifc-calendar-info-wrap .ifc-calendar-info{display:flex;align-items:center;gap:7px;min-width:0;background:transparent;border:0;color:#806522;padding:0;font-size:10px;line-height:1.5}
+.ifc-calendar-info-wrap .ifc-calendar-info>span:last-child{min-width:0;overflow-wrap:anywhere}
 html[data-ifc-theme="dark"] .ifc-calendar-info-wrap .ifc-calendar-info{color:#f1d89c}
