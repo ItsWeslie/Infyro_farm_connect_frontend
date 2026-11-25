@@ -3,7 +3,7 @@ import { Check, ChevronsUpDown, Sprout, Tractor } from "lucide-react";
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "./ui/command";
 
-export default function ActivityPlantingSelector({ options, selected, onSelect, loading, disabled = false }) {
+export default function ActivityPlantingSelector({ options, selected, onSelect, loading, disabled = false, placeholder = "Select a planting" }) {
   const [open, setOpen] = useState(false);
   const unavailable = disabled || loading || options.length === 0;
   const groups = new Map();
@@ -21,7 +21,7 @@ export default function ActivityPlantingSelector({ options, selected, onSelect, 
           <span className="ff-field-farm-icon"><Sprout size={18} aria-hidden="true" /></span>
           <span className="ff-field-farm-copy">
             <small>SELECTED PLANTING</small>
-            <strong>{loading ? "Loading plantings…" : selected?.cropName || "No plantings available"}</strong>
+            <strong>{loading ? "Loading plantings…" : selected?.cropName || (options.length ? placeholder : "No plantings available")}</strong>
             {selected && <span>{selected.farmName} · {selected.fieldName} · {selected.plantedOn}</span>}
           </span>
           <ChevronsUpDown className="ff-field-farm-chevron" size={14} aria-hidden="true" />

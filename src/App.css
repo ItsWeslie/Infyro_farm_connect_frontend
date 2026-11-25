@@ -212,7 +212,7 @@ html[data-ifc-theme="dark"] .dialog-card .ff-form-context strong { color: #e5f0d
 /* Radix Select locks body scrolling and compensates for the removed scrollbar.
    The document already reserves a stable scrollbar gutter; keep its scrollbar
    and avoid a second width adjustment while a crop filter or form select is open. */
-body[data-scroll-locked="1"]:has(:is(.crop3-status-filter,.crop3-action-select,.crop3-planting-dialog .ifc-form-select,.crop3-activity-dialog .ifc-form-select,.ifc-calendar-show-select)[data-state="open"]){
+body[data-scroll-locked="1"]:has(:is(.crop3-status-filter,.crop3-action-select,.crop3-planting-dialog .ifc-form-select,.crop3-activity-dialog .ifc-form-select,.ifc-calendar-show-select,.expense4-create-dialog .ifc-form-select)[data-state="open"]){
   overflow:visible!important;
   margin-right:0!important;
   --removed-body-scroll-bar-size:0px!important;
@@ -1903,3 +1903,35 @@ html[data-ifc-theme="dark"] .crop3-activity-dialog .form-label .ifc-shadcn-texta
 .ifc-calendar-info-wrap .ifc-calendar-info{display:flex;align-items:center;gap:7px;min-width:0;background:transparent;border:0;color:#806522;padding:0;font-size:10px;line-height:1.5}
 .ifc-calendar-info-wrap .ifc-calendar-info>span:last-child{min-width:0;overflow-wrap:anywhere}
 html[data-ifc-theme="dark"] .ifc-calendar-info-wrap .ifc-calendar-info{color:#f1d89c}
+/* Add expense: scope selection and shared shadcn controls. */
+.expense4-create-dialog{width:min(100%,420px);padding:20px}
+.expense4-create-dialog .dialog-heading{margin-bottom:16px}
+.expense4-create-dialog .dialog-actions{margin-top:16px}
+.expense4-create-dialog .form-label{min-width:0;margin-top:12px;gap:6px}
+.expense4-create-dialog .expense4-form-grid{margin-top:12px}
+.expense4-create-dialog .expense4-form-grid .form-label{margin-top:0}
+.expense4-create-dialog .form-label .ifc-shadcn-input,.expense4-create-dialog .ifc-form-select,.expense4-create-dialog .ifc-date-trigger{box-sizing:border-box;height:40px;min-height:40px}
+.expense4-scope-fieldset{margin:0;padding:0;border:0;min-width:0}
+.expense4-scope-fieldset legend{font-size:10px;font-weight:700;color:#4d5e50;padding:0;margin:0 0 7px}
+.expense4-scope-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.expense4-scope-option{position:relative;display:flex;flex-direction:column;gap:5px;min-width:0;padding:10px;border:1px solid #e5ebe2;border-radius:8px;background:#fff;color:#405443;cursor:pointer;transition:background .16s,border-color .16s}
+.expense4-scope-option>input[type="radio"]{position:absolute;width:1px;height:1px;margin:0;padding:0;opacity:0;clip-path:inset(50%)}
+.expense4-scope-option:has(input:focus-visible){outline:2px solid #719b62;outline-offset:2px}
+.expense4-scope-option:has(input:disabled){opacity:.55;cursor:not-allowed}
+.expense4-scope-option:hover:not(:has(input:disabled)),.expense4-scope-option[data-selected="true"]{background:#edf4e8;border-color:#8aab8c}
+.expense4-scope-option-top{display:flex;justify-content:space-between;align-items:center;color:#568052}
+.expense4-scope-option strong{font-size:11px;font-weight:700}
+.expense4-scope-option small{font-size:9px;line-height:1.4;color:#748575}
+.expense4-create-dialog .ff-field-farm-trigger.crop3-activity-planting-trigger{width:100%;min-height:54px}
+.expense4-selection-hint,.expense4-selection-error{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:400;line-height:1.4}
+.expense4-selection-hint{color:#698167}
+.expense4-selection-error{color:#a45d53}
+.expense4-create-dialog .expense4-audit-note{margin-top:12px;grid-template-columns:22px minmax(0,1fr);align-items:center;column-gap:9px;background:#fbf8ed;border-color:#eee5c8;color:#806522;font-size:10px;padding:8px 10px}
+html[data-ifc-theme="dark"] .expense4-scope-fieldset legend{color:#c8dbbe}
+html[data-ifc-theme="dark"] .expense4-create-dialog .expense4-scope-option{background:#26352a;color:#e5f0dc;border-color:rgba(203,226,194,.15)}
+html[data-ifc-theme="dark"] .expense4-create-dialog .expense4-scope-option:hover:not(:has(input:disabled)),html[data-ifc-theme="dark"] .expense4-create-dialog .expense4-scope-option[data-selected="true"]{background:#344b35;border-color:#719b62}
+html[data-ifc-theme="dark"] .expense4-scope-option-top{color:#c5e0b8}
+html[data-ifc-theme="dark"] .expense4-scope-option small,html[data-ifc-theme="dark"] .expense4-selection-hint{color:#b3c1ad}
+html[data-ifc-theme="dark"] .expense4-selection-error{color:#f0a89d}
+html[data-ifc-theme="dark"] .expense4-create-dialog .expense4-audit-note{background:#393321;border-color:#5e5030;color:#f1d89c}
+@media(max-width:520px){.expense4-create-dialog{padding:16px}.expense4-create-dialog .expense4-form-grid .form-label+.form-label{margin-top:12px}}
