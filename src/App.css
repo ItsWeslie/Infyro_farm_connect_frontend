@@ -1878,3 +1878,11 @@ html[data-ifc-theme="dark"] .ifc-shadcn-calendar .rdp-today .rdp-day_button{back
 html[data-ifc-theme="dark"] .ifc-shadcn-calendar .rdp-today .rdp-day_button:hover:not(:disabled){background:#3b563c;color:#e5f0dc}
 html[data-ifc-theme="dark"] .ifc-shadcn-calendar .rdp-selected .rdp-day_button{background:#49634a;color:#fff;border:0;box-shadow:none}
 html[data-ifc-theme="dark"] .ifc-shadcn-calendar .rdp-selected .rdp-day_button:hover:not(:disabled){background:#59745b;color:#fff}
+/* Shared shadcn textarea and crop type dialog spacing. */
+.ifc-shadcn-textarea{box-sizing:border-box;display:block;width:100%;min-width:0;min-height:76px;resize:vertical;border:1px solid #dfe7dc;border-radius:8px;padding:10px 11px;background:#fff;color:#34473a;font:inherit;font-size:12px;outline:none;transition:border-color .18s,box-shadow .18s}
+.ifc-shadcn-textarea:focus-visible{border-color:#8aab8c;box-shadow:0 0 0 3px rgba(112,151,117,.12);outline:none}
+.ifc-shadcn-textarea:disabled{opacity:.55;cursor:not-allowed}
+.crop3-type-dialog .form-label{min-width:0;margin-top:14px}
+.crop3-type-dialog .form-label .ifc-shadcn-textarea{min-height:76px}
+html[data-ifc-theme="dark"] .crop3-type-dialog .form-label .ifc-shadcn-textarea,html[data-ifc-theme="dark"] .ifc-shadcn-textarea{background:#26352a;color:#e5f0dc;border-color:rgba(203,226,194,.15)}
+html[data-ifc-theme="dark"] .ifc-shadcn-textarea::placeholder{color:#b3c1ad}
