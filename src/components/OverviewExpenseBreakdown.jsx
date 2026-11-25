@@ -161,9 +161,8 @@ export default function OverviewExpenseBreakdown({ onNavigate }) {
                   onMouseEnter={() => setHoveredKey(entry.key)}
                   onMouseLeave={() => setHoveredKey(null)}
                   onClick={() => chooseCategory(entry.key)}
-                >
-                  <title>{`${entry.label}: ${currencyLabel(entry.amount)} (${percentageLabel(entry.percentage)})`}</title>
-                </circle>
+                  data-tooltip={`${entry.label}: ${currencyLabel(entry.amount)} (${percentageLabel(entry.percentage)})`}
+                />
               ))}
               <text className="ifc-overview-donut-caption" x="100" y="88" textAnchor="middle">
                 {active ? active.label : "TOTAL SPENT"}
@@ -192,7 +191,7 @@ export default function OverviewExpenseBreakdown({ onNavigate }) {
                 onBlur={() => setHoveredKey(null)}
                 onClick={() => chooseCategory(entry.key)}
                 aria-pressed={selectedKey === entry.key}
-                title={entry.categories ? `Includes: ${entry.categories.join(", ")}` : entry.label}
+                data-tooltip={entry.categories ? `${entry.label}: ${currencyLabel(entry.amount)} (${percentageLabel(entry.percentage)}). Includes: ${entry.categories.join(", ")}` : `${entry.label}: ${currencyLabel(entry.amount)} (${percentageLabel(entry.percentage)})`}
               >
                 <span className="ifc-overview-donut-swatch" style={{ backgroundColor: entry.color }} aria-hidden="true" />
                 <span className="ifc-overview-donut-legend-copy">
