@@ -100,20 +100,20 @@ export default function OverviewUpcomingMilestones({ onNavigate }) {
                 </span>
                 <div className="ifc-overview-milestone-info">
                   <div className="ifc-overview-milestone-title-row">
-                    <strong title={event.title || undefined}>
+                    <strong data-tooltip={event.title || undefined}>
                       {event.title || (harvest ? "Expected harvest" : "Planting milestone")}
                     </strong>
                   </div>
                   {(event.farmName || event.fieldName) && (
                     <div className="ifc-overview-milestone-meta">
                       {event.farmName && (
-                        <span className="ifc-overview-milestone-farm" title={event.farmName}>
+                        <span className="ifc-overview-milestone-farm" data-tooltip={event.farmName}>
                           <Tractor size={11} aria-hidden="true" />
                           <span>{event.farmName}</span>
                         </span>
                       )}
                       {event.fieldName && (
-                        <span className="ifc-overview-milestone-field" title={event.fieldName}>
+                        <span className="ifc-overview-milestone-field" data-tooltip={event.fieldName}>
                           <MapPin size={11} aria-hidden="true" />
                           <span>{event.fieldName}</span>
                         </span>
