@@ -23,7 +23,8 @@ import { farmApi, fieldApi } from "../api/client";
 import { SkeletonBlock } from "./ui/Skeleton";
 import { Alert, AlertDescription } from "./ui/alert";
 import FarmDetailsDialog from "./farm-details/FarmDetailsDialog";
-import FieldFarmSelector from "./FieldFarmSelector";
+import { Input } from "./ui/input";
+import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "./ui/select";
 import {
   Pagination,
   PaginationContent,
@@ -116,59 +117,59 @@ export default function FarmsFieldsPage({
   const dialogBusy = saving || farmSaveSuccess;
   const [formError, setFormError] = useState("");
   const [deletingId, setDeletingId] = useState(null);
-  const [fields, setFields] = useState([]);
-  const [fieldsLoading, setFieldsLoading] = useState(false);
-  const [loadedFieldsFarmId, setLoadedFieldsFarmId] = useState(null);
-  const fieldsPending = Boolean(selectedFarm?.id) && (fieldsLoading || String(loadedFieldsFarmId) !== String(selectedFarm.id));
+  const [fieldData, setFieldData] = useState({ key: null, records: [], failedFarms: [] });
   const [fieldsError, setFieldsError] = useState("");
   const [fieldReload, setFieldReload] = useState(0);
+  const [farmFilter, setFarmFilter] = useState("ALL");
+  const [formFarmId, setFormFarmId] = useState("");
+  const ownedFarmsKey = JSON.stringify([...new Set(farms.filter((farm) => farm.id != null).map((farm) => String(farm.id)))].sort());
+  const requestKey = JSON.stringify([ownedFarmsKey, fieldReload]);
+  const fieldsPending = farmsLoading || fieldData.key !== requestKey;
+  const fields = useMemo(() => fieldData.key === requestKey ? fieldData.records : [], [fieldData, requestKey]);
+  const failedFarms = fieldsPending ? [] : fieldData.failedFarms;
+  const farmById = useMemo(() => new Map(farms.map((farm) => [String(farm.id), farm])), [farms]);
+  const currentFarmFilter = farmFilter === "ALL" || farmById.has(farmFilter) ? farmFilter : "ALL";
+  const formFarm = farmById.get(editing && !isFarmsPage ? String(editing.farmId) : formFarmId);
+  const formFarmFields = fields.filter((field) => field.farmId === String(formFarm?.id));
+  const formFarmAreaAvailable = !fieldsPending && formFarm && !failedFarms.includes(String(formFarm.id));
 
-  function updateSelectedFarmFields(nextFields) {
-    setFields(nextFields);
-    if (!selectedFarm?.id) return;
-    setFarms((current) => current.map((farm) => farm.id === selectedFarm.id ? { ...farm, fields: nextFields } : farm));
-    setSelectedFarm((current) => current?.id === selectedFarm.id ? { ...current, fields: nextFields } : current);
+  function updateFarmFields(farmId, nextFields) {
+    const id = String(farmId);
+    const ownedFields = nextFields.map((field) => ({ ...field, farmId: id }));
+    setFieldData((current) => ({ ...current, records: [...current.records.filter((field) => field.farmId !== id), ...ownedFields] }));
+    setFarms((current) => current.map((farm) => String(farm.id) === id ? { ...farm, fields: ownedFields } : farm));
+    setSelectedFarm((current) => current && String(current.id) === id ? { ...current, fields: ownedFields } : current);
   }
 
   useEffect(() => {
-    if (isFarmsPage) return undefined;
-    const farmId = selectedFarm?.id;
+    if (isFarmsPage || farmsLoading) return undefined;
     let current = true;
-    if (!farmId) {
-      setFields([]);
-      setLoadedFieldsFarmId(null);
-      setFieldsLoading(false);
-      setFieldsError("");
-      return undefined;
-    }
-
-    setFieldsLoading(true);
-    setFields([]);
+    const ids = JSON.parse(ownedFarmsKey);
     setFieldsError("");
-    fieldApi.getByFarm(farmId)
-      .then((response) => {
-        if (current) setFields(unwrapList(response));
-      })
-      .catch((error) => {
-        if (!current) return;
-        setFields([]);
-        setFieldsError(error.message || "Unable to load fields for this farm.");
-        notify(error.message || "Unable to load fields for this farm.", "error");
-      })
-      .finally(() => {
-        if (current) {
-          setLoadedFieldsFarmId(farmId);
-          setFieldsLoading(false);
+    Promise.allSettled(ids.map((id) => fieldApi.getByFarm(id))).then((results) => {
+      if (!current) return;
+      const records = [];
+      const failedFarms = [];
+      results.forEach((result, index) => {
+        if (result.status === "fulfilled") {
+          unwrapList(result.value).forEach((field) => {
+            if (field.id != null) records.push({ ...field, farmId: ids[index] });
+          });
+        } else {
+          failedFarms.push(ids[index]);
         }
       });
-
+      setFieldData({ key: requestKey, records, failedFarms });
+    });
     return () => { current = false; };
-  }, [isFarmsPage, selectedFarm?.id, fieldReload, notify]);
+  }, [isFarmsPage, farmsLoading, ownedFarmsKey, requestKey]);
 
   useEffect(() => {
     setQuery("");
     setFarmPage(1);
     setFieldPage(1);
+    setFarmFilter("ALL");
+    setFormFarmId("");
     setDetailsFarm(null);
     dialogVersionRef.current += 1;
     setFarmSaveSuccess(false);
@@ -222,11 +223,10 @@ export default function FarmsFieldsPage({
   }
 
   const filteredFields = useMemo(() => fields.filter((field) => (
-    [field.fieldName, selectedFarm?.name, field.totalArea, field.availableArea]
-      .join(" ")
-      .toLowerCase()
-      .includes(query.toLowerCase())
-  )), [fields, query, selectedFarm?.name]);
+    (currentFarmFilter === "ALL" || field.farmId === currentFarmFilter) &&
+    [field.fieldName, farmById.get(field.farmId)?.name, field.totalArea, field.availableArea]
+      .join(" ").toLowerCase().includes(query.trim().toLowerCase())
+  )).sort((a, b) => String(farmById.get(a.farmId)?.name || "").localeCompare(String(farmById.get(b.farmId)?.name || "")) || String(a.fieldName || "").localeCompare(String(b.fieldName || "")) || String(a.id).localeCompare(String(b.id))), [fields, query, farmById, currentFarmFilter]);
 
   const fieldPageCount = Math.max(1, Math.ceil(filteredFields.length / FIELDS_PER_PAGE));
   const currentFieldPage = Math.min(fieldPage, fieldPageCount);
@@ -237,7 +237,7 @@ export default function FarmsFieldsPage({
 
   useEffect(() => {
     setFieldPage(1);
-  }, [selectedFarm?.id]);
+  }, [currentFarmFilter]);
 
   useEffect(() => {
     if (!isFarmsPage && !fieldsPending && !fieldsError && !farmsLoading) {
@@ -252,6 +252,7 @@ export default function FarmsFieldsPage({
     setFormError("");
     setName("");
     setArea("");
+    setFormFarmId(!isFarmsPage && currentFarmFilter !== "ALL" ? currentFarmFilter : !isFarmsPage && farms.length === 1 ? String(farms[0].id) : "");
     setDialogOpen(true);
   }
 
@@ -259,6 +260,7 @@ export default function FarmsFieldsPage({
     dialogVersionRef.current += 1;
     setFarmSaveSuccess(false);
     setEditing(record);
+    setFormFarmId(isFarmsPage ? "" : String(record.farmId));
     setFormError("");
     setName(isFarmsPage ? record.name || "" : record.fieldName || "");
     setArea(record.totalArea == null ? "" : String(record.totalArea));
@@ -303,33 +305,31 @@ export default function FarmsFieldsPage({
           notify("Farm created successfully");
         }
       } else {
-        if (!selectedFarm?.id) {
-          throw new Error("Choose a farm before adding a field.");
-        }
+        if (!formFarm) throw new Error("Choose a farm before adding a field.");
+        const targetFarmId = String(formFarm.id);
+        const targetFields = fields.filter((field) => field.farmId === targetFarmId);
         if (wasEditing) {
           const response = await fieldApi.update(editing.id, { fieldName: name.trim() });
           const updatedField = response?.data || response;
           if (updatedField && typeof updatedField === "object" && updatedField.id != null) {
-            updateSelectedFarmFields(fields.map((item) => item.id === editing.id ? updatedField : item));
-          } else {
-            setFieldReload((value) => value + 1);
+            updateFarmFields(targetFarmId, targetFields.map((item) => String(item.id) === String(editing.id) ? updatedField : item));
           }
         } else {
           const parsedArea = Number(area);
-          if (!Number.isFinite(parsedArea) || parsedArea < 0.01) {
-            throw new Error("Enter an area of at least 0.01 in your farm's chosen area unit.");
+          if (!Number.isFinite(parsedArea) || parsedArea < 0.01 || parsedArea > 99999999.99) {
+            throw new Error("Enter a valid area between 0.01 and 99,999,999.99 in your chosen area unit.");
           }
-          const response = await fieldApi.create(selectedFarm.id, {
-            fieldName: name.trim(),
-            totalArea: parsedArea,
-          });
+          if ((String(area).split(".")[1] || "").length > 2) throw new Error("Area can have at most two decimal places.");
+          const response = await fieldApi.create(formFarm.id, { fieldName: name.trim(), totalArea: parsedArea });
           const createdField = response?.data || response;
-          if (createdField && typeof createdField === "object" && createdField.id != null) {
-            updateSelectedFarmFields([createdField, ...fields.filter((item) => item.id !== createdField.id)]);
-          } else {
-            setFieldReload((value) => value + 1);
+          // Do not replace cached farm fields with an incomplete list after a failed fetch.
+          if (formFarmAreaAvailable && createdField && typeof createdField === "object" && createdField.id != null) {
+            updateFarmFields(targetFarmId, [createdField, ...targetFields.filter((item) => String(item.id) !== String(createdField.id))]);
           }
+          setFieldPage(1);
         }
+        setFieldReload((value) => value + 1);
+        if (!formFarmAreaAvailable) refreshFarms().catch((error) => notify(error.message || "Unable to sync the farm list.", "error"));
         setDialogOpen(false);
         setEditing(null);
         setName("");
@@ -375,7 +375,8 @@ export default function FarmsFieldsPage({
     setFieldsError("");
     try {
       await fieldApi.delete(field.id);
-      updateSelectedFarmFields(fields.filter((item) => item.id !== field.id));
+      updateFarmFields(field.farmId, fields.filter((item) => item.farmId === field.farmId && String(item.id) !== String(field.id)));
+      setFieldReload((value) => value + 1);
       notify("Field deleted successfully");
     } catch (error) {
       notify(error.message || "Unable to delete this field.", "error");
@@ -400,18 +401,15 @@ export default function FarmsFieldsPage({
           <p>
             {isFarmsPage
               ? "Create and manage the farms connected to your account."
-              : "Manage field names and land area within each of your farms."}
+              : "Manage fields and land allocation across your farms."}
           </p>
         </div>
         <div className={isFarmsPage ? "workspace-title-actions" : "workspace-title-actions ff-field-title-actions"}>
-          {!isFarmsPage && farms.length > 0 && (
-            <FieldFarmSelector farms={farms} selectedFarm={selectedFarm} onSelect={setSelectedFarm} disabled={farmsLoading || dialogOpen || dialogBusy || deletingId != null} />
-          )}
           <button
             className="button-primary"
             type="button"
             onClick={openCreate}
-            disabled={!isFarmsPage && !selectedFarm?.id}
+            disabled={!isFarmsPage && (farmsLoading || !farms.length || dialogBusy)}
           >
             <Plus size={16} /> {isFarmsPage ? "Add farm" : "Add field"}
           </button>
@@ -427,10 +425,10 @@ export default function FarmsFieldsPage({
         </div>
       ) : (
         <div className="workspace-stats">
-          <Stat label="Total fields" value={fieldsPending ? "…" : fieldsError ? "—" : fieldStats.count} detail="in the selected farm" icon={MapPinned} />
-          <Stat label="Total area" value={fieldsPending ? "…" : fieldsError ? "—" : areaLabel(fieldStats.totalArea)} detail="registered field area" icon={Ruler} />
-          <Stat label="Available area" value={fieldsPending ? "…" : fieldsError ? "—" : areaLabel(fieldStats.availableArea)} detail="available across selected fields" icon={Sprout} />
-          <Stat label="Allocated area" value={fieldsPending ? "…" : fieldsError ? "—" : areaLabel(fieldStats.usedArea)} detail="currently allocated" icon={Building2} />
+          <Stat label="Total fields" value={fieldsPending ? "…" : fieldStats.count} detail={failedFarms.length ? "Partial data · available farms" : "across all farms"} icon={MapPinned} />
+          <Stat label="Total field area" value={fieldsPending ? "…" : areaLabel(fieldStats.totalArea)} detail={failedFarms.length ? "Partial data · registered area" : "registered field area"} icon={Ruler} />
+          <Stat label="Allocated area" value={fieldsPending ? "…" : areaLabel(fieldStats.usedArea)} detail={failedFarms.length ? "Partial data · allocated area" : "currently allocated"} icon={Building2} />
+          <Stat label="Available area" value={fieldsPending ? "…" : areaLabel(fieldStats.availableArea)} detail={failedFarms.length ? "Partial data · available area" : "ready for allocation"} icon={Sprout} />
         </div>
       )}
 
@@ -439,12 +437,12 @@ export default function FarmsFieldsPage({
           <div>
             <h2 className="ff-farm-directory-title">
               {isFarmsPage ? <FolderOpen size={14} aria-hidden="true" /> : <MapPinned size={14} aria-hidden="true" />}
-              {isFarmsPage ? "Farm directory" : "Fields in this farm"}
+              {isFarmsPage ? "Farm directory" : "Fields in your farms"}
             </h2>
             <p>
               {isFarmsPage
                 ? "View and manage all your registered farms in one place."
-                : "View and manage your farm's fields, track total land area, and monitor available space for planting."}
+                : "View and manage registered fields across all your farms."}
             </p>
           </div>
         </div>
@@ -463,11 +461,19 @@ export default function FarmsFieldsPage({
               </button>
             )}
           </label>
+          {!isFarmsPage && <>
+            <Select value={currentFarmFilter} onValueChange={(value) => { setFarmFilter(value); setFieldPage(1); }}>
+              <SelectTrigger className="expense4-ledger-filter ff-field-filter" aria-label="Filter fields by farm"><SelectValue /></SelectTrigger>
+              <SelectContent align="start"><SelectItem value="ALL">All farms</SelectItem>{farms.filter((farm) => farm.id != null).map((farm) => <SelectItem key={farm.id} value={String(farm.id)}>{farm.name || "Unnamed farm"}</SelectItem>)}</SelectContent>
+            </Select>
+            <span className="result-count">{fieldsPending ? "…" : filteredFields.length} fields</span>
+          </>}
         </div>
 
-        {(isFarmsPage ? farmsError : fieldsError) && (
+        {!isFarmsPage && !fieldsPending && failedFarms.length > 0 && <div className="expense4-ledger-load-warning" role="status"><span>Could not load fields for {failedFarms.map((id) => farmById.get(id)?.name || "Farm").join(", ")}. Totals and records may be incomplete.</span><button type="button" className="button-secondary" onClick={() => setFieldReload((value) => value + 1)}>Retry</button></div>}
+        {(isFarmsPage ? farmsError : fieldsError || farmsError) && (
           <div className="ff-error" role="alert">
-            {isFarmsPage ? farmsError : fieldsError}
+            {isFarmsPage ? farmsError : fieldsError || farmsError}
           </div>
         )}
 
@@ -536,10 +542,10 @@ export default function FarmsFieldsPage({
           )
         ) : farmsLoading ? (
           <SkeletonBlock rows={4} />
-        ) : !selectedFarm?.id ? (
+        ) : !farms.length ? (
           <div className="empty-state">
             <MapPinned size={23} />
-            <strong>No farm selected</strong>
+            <strong>No farms available</strong>
             <span>Create a farm first, then add fields to it.</span>
             <button type="button" className="button-secondary" onClick={() => onNavigate("Farms")}>Go to farms <ArrowRight size={14} /></button>
           </div>
@@ -548,9 +554,9 @@ export default function FarmsFieldsPage({
         ) : filteredFields.length === 0 ? (
           <div className="empty-state">
             <MapPinned size={23} />
-            <strong>{query ? "No matching fields" : "No fields in this farm yet"}</strong>
-            <span>{query ? "Try another search term." : "Add a field with its measured area to get started."}</span>
-            {!query && <button type="button" className="button-primary" onClick={openCreate}><Plus size={15} /> Add a field</button>}
+            <strong>{failedFarms.length ? "No available matching fields" : query || currentFarmFilter !== "ALL" ? "No matching fields" : "No fields yet"}</strong>
+            <span>{failedFarms.length ? "Retry unavailable farms or adjust your filters." : query || currentFarmFilter !== "ALL" ? "Try another search or farm filter." : "Add a field with its measured area to get started."}</span>
+            {!query && !failedFarms.length && <button type="button" className="button-primary" onClick={openCreate}><Plus size={15} /> Add a field</button>}
           </div>
         ) : (
           <div className="workspace-table-wrap">
@@ -560,9 +566,9 @@ export default function FarmsFieldsPage({
               </thead>
               <tbody>
                 {paginatedFields.map((field) => (
-                  <tr key={field.id}>
+                  <tr key={field.farmId + ":" + field.id}>
                     <td><strong className="workspace-cell-title">{field.fieldName}</strong></td>
-                    <td>{selectedFarm.name}</td>
+                    <td>{farmById.get(field.farmId)?.name || "Unnamed farm"}</td>
                     <td>{areaLabel(field.totalArea)}</td>
                     <td>{areaLabel(field.availableArea)}</td>
                     <td>
@@ -623,7 +629,7 @@ export default function FarmsFieldsPage({
             <span>
               Showing <strong>{fieldsPending ? "…" : filteredFields.length ? `${(currentFieldPage - 1) * FIELDS_PER_PAGE + 1}–${Math.min(currentFieldPage * FIELDS_PER_PAGE, filteredFields.length)} of ${filteredFields.length}` : "0"}</strong> fields
             </span>
-            {!isFarmsPage && !farmsLoading && !fieldsPending && selectedFarm?.id && filteredFields.length > 0 && (
+            {!isFarmsPage && !farmsLoading && !fieldsPending && filteredFields.length > 0 && (
               <Pagination className="ff-farm-pagination ff-field-pagination" aria-label="Fields pagination">
                 <PaginationContent>
                   <PaginationItem>
@@ -644,7 +650,7 @@ export default function FarmsFieldsPage({
                 </PaginationContent>
               </Pagination>
             )}
-            <span>{selectedFarm?.name || "Select a farm"}</span>
+            <span>{currentFarmFilter === "ALL" ? "All farms" : farmById.get(currentFarmFilter)?.name}</span>
           </div>
         )}
       </div>
@@ -657,35 +663,38 @@ export default function FarmsFieldsPage({
         <div className="modal-overlay" onMouseDown={(event) => {
           if (event.target === event.currentTarget && !dialogBusy) setDialogOpen(false);
         }}>
-          <form className="dialog-card" onSubmit={submitForm}>
+          <form className={isFarmsPage ? "dialog-card" : "dialog-card ff-field-entry-dialog"} onSubmit={submitForm}>
             <div className="dialog-heading">
               <div>
                 <span className="section-kicker">{isFarmsPage ? "FARM MANAGEMENT" : "FIELD MANAGEMENT"}</span>
                 <h2>{editing ? `Edit ${isFarmsPage ? "farm" : "field"}` : isFarmsPage ? "Add a farm" : "Add a field"}</h2>
-                <p>{isFarmsPage ? "Give this farm a name you will recognize." : `Add a field under ${selectedFarm?.name || "your selected farm"}.`}</p>
+                <p>{isFarmsPage ? "Give this farm a name you will recognize." : editing ? "Update the name of this registered field." : "Register a new field within your farm."}</p>
               </div>
               <button type="button" className="icon-button ff-edit-farm-close" aria-label="Close dialog" onClick={() => setDialogOpen(false)} disabled={dialogBusy}><X size={19} /></button>
             </div>
             {formError && <div className="ff-error" role="alert">{formError}</div>}
-            {!isFarmsPage && (
-              <div className={editing ? "ff-form-context ff-edit-field-context" : "ff-form-context"}>
-                <span>Farm</span>
-                <strong>{selectedFarm?.name || "No farm selected"}</strong>
-              </div>
-            )}
+            {!isFarmsPage && (editing ? (
+              <div className="ff-form-context ff-edit-field-context"><span>Farm</span><strong>{formFarm?.name || "Farm unavailable"}</strong></div>
+            ) : (
+              <>
+                <div className="form-label"><label htmlFor="field-farm">Select farm</label><Select required value={formFarm ? formFarmId : ""} disabled={dialogBusy} onValueChange={(value) => { setFormFarmId(value); setFormError(""); }}><SelectTrigger id="field-farm" className="ifc-form-select"><SelectValue placeholder="Choose a farm" /></SelectTrigger><SelectContent align="start">{farms.filter((farm) => farm.id != null).map((farm) => <SelectItem key={farm.id} value={String(farm.id)}>{farm.name || "Unnamed farm"}</SelectItem>)}</SelectContent></Select></div>
+                {formFarm && <div className="ff-field-farm-area-context"><span className="ff-field-farm-icon"><Tractor size={17} aria-hidden="true" /></span><div><strong>{formFarm.name}</strong><small>{formFarmAreaAvailable ? areaLabel(totalArea(formFarmFields)) + " registered field area" : fieldsPending ? "Loading field areas…" : "Field area unavailable"}</small></div><div className="ff-field-farm-area-value"><strong>{formFarmAreaAvailable ? areaLabel(totalArea(formFarmFields, "availableArea")) : "—"}</strong><small>Available field area</small></div></div>}
+              </>
+            ))}
             <label className="form-label">
               {isFarmsPage ? "Farm name" : "Field name"}
-              <input autoFocus required maxLength={120} disabled={Boolean(isFarmsPage && editing && dialogBusy)} value={name} onChange={(event) => setName(event.target.value)} placeholder={isFarmsPage ? "e.g. Green Valley Farm" : "e.g. North Field"} />
+              {isFarmsPage ? <input autoFocus required maxLength={120} disabled={Boolean(editing && dialogBusy)} value={name} onChange={(event) => setName(event.target.value)} placeholder="e.g. Green Valley Farm" /> : <Input autoFocus required maxLength={120} disabled={dialogBusy} value={name} onChange={(event) => setName(event.target.value)} placeholder="e.g. North Field" />}
             </label>
             {!isFarmsPage && !editing && (
               <>
                 <label className="form-label">
                   Total area
-                  <input required type="number" min="0.01" step="0.01" value={area} onChange={(event) => setArea(event.target.value)} placeholder="e.g. 1.25" />
+                  <Input required type="number" min="0.01" max="99999999.99" step="0.01" disabled={dialogBusy} value={area} onChange={(event) => setArea(event.target.value)} placeholder="e.g. 1.25" />
+                  <small className="ff-field-area-hint">Enter the measured area in your consistent land area unit.</small>
                 </label>
               </>
             )}
-            {!isFarmsPage && editing && (
+            {!isFarmsPage && (
               <Alert className="ff-field-area-warning" role="note">
                 <span className="ff-field-area-warning-icon" aria-hidden="true">
                   <UseAnimations animation={alertCircle} size={22} strokeColor="#806522" interaction="loop" render={(eventProps, animationProps) => <span {...eventProps} {...animationProps} />} />
@@ -704,8 +713,8 @@ export default function FarmsFieldsPage({
                   ) : "Save changes"}
                 </button>
               ) : (
-                <button type="submit" className="button-primary" disabled={saving || !name.trim()}>
-                  <Plus size={15} /> {saving ? "Saving…" : editing ? "Save changes" : "Create"}
+                <button type="submit" className="button-primary" disabled={saving || !name.trim() || (!isFarmsPage && (!formFarm || (!editing && (!area || !Number.isFinite(Number(area)) || Number(area) < 0.01))))}>
+                  <Plus size={15} /> {saving ? "Saving…" : editing ? "Save changes" : isFarmsPage ? "Create" : "Add field"}
                 </button>
               )}
               {isFarmsPage && editing && <span className="sr-only" role="status">{farmSaveSuccess ? "Farm saved successfully." : saving ? "Saving farm changes." : ""}</span>}
