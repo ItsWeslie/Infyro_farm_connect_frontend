@@ -212,7 +212,7 @@ html[data-ifc-theme="dark"] .dialog-card .ff-form-context strong { color: #e5f0d
 /* Radix Select locks body scrolling and compensates for the removed scrollbar.
    The document already reserves a stable scrollbar gutter; keep its scrollbar
    and avoid a second width adjustment while a crop filter or form select is open. */
-body[data-scroll-locked="1"]:has(:is(.crop3-status-filter,.crop3-action-select,.crop3-planting-dialog .ifc-form-select,.crop3-activity-dialog .ifc-form-select,.ifc-calendar-show-select,.expense4-create-dialog .ifc-form-select,.expense4-ledger-filter,.ff-field-entry-dialog .ifc-form-select)[data-state="open"]){
+body[data-scroll-locked="1"]:has(:is(.crop3-status-filter,.crop3-action-select,.crop3-planting-dialog .ifc-form-select,.crop3-type-dialog .ifc-form-select,.crop3-activity-dialog .ifc-form-select,.ifc-calendar-show-select,.expense4-create-dialog .ifc-form-select,.expense4-ledger-filter,.ff-field-entry-dialog .ifc-form-select)[data-state="open"]){
   overflow:visible!important;
   margin-right:0!important;
   --removed-body-scroll-bar-size:0px!important;
@@ -2032,3 +2032,16 @@ html[data-ifc-theme="dark"] .ff-field-farm-area-context{background:#2b412d;color
 html[data-ifc-theme="dark"] .ff-field-farm-area-context small,html[data-ifc-theme="dark"] .ff-field-area-hint{color:#b9c9b2}
 html[data-ifc-theme="dark"] .ff-field-farm-area-value strong{color:#c5e0b8}
 @media(max-width:650px){.ff-data-card .ff-fields-footer>span:last-child{display:none;grid-column:auto;grid-row:auto}.ff-data-card .ff-field-filter{flex:1 1 130px}.ff-field-entry-dialog{padding:16px}}
+/* Centralized crop management: cross-farm filter and field area context. */
+.crop3-data-card .crop3-farm-filter{flex:0 1 180px}
+.crop3-field-area-context{display:flex;align-items:center;gap:9px;margin:9px 0 0;padding:9px 10px;background:#eaf3e7;border-radius:8px;color:#46694b}
+.crop3-field-area-context>svg{flex-shrink:0;color:#568052}
+.crop3-field-area-context>div{display:grid;gap:3px;flex:1;min-width:0}
+.crop3-field-area-context strong{font-size:11px;overflow-wrap:anywhere}
+.crop3-field-area-context>strong{font-size:15px;white-space:nowrap}
+.crop3-field-area-context small,.crop3-farm-form-hint{font-size:10px;line-height:1.5;color:#788d78}
+.crop3-farm-form-hint{margin-top:6px}
+html[data-ifc-theme="dark"] .crop3-field-area-context{background:#2b412d;color:#e5f0dc}
+html[data-ifc-theme="dark"] .crop3-field-area-context>svg,html[data-ifc-theme="dark"] .crop3-field-area-context>strong{color:#c5e0b8}
+html[data-ifc-theme="dark"] .crop3-field-area-context small,html[data-ifc-theme="dark"] .crop3-farm-form-hint{color:#b9c9b2}
+@media(max-width:650px){.crop3-data-card .crop3-farm-filter{flex:1 1 130px}}
