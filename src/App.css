@@ -212,7 +212,7 @@ html[data-ifc-theme="dark"] .dialog-card .ff-form-context strong { color: #e5f0d
 /* Radix Select locks body scrolling and compensates for the removed scrollbar.
    The document already reserves a stable scrollbar gutter; keep its scrollbar
    and avoid a second width adjustment while a crop filter or form select is open. */
-body[data-scroll-locked="1"]:has(:is(.crop3-status-filter,.crop3-action-select,.crop3-planting-dialog .ifc-form-select,.crop3-activity-dialog .ifc-form-select,.ifc-calendar-show-select,.expense4-create-dialog .ifc-form-select,.expense4-ledger-filter)[data-state="open"]){
+body[data-scroll-locked="1"]:has(:is(.crop3-status-filter,.crop3-action-select,.crop3-planting-dialog .ifc-form-select,.crop3-activity-dialog .ifc-form-select,.ifc-calendar-show-select,.expense4-create-dialog .ifc-form-select,.expense4-ledger-filter,.ff-field-entry-dialog .ifc-form-select)[data-state="open"]){
   overflow:visible!important;
   margin-right:0!important;
   --removed-body-scroll-bar-size:0px!important;
@@ -2013,3 +2013,22 @@ html[data-ifc-theme="dark"] .ifc-inbox-read-icon{color:#81987c}
 html[data-ifc-theme="dark"] .ifc-inbox-footer{border-color:rgba(203,226,194,.12);color:#aebda8}
 @media(max-width:650px){.ifc-inbox-tabs .ifc-notification-filters{align-self:flex-start}.ifc-inbox-card .ifc-notification-item{gap:8px;padding:10px 7px}.ifc-inbox-card .ifc-notification-icon{width:32px;height:32px}.ifc-inbox-footer{grid-template-columns:minmax(0,1fr) auto;gap:6px;padding:10px 12px}.ifc-inbox-footer>span:last-child{display:none}.ifc-inbox-footer>.ff-farm-pagination{justify-self:end}.ifc-inbox-heading-actions{width:100%}.ifc-inbox-heading-actions .button-secondary{flex:1}}
 @media(prefers-reduced-motion:reduce){.ifc-inbox-read-button{transition:none}}
+/* All-farm field directory and farm selection inside field creation. */
+.ff-data-card .ff-field-filter{flex:0 1 180px}
+.ff-data-card .ff-fields-footer>span:last-child{grid-column:3;grid-row:1;overflow-wrap:anywhere}
+.ff-field-entry-dialog{width:min(100%,420px);padding:20px;max-height:calc(100vh - 36px);overflow-y:auto}
+.ff-field-entry-dialog .dialog-heading{margin-bottom:16px}
+.ff-field-entry-dialog .form-label{margin-top:12px;gap:6px}
+.ff-field-entry-dialog .ifc-form-select,.ff-field-entry-dialog .ifc-shadcn-input{box-sizing:border-box;height:40px;min-height:40px}
+.ff-field-entry-dialog .dialog-actions{margin-top:16px}
+.ff-field-farm-area-context{display:flex;align-items:center;gap:9px;padding:10px;margin-top:10px;border-radius:8px;background:#eaf3e7;color:#46694b}
+.ff-field-farm-area-context>div{display:grid;gap:4px;min-width:0}
+.ff-field-farm-area-context>div:nth-child(2){flex:1}
+.ff-field-farm-area-context strong{font-size:11px;overflow-wrap:anywhere}
+.ff-field-farm-area-context small,.ff-field-area-hint{font-size:9px;font-weight:500;color:#788d78;line-height:1.4}
+.ff-field-farm-area-value{text-align:right}
+.ff-field-farm-area-value strong{font-size:15px;color:#3c754b}
+html[data-ifc-theme="dark"] .ff-field-farm-area-context{background:#2b412d;color:#e5f0dc}
+html[data-ifc-theme="dark"] .ff-field-farm-area-context small,html[data-ifc-theme="dark"] .ff-field-area-hint{color:#b9c9b2}
+html[data-ifc-theme="dark"] .ff-field-farm-area-value strong{color:#c5e0b8}
+@media(max-width:650px){.ff-data-card .ff-fields-footer>span:last-child{display:none;grid-column:auto;grid-row:auto}.ff-data-card .ff-field-filter{flex:1 1 130px}.ff-field-entry-dialog{padding:16px}}
