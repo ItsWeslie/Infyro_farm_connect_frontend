@@ -212,7 +212,7 @@ html[data-ifc-theme="dark"] .dialog-card .ff-form-context strong { color: #e5f0d
 /* Radix Select locks body scrolling and compensates for the removed scrollbar.
    The document already reserves a stable scrollbar gutter; keep its scrollbar
    and avoid a second width adjustment while a crop filter or form select is open. */
-body[data-scroll-locked="1"]:has(:is(.crop3-status-filter,.crop3-action-select,.crop3-planting-dialog .ifc-form-select)[data-state="open"]){
+body[data-scroll-locked="1"]:has(:is(.crop3-status-filter,.crop3-action-select,.crop3-planting-dialog .ifc-form-select,.crop3-activity-dialog .ifc-form-select)[data-state="open"]){
   overflow:visible!important;
   margin-right:0!important;
   --removed-body-scroll-bar-size:0px!important;
@@ -1886,3 +1886,10 @@ html[data-ifc-theme="dark"] .ifc-shadcn-calendar .rdp-selected .rdp-day_button:h
 .crop3-type-dialog .form-label .ifc-shadcn-textarea{min-height:76px}
 html[data-ifc-theme="dark"] .crop3-type-dialog .form-label .ifc-shadcn-textarea,html[data-ifc-theme="dark"] .ifc-shadcn-textarea{background:#26352a;color:#e5f0dc;border-color:rgba(203,226,194,.15)}
 html[data-ifc-theme="dark"] .ifc-shadcn-textarea::placeholder{color:#b3c1ad}
+/* Activity journal dialog: reuse the crop form spacing and compact controls. */
+.crop3-activity-dialog .form-label{min-width:0;margin-top:14px}
+.crop3-activity-dialog .crop3-form-grid{margin-top:14px}
+.crop3-activity-dialog .crop3-form-grid .form-label{margin-top:0}
+.crop3-activity-dialog .form-label .ifc-shadcn-textarea{min-height:58px}
+html[data-ifc-theme="dark"] .crop3-activity-dialog .form-label .ifc-shadcn-textarea{background:#26352a;color:#e5f0dc;border-color:rgba(203,226,194,.15)}
+@media(max-width:520px){.crop3-activity-dialog .crop3-form-grid .form-label+.form-label{margin-top:14px}}
