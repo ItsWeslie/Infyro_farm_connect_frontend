@@ -160,6 +160,17 @@ export function CalendarPage({ notify }) {
     setSelectedDate(toDateKey(now));
   }
 
+  const milestoneNote = (
+    <div className="ifc-calendar-info-wrap">
+      <div className="ifc-calendar-info" role="note">
+        <span className="ff-field-area-warning-icon" aria-hidden="true">
+          <UseAnimations animation={alertCircle} size={22} strokeColor="#806522" interaction="loop" render={(eventProps, animationProps) => <span {...eventProps} {...animationProps} />} />
+        </span>
+        <span>Calendar events are generated from crop planting dates and expected harvest dates.</span>
+      </div>
+    </div>
+  );
+
   return (
     <section className="ifc-live-page">
       <div className="ifc-live-page-heading">
@@ -255,6 +266,7 @@ export function CalendarPage({ notify }) {
                 <span><i className="planting" /> Planting</span>
                 <span><i className="harvest" /> Expected harvest</span>
               </div>
+              {milestoneNote}
             </div>
             <aside className="ifc-calendar-day-panel">
               <div className="ifc-calendar-day-panel-heading">
@@ -313,16 +325,9 @@ export function CalendarPage({ notify }) {
                 <ChevronRight size={17} />
               </button>
             ))}
+            {milestoneNote}
           </div>
         )}
-        <div className="ifc-calendar-info-wrap">
-          <div className="ifc-calendar-info" role="note">
-            <span className="ff-field-area-warning-icon" aria-hidden="true">
-              <UseAnimations animation={alertCircle} size={22} strokeColor="#806522" interaction="loop" render={(eventProps, animationProps) => <span {...eventProps} {...animationProps} />} />
-            </span>
-            <span>Calendar events are generated from crop planting dates and expected harvest dates.</span>
-          </div>
-        </div>
       </div>
     </section>
   );
