@@ -1,8 +1,9 @@
-export function Brand({ onHome }) {
+export function Brand({ onHome, href, className = "" }) {
+  const Component = href ? "a" : "button";
   return (
-    <button
-      type="button"
-      className="brand brand-logo"
+    <Component
+      {...(href ? { href } : { type: "button" })}
+      className={["brand", "brand-logo", className].filter(Boolean).join(" ")}
       aria-label="Infyro Farm home"
       onClick={onHome}
     >
@@ -16,6 +17,6 @@ export function Brand({ onHome }) {
         </span>
         <span className="brand-logo-tagline">FARM SMARTER. GROW BETTER.</span>
       </span>
-    </button>
+    </Component>
   );
 }
