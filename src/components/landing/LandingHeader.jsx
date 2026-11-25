@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import UseAnimations from "react-useanimations";
-import arrowRight from "react-useanimations/lib/arrowRight";
 import chevronDown from "react-useanimations/lib/chevronDown";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { ThemeToggle } from "../ui/ThemeToggle";
 import { BrandMark } from "./BrandMark";
 
@@ -59,11 +58,6 @@ export function LandingHeader({ mobileMenuOpen, setMobileMenuOpen, theme, setThe
       document.removeEventListener("pointerdown", outside);
     };
   }, [mobileMenuOpen, setMobileMenuOpen]);
-  const renderStart = (eventProps = {}, animationProps) => (
-    <button {...eventProps} type="button" className="landing-button ifc-capsule-start" onClick={() => openAuth("signup")}>
-      Get started {animationProps ? <span {...animationProps} aria-hidden="true" /> : <ArrowRight size={16} aria-hidden="true" />}
-    </button>
-  );
   return (
     <header ref={header} className={"landing-header ifc-capsule-header" + (scrolled ? " is-scrolled" : "")}>
       <div className="landing-header-inner ifc-capsule-inner">
@@ -78,7 +72,6 @@ export function LandingHeader({ mobileMenuOpen, setMobileMenuOpen, theme, setThe
           <div className="ifc-capsule-actions">
             <div className="ifc-capsule-appearance"><span>Appearance</span><ThemeToggle theme={theme} setTheme={setTheme} /></div>
             <button type="button" className="ifc-capsule-signin" onClick={() => openAuth("login")}>Sign in</button>
-            {reduced ? renderStart() : <UseAnimations animation={arrowRight} size={18} interaction="hover" strokeColor="currentColor" render={renderStart} />}
           </div>
         </nav>
       </div>
