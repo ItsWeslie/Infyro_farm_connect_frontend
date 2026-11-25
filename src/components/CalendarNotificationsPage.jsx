@@ -176,7 +176,7 @@ export function CalendarPage({ notify }) {
   );
 
   return (
-    <section className="ifc-live-page ifc-accent-page" data-accent="purple">
+    <section className="ifc-live-page">
       <div className="ifc-live-page-heading">
         <div>
           <span className="page-eyebrow"><i className="eyebrow-pip" /> YOUR FARM MILESTONES</span>
@@ -535,7 +535,7 @@ export function NotificationsPage({ unreadCount = 0, onNotificationsChanged, not
   }
 
   return (
-    <section className="workspace-page ifc-inbox-page ifc-accent-page" data-accent="blue">
+    <section className="workspace-page ifc-inbox-page">
       <div className="page-eyebrow"><span className="eyebrow-pip" /> UPDATES FROM YOUR FARM</div>
       <div className="workspace-title-row">
         <div className="workspace-title-icon"><Bell size={23} /></div>
