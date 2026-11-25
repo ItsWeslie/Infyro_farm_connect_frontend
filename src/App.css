@@ -1897,3 +1897,8 @@ html[data-ifc-theme="dark"] .ifc-shadcn-textarea::placeholder{color:#b3c1ad}
 .crop3-activity-dialog .form-label .ifc-shadcn-textarea{height:52px;min-height:52px;max-height:52px;padding:8px 10px;resize:none;field-sizing:fixed;overflow-y:auto}
 html[data-ifc-theme="dark"] .crop3-activity-dialog .form-label .ifc-shadcn-textarea{background:#26352a;color:#e5f0dc;border-color:rgba(203,226,194,.15)}
 @media(max-width:520px){.crop3-activity-dialog{padding:16px}.crop3-activity-dialog .crop3-form-grid .form-label+.form-label{margin-top:10px}}
+/* Calendar milestone information, matching the planting area info alert. */
+.ifc-calendar-info-wrap{padding:10px 19px 14px}
+.ifc-calendar-info-wrap .ifc-calendar-info{align-items:center;background:#eef5fb;border-color:#d6e5f1;color:#356488;padding:9px 11px}
+.ifc-calendar-info-wrap .ifc-calendar-info>svg{margin:0}
+html[data-ifc-theme="dark"] .ifc-calendar-info-wrap .ifc-calendar-info{background:#243847;border-color:#395364;color:#b8d8ee}
