@@ -2045,3 +2045,9 @@ html[data-ifc-theme="dark"] .crop3-field-area-context{background:#2b412d;color:#
 html[data-ifc-theme="dark"] .crop3-field-area-context>svg,html[data-ifc-theme="dark"] .crop3-field-area-context>strong{color:#c5e0b8}
 html[data-ifc-theme="dark"] .crop3-field-area-context small,html[data-ifc-theme="dark"] .crop3-farm-form-hint{color:#b9c9b2}
 @media(max-width:650px){.crop3-data-card .crop3-farm-filter{flex:1 1 130px}}
+/* Align creation action with the crop management tabs. */
+.crop3-tab-actions-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 16px}
+.crop3-tab-actions-row .crop3-tabs{margin:0;min-width:0}
+.crop3-tab-create-action{display:flex;align-items:center;justify-content:flex-end;flex-shrink:0;margin-left:auto}
+.crop3-tab-create-action .button-primary{white-space:nowrap}
+@media(max-width:650px){.crop3-tab-actions-row{gap:8px}.crop3-tab-actions-row .crop3-tabs{width:auto;flex:1 1 auto;overflow-x:auto}.crop3-tab-actions-row .crop3-tabs button{white-space:nowrap}.crop3-tab-create-action{flex:0 0 auto}}

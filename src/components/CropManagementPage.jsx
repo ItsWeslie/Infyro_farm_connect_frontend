@@ -818,32 +818,37 @@ export default function CropManagementPage({
           <h1>{isActivities ? "Crop activity log" : "Crop management"}</h1>
           <p>{isActivities ? "Record the work, observations, and care behind each planting." : "Plan, manage and track crops across your farms."}</p>
         </div>
-        <div className={`workspace-title-actions crop3-title-actions${isActivities ? "" : " ff-field-title-actions"}`}>
-          {isActivities ? (
+        {isActivities && (
+          <div className="workspace-title-actions crop3-title-actions">
             <button className="button-primary" type="button" onClick={openCreateActivity} disabled={!selectedPlanting || activityPlantingsPending || activityLogsPending}>
               <Plus size={15} /> Log activity
             </button>
-          ) : isTypes ? (
-            <button className="button-primary" type="button" onClick={openCreateType} disabled={farmDataPending || switchDisabled}>
-              <Plus size={15} /> Add crop type
-            </button>
-          ) : (
-            <button className="button-primary" type="button" onClick={openCreatePlanting} disabled={farmDataPending || switchDisabled || !canCreatePlanting}>
-              <Plus size={15} /> Add planting
-            </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {!isActivities && (
-        <div className="crop3-tabs" role="tablist" aria-label="Crop management sections">
-          <button type="button" role="tab" aria-selected={!isTypes} className={!isTypes ? "selected" : ""} onClick={() => { setSection("plantings"); setSearch(""); }}>
-            <Sprout size={14} /> Crop plantings
-          </button>
-          <button type="button" role="tab" aria-selected={isTypes} className={isTypes ? "selected" : ""} onClick={() => { setSection("types"); setSearch(""); }}>
-            <Leaf size={14} /> Crop types
-          </button>
-          <span className="crop3-tab-hint">All farms</span>
+        <div className="crop3-tab-actions-row">
+          <div className="crop3-tabs" role="tablist" aria-label="Crop management sections">
+            <button type="button" role="tab" aria-selected={!isTypes} className={!isTypes ? "selected" : ""} onClick={() => { setSection("plantings"); setSearch(""); }}>
+              <Sprout size={14} /> Crop plantings
+            </button>
+            <button type="button" role="tab" aria-selected={isTypes} className={isTypes ? "selected" : ""} onClick={() => { setSection("types"); setSearch(""); }}>
+              <Leaf size={14} /> Crop types
+            </button>
+            <span className="crop3-tab-hint">All farms</span>
+          </div>
+          <div className="crop3-tab-create-action">
+            {isTypes ? (
+              <button className="button-primary" type="button" onClick={openCreateType} disabled={farmDataPending || switchDisabled}>
+                <Plus size={15} /> Add crop type
+              </button>
+            ) : (
+              <button className="button-primary" type="button" onClick={openCreatePlanting} disabled={farmDataPending || switchDisabled || !canCreatePlanting}>
+                <Plus size={15} /> Add planting
+              </button>
+            )}
+          </div>
         </div>
       )}
 
