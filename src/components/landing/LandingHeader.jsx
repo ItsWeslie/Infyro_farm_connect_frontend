@@ -38,7 +38,7 @@ export function LandingHeader({ mobileMenuOpen, setMobileMenuOpen, theme, setThe
     }
     const queue = () => { if (!frame) frame = requestAnimationFrame(update); };
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const desktop = window.matchMedia("(min-width: 1025px)");
+    const desktop = window.matchMedia("(min-width: 901px)");
     const changeMotion = () => setReduced(motion.matches);
     const changeDesktop = () => { if (desktop.matches) setMobileMenuOpen(false); };
     update();
