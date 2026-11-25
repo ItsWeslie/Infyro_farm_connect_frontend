@@ -2122,3 +2122,58 @@ html[data-ifc-theme="dark"] .ifc-theme-option-check{color:#c5e0b8}
 html[data-ifc-theme="dark"] .ifc-theme-storage-note{color:#b2c0ac}
 html[data-ifc-theme="dark"] .ifc-account-settings-page .ifc-settings-logout{color:#f0a89d}
 html[data-ifc-theme="dark"] .ifc-account-settings-page .ifc-settings-logout:hover{background:#432e2a;border-color:#75534b;color:#ffd1c9}
+
+/* Refined workspace navigation: consistent spacing and a compact desktop rail. */
+.ifc-refined-shell{--ifc-sidebar-width:230px;--ifc-sidebar-rail:72px}
+.ifc-refined-shell .sidebar{padding:18px 10px 12px}
+.ifc-refined-shell .sidebar-top{gap:4px;padding:0 3px 17px;flex-shrink:0;border-bottom:1px solid var(--line);margin-bottom:16px}
+.ifc-refined-shell .sidebar-top .brand-logo{flex:1;min-width:0;gap:7px;width:auto}
+.ifc-refined-shell .sidebar-top .brand-logo-name{font-size:16px}
+.ifc-refined-shell .sidebar-top .brand-logo-tagline{font-size:5.6px;letter-spacing:.2px}
+.ifc-sidebar-toggle{display:none;flex:0 0 28px;width:28px;height:30px;padding:4px;align-items:center;justify-content:center}
+.ifc-sidebar-toggle-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;flex-shrink:0}
+.ifc-sidebar-toggle-icon svg{display:block;width:20px;height:20px}
+.ifc-sidebar-toggle-icon svg [stroke]:not([stroke="none"]){stroke:currentColor}
+.ifc-refined-shell .side-navigation{min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin}
+.ifc-refined-shell .nav-group{margin:0 0 15px;padding:0 0 13px;border-bottom:1px solid var(--line)}
+.ifc-refined-shell .nav-group:last-child{margin-bottom:0;border-bottom:0}
+.ifc-refined-shell .nav-label{padding:0 10px 7px;font-size:9px;letter-spacing:1px}
+.ifc-refined-shell .nav-item{position:relative;min-height:39px;padding:9px 10px 9px 12px;gap:10px;margin:2px 0;border-radius:8px;white-space:nowrap}
+.ifc-refined-shell .nav-item>svg{flex:0 0 18px}
+.ifc-refined-shell .nav-item .ifc-nav-item-label{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.ifc-refined-shell .nav-item.nav-active::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:#286044}
+.ifc-refined-shell .nav-badge{flex:0 0 auto;min-width:19px;text-align:center;padding:2px 5px}
+.ifc-refined-shell .sidebar-bottom{padding-top:12px;flex-shrink:0}
+.ifc-refined-shell .sidebar-help{padding:10px 10px;min-height:38px;border-radius:8px;margin-bottom:7px;align-items:center}
+.ifc-refined-shell .sidebar-help:hover{background:#f1f5ed;color:#386b49}
+.ifc-refined-shell .profile-area{padding-top:10px}
+.ifc-refined-shell .profile-button{padding:5px 4px;min-height:42px;background:transparent;box-shadow:none;border-radius:8px}
+.ifc-refined-shell .profile-copy{min-width:0}
+.ifc-refined-shell .profile-copy strong,.ifc-refined-shell .profile-copy small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ifc-refined-shell .profile-button>svg{flex-shrink:0}
+html[data-ifc-theme="dark"] .ifc-refined-shell .sidebar-top,html[data-ifc-theme="dark"] .ifc-refined-shell .nav-group{border-color:rgba(203,226,194,.13)}
+html[data-ifc-theme="dark"] .ifc-refined-shell .nav-item.nav-active::before{background:#a8c99c}
+html[data-ifc-theme="dark"] .ifc-refined-shell .sidebar-help:hover{background:#202d23;color:#e4f0dc}
+html[data-ifc-theme="dark"] .ifc-refined-shell .ifc-sidebar-toggle{color:#b3c1ae}
+html[data-ifc-theme="dark"] .ifc-refined-shell .ifc-sidebar-toggle:hover{background:#202d23;color:#e4f0dc}
+@media(min-width:901px){
+  .ifc-refined-shell .sidebar{width:var(--ifc-sidebar-width);transition:width .2s ease,padding .2s ease}
+  .ifc-refined-shell .main-area{margin-left:var(--ifc-sidebar-width);transition:margin-left .2s ease}
+  .ifc-refined-shell .ifc-sidebar-toggle{display:flex}
+  .ifc-refined-shell.sidebar-collapsed .sidebar{width:var(--ifc-sidebar-rail);padding-left:9px;padding-right:9px}
+  .ifc-refined-shell.sidebar-collapsed .main-area{margin-left:var(--ifc-sidebar-rail)}
+  .ifc-refined-shell.sidebar-collapsed .sidebar-top{flex-direction:column;gap:9px;padding:0 0 12px;margin-bottom:12px}
+  .ifc-refined-shell.sidebar-collapsed .sidebar-top .brand-logo{flex:none;justify-content:center;width:100%;min-height:42px}
+  .ifc-refined-shell.sidebar-collapsed .brand-logo-copy,.ifc-refined-shell.sidebar-collapsed .nav-label,.ifc-refined-shell.sidebar-collapsed .ifc-nav-item-label,.ifc-refined-shell.sidebar-collapsed .sidebar-help span,.ifc-refined-shell.sidebar-collapsed .sidebar-help>svg:last-child,.ifc-refined-shell.sidebar-collapsed .profile-copy,.ifc-refined-shell.sidebar-collapsed .profile-button>svg{display:none}
+  .ifc-refined-shell.sidebar-collapsed .ifc-sidebar-toggle{width:36px;flex-basis:auto}
+  .ifc-refined-shell.sidebar-collapsed .nav-group{margin-bottom:9px;padding-bottom:9px}
+  .ifc-refined-shell.sidebar-collapsed .nav-item{justify-content:center;padding:10px 0;gap:0;min-height:42px}
+  .ifc-refined-shell.sidebar-collapsed .nav-badge{position:absolute;right:1px;top:1px;min-width:14px;line-height:13px;font-size:8px;padding:0 3px;border-radius:7px}
+  .ifc-refined-shell.sidebar-collapsed .sidebar-help,.ifc-refined-shell.sidebar-collapsed .profile-button{justify-content:center;padding:6px 0}
+  .ifc-refined-shell.sidebar-collapsed .profile-popover{left:calc(100% + 12px);right:auto;bottom:0;width:174px}
+}
+@media(max-width:900px){
+  .ifc-refined-shell .sidebar{width:258px;padding:18px 12px 12px}
+  .ifc-refined-shell .sidebar-top{gap:8px}
+  .ifc-refined-shell .sidebar-top .brand-logo-tagline{font-size:6px}
+}
