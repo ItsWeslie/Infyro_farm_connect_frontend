@@ -115,7 +115,7 @@ async function loadSearchRecords(farms, isCurrent, publish) {
   if (isCurrent()) publish({ entries: [...base, ...history], loading: false, failures: [...failed] });
 }
 
-function SearchPanel({ farms, farmsLoading, farmsError, onChoose }) {
+function SearchPanel({ farms, farmsLoading, farmsError, onChoose, onRetryFarms }) {
   const [query, setQuery] = useState("");
   const [debounced, setDebounced] = useState("");
   const [loadRecords, setLoadRecords] = useState(false);
@@ -185,14 +185,14 @@ function SearchPanel({ farms, farmsLoading, farmsError, onChoose }) {
         })}
         {searching && <div className="ifc-search-state" role="status">Searching your workspace…</div>}
         {!searching && query.trim() && results.length === 0 && <div className="ifc-search-state"><Search size={24} /><strong>No matching results</strong><span>{query.trim().length < 2 ? "Enter at least two characters to search records." : "Try a different name or keyword."}</span></div>}
-        {!searching && query.trim().length >= 2 && (farmsError || index.failures.length > 0) && <div className="ifc-search-warning" role="status"><span>Some results may be missing{index.failures.length ? ": " + index.failures.join(", ") : "."}</span><button type="button" className="button-secondary" onClick={() => setRetry(value => value + 1)}>Retry</button></div>}
+        {!searching && query.trim().length >= 2 && (farmsError || index.failures.length > 0) && <div className="ifc-search-warning" role="status"><span>Some results may be missing{index.failures.length ? ": " + index.failures.join(", ") : "."}</span><button type="button" className="button-secondary" onClick={() => { if (farmsError) onRetryFarms?.().catch(() => {}); setRetry(value => value + 1); }}>Retry</button></div>}
       </CommandList>
       <div className="ifc-search-footer"><span><kbd>↑</kbd> <kbd>↓</kbd> Navigate</span><span><kbd>↵</kbd> Open</span><span><kbd>Esc</kbd> Close</span></div>
     </Command>
   );
 }
 
-export default function WorkspaceSearch({ farms, farmsLoading, farmsError, onChoose, onOpen }) {
+export default function WorkspaceSearch({ farms, farmsLoading, farmsError, onChoose, onOpen, onRetryFarms }) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef(null);
   const shortcut = /Mac|iPhone|iPad|iPod/.test(navigator.platform || "") ? "⌘ K" : "Ctrl K";
@@ -221,7 +221,7 @@ export default function WorkspaceSearch({ farms, farmsLoading, farmsError, onCho
       <DialogContent className="ifc-workspace-search-dialog" showCloseButton={false}>
         <DialogTitle className="sr-only">Workspace search</DialogTitle>
         <DialogDescription className="sr-only">Find pages and records across your farms.</DialogDescription>
-        {open && <SearchPanel farms={farms} farmsLoading={farmsLoading} farmsError={farmsError} onChoose={item => { setOpen(false); onChoose(item); }} />}
+        {open && <SearchPanel farms={farms} farmsLoading={farmsLoading} farmsError={farmsError} onRetryFarms={onRetryFarms} onChoose={item => { setOpen(false); onChoose(item); }} />}
       </DialogContent>
     </Dialog>
   );
