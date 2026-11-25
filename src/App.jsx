@@ -403,7 +403,7 @@ function App() {
             type="button"
             className="icon-button ifc-sidebar-toggle"
             aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            data-tooltip={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             aria-controls="ifc-workspace-sidebar"
             aria-expanded={!sidebarCollapsed}
             onClick={() => {
@@ -431,7 +431,7 @@ function App() {
                   <button
                     key={item.label}
                     type="button"
-                    title={item.label}
+                    data-tooltip={item.label}
                     aria-label={item.badge && notificationUnreadCount > 0 ? item.label + " (" + notificationUnreadCount + " unread)" : item.label}
                     aria-current={active === item.label ? "page" : undefined}
                     className={
@@ -461,7 +461,7 @@ function App() {
           <button
             type="button"
             className="sidebar-help"
-            title="Help & support"
+            data-tooltip="Help & support"
             aria-label="Help & support"
             onClick={() => notify("Help centre is coming soon")}
           >
@@ -474,7 +474,7 @@ function App() {
               <button
                 type="button"
                 className="profile-button"
-                title="Account menu"
+                data-tooltip="Account menu"
                 aria-label="Account menu"
                 onClick={() => {
                   setProfileOpen((open) => !open);
@@ -574,7 +574,7 @@ function App() {
               role="switch"
               aria-label="Dark mode"
               aria-checked={theme === "dark"}
-              title={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
+              data-tooltip={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
             >
               <Sun className="theme-toggle-sun" size={12} aria-hidden="true" />
               <Moon className="theme-toggle-moon" size={12} aria-hidden="true" />
@@ -610,7 +610,7 @@ function App() {
                         type="button"
                         className="ifc-notification-close"
                         aria-label="Close notifications"
-                        title="Close notifications"
+                        data-tooltip="Close notifications"
                         onClick={() => {
                           setNotificationsOpen(false);
                           notificationBellRef.current?.focus();
