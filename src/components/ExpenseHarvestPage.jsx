@@ -13,6 +13,7 @@ import {
   Search,
   Sprout,
   Tractor,
+  Wallet,
   Ban,
   X,
 } from "lucide-react";
@@ -363,7 +364,7 @@ function ExpensePage({ farms, onNavigate, notify }) {
     <section className="workspace-page">
       <div className="page-eyebrow"><span className="eyebrow-pip" /> FARM FINANCES</div>
       <div className="workspace-title-row">
-        <div className="workspace-title-icon"><Coins size={23} /></div>
+        <div className="workspace-title-icon"><Wallet size={23} /></div>
         <div className="workspace-title-copy">
           <h1>Farm expenses</h1>
           <p>Manage and track expenses across your farms.</p>
