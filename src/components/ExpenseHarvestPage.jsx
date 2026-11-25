@@ -464,8 +464,8 @@ function ExpensePage({ farms, onNavigate, notify }) {
                       <td className="expense4-amount">{amountLabel(expense.amount)}</td>
                       <td><RecordStatus voided={expense.voided} inactiveLabel="Cancelled" /></td>
                       <td>
-                        <button type="button" className="ff-icon-button ff-danger" aria-label={"Cancel expense " + expense.id} disabled={expense.voided || voidingId !== null} onClick={() => voidExpense(expense)}>
-                          <Ban size={14} />
+                        <button type="button" className="ff-action-button expense4-cancel-button" aria-label={"Cancel expense " + expense.id} disabled={expense.voided || voidingId !== null} onClick={() => voidExpense(expense)}>
+                          Cancel
                         </button>
                       </td>
                     </tr>

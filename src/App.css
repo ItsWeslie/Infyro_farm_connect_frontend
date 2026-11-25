@@ -1950,3 +1950,9 @@ html[data-ifc-theme="dark"] .workspace-table.expense4-ledger-table thead th{heig
 html[data-ifc-theme="dark"] .workspace-table.expense4-ledger-table thead th:first-child{border-radius:6px 0 0 6px}
 html[data-ifc-theme="dark"] .workspace-table.expense4-ledger-table thead th:last-child{border-radius:0 6px 6px 0}
 @media(max-width:650px){.expense4-ledger-toolbar .table-search{flex-basis:100%}.expense4-ledger-filter{flex:1 1 130px;max-width:none}.expense4-ledger .ff-fields-footer>span:last-child{display:none;grid-column:auto;grid-row:auto}}
+/* Text action makes expense cancellation explicit. */
+.expense4-ledger .expense4-cancel-button{min-width:55px;white-space:nowrap;color:#a45d53;font-size:10px;font-weight:700}
+.expense4-ledger .expense4-cancel-button:hover:not(:disabled){background:#fbefeb;border-color:#e6c9c1;color:#954b43}
+.expense4-ledger .expense4-cancel-button:disabled{opacity:.5;cursor:not-allowed}
+html[data-ifc-theme="dark"] .expense4-ledger .expense4-cancel-button{color:#f0a89d}
+html[data-ifc-theme="dark"] .expense4-ledger .expense4-cancel-button:hover:not(:disabled){background:#432e2a;border-color:#75534b;color:#ffd1c9}
