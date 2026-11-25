@@ -1,6 +1,7 @@
 import { useCallback, useState, useEffect, useRef } from "react";
 import UseAnimations from "react-useanimations";
 import animatedChevronDown from "react-useanimations/lib/chevronDown";
+import animatedSidebar from "react-useanimations/lib/sidebar";
 import animatedUser from "react-useanimations/lib/user";
 import animatedSettings from "react-useanimations/lib/settings";
 import animatedLogOut from "react-useanimations/lib/logOut";
@@ -148,6 +149,20 @@ function App() {
   const [active, setActive] = useState("Overview");
   const [search, setSearch] = useState("");
   const [mobileNav, setMobileNav] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem("ifc-sidebar-collapsed") === "true";
+    } catch {
+      return false;
+    }
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem("ifc-sidebar-collapsed", String(sidebarCollapsed));
+    } catch {
+      // Retain the in-memory preference if browser storage is unavailable.
+    }
+  }, [sidebarCollapsed]);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const notificationPopoverRef = useRef(null);
   const notificationBellRef = useRef(null);
@@ -370,7 +385,7 @@ function App() {
     );
   }
   return (
-    <div className="app-shell">
+    <div className={"app-shell ifc-refined-shell" + (sidebarCollapsed ? " sidebar-collapsed" : "")}>
       {mobileNav && (
         <button
           className="mobile-scrim"
@@ -378,7 +393,7 @@ function App() {
           onClick={() => setMobileNav(false)}
         />
       )}
-      <aside className={"sidebar " + (mobileNav ? "sidebar-open" : "")}>
+      <aside id="ifc-workspace-sidebar" className={"sidebar " + (mobileNav ? "sidebar-open" : "")}>
         <div className="sidebar-top">
           <Brand
             onHome={() => {
@@ -386,6 +401,20 @@ function App() {
               setMobileNav(false);
             }}
           />
+          <button
+            type="button"
+            className="icon-button ifc-sidebar-toggle"
+            aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-controls="ifc-workspace-sidebar"
+            aria-expanded={!sidebarCollapsed}
+            onClick={() => {
+              setSidebarCollapsed((value) => !value);
+              setProfileOpen(false);
+            }}
+          >
+            <UseAnimations animation={animatedSidebar} size={20} interaction="click-toggle" active={sidebarCollapsed} className="ifc-sidebar-toggle-icon" aria-hidden="true" />
+          </button>
           <button
             className="icon-button mobile-close"
             aria-label="Close menu"
@@ -403,6 +432,10 @@ function App() {
                 return (
                   <button
                     key={item.label}
+                    type="button"
+                    title={item.label}
+                    aria-label={item.badge && notificationUnreadCount > 0 ? item.label + " (" + notificationUnreadCount + " unread)" : item.label}
+                    aria-current={active === item.label ? "page" : undefined}
                     className={
                       "nav-item " + (active === item.label ? "nav-active" : "")
                     }
@@ -415,7 +448,7 @@ function App() {
                       size={18}
                       strokeWidth={active === item.label ? 2.2 : 1.8}
                     />
-                    <span>{item.label}</span>
+                    <span className="ifc-nav-item-label">{item.label}</span>
                     {item.badge && notificationUnreadCount > 0 && (
                       <span className="nav-badge">{notificationUnreadCount > 99 ? "99+" : notificationUnreadCount}</span>
                     )}
@@ -427,23 +460,11 @@ function App() {
           ))}
         </nav>
         <div className="sidebar-bottom">
-          <div className="season-card">
-            <div className="season-icon">
-              <Sun size={17} />
-            </div>
-            <div>
-              <strong>Growing together</strong>
-              <p>Small steps every day lead to a thriving farm.</p>
-            </div>
-            <button
-              aria-label="Learn more about farm tips"
-              onClick={() => notify("More farm tips are coming soon")}
-            >
-              <ArrowUpRight size={15} />
-            </button>
-          </div>
           <button
+            type="button"
             className="sidebar-help"
+            title="Help & support"
+            aria-label="Help & support"
             onClick={() => notify("Help centre is coming soon")}
           >
             <CircleHelp size={17} />
@@ -453,7 +474,10 @@ function App() {
           <div className="profile-area">
             {isAuthenticated ? (
               <button
+                type="button"
                 className="profile-button"
+                title="Account menu"
+                aria-label="Account menu"
                 onClick={() => {
                   setProfileOpen((open) => !open);
                   setTopProfileOpen(false);
@@ -494,6 +518,7 @@ function App() {
                   onClick={() => {
                     setActive("Settings");
                     setProfileOpen(false);
+                    setMobileNav(false);
                   }}
                 >
                   <Settings size={16} /> Settings
