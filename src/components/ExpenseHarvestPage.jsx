@@ -5,16 +5,17 @@ import {
   CalendarDays,
   CheckCircle2,
   Circle,
+  CircleX,
   ClipboardList,
   Coins,
-  Leaf,
   Plus,
+  PackageCheck,
   Receipt,
   Search,
   Sprout,
   Tractor,
   Wallet,
-  Ban,
+  Wheat,
   X,
 } from "lucide-react";
 import {
@@ -26,6 +27,7 @@ import {
 import { ExpenseCategory, HarvestUnit } from "../types/enums";
 import { SkeletonBlock } from "./ui/Skeleton";
 import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 import { DatePicker } from "./ui/calendar";
 import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "./ui/select";
 import { Alert, AlertDescription } from "./ui/alert";
@@ -57,6 +59,7 @@ const EMPTY_EXPENSE = {
 };
 
 const EMPTY_HARVEST = {
+  plantingId: "",
   harvestDate: new Date().toISOString().slice(0, 10),
   quantity: "",
   unit: HarvestUnit.KILOGRAM,
@@ -135,15 +138,6 @@ function RecordStatus({ voided, inactiveLabel = "Voided" }) {
       <i />{voided ? inactiveLabel : "Active"}
     </span>
   );
-}
-
-function plantingLabel(planting, fieldById) {
-  const field = fieldById.get(String(planting.fieldId));
-  return [
-    planting.cropTypeName || "Crop",
-    field?.fieldName || "Field",
-    planting.plantedOn ? dateLabel(planting.plantedOn) : "",
-  ].filter(Boolean).join(" · ");
 }
 
 function ExpensePage({ farms, onNavigate, notify }) {
@@ -575,136 +569,129 @@ function ExpensePage({ farms, onNavigate, notify }) {
   );
 }
 
-function HarvestPage({
-  farmId,
-  farmName,
-  farms,
-  selectedFarm,
-  setSelectedFarm,
-  onNavigate,
-  notify,
-}) {
+function HarvestPage({ farms, onNavigate, notify }) {
   const confirmDialog = useConfirmDialog();
-  const [fields, setFields] = useState([]);
-  const [plantings, setPlantings] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState({ key: null, options: [], records: [], warnings: [] });
+  const [reloadKey, setReloadKey] = useState(0);
   const [pageError, setPageError] = useState("");
-  const [selectedPlantingId, setSelectedPlantingId] = useState("");
-  const [records, setRecords] = useState([]);
-  const [recordsLoading, setRecordsLoading] = useState(false);
-  const [recordsError, setRecordsError] = useState("");
   const [search, setSearch] = useState("");
+  const [farmFilter, setFarmFilter] = useState("ALL");
+  const [plantingFilter, setPlantingFilter] = useState("ALL");
+  const [unitFilter, setUnitFilter] = useState("ALL");
   const [statusFilter, setStatusFilter] = useState("ACTIVE");
+  const [page, setPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [form, setForm] = useState(EMPTY_HARVEST);
   const [formError, setFormError] = useState("");
   const [saving, setSaving] = useState(false);
-  const [voidingId, setVoidingId] = useState(null);
+  const [cancelling, setCancelling] = useState(false);
+  const ownedFarmsKey = JSON.stringify([...new Set(farms.filter((farm) => farm.id != null).map((farm) => String(farm.id)))].sort());
+  const requestKey = JSON.stringify([ownedFarmsKey, reloadKey]);
+  const loading = data.key !== requestKey;
+  const farmNames = useMemo(() => new Map(farms.map((farm) => [String(farm.id), farm.name || "Unnamed farm"])), [farms]);
+  const options = useMemo(() => loading ? [] : data.options.map((option) => ({ ...option, farmName: farmNames.get(option.farmId) || "Unnamed farm" }))
+    .sort((a, b) => a.farmName.localeCompare(b.farmName) || a.cropName.localeCompare(b.cropName) || a.fieldName.localeCompare(b.fieldName) || a.id.localeCompare(b.id)), [loading, data.options, farmNames]);
+  const records = useMemo(() => loading ? [] : data.records, [loading, data.records]);
+  const warnings = loading ? [] : data.warnings;
 
+  // Fetch planting context for all owned farms, then harvest history for every
+  // planting (including completed and cancelled ones). Bound request fan-out.
   useEffect(() => {
     let current = true;
-    if (!farmId) {
-      setFields([]);
-      setPlantings([]);
-      setLoading(false);
-      setPageError("");
-      return undefined;
-    }
-
-    setLoading(true);
+    const ids = JSON.parse(ownedFarmsKey);
     setPageError("");
-    Promise.all([
-      fieldApi.getByFarm(farmId),
-      cropPlantingApi.getAll(),
-    ])
-      .then(([fieldResponse, plantingResponse]) => {
-        if (!current) return;
-        setFields(toList(fieldResponse));
-        setPlantings(toList(plantingResponse));
-      })
-      .catch((error) => {
-        if (!current) return;
-        setFields([]);
-        setPlantings([]);
-        setPageError(error.message || "Unable to load plantings for harvest.");
-        notify(error.message || "Unable to load plantings for harvest.", "error");
-      })
-      .finally(() => {
-        if (current) setLoading(false);
+    async function load() {
+      if (!ids.length) {
+        if (current) setData({ key: requestKey, options: [], records: [], warnings: [] });
+        return;
+      }
+      const [plantingResult, fieldsResult] = await Promise.all([
+        Promise.allSettled([cropPlantingApi.getAll()]),
+        Promise.allSettled(ids.map((id) => fieldApi.getByFarm(id))),
+      ]);
+      if (!current) return;
+      const warnings = [];
+      const contexts = new Map();
+      fieldsResult.forEach((result, index) => {
+        if (result.status === "fulfilled") {
+          toList(result.value).forEach((field) => contexts.set(String(field.id), { farmId: ids[index], fieldName: field.fieldName || "Field" }));
+        } else {
+          warnings.push({ type: "farm", id: ids[index] });
+        }
       });
-    return () => { current = false; };
-  }, [farmId, notify]);
-
-  const fieldById = useMemo(
-    () => new Map(fields.map((field) => [String(field.id), field])),
-    [fields],
-  );
-  const farmPlantings = useMemo(
-    () => plantings.filter((planting) => fieldById.has(String(planting.fieldId))),
-    [plantings, fieldById],
-  );
-  const selectedPlanting = farmPlantings.find((planting) => String(planting.id) === String(selectedPlantingId)) || null;
-  const canRecordHarvest = selectedPlanting && ["ACTIVE", "HARVESTING"].includes(selectedPlanting.status);
-  const activeRecords = records.filter((record) => !record.voided);
-  const quantityByUnit = useMemo(() => {
-    const totals = new Map();
-    activeRecords.forEach((record) => {
-      totals.set(record.unit, (totals.get(record.unit) || 0) + Number(record.quantity || 0));
-    });
-    return Array.from(totals.entries()).sort(([a], [b]) => a.localeCompare(b));
-  }, [activeRecords]);
-
-  useEffect(() => {
-    setSelectedPlantingId((current) => (
-      farmPlantings.some((planting) => String(planting.id) === String(current))
-        ? current
-        : String(farmPlantings[0]?.id || "")
-    ));
-  }, [farmPlantings]);
-
-  useEffect(() => {
-    let current = true;
-    if (!selectedPlanting) {
-      setRecords([]);
-      setRecordsLoading(false);
-      setRecordsError("");
-      return undefined;
+      const plantings = plantingResult[0];
+      if (plantings.status === "rejected") warnings.push({ type: "plantings" });
+      const options = plantings.status === "fulfilled" ? toList(plantings.value).flatMap((planting) => {
+        const context = contexts.get(String(planting.fieldId));
+        return planting.id != null && context ? [{
+          ...context,
+          id: String(planting.id),
+          cropName: planting.cropTypeName || "Crop",
+          plantedOn: dateLabel(planting.plantedOn),
+          plantingDate: planting.plantedOn,
+          status: humanize(planting.status),
+          rawStatus: planting.status,
+        }] : [];
+      }) : [];
+      const records = [];
+      for (let offset = 0; offset < options.length; offset += 8) {
+        if (!current) return;
+        const batch = options.slice(offset, offset + 8);
+        const results = await Promise.allSettled(batch.map((option) => harvestApi.getByPlanting(option.id)));
+        if (!current) return;
+        results.forEach((result, index) => {
+          const option = batch[index];
+          if (result.status === "fulfilled") {
+            toList(result.value).forEach((record) => {
+              if (record.id != null) records.push({ ...record, cropPlantingId: option.id, farmId: option.farmId });
+            });
+          } else {
+            warnings.push({ type: "harvest", id: option.id });
+          }
+        });
+      }
+      if (current) setData({ key: requestKey, options, records, warnings });
     }
-    setRecordsLoading(true);
-    setRecordsError("");
-    harvestApi.getByPlanting(selectedPlanting.id)
-      .then((response) => {
-        if (current) setRecords(toList(response));
-      })
-      .catch((error) => {
-        if (!current) return;
-        setRecords([]);
-        setRecordsError(error.message || "Unable to load harvest records.");
-        notify(error.message || "Unable to load harvest records.", "error");
-      })
-      .finally(() => {
-        if (current) setRecordsLoading(false);
-      });
+    load().catch(() => {
+      if (current) setData({ key: requestKey, options: [], records: [], warnings: [{ type: "plantings" }] });
+    });
     return () => { current = false; };
-  }, [selectedPlanting?.id, notify]);
+  }, [ownedFarmsKey, requestKey]);
 
-  const filteredRecords = records.filter((record) => {
-    const normalized = search.toLowerCase();
-    const matchesSearch = [
-      record.notes,
-      record.quantity,
-      record.unit,
-      record.harvestDate,
-      record.statusLabel,
-    ].join(" ").toLowerCase().includes(normalized);
-    const matchesStatus = statusFilter === "ALL"
-      || (statusFilter === "ACTIVE" && !record.voided)
-      || (statusFilter === "VOIDED" && record.voided);
-    return matchesSearch && matchesStatus;
-  });
+  const plantingById = useMemo(() => new Map(options.map((option) => [option.id, option])), [options]);
+  const currentFarmFilter = farmFilter === "ALL" || farmNames.has(farmFilter) ? farmFilter : "ALL";
+  const filterPlantings = options.filter((option) => currentFarmFilter === "ALL" || option.farmId === currentFarmFilter);
+  const currentPlantingFilter = plantingFilter === "ALL" || loading || filterPlantings.some((option) => option.id === plantingFilter) ? plantingFilter : "ALL";
+  const eligiblePlantings = options.filter((option) => ["ACTIVE", "HARVESTING"].includes(option.rawStatus) && option.plantingDate && option.plantingDate <= todayIso());
+  const selectedPlanting = eligiblePlantings.find((option) => option.id === form.plantingId);
+  const activeRecords = records.filter((record) => !record.voided);
+  const quantityByUnit = new Map();
+  activeRecords.forEach((record) => quantityByUnit.set(record.unit, (quantityByUnit.get(record.unit) || 0) + Number(record.quantity || 0)));
+  const statDetail = (detail) => warnings.length ? "Partial data · " + detail : detail;
+  const filteredRecords = useMemo(() => {
+    const normalized = search.trim().toLowerCase();
+    return records.filter((record) => {
+      const planting = plantingById.get(String(record.cropPlantingId));
+      const matchesSearch = [record.notes, record.quantity, record.unit, humanize(record.unit), record.harvestDate,
+        record.voided ? "Cancelled" : "Active", farmNames.get(String(record.farmId)), planting?.cropName, planting?.fieldName, planting?.plantedOn]
+        .join(" ").toLowerCase().includes(normalized);
+      return matchesSearch
+        && (statusFilter === "ALL" || (statusFilter === "ACTIVE" ? !record.voided : record.voided))
+        && (currentFarmFilter === "ALL" || record.farmId === currentFarmFilter)
+        && (currentPlantingFilter === "ALL" || record.cropPlantingId === currentPlantingFilter)
+        && (unitFilter === "ALL" || record.unit === unitFilter);
+    }).sort((a, b) => String(b.harvestDate || "").localeCompare(String(a.harvestDate || "")) || String(b.createdAt || "").localeCompare(String(a.createdAt || "")) || String(b.id).localeCompare(String(a.id)));
+  }, [records, plantingById, farmNames, search, statusFilter, currentFarmFilter, currentPlantingFilter, unitFilter]);
+  const pageCount = Math.max(1, Math.ceil(filteredRecords.length / EXPENSES_PER_PAGE));
+  const currentPage = Math.min(page, pageCount);
+  const pageStart = (currentPage - 1) * EXPENSES_PER_PAGE;
+  const paginatedRecords = filteredRecords.slice(pageStart, pageStart + EXPENSES_PER_PAGE);
+  useEffect(() => { setPage(1); }, [search, statusFilter, farmFilter, plantingFilter, unitFilter]);
+  useEffect(() => { if (!loading) setPage((previous) => Math.min(previous, pageCount)); }, [loading, pageCount]);
 
   function openCreate() {
-    setForm({ ...EMPTY_HARVEST, harvestDate: todayIso() });
+    const initial = eligiblePlantings.find((option) => option.id === currentPlantingFilter);
+    setForm({ ...EMPTY_HARVEST, plantingId: initial?.id || "", harvestDate: todayIso() });
     setFormError("");
     setDialogOpen(true);
   }
@@ -712,6 +699,10 @@ function HarvestPage({
   async function submit(event) {
     event.preventDefault();
     setFormError("");
+    if (!selectedPlanting || loading) {
+      setFormError("Choose an active or harvesting crop planting.");
+      return;
+    }
     const quantity = Number(form.quantity);
     if (!Number.isFinite(quantity) || quantity < 0.001 || quantity >= 100_000_000_000) {
       setFormError("Enter a quantity of at least 0.001 with no more than 11 integer digits.");
@@ -721,36 +712,23 @@ function HarvestPage({
       setFormError("Quantity can have at most three decimal places.");
       return;
     }
-    if (!form.harvestDate || form.harvestDate > todayIso()) {
-      setFormError("Harvest date cannot be in the future.");
+    if (!form.harvestDate || form.harvestDate > todayIso() || form.harvestDate < selectedPlanting.plantingDate) {
+      setFormError("Harvest date must be on or after the planting date and cannot be in the future.");
       return;
     }
-    if (selectedPlanting?.plantedOn && form.harvestDate < selectedPlanting.plantedOn) {
-      setFormError("Harvest date cannot be before the planting date.");
-      return;
-    }
-    if (!canRecordHarvest) {
-      setFormError("Harvest records can only be added to active or harvesting plantings.");
-      return;
-    }
-
     setSaving(true);
     try {
-      const savedRecord = await harvestApi.create(selectedPlanting.id, {
+      await harvestApi.create(selectedPlanting.id, {
         harvestDate: form.harvestDate,
         quantity,
         unit: form.unit,
         notes: form.notes.trim() || null,
       });
-      const createdRecord = savedRecord?.data || savedRecord;
-      if (createdRecord && typeof createdRecord === "object" && createdRecord.id != null) {
-        setRecords((current) => [createdRecord, ...current.filter((item) => item.id !== createdRecord.id)]);
-      } else {
-        setRecordsError("Harvest saved, but the server response did not include the saved record. Reopen this page to sync it.");
-      }
+      setReloadKey((key) => key + 1);
+      setPage(1);
       setDialogOpen(false);
       setForm(EMPTY_HARVEST);
-      notify("Harvest record saved");
+      notify("Harvest record saved for " + selectedPlanting.cropName + " · " + selectedPlanting.farmName);
     } catch (error) {
       notify(error.message || "Unable to save this harvest record.", "error");
       setFormError(error.message || "Unable to save this harvest record.");
@@ -759,21 +737,21 @@ function HarvestPage({
     }
   }
 
-  async function voidRecord(record) {
-    if (record.voided) return;
-    const confirmed = await confirmDialog({ title: "Void this harvest record?", message: "This harvest entry will be marked as voided.", details: "It will remain in the harvest history but will no longer count toward active yield totals.", confirmLabel: "Void record", tone: "warning" });
+  async function cancelRecord(record) {
+    if (record.voided || cancelling) return;
+    const confirmed = await confirmDialog({ title: "Cancel this harvest record?", message: "This harvest entry will be marked as cancelled.", details: "It will remain in the harvest history but will no longer count toward active yield totals.", confirmLabel: "Cancel record", tone: "warning" });
     if (!confirmed) return;
-    setVoidingId(record.id);
-    setRecordsError("");
+    setCancelling(true);
+    setPageError("");
     try {
-      await harvestApi.void(selectedPlanting.id, record.id);
-      setRecords((current) => current.map((item) => item.id === record.id ? { ...item, voided: true } : item));
-      notify("Harvest record voided; the audit record was retained.");
+      await harvestApi.void(record.cropPlantingId, record.id);
+      setReloadKey((key) => key + 1);
+      notify("Harvest record cancelled; the audit record was retained.");
     } catch (error) {
-      notify(error.message || "Unable to void this harvest record.", "error");
-      setRecordsError(error.message || "Unable to void this harvest record.");
+      notify(error.message || "Unable to cancel this harvest record.", "error");
+      setPageError(error.message || "Unable to cancel this harvest record.");
     } finally {
-      setVoidingId(null);
+      setCancelling(false);
     }
   }
 
@@ -781,193 +759,125 @@ function HarvestPage({
     <section className="workspace-page">
       <div className="page-eyebrow"><span className="eyebrow-pip" /> FROM FIELD TO STORE</div>
       <div className="workspace-title-row">
-        <div className="workspace-title-icon"><Sprout size={23} /></div>
+        <div className="workspace-title-icon"><PackageCheck size={23} /></div>
         <div className="workspace-title-copy">
           <h1>Harvest records</h1>
-          <p>Capture yield by planting while preserving a traceable harvest history.</p>
+          <p>Track and manage crop yields across your farms.</p>
         </div>
         <div className="workspace-title-actions expense4-actions">
-          {farms.length > 1 && (
-            <label className="ff-farm-select">
-              <span>Farm</span>
-              <select value={selectedFarm.id} onChange={(event) => {
-                const next = farms.find((farm) => String(farm.id) === event.target.value);
-                if (next) setSelectedFarm(next);
-              }}>
-                {farms.map((farm) => <option key={farm.id} value={farm.id}>{farm.name}</option>)}
-              </select>
-            </label>
-          )}
-          <button className="button-primary" type="button" onClick={openCreate} disabled={!canRecordHarvest}>
-            <Plus size={15} /> Add harvest
-          </button>
+          <button className="button-primary" type="button" onClick={openCreate} disabled={loading || !eligiblePlantings.length}><Plus size={15} /> Add harvest</button>
         </div>
       </div>
 
-      <div className="workspace-data-card surface-card expense4-data-card">
+      <div className="workspace-stats">
+        <Stat label="Active harvests" value={loading ? "…" : activeRecords.length} detail={statDetail("across all farms")} icon={ClipboardList} />
+        <Stat label="Harvested plantings" value={loading ? "…" : new Set(activeRecords.map((record) => record.cropPlantingId)).size} detail={statDetail("with active records")} icon={Sprout} />
+        <Stat label="Harvest dates" value={loading ? "…" : new Set(activeRecords.map((record) => record.harvestDate)).size} detail={statDetail("distinct harvest dates")} icon={CalendarDays} />
+        <Stat label="Cancelled records" value={loading ? "…" : records.filter((record) => record.voided).length} detail={statDetail("retained for audit")} icon={CircleX} />
+      </div>
+      <div className="expense4-yield-summary harvest4-yield-summary">
+        <strong><Wheat size={15} aria-hidden="true" /> Total harvest yield{warnings.length ? " (partial)" : ""}</strong>
+        <div>{loading ? <span>Loading…</span> : quantityByUnit.size ? [...quantityByUnit.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([unit, total]) => <span key={unit}>{quantityLabel(total)} {humanize(unit)}</span>) : <span>No active yield</span>}</div>
+      </div>
+
+      <div className="workspace-data-card surface-card expense4-data-card expense4-ledger harvest4-ledger">
         <div className="workspace-data-heading">
-          <div>
-            <h2>{selectedPlanting ? plantingLabel(selectedPlanting, fieldById) : "Choose a planting"}</h2>
-            <p>Harvest records are grouped by crop planting in the backend.</p>
-          </div>
-          <label className="expense4-planting-select">
-            <span>Planting</span>
-            <select value={selectedPlantingId} onChange={(event) => setSelectedPlantingId(event.target.value)} disabled={loading || farmPlantings.length === 0}>
-              <option value="">Choose a planting</option>
-              {farmPlantings.map((planting) => (
-                <option key={planting.id} value={planting.id}>
-                  {plantingLabel(planting, fieldById)} · {humanize(planting.status)}
-                </option>
-              ))}
-            </select>
-          </label>
+          <div><h2 className="expense4-ledger-title"><ClipboardList size={14} aria-hidden="true" /> Harvest ledger</h2><p>View and manage harvest records across all your farms.</p></div>
         </div>
-
-        {selectedPlanting && !canRecordHarvest && (
-          <div className="expense4-info" role="status">
-            Harvest entries can only be added while this planting is Active or Harvesting. Current status: <strong>{humanize(selectedPlanting.status)}</strong>.
+        <div className="workspace-toolbar expense4-toolbar expense4-ledger-toolbar">
+          <label className="table-search"><Search size={15} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search harvest records..." aria-label="Search harvest records" />{search && <button type="button" aria-label="Clear search" onClick={() => setSearch("")}><X size={14} /></button>}</label>
+          <Select value={currentFarmFilter} onValueChange={(value) => { setFarmFilter(value); setPlantingFilter("ALL"); }}>
+            <SelectTrigger className="expense4-ledger-filter" aria-label="Filter by farm"><SelectValue /></SelectTrigger>
+            <SelectContent align="start"><SelectItem value="ALL">All farms</SelectItem>{farms.filter((farm) => farm.id != null).map((farm) => <SelectItem key={farm.id} value={String(farm.id)}>{farm.name || "Unnamed farm"}</SelectItem>)}</SelectContent>
+          </Select>
+          <Select value={currentPlantingFilter} disabled={loading} onValueChange={setPlantingFilter}>
+            <SelectTrigger className="expense4-ledger-filter" aria-label="Filter by planting"><SelectValue /></SelectTrigger>
+            <SelectContent align="start" className="harvest4-planting-menu"><SelectItem value="ALL">All plantings</SelectItem>{filterPlantings.map((option) => <SelectItem key={option.id} value={option.id}>{option.cropName} · {option.farmName} · {option.fieldName} · {option.plantedOn}</SelectItem>)}</SelectContent>
+          </Select>
+          <Select value={unitFilter} onValueChange={setUnitFilter}>
+            <SelectTrigger className="expense4-ledger-filter" aria-label="Filter by unit"><SelectValue /></SelectTrigger>
+            <SelectContent align="start"><SelectItem value="ALL">All units</SelectItem>{UNITS.map((unit) => <SelectItem key={unit} value={unit}>{humanize(unit)}</SelectItem>)}</SelectContent>
+          </Select>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="expense4-ledger-filter" aria-label="Filter by status"><SelectValue /></SelectTrigger>
+            <SelectContent align="end"><SelectItem value="ACTIVE">Active records</SelectItem><SelectItem value="VOIDED">Cancelled records</SelectItem><SelectItem value="ALL">All records</SelectItem></SelectContent>
+          </Select>
+        </div>
+        {pageError && <div className="ff-error" role="alert">{pageError}</div>}
+        {!loading && warnings.length > 0 && <div className="expense4-ledger-load-warning" role="status"><span>Some farm, planting or harvest records could not be loaded. Totals and records may be incomplete.</span><button type="button" className="button-secondary" onClick={() => setReloadKey((key) => key + 1)}>Retry</button></div>}
+        {!loading && options.length > 0 && !eligiblePlantings.length && <div className="expense4-ledger-load-warning" role="note"><span>New harvest records require an Active or Harvesting planting with a valid planting date.</span></div>}
+        {loading ? <SkeletonBlock rows={5} /> : !farms.length ? (
+          <div className="empty-state"><PackageCheck size={23} /><strong>No farms available</strong><span>Create a farm before recording harvests.</span><button type="button" className="button-primary" onClick={() => onNavigate("Farms")}>Go to farms</button></div>
+        ) : !options.length && !warnings.length ? (
+          <div className="empty-state"><Sprout size={23} /><strong>No crop plantings available</strong><span>Create a crop planting before recording a harvest.</span><button type="button" className="button-primary" onClick={() => onNavigate("Crop management")}>Manage crops</button></div>
+        ) : filteredRecords.length === 0 ? (
+          <div className="empty-state"><ClipboardList size={23} /><strong>{warnings.length ? "No available matching harvest records" : records.length ? "No matching harvest records" : "No harvest records yet"}</strong><span>{warnings.length ? "Retry unavailable records or adjust the filters." : records.length ? "Try another search or filter." : "Record the first yield when a planting is ready."}</span>{!records.length && eligiblePlantings.length > 0 && <button type="button" className="button-primary" onClick={openCreate}><Plus size={14} /> Add harvest</button>}</div>
+        ) : (
+          <div className="workspace-table-wrap">
+            <table className="workspace-table expense4-table expense4-ledger-table harvest4-ledger-table">
+              <thead><tr><th>HARVEST DATE</th><th>FARM</th><th>PLANTING</th><th>QUANTITY</th><th>UNIT</th><th>NOTES</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
+              <tbody>{paginatedRecords.map((record) => {
+                const planting = plantingById.get(record.cropPlantingId);
+                return (
+                  <tr key={record.cropPlantingId + ":" + record.id} className={record.voided ? "expense4-voided" : ""}>
+                    <td>{dateLabel(record.harvestDate)}</td>
+                    <td>{farmNames.get(record.farmId) || "Unnamed farm"}</td>
+                    <td><strong className="workspace-cell-title">{planting?.cropName || "Crop planting"}</strong><small className="expense4-subtext">{planting?.fieldName || "Field"}</small></td>
+                    <td className="expense4-amount">{quantityLabel(record.quantity)}</td>
+                    <td>{humanize(record.unit)}</td>
+                    <td><span className="expense4-notes">{record.notes || "—"}</span>{record.voided && <small className="expense4-subtext">{record.voidReason || "Cancelled record"}</small>}</td>
+                    <td><RecordStatus voided={record.voided} inactiveLabel="Cancelled" /></td>
+                    <td><button type="button" className="ff-action-button expense4-cancel-button" aria-label={"Cancel harvest record " + record.id} disabled={record.voided || cancelling} onClick={() => cancelRecord(record)}>Cancel</button></td>
+                  </tr>
+                );
+              })}</tbody>
+            </table>
           </div>
         )}
-
-        {pageError && <div className="ff-error" role="alert">{pageError}</div>}
-        {recordsError && <div className="ff-error" role="alert">{recordsError}</div>}
-
-        {loading ? (
-          <SkeletonBlock rows={4} />
-        ) : farmPlantings.length === 0 ? (
-          <div className="empty-state"><Sprout size={23} /><strong>No crop plantings in this farm</strong><span>Create a crop planting before recording a harvest.</span><button className="button-primary" type="button" onClick={() => onNavigate("Crop management")}><Plus size={14} /> Manage crops</button></div>
-        ) : !selectedPlanting ? (
-          <div className="empty-state"><Sprout size={23} /><strong>Select a planting</strong><span>Choose a crop above to view its harvest history.</span></div>
-        ) : recordsLoading ? (
-          <SkeletonBlock rows={4} />
-        ) : records.length === 0 ? (
-          <div className="empty-state"><ClipboardList size={23} /><strong>No harvest records yet</strong><span>Record the first yield for this planting when it is ready.</span>{canRecordHarvest && <button className="button-primary" type="button" onClick={openCreate}><Plus size={14} /> Add harvest</button>}</div>
-        ) : (
-          <>
-            <div className="workspace-stats expense4-harvest-stats">
-              <Stat label="Active harvests" value={activeRecords.length} detail="records not voided" icon={ClipboardList} />
-              <Stat label="Voided records" value={records.filter((record) => record.voided).length} detail="retained for audit" icon={CheckCircle2} />
-              <Stat label="Harvest dates" value={new Set(activeRecords.map((record) => record.harvestDate)).size} detail="distinct dates with active yield" icon={CalendarDays} />
-              <Stat label="Yield units" value={quantityByUnit.length} detail="kept separate by unit" icon={Leaf} />
-            </div>
-            <div className="expense4-yield-summary">
-              <strong>Active yield by unit</strong>
-              <div>{quantityByUnit.length ? quantityByUnit.map(([unit, total]) => <span key={unit}>{quantityLabel(total)} {humanize(unit)}</span>) : <span>No active yield</span>}</div>
-            </div>
-          </>
-        )}
-
-        {selectedPlanting && !loading && !recordsLoading && records.length > 0 && (
-          <>
-            <div className="workspace-toolbar expense4-toolbar">
-              <label className="table-search">
-                <Search size={15} />
-                <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search harvest records..." />
-                {search && <button type="button" aria-label="Clear search" onClick={() => setSearch("")}><X size={14} /></button>}
-              </label>
-              <label className="workspace-filter">
-                <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-                  <option value="ACTIVE">Active records</option>
-                  <option value="VOIDED">Voided records</option>
-                  <option value="ALL">All records</option>
-                </select>
-              </label>
-              <span className="result-count">{filteredRecords.length} records</span>
-            </div>
-            {filteredRecords.length === 0 ? (
-              <div className="empty-state"><Search size={22} /><strong>No matching harvest records</strong><span>Try another search or status filter.</span></div>
-            ) : (
-            <div className="workspace-table-wrap">
-              <table className="workspace-table expense4-table">
-                <thead><tr><th>HARVEST DATE</th><th>QUANTITY</th><th>UNIT</th><th>NOTES</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
-                <tbody>
-                  {filteredRecords.map((record) => (
-                    <tr key={record.id} className={record.voided ? "expense4-voided" : ""}>
-                      <td>{dateLabel(record.harvestDate)}</td>
-                      <td className="expense4-amount">{quantityLabel(record.quantity)}</td>
-                      <td>{humanize(record.unit)}</td>
-                      <td><span className="expense4-notes">{record.notes || "—"}</span>{record.voided && <small className="expense4-subtext">{record.voidReason || "Voided record"}</small>}</td>
-                      <td><RecordStatus voided={record.voided} /></td>
-                      <td>
-                        <button type="button" className="ff-icon-button ff-danger" aria-label={"Void harvest record " + record.id} disabled={record.voided || voidingId === record.id} onClick={() => voidRecord(record)}>
-                          <Ban size={14} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            )}
-          </>
-        )}
-        <div className="workspace-data-footer">
-          <span>Showing <strong>{filteredRecords.length}</strong> of <strong>{records.length}</strong> records</span>
-          <span>{selectedPlanting ? selectedPlanting.cropTypeName + " · backend harvest ledger" : farmName}</span>
+        <div className="workspace-data-footer ff-fields-footer">
+          <span>Showing <strong>{loading ? "…" : filteredRecords.length ? `${pageStart + 1}–${Math.min(pageStart + EXPENSES_PER_PAGE, filteredRecords.length)} of ${filteredRecords.length}` : "0"}</strong> records</span>
+          {!loading && filteredRecords.length > 0 && <Pagination className="ff-farm-pagination ff-field-pagination" aria-label="Harvest ledger pagination"><PaginationContent>
+            <PaginationItem><PaginationPrevious disabled={currentPage === 1} onClick={() => setPage(currentPage - 1)} /></PaginationItem>
+            {expensePageItems(currentPage, pageCount).map((item) => <PaginationItem key={item}>{typeof item === "number" ? <PaginationLink isActive={currentPage === item} aria-label={`Page ${item}`} onClick={() => setPage(item)}>{item}</PaginationLink> : <PaginationEllipsis />}</PaginationItem>)}
+            <PaginationItem><PaginationNext disabled={currentPage === pageCount} onClick={() => setPage(currentPage + 1)} /></PaginationItem>
+          </PaginationContent></Pagination>}
+          <span>{currentFarmFilter === "ALL" ? "All farms" : farmNames.get(currentFarmFilter)}</span>
         </div>
       </div>
 
-      {dialogOpen && (
-        <div className="modal-overlay" onMouseDown={(event) => {
-          if (event.target === event.currentTarget && !saving) setDialogOpen(false);
-        }}>
-          <form className="dialog-card expense4-dialog" onSubmit={submit}>
-            <div className="dialog-heading">
-              <div><span className="section-kicker">HARVEST ENTRY</span><h2>Add harvest record</h2><p>{selectedPlanting?.cropTypeName} · {fieldById.get(String(selectedPlanting?.fieldId))?.fieldName || "Field"}</p></div>
-              <button type="button" className="icon-button" aria-label="Close dialog" disabled={saving} onClick={() => setDialogOpen(false)}><X size={19} /></button>
-            </div>
-            {formError && <div className="ff-error" role="alert">{formError}</div>}
-            <label className="form-label">Harvest date<input type="date" required min={selectedPlanting?.plantedOn || undefined} max={todayIso()} value={form.harvestDate} onChange={(event) => setForm({ ...form, harvestDate: event.target.value })} /></label>
-            <div className="expense4-form-grid">
-              <label className="form-label">Quantity<input type="number" required min="0.001" step="0.001" value={form.quantity} onChange={(event) => setForm({ ...form, quantity: event.target.value })} placeholder="e.g. 42.500" /></label>
-              <label className="form-label">Unit<select className="form-select" value={form.unit} onChange={(event) => setForm({ ...form, unit: event.target.value })}>{UNITS.map((unit) => <option key={unit} value={unit}>{humanize(unit)}</option>)}</select></label>
-            </div>
-            <label className="form-label">Notes<textarea rows={3} maxLength={2000} value={form.notes} onChange={(event) => setForm({ ...form, notes: event.target.value })} placeholder="Quality, grade, storage, or other observations" /></label>
-            <div className="dialog-note"><CalendarDays size={16} /><span>Harvest date must be on or after the planting date and cannot be in the future. Only Active or Harvesting plantings can receive records.</span></div>
-            <div className="dialog-note"><CheckCircle2 size={16} /><span>Harvest records cannot be edited. Void an incorrect record and create a replacement; the original stays in the audit history.</span></div>
-            <div className="dialog-actions">
-              <button type="button" className="button-secondary" disabled={saving} onClick={() => setDialogOpen(false)}>Cancel</button>
-              <button type="submit" className="button-primary" disabled={saving || !canRecordHarvest}><Plus size={15} /> {saving ? "Saving…" : "Save harvest"}</button>
-            </div>
-          </form>
-        </div>
-      )}
+      {dialogOpen && <div className="modal-overlay" onMouseDown={(event) => { if (event.target === event.currentTarget && !saving) setDialogOpen(false); }}>
+        <form className="dialog-card expense4-dialog expense4-create-dialog harvest4-create-dialog" onSubmit={submit}>
+          <div className="dialog-heading">
+            <div><span className="section-kicker">HARVEST ENTRY</span><h2>Add harvest record</h2><p>Record the yield from a crop planting.</p></div>
+            <button type="button" className="icon-button ff-edit-farm-close" aria-label="Close dialog" disabled={saving} onClick={() => setDialogOpen(false)}><X size={19} /></button>
+          </div>
+          {formError && <div className="ff-error" role="alert">{formError}</div>}
+          <div className="form-label">
+            <span>Select crop planting</span>
+            <ActivityPlantingSelector options={eligiblePlantings} selected={selectedPlanting} loading={loading} disabled={saving} onSelect={(id) => {
+              const next = eligiblePlantings.find((option) => option.id === id);
+              setForm((previous) => ({ ...previous, plantingId: id, harvestDate: previous.harvestDate && next && previous.harvestDate >= next.plantingDate && previous.harvestDate <= todayIso() ? previous.harvestDate : todayIso() }));
+              setFormError("");
+            }} />
+            {selectedPlanting ? <small className="expense4-selection-hint"><Tractor size={13} aria-hidden="true" /> {selectedPlanting.status} · Planted on {selectedPlanting.plantedOn}</small> : <small className="expense4-selection-hint">Only Active or Harvesting plantings are available.</small>}
+          </div>
+          <div className="form-label">
+            <label htmlFor="harvest-date">Harvest date</label>
+            <DatePicker id="harvest-date" required disabled={saving || !selectedPlanting} min={selectedPlanting?.plantingDate} max={todayIso()} value={form.harvestDate} onChange={(value) => setForm((previous) => ({ ...previous, harvestDate: value }))} />
+          </div>
+          <div className="expense4-form-grid">
+            <label className="form-label">Quantity<Input type="number" required disabled={saving} min="0.001" max="99999999999.999" step="0.001" value={form.quantity} onChange={(event) => setForm((previous) => ({ ...previous, quantity: event.target.value }))} placeholder="e.g. 150.000" /></label>
+            <div className="form-label"><label htmlFor="harvest-unit">Unit</label><Select value={form.unit} disabled={saving} onValueChange={(value) => setForm((previous) => ({ ...previous, unit: value }))}><SelectTrigger id="harvest-unit" className="ifc-form-select"><SelectValue /></SelectTrigger><SelectContent align="start">{UNITS.map((unit) => <SelectItem key={unit} value={unit}>{humanize(unit)}</SelectItem>)}</SelectContent></Select></div>
+          </div>
+          <label className="form-label">Notes (optional)<Textarea rows={3} disabled={saving} maxLength={2000} value={form.notes} onChange={(event) => setForm((previous) => ({ ...previous, notes: event.target.value }))} placeholder="Quality, grade or other observations..." /></label>
+          <Alert className="expense4-audit-note" role="note"><span className="ff-field-area-warning-icon" aria-hidden="true"><UseAnimations animation={alertCircle} size={22} strokeColor="#806522" interaction="loop" render={(eventProps, animationProps) => <span {...eventProps} {...animationProps} />} /></span><AlertDescription>Harvest records cannot be edited after saving. Cancel an incorrect record and create a replacement to retain its audit history.</AlertDescription></Alert>
+          <div className="dialog-actions"><button type="button" className="button-secondary" disabled={saving} onClick={() => setDialogOpen(false)}>Cancel</button><button type="submit" className="button-primary" disabled={saving || loading || !selectedPlanting}><Plus size={15} /> {saving ? "Saving…" : "Save harvest"}</button></div>
+        </form>
+      </div>}
     </section>
   );
 }
 
-export default function ExpenseHarvestPage({
-  active,
-  farms,
-  selectedFarm,
-  setSelectedFarm,
-  onNavigate,
-  notify,
-}) {
-  if (active === "Expenses") return <ExpensePage farms={farms} onNavigate={onNavigate} notify={notify} />;
-
-  if (!selectedFarm?.id) {
-    return (
-      <section className="workspace-page">
-        <div className="page-eyebrow"><span className="eyebrow-pip" /> FARM RECORDS</div>
-        <div className="empty-state surface-card expense4-no-farm">
-          <Leaf size={28} />
-          <strong>No farm selected</strong>
-          <span>Create or select a farm before managing expenses and harvest records.</span>
-          <button className="button-primary" type="button" onClick={() => onNavigate("Farms")}>Go to farms</button>
-        </div>
-      </section>
-    );
-  }
-
-  const pageProps = {
-    farmId: selectedFarm.id,
-    farmName: selectedFarm.name,
-    farms,
-    selectedFarm,
-    setSelectedFarm,
-    onNavigate,
-    notify,
-  };
-  return <HarvestPage {...pageProps} />;
+export default function ExpenseHarvestPage({ active, farms, onNavigate, notify }) {
+  return active === "Expenses" ? <ExpensePage farms={farms} onNavigate={onNavigate} notify={notify} /> : <HarvestPage farms={farms} onNavigate={onNavigate} notify={notify} />;
 }
