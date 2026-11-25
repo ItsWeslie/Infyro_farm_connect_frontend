@@ -565,7 +565,7 @@ function App() {
             </div>
           </div>
           <div className="topbar-right">
-            <WorkspaceSearch farms={farms} farmsLoading={farmsLoading} farmsError={farmsError} onChoose={chooseWorkspaceResult} onOpen={() => { setProfileOpen(false); setTopProfileOpen(false); setNotificationsOpen(false); }} />
+            <WorkspaceSearch farms={farms} farmsLoading={farmsLoading} farmsError={farmsError} onRetryFarms={refreshFarms} onChoose={chooseWorkspaceResult} onOpen={() => { setProfileOpen(false); setTopProfileOpen(false); setNotificationsOpen(false); }} />
             <div className="top-divider" />
             <button
               type="button"
