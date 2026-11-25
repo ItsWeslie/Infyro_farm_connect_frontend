@@ -17,6 +17,12 @@
     scrollbar-gutter: stable;
   }
 
+  /* Full-screen session checks and welcome screens need no scrollbar gutter. */
+  html:has(.ifc-session-loading) {
+    scrollbar-gutter: auto;
+    overflow: hidden;
+  }
+
   body {
     font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: #26382e;
