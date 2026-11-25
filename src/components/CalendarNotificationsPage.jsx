@@ -11,9 +11,11 @@ import {
   Clock3,
   Inbox,
   MapPin,
+  LogOut,
+  Moon,
+  Sun,
   RefreshCw,
   Search,
-  ShieldCheck,
   Sprout,
   Wheat,
   X,
@@ -23,8 +25,6 @@ import { SkeletonBlock } from "./ui/Skeleton";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext } from "./ui/pagination";
 import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "./ui/select";
-import { useConfirmDialog } from "../context/ConfirmDialogContext";
-import { useAuth } from "../context/AuthContext";
 
 const NOTIFICATION_PAGE_SIZE = 5;
 
@@ -558,70 +558,58 @@ export function NotificationsPage({ unreadCount = 0, onNotificationsChanged, not
   );
 }
 
-export function SettingsPage({ notify }) {
-  const confirmDialog = useConfirmDialog();
-  const { user, logout, logoutAll } = useAuth();
-  const [busy, setBusy] = useState("");
+export function SettingsPage({ theme, setTheme, onLogout }) {
+  const [signingOut, setSigningOut] = useState(false);
 
-  const displayName = user?.name || user?.username || "Signed-in user";
-  const email = user?.email || (user?.username && user.username.includes("@") ? user.username : "Not provided");
-  const username = user?.username || "Not available";
-
-  async function signOutEverywhere() {
-    const confirmed = await confirmDialog({ title: "Sign out everywhere?", message: "Sign out of all active sessions for this account?", details: "This revokes your active sessions on other devices. You may need to sign in again.", confirmLabel: "Sign out everywhere", tone: "danger" });
-    if (!confirmed) return;
-    setBusy("all");
+  async function signOut() {
+    if (signingOut) return;
+    setSigningOut(true);
     try {
-      await logoutAll();
-    } catch (error) {
-      if (notify) notify(error.message || "The local session was cleared, but the server could not confirm every session was revoked.", "error");
+      await onLogout();
     } finally {
-      setBusy("");
+      setSigningOut(false);
     }
   }
 
   return (
-    <section className="ifc-live-page">
-      <div className="ifc-live-page-heading">
-        <div>
-          <span className="page-eyebrow"><i className="eyebrow-pip" /> ACCOUNT & SECURITY</span>
-          <h1>Settings</h1>
-          <p>Review your account details and manage active sessions.</p>
+    <section className="workspace-page ifc-account-settings-page">
+      <div className="page-eyebrow"><span className="eyebrow-pip" /> ACCOUNT PREFERENCES</div>
+      <div className="workspace-title-row">
+        <div className="workspace-title-icon"><Sun size={23} /></div>
+        <div className="workspace-title-copy">
+          <h1>Account settings</h1>
+          <p>Manage your display preference and sign out of your account.</p>
         </div>
       </div>
       <div className="ifc-settings-grid">
         <section className="ifc-settings-card surface-card">
           <div className="ifc-settings-card-heading">
-            <span className="ifc-settings-icon"><ShieldCheck size={19} /></span>
-            <div><h2>Account information</h2><p>Details returned by your authenticated session.</p></div>
+            <span className="ifc-settings-icon"><Sun size={19} /></span>
+            <div><h2>Theme preference</h2><p>Choose the appearance that works best for you.</p></div>
           </div>
-          <dl className="ifc-account-details">
-            <div><dt>Display name</dt><dd>{displayName}</dd></div>
-            <div><dt>Username</dt><dd>{username}</dd></div>
-            <div><dt>Email address</dt><dd>{email}</dd></div>
-            <div><dt>Session status</dt><dd><span className="ifc-live-status"><i /> Authenticated</span></dd></div>
-          </dl>
-          <div className="ifc-settings-note">
-            Profile editing is not available in the current backend API. Account details are shown as read-only rather than displaying a form that cannot be saved.
-          </div>
+          <fieldset className="ifc-theme-options">
+            <legend className="ifc-theme-legend">Appearance</legend>
+            {[
+              { value: "light", label: "Light mode", icon: Sun },
+              { value: "dark", label: "Dark mode", icon: Moon },
+            ].map(({ value, label, icon: Icon }) => (
+              <label key={value} className={"ifc-theme-option" + (theme === value ? " is-selected" : "")}>
+                <input type="radio" name="ifc-theme-preference" value={value} checked={theme === value} onChange={() => setTheme(value)} />
+                <span className={"ifc-theme-option-preview " + value} aria-hidden="true"><span /><span /><span /></span>
+                <span className="ifc-theme-option-label"><Icon size={15} aria-hidden="true" />{label}{theme === value && <Check size={14} className="ifc-theme-option-check" aria-hidden="true" />}</span>
+              </label>
+            ))}
+          </fieldset>
+          <p className="ifc-theme-storage-note">Your preference is saved in this browser and applies automatically next time.</p>
         </section>
         <section className="ifc-settings-card surface-card">
           <div className="ifc-settings-card-heading">
-            <span className="ifc-settings-icon"><ShieldCheck size={19} /></span>
-            <div><h2>Session security</h2><p>Choose whether to end this session or revoke all sessions.</p></div>
+            <span className="ifc-settings-icon"><LogOut size={19} /></span>
+            <div><h2>Logout</h2><p>End your current session.</p></div>
           </div>
-          <div className="ifc-session-action">
-            <div><strong>Sign out on this device</strong><span>End the current session.</span></div>
-            <button type="button" className="button-secondary" onClick={logout}>Sign out</button>
-          </div>
-          <div className="ifc-session-action">
-            <div><strong>Sign out everywhere</strong><span>Revoke all refresh sessions for this account.</span></div>
-            <button type="button" className="button-primary" onClick={signOutEverywhere} disabled={busy !== ""}>
-              {busy === "all" ? "Signing out…" : "Sign out all sessions"}
-            </button>
-          </div>
-          <div className="ifc-settings-note">
-            Measurement, weather, appearance, and notification preferences are not persisted by the backend yet, so this page does not claim those settings sync to your account.
+          <div className="ifc-session-action ifc-settings-logout-row">
+            <div><strong>Sign out of Infyro Farms</strong><span>You can sign in again at any time.</span></div>
+            <button type="button" className="button-secondary ifc-settings-logout" onClick={signOut} disabled={signingOut}><LogOut size={14} />{signingOut ? "Signing out…" : "Logout"}</button>
           </div>
         </section>
       </div>
