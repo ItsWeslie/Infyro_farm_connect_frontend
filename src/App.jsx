@@ -116,7 +116,7 @@ function App() {
   const { user, isAuthenticated, loading, logout } = useAuth();
   const [theme, setTheme] = useState(() => {
     try {
-      return localStorage.getItem("ifc-landing-theme") || "light";
+      return localStorage.getItem("ifc-landing-theme") === "dark" ? "dark" : "light";
     } catch {
       return "light";
     }
@@ -773,7 +773,7 @@ function App() {
           ) : active === "My Profile" ? (
             <ProfilePage onNavigate={setActive} />
           ) : active === "Settings" ? (
-            <SettingsPage notify={notify} />
+            <SettingsPage theme={theme} setTheme={setTheme} onLogout={handleLogout} />
           ) : (
             <WorkspacePage
               active={active}
