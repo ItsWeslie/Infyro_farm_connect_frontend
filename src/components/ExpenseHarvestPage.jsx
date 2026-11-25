@@ -125,9 +125,6 @@ function plantingLabel(planting, fieldById) {
 function ExpensePage({
   farmId,
   farmName,
-  farms,
-  selectedFarm,
-  setSelectedFarm,
   notify,
 }) {
   const confirmDialog = useConfirmDialog();
@@ -308,17 +305,6 @@ function ExpensePage({
           <p>Record farm spending and keep a traceable history of every entry.</p>
         </div>
         <div className="workspace-title-actions expense4-actions">
-          {farms.length > 1 && (
-            <label className="ff-farm-select">
-              <span>Farm</span>
-              <select value={selectedFarm.id} onChange={(event) => {
-                const next = farms.find((farm) => String(farm.id) === event.target.value);
-                if (next) setSelectedFarm(next);
-              }}>
-                {farms.map((farm) => <option key={farm.id} value={farm.id}>{farm.name}</option>)}
-              </select>
-            </label>
-          )}
           <button className="button-primary" type="button" onClick={openCreate}>
             <Plus size={15} /> Add expense
           </button>
