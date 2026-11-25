@@ -68,8 +68,8 @@ export function LandingHeader({ mobileMenuOpen, setMobileMenuOpen, theme, setThe
     };
   }, [mobileMenuOpen, setMobileMenuOpen]);
   return (
-    <header ref={header} className={"landing-header ifc-capsule-header" + (scrolled ? " is-scrolled" : "")}>
-      <div className="landing-header-inner ifc-capsule-inner">
+    <header ref={header} className={"ifc-capsule-header" + (scrolled ? " is-scrolled" : "")}>
+      <div className="ifc-capsule-inner">
         <div className="ifc-capsule-brand"><BrandMark /></div>
         <div className="ifc-capsule-mobile-controls">
           <LandingThemeIcon theme={theme} setTheme={setTheme} />
