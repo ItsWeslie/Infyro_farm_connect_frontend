@@ -2216,6 +2216,16 @@ html[data-ifc-theme="dark"] .ifc-dashboard-tooltip{--ifc-tooltip-bg:#dce9d6;colo
 .ifc-workspace-search-dialog[data-state="open"]{animation:ifc-search-dialog-enter 220ms cubic-bezier(.16,1,.3,1) both}
 .ifc-workspace-search-dialog[data-state="closed"]{animation:ifc-search-dialog-exit 120ms cubic-bezier(.4,0,1,1) both}
 .ifc-workspace-search-overlay.ifc-shadcn-dialog-overlay{backdrop-filter:none;background:#17271d73}
+
+/* Keep the native viewport scrollbar and its reserved gutter while the search
+   modal is mounted, including its exit animation. Radix still isolates modal
+   interactions; only the body overflow and duplicate gap compensation change. */
+body[data-scroll-locked]:has(.ifc-workspace-search-overlay){
+  overflow:visible!important;
+  margin-right:0!important;
+  --removed-body-scroll-bar-size:0px!important;
+}
+
 .ifc-workspace-search-overlay[data-state="open"]{animation:ifc-search-overlay-enter 170ms ease-out both}
 .ifc-workspace-search-overlay[data-state="closed"]{animation:ifc-search-overlay-exit 120ms ease-in both}
 @keyframes ifc-search-dialog-enter{from{opacity:0;transform:translate3d(-50%,-8px,0) scale(.985)}to{opacity:1;transform:translate3d(-50%,0,0) scale(1)}}
