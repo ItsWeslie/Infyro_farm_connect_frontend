@@ -2177,3 +2177,16 @@ html[data-ifc-theme="dark"] .ifc-refined-shell .ifc-sidebar-toggle:hover{backgro
   .ifc-refined-shell .sidebar-top{gap:8px}
   .ifc-refined-shell .sidebar-top .brand-logo-tagline{font-size:6px}
 }
+
+/* Centralized activity ledger, aligned with the expense and harvest tables. */
+.crop3-activity-ledger .workspace-table.crop3-table{min-width:820px}
+.crop3-activity-ledger .crop3-table td:nth-child(2){min-width:155px}
+.crop3-activity-ledger .crop3-table td:nth-child(4){min-width:150px}
+.crop3-activity-ledger .crop3-table td:nth-child(5){white-space:nowrap}
+.crop3-activity-ledger .crop3-activity-filter{flex:1 1 200px;min-width:150px;max-width:260px}
+.crop3-activity-ledger .crop3-activity-status-filter{flex:0 1 125px}
+.crop3-activity-ledger .crop3-activity-filter [data-slot="select-value"]{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.crop3-activity-ledger .crop3-table td:nth-child(2) .crop3-subtext{max-width:235px}
+.crop3-activity-dialog .ff-field-farm-trigger.crop3-activity-planting-trigger{width:100%;min-height:54px}
+html[data-ifc-theme="dark"] .crop3-activity-ledger .crop3-subtext{color:#b2c0ac}
+@media(max-width:650px){.crop3-activity-ledger .crop3-activity-filter,.crop3-activity-ledger .crop3-activity-status-filter{flex:1 1 130px;max-width:none}}
