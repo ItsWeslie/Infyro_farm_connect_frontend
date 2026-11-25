@@ -1,3 +1,4 @@
+import { TooltipTarget } from "./ui/tooltip";
 import { useEffect, useMemo, useState } from "react";
 import UseAnimations from "react-useanimations";
 import alertCircle from "react-useanimations/lib/alertCircle";
@@ -459,9 +460,9 @@ function ExpensePage({ farms, onNavigate, notify }) {
                       <td className="expense4-amount">{amountLabel(expense.amount)}</td>
                       <td><RecordStatus voided={expense.voided} inactiveLabel="Cancelled" /></td>
                       <td>
-                        <button type="button" className="ff-action-button expense4-cancel-button" aria-label={"Cancel expense " + expense.id} disabled={expense.voided || voidingId !== null} onClick={() => voidExpense(expense)}>
+                        <TooltipTarget text="Cancel expense" disabledReason={expense.voided ? "This expense is already cancelled." : "Another cancellation is in progress."}><button type="button" className="ff-action-button expense4-cancel-button" aria-label={"Cancel expense " + expense.id} disabled={expense.voided || voidingId !== null} onClick={() => voidExpense(expense)}>
                           Cancel
-                        </button>
+                        </button></TooltipTarget>
                       </td>
                     </tr>
                   );
@@ -827,7 +828,7 @@ function HarvestPage({ farms, onNavigate, notify }) {
                     <td>{humanize(record.unit)}</td>
                     <td><span className="expense4-notes">{record.notes || "—"}</span>{record.voided && <small className="expense4-subtext">{record.voidReason || "Cancelled record"}</small>}</td>
                     <td><RecordStatus voided={record.voided} inactiveLabel="Cancelled" /></td>
-                    <td><button type="button" className="ff-action-button expense4-cancel-button" aria-label={"Cancel harvest record " + record.id} disabled={record.voided || cancelling} onClick={() => cancelRecord(record)}>Cancel</button></td>
+                    <td><TooltipTarget text="Cancel harvest record" disabledReason={record.voided ? "This harvest record is already cancelled." : "Another cancellation is in progress."}><button type="button" className="ff-action-button expense4-cancel-button" aria-label={"Cancel harvest record " + record.id} disabled={record.voided || cancelling} onClick={() => cancelRecord(record)}>Cancel</button></TooltipTarget></td>
                   </tr>
                 );
               })}</tbody>
