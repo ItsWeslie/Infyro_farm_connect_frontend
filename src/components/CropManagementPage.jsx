@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { SkeletonBlock } from "./ui/Skeleton";
 import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 import { DatePicker } from "./ui/calendar";
 import { Alert, AlertDescription } from "./ui/alert";
 import FieldFarmSelector from "./FieldFarmSelector";
@@ -1138,12 +1139,12 @@ export default function CropManagementPage({
 
       {typeDialogOpen && (
         <div className="modal-overlay" onMouseDown={(event) => { if (event.target === event.currentTarget && !typeSaving) setTypeDialogOpen(false); }}>
-          <form className="dialog-card crop3-dialog" onSubmit={submitType}>
-            <div className="dialog-heading"><div><span className="section-kicker">CROP LIBRARY</span><h2>{editingType ? "Edit crop type" : "Add crop type"}</h2><p>Crop types are saved to {selectedFarm.name}.</p></div><button type="button" className="icon-button" aria-label="Close dialog" disabled={typeSaving} onClick={() => setTypeDialogOpen(false)}><X size={19} /></button></div>
+          <form className="dialog-card crop3-dialog crop3-type-dialog" onSubmit={submitType}>
+            <div className="dialog-heading"><div><span className="section-kicker">CROP LIBRARY</span><h2>{editingType ? "Edit crop type" : "Add crop type"}</h2><p>Crop types are saved to {selectedFarm.name}.</p></div><button type="button" className="icon-button ff-edit-farm-close" aria-label="Close dialog" disabled={typeSaving} onClick={() => setTypeDialogOpen(false)}><X size={19} /></button></div>
             {typeError && <div className="ff-error" role="alert">{typeError}</div>}
-            <label className="form-label">Crop name<input required maxLength={100} value={typeForm.name} onChange={(event) => setTypeForm({ ...typeForm, name: event.target.value })} placeholder="e.g. Tomato" /></label>
-            <label className="form-label">Description<textarea rows={3} maxLength={500} value={typeForm.description} onChange={(event) => setTypeForm({ ...typeForm, description: event.target.value })} placeholder="Variety, growing notes, or other details" /></label>
-            <label className="form-label">Default maturity (days)<input type="number" min="1" step="1" value={typeForm.defaultMaturityTimeInDays} onChange={(event) => setTypeForm({ ...typeForm, defaultMaturityTimeInDays: event.target.value })} placeholder="e.g. 90" /></label>
+            <label className="form-label">Crop name<Input required maxLength={100} value={typeForm.name} onChange={(event) => setTypeForm({ ...typeForm, name: event.target.value })} placeholder="e.g. Tomato" /></label>
+            <label className="form-label">Description<Textarea rows={3} maxLength={500} value={typeForm.description} onChange={(event) => setTypeForm({ ...typeForm, description: event.target.value })} placeholder="Variety, growing notes, or other details" /></label>
+            <label className="form-label">Default maturity (days)<Input type="number" min="1" step="1" value={typeForm.defaultMaturityTimeInDays} onChange={(event) => setTypeForm({ ...typeForm, defaultMaturityTimeInDays: event.target.value })} placeholder="e.g. 90" /></label>
             <div className="dialog-actions"><button type="button" className="button-secondary" disabled={typeSaving} onClick={() => setTypeDialogOpen(false)}>Cancel</button><button type="submit" className="button-primary" disabled={typeSaving || !typeForm.name.trim()}><Plus size={15} /> {typeSaving ? "Saving…" : editingType ? "Save changes" : "Create crop type"}</button></div>
           </form>
         </div>
@@ -1201,18 +1202,35 @@ export default function CropManagementPage({
 
       {activityDialogOpen && (
         <div className="modal-overlay" onMouseDown={(event) => { if (event.target === event.currentTarget && !activitySaving) setActivityDialogOpen(false); }}>
-          <form className="dialog-card crop3-dialog" onSubmit={submitActivity}>
-            <div className="dialog-heading"><div><span className="section-kicker">FIELD JOURNAL</span><h2>{editingActivity ? "Edit activity" : "Log an activity"}</h2><p>{selectedActivityOption?.cropName} · {selectedActivityOption?.farmName} · {selectedActivityOption?.fieldName}</p></div><button type="button" className="icon-button" aria-label="Close dialog" disabled={activitySaving} onClick={() => setActivityDialogOpen(false)}><X size={19} /></button></div>
+          <form className="dialog-card crop3-dialog crop3-activity-dialog" onSubmit={submitActivity}>
+            <div className="dialog-heading"><div><span className="section-kicker">FIELD JOURNAL</span><h2>{editingActivity ? "Edit activity" : "Log an activity"}</h2><p>{selectedActivityOption?.cropName} · {selectedActivityOption?.farmName} · {selectedActivityOption?.fieldName}</p></div><button type="button" className="icon-button ff-edit-farm-close" aria-label="Close dialog" disabled={activitySaving} onClick={() => setActivityDialogOpen(false)}><X size={19} /></button></div>
             {activityFormError && <div className="ff-error" role="alert">{activityFormError}</div>}
             <div className="crop3-form-grid">
-              <label className="form-label">Crop-cycle day<input type="number" required min="1" step="1" value={activityForm.dayNumber} onChange={(event) => setActivityForm({ ...activityForm, dayNumber: event.target.value })} /></label>
-              <label className="form-label">Growth stage<select className="form-select" value={activityForm.cropStage} onChange={(event) => setActivityForm({ ...activityForm, cropStage: event.target.value })}><option value="">Not specified</option>{CROP_STAGES.map((stage) => <option key={stage} value={stage}>{humanize(stage)}</option>)}</select></label>
+              <label className="form-label">Crop-cycle day<Input disabled={activitySaving} type="number" required min="1" step="1" value={activityForm.dayNumber} onChange={(event) => setActivityForm({ ...activityForm, dayNumber: event.target.value })} /></label>
+              <div className="form-label">
+                <label htmlFor="activity-growth-stage">Growth stage</label>
+                <Select disabled={activitySaving} value={activityForm.cropStage || "not-specified"} onValueChange={(value) => setActivityForm((current) => ({ ...current, cropStage: value === "not-specified" ? "" : value }))}>
+                  <SelectTrigger id="activity-growth-stage" className="ifc-form-select"><SelectValue placeholder="Not specified" /></SelectTrigger>
+                  <SelectContent align="start">
+                    <SelectItem value="not-specified">Not specified</SelectItem>
+                    {CROP_STAGES.map((stage) => <SelectItem key={stage} value={stage}>{humanize(stage)}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            <label className="form-label">Daily activity<input required maxLength={2000} value={activityForm.dailyActivity} onChange={(event) => setActivityForm({ ...activityForm, dailyActivity: event.target.value })} placeholder="e.g. Drip irrigation and soil inspection" /></label>
-            <label className="form-label">Nutrition and water management<textarea rows={2} maxLength={2000} value={activityForm.nutritionAndWaterManagement} onChange={(event) => setActivityForm({ ...activityForm, nutritionAndWaterManagement: event.target.value })} placeholder="Optional observations" /></label>
-            <label className="form-label">Pest and disease control<textarea rows={2} maxLength={2000} value={activityForm.pestAndDiseaseControl} onChange={(event) => setActivityForm({ ...activityForm, pestAndDiseaseControl: event.target.value })} placeholder="Optional observations" /></label>
-            <label className="form-label">Notes<textarea rows={2} maxLength={2000} value={activityForm.notes} onChange={(event) => setActivityForm({ ...activityForm, notes: event.target.value })} placeholder="Additional notes" /></label>
-            <label className="form-label">Status<select className="form-select" value={activityForm.status} onChange={(event) => setActivityForm({ ...activityForm, status: event.target.value })}>{(editingActivity ? [editingActivity.status, ...(ACTIVITY_TRANSITIONS[editingActivity.status] || [])] : ["PLANNED"]).map((status) => <option key={status} value={status}>{humanize(status)}</option>)}</select></label>
+            <label className="form-label">Daily activity<Input disabled={activitySaving} required maxLength={2000} value={activityForm.dailyActivity} onChange={(event) => setActivityForm({ ...activityForm, dailyActivity: event.target.value })} placeholder="e.g. Drip irrigation and soil inspection" /></label>
+            <label className="form-label">Nutrition and water management<Textarea disabled={activitySaving} rows={2} maxLength={2000} value={activityForm.nutritionAndWaterManagement} onChange={(event) => setActivityForm({ ...activityForm, nutritionAndWaterManagement: event.target.value })} placeholder="Optional observations" /></label>
+            <label className="form-label">Pest and disease control<Textarea disabled={activitySaving} rows={2} maxLength={2000} value={activityForm.pestAndDiseaseControl} onChange={(event) => setActivityForm({ ...activityForm, pestAndDiseaseControl: event.target.value })} placeholder="Optional observations" /></label>
+            <label className="form-label">Notes<Textarea disabled={activitySaving} rows={2} maxLength={2000} value={activityForm.notes} onChange={(event) => setActivityForm({ ...activityForm, notes: event.target.value })} placeholder="Additional notes" /></label>
+            <div className="form-label">
+              <label htmlFor="activity-log-status">Status</label>
+              <Select disabled={activitySaving} value={activityForm.status} onValueChange={(value) => setActivityForm((current) => ({ ...current, status: value }))}>
+                <SelectTrigger id="activity-log-status" className="ifc-form-select"><SelectValue placeholder="Choose status" /></SelectTrigger>
+                <SelectContent align="start">
+                  {(editingActivity ? [editingActivity.status, ...(ACTIVITY_TRANSITIONS[editingActivity.status] || [])] : ["PLANNED"]).map((status) => <SelectItem key={status} value={status}>{humanize(status)}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
             <div className="dialog-actions"><button type="button" className="button-secondary" disabled={activitySaving} onClick={() => setActivityDialogOpen(false)}>Cancel</button><button type="submit" className="button-primary" disabled={activitySaving}><Plus size={15} /> {activitySaving ? "Saving…" : editingActivity ? "Save changes" : "Save activity"}</button></div>
           </form>
         </div>
