@@ -4,17 +4,17 @@ import { overviewApi } from "../api/client";
 import { SkeletonBlock } from "./ui/Skeleton";
 
 const CATEGORY_COLORS = {
-  SEEDS_AND_SEEDLINGS: "#478c68",
-  FERTILIZER: "#d4a34e",
-  PESTICIDES: "#917abd",
-  IRRIGATION: "#54a3ad",
-  LABOUR: "#346f4e",
-  EQUIPMENT: "#6e91c0",
-  FUEL_AND_TRANSPORT: "#d88461",
-  LAND_PREPARATION: "#83aa65",
-  MACHINERY_REPAIR: "#b5877b",
-  UTILITIES: "#a091bf",
-  OTHER: "#9a9f62",
+  SEEDS_AND_SEEDLINGS: "var(--ifc-chart-green)",
+  FERTILIZER: "var(--ifc-chart-gold)",
+  PESTICIDES: "var(--ifc-chart-purple)",
+  IRRIGATION: "var(--ifc-chart-blue)",
+  LABOUR: "var(--ifc-chart-green-soft)",
+  EQUIPMENT: "var(--ifc-chart-blue-soft)",
+  FUEL_AND_TRANSPORT: "var(--ifc-chart-clay)",
+  LAND_PREPARATION: "var(--ifc-chart-gold-soft)",
+  MACHINERY_REPAIR: "var(--ifc-chart-clay-soft)",
+  UTILITIES: "var(--ifc-chart-purple-soft)",
+  OTHER: "var(--ifc-chart-neutral)",
 };
 
 const RADIUS = 66;
@@ -77,7 +77,7 @@ export default function OverviewExpenseBreakdown({ onNavigate }) {
         key: entry.category,
         label: categoryLabel(entry.category),
         amount: Number(entry.expense),
-        color: CATEGORY_COLORS[entry.category] || "#859786",
+        color: CATEGORY_COLORS[entry.category] || "var(--ifc-chart-neutral)",
       }))
       .filter((entry) => entry.key && Number.isFinite(entry.amount) && entry.amount > 0)
       .sort((left, right) => right.amount - left.amount || left.key.localeCompare(right.key));
@@ -92,7 +92,7 @@ export default function OverviewExpenseBreakdown({ onNavigate }) {
         key: "GROUPED_REMAINDER",
         label: "Other categories",
         amount: remaining.reduce((sum, entry) => sum + entry.amount, 0),
-        color: "#9aa5a3",
+        color: "var(--ifc-chart-remainder)",
         categories: remaining.map((entry) => entry.label),
       });
     }
