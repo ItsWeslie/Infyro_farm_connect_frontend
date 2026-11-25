@@ -1,4 +1,4 @@
-import { ArrowRight, CircleUserRound, LockKeyhole, Mail, ShieldCheck, UserRound } from "lucide-react";
+import { ArrowRight, CalendarDays, CircleUserRound, LockKeyhole, Mail, Settings, UserRound } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 function ProfileDetail({ label, value, icon: Icon }) {
@@ -10,12 +10,17 @@ function ProfileDetail({ label, value, icon: Icon }) {
   );
 }
 
+function joinedDate(value) {
+  if (typeof value !== "string" || !value.trim()) return "Not available";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "Not available" : date.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+}
+
 export default function ProfilePage({ onNavigate }) {
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const username = typeof user?.username === "string" ? user.username.trim() : "";
   const displayName = user?.name?.trim() || username || "Farm user";
   const email = typeof user?.email === "string" && user.email.trim() ? user.email.trim() : "";
-  const role = typeof user?.role === "string" ? user.role.toLowerCase().replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase()) : "";
   const initials = displayName.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => Array.from(part)[0]).join("").toUpperCase() || "IF";
 
   return (
@@ -36,10 +41,9 @@ export default function ProfilePage({ onNavigate }) {
             <div className="ifc-profile-avatar" aria-hidden="true">{initials}</div>
             <h2 id="profile-summary-title">{displayName}</h2>
             <p>{email || username || "Infyro Farms account"}</p>
-            {isAuthenticated && <span className="ifc-live-status"><i /> Signed in</span>}
           </div>
           <div className="ifc-profile-summary-footer">
-            <div><ShieldCheck size={17} aria-hidden="true" /><span><strong>Account security</strong><small>Manage your sign-in sessions.</small></span></div>
+            <div><Settings size={17} aria-hidden="true" /><span><strong>Account preferences</strong><small>Manage your theme or sign out.</small></span></div>
             <button type="button" className="button-secondary" onClick={() => onNavigate("Settings")}>Account settings <ArrowRight size={14} /></button>
           </div>
         </section>
@@ -52,11 +56,7 @@ export default function ProfilePage({ onNavigate }) {
           <dl className="ifc-profile-details">
             <ProfileDetail label="Username" value={username || "Not available"} icon={UserRound} />
             <ProfileDetail label="Email address" value={email || "Not available in this session"} icon={Mail} />
-            <ProfileDetail label="Account role" value={role || "Not available"} icon={ShieldCheck} />
-            <div className="ifc-profile-detail">
-              <dt><LockKeyhole size={14} aria-hidden="true" />Session status</dt>
-              <dd>{isAuthenticated ? <span className="ifc-live-status"><i /> Authenticated</span> : "Not signed in"}</dd>
-            </div>
+            <ProfileDetail label="Joined at" value={joinedDate(user?.createdAt)} icon={CalendarDays} />
           </dl>
           <div className="ifc-profile-readonly"><LockKeyhole size={15} aria-hidden="true" /><span>Account information is currently read-only.</span></div>
         </section>
