@@ -1008,7 +1008,7 @@ export default function CropManagementPage({
                   {paginatedActivities.map((activity) => (
                     <tr key={activity.id}>
                       <td>Day {activity.dayNumber}</td>
-                      <td><strong className="workspace-cell-title">{activityOptionById.get(String(activity.cropPlantingId))?.cropName || "Crop"}</strong><small className="crop3-subtext">{farmNames.get(activity.farmId) || "Farm"} · {activityOptionById.get(String(activity.cropPlantingId))?.fieldName || "Field"}</small><small className="crop3-subtext">Planted {activityOptionById.get(String(activity.cropPlantingId))?.plantedOn || "—"} · #{activity.cropPlantingId}</small></td>
+                      <td><strong className="workspace-cell-title">{activityOptionById.get(String(activity.cropPlantingId))?.cropName || "Crop"}</strong><small className="crop3-subtext">{farmNames.get(activity.farmId) || "Farm"} · {activityOptionById.get(String(activity.cropPlantingId))?.fieldName || "Field"}</small><small className="crop3-subtext">Planted {activityOptionById.get(String(activity.cropPlantingId))?.plantedOn || "—"}</small></td>
                       <td>{activity.cropStage ? humanize(activity.cropStage) : "—"}</td>
                       <td><strong className="workspace-cell-title">{activity.dailyActivity}</strong><small className="crop3-subtext">{activity.notes || activity.nutritionAndWaterManagement || activity.pestAndDiseaseControl || ""}</small></td>
                       <td>{activity.createdAt ? new Date(activity.createdAt).toLocaleDateString() : "—"}</td>
