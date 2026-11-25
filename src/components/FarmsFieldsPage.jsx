@@ -71,9 +71,9 @@ function farmPageItems(page, totalPages) {
   ));
 }
 
-function Stat({ label, value, detail, icon: Icon }) {
+function Stat({ label, value, detail, icon: Icon, accent = "green" }) {
   return (
-    <article className="workspace-stat surface-card">
+    <article className="workspace-stat surface-card" data-accent={accent}>
       <div className="workspace-stat-label">
         {label}
         <span className="workspace-stat-icon">
@@ -387,7 +387,7 @@ export default function FarmsFieldsPage({
   }
 
   return (
-    <section className="workspace-page">
+    <section className="workspace-page ifc-accent-page" data-accent={isFarmsPage ? "green" : "blue"}>
       <div className="page-eyebrow">
         <span className="eyebrow-pip" />
         {isFarmsPage ? "YOUR LAND, AT A GLANCE" : "EVERY PATCH HAS POTENTIAL"}
@@ -418,17 +418,17 @@ export default function FarmsFieldsPage({
 
       {isFarmsPage ? (
         <div className="workspace-stats">
-          <Stat label="Total farms" value={farmStats.farms} detail="registered farms" icon={Tractor} />
-          <Stat label="Total land" value={areaLabel(farmStats.totalArea)} detail="sum of registered field areas" icon={LandPlot} />
-          <Stat label="Total fields" value={farmStats.fields} detail="across all farms" icon={MapPinned} />
-          <Stat label="Available land" value={areaLabel(farmStats.availableArea)} detail="not assigned to plantings" icon={Sprout} />
+          <Stat accent="green" label="Total farms" value={farmStats.farms} detail="registered farms" icon={Tractor} />
+          <Stat accent="gold" label="Total land" value={areaLabel(farmStats.totalArea)} detail="sum of registered field areas" icon={LandPlot} />
+          <Stat accent="blue" label="Total fields" value={farmStats.fields} detail="across all farms" icon={MapPinned} />
+          <Stat accent="green" label="Available land" value={areaLabel(farmStats.availableArea)} detail="not assigned to plantings" icon={Sprout} />
         </div>
       ) : (
         <div className="workspace-stats">
-          <Stat label="Total fields" value={fieldsPending ? "…" : fieldStats.count} detail={failedFarms.length ? "Partial data · available farms" : "across all farms"} icon={MapPinned} />
-          <Stat label="Total field area" value={fieldsPending ? "…" : areaLabel(fieldStats.totalArea)} detail={failedFarms.length ? "Partial data · registered area" : "registered field area"} icon={Ruler} />
-          <Stat label="Allocated area" value={fieldsPending ? "…" : areaLabel(fieldStats.usedArea)} detail={failedFarms.length ? "Partial data · allocated area" : "currently allocated"} icon={Building2} />
-          <Stat label="Available area" value={fieldsPending ? "…" : areaLabel(fieldStats.availableArea)} detail={failedFarms.length ? "Partial data · available area" : "ready for allocation"} icon={Sprout} />
+          <Stat accent="blue" label="Total fields" value={fieldsPending ? "…" : fieldStats.count} detail={failedFarms.length ? "Partial data · available farms" : "across all farms"} icon={MapPinned} />
+          <Stat accent="blue" label="Total field area" value={fieldsPending ? "…" : areaLabel(fieldStats.totalArea)} detail={failedFarms.length ? "Partial data · registered area" : "registered field area"} icon={Ruler} />
+          <Stat accent="purple" label="Allocated area" value={fieldsPending ? "…" : areaLabel(fieldStats.usedArea)} detail={failedFarms.length ? "Partial data · allocated area" : "currently allocated"} icon={Building2} />
+          <Stat accent="green" label="Available area" value={fieldsPending ? "…" : areaLabel(fieldStats.availableArea)} detail={failedFarms.length ? "Partial data · available area" : "ready for allocation"} icon={Sprout} />
         </div>
       )}
 
