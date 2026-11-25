@@ -118,9 +118,9 @@ function quantityLabel(value) {
     : "—";
 }
 
-function Stat({ label, value, detail, icon: Icon }) {
+function Stat({ label, value, detail, icon: Icon, accent = "green" }) {
   return (
-    <article className="workspace-stat surface-card">
+    <article className="workspace-stat surface-card" data-accent={accent}>
       <div className="workspace-stat-label">
         {label}
         <span className="workspace-stat-icon"><Icon size={15} /></span>
@@ -355,7 +355,7 @@ function ExpensePage({ farms, onNavigate, notify }) {
   }
 
   return (
-    <section className="workspace-page">
+    <section className="workspace-page ifc-accent-page" data-accent="clay">
       <div className="page-eyebrow"><span className="eyebrow-pip" /> FARM FINANCES</div>
       <div className="workspace-title-row">
         <div className="workspace-title-icon"><Wallet size={23} /></div>
@@ -371,10 +371,10 @@ function ExpensePage({ farms, onNavigate, notify }) {
       </div>
 
       <div className="workspace-stats">
-        <Stat label="Total spend" value={loading ? "…" : amountLabel(totalActive)} detail={statDetail("excludes cancelled entries")} icon={Coins} />
-        <Stat label="Farm-wide spend" value={loading ? "…" : amountLabel(farmSpend)} detail={statDetail("general farm expenses")} icon={Tractor} />
-        <Stat label="Crop-specific spend" value={loading ? "…" : amountLabel(cropSpend)} detail={statDetail("linked to crop plantings")} icon={Sprout} />
-        <Stat label="Active expenses" value={loading ? "…" : activeExpenses.length} detail={statDetail("across all farms")} icon={ClipboardList} />
+        <Stat accent="clay" label="Total spend" value={loading ? "…" : amountLabel(totalActive)} detail={statDetail("excludes cancelled entries")} icon={Coins} />
+        <Stat accent="clay" label="Farm-wide spend" value={loading ? "…" : amountLabel(farmSpend)} detail={statDetail("general farm expenses")} icon={Tractor} />
+        <Stat accent="green" label="Crop-specific spend" value={loading ? "…" : amountLabel(cropSpend)} detail={statDetail("linked to crop plantings")} icon={Sprout} />
+        <Stat accent="blue" label="Active expenses" value={loading ? "…" : activeExpenses.length} detail={statDetail("across all farms")} icon={ClipboardList} />
       </div>
 
       <div className="workspace-data-card surface-card expense4-data-card expense4-ledger">
@@ -756,7 +756,7 @@ function HarvestPage({ farms, onNavigate, notify }) {
   }
 
   return (
-    <section className="workspace-page">
+    <section className="workspace-page ifc-accent-page" data-accent="gold">
       <div className="page-eyebrow"><span className="eyebrow-pip" /> FROM FIELD TO STORE</div>
       <div className="workspace-title-row">
         <div className="workspace-title-icon"><PackageCheck size={23} /></div>
@@ -770,10 +770,10 @@ function HarvestPage({ farms, onNavigate, notify }) {
       </div>
 
       <div className="workspace-stats">
-        <Stat label="Active harvests" value={loading ? "…" : activeRecords.length} detail={statDetail("across all farms")} icon={ClipboardList} />
-        <Stat label="Harvested plantings" value={loading ? "…" : new Set(activeRecords.map((record) => record.cropPlantingId)).size} detail={statDetail("with active records")} icon={Sprout} />
-        <Stat label="Harvest dates" value={loading ? "…" : new Set(activeRecords.map((record) => record.harvestDate)).size} detail={statDetail("distinct harvest dates")} icon={CalendarDays} />
-        <Stat label="Cancelled records" value={loading ? "…" : records.filter((record) => record.voided).length} detail={statDetail("retained for audit")} icon={CircleX} />
+        <Stat accent="gold" label="Active harvests" value={loading ? "…" : activeRecords.length} detail={statDetail("across all farms")} icon={ClipboardList} />
+        <Stat accent="green" label="Harvested plantings" value={loading ? "…" : new Set(activeRecords.map((record) => record.cropPlantingId)).size} detail={statDetail("with active records")} icon={Sprout} />
+        <Stat accent="purple" label="Harvest dates" value={loading ? "…" : new Set(activeRecords.map((record) => record.harvestDate)).size} detail={statDetail("distinct harvest dates")} icon={CalendarDays} />
+        <Stat accent="neutral" label="Cancelled records" value={loading ? "…" : records.filter((record) => record.voided).length} detail={statDetail("retained for audit")} icon={CircleX} />
       </div>
       <div className="expense4-yield-summary harvest4-yield-summary">
         <strong><Wheat size={15} aria-hidden="true" /> Total harvest yield{warnings.length ? " (partial)" : ""}</strong>

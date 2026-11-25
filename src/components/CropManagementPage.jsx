@@ -132,9 +132,9 @@ function humanize(value) {
     .join(" ");
 }
 
-function Stat({ label, value, detail, icon: Icon }) {
+function Stat({ label, value, detail, icon: Icon, accent = "green" }) {
   return (
-    <article className="workspace-stat surface-card">
+    <article className="workspace-stat surface-card" data-accent={accent}>
       <div className="workspace-stat-label">
         {label}
         <span className="workspace-stat-icon"><Icon size={15} /></span>
@@ -810,7 +810,7 @@ export default function CropManagementPage({
   const isTypes = !isActivities && section === "types";
 
   return (
-    <section className="workspace-page">
+    <section className="workspace-page ifc-accent-page" data-accent={isActivities ? "blue" : isTypes ? "purple" : "green"}>
       <div className="page-eyebrow"><span className="eyebrow-pip" /> {isActivities ? "DAILY FIELD JOURNAL" : "FROM SEED TO HARVEST"}</div>
       <div className="workspace-title-row">
         <div className="workspace-title-icon">{isActivities ? <ClipboardList size={23} /> : <Sprout size={23} />}</div>
@@ -854,24 +854,24 @@ export default function CropManagementPage({
 
       {!isActivities && !isTypes ? (
         <div className="workspace-stats">
-          <Stat label="Plantings" value={farmStat(farmPlantings.length)} detail={statDetail("across all farms")} icon={Sprout} />
-          <Stat label="Active crops" value={farmStat(activePlantings)} detail={statDetail("growing or harvesting")} icon={Leaf} />
-          <Stat label="Crop types" value={farmStat(cropTypes.length)} detail={statDetail("registered crop types")} icon={ClipboardList} />
-          <Stat label="Fields" value={farmStat(fields.length)} detail={statDetail("across all farms")} icon={MapPinned} />
+          <Stat accent="green" label="Plantings" value={farmStat(farmPlantings.length)} detail={statDetail("across all farms")} icon={Sprout} />
+          <Stat accent="green" label="Active crops" value={farmStat(activePlantings)} detail={statDetail("growing or harvesting")} icon={Leaf} />
+          <Stat accent="purple" label="Crop types" value={farmStat(cropTypes.length)} detail={statDetail("registered crop types")} icon={ClipboardList} />
+          <Stat accent="blue" label="Fields" value={farmStat(fields.length)} detail={statDetail("across all farms")} icon={MapPinned} />
         </div>
       ) : isTypes ? (
         <div className="workspace-stats">
-          <Stat label="Crop types" value={farmStat(cropTypes.length)} detail={statDetail("across all farms")} icon={Leaf} />
-          <Stat label="With maturity defaults" value={farmStat(cropTypes.filter((item) => item.defaultMaturityTimeInDays).length)} detail={statDetail("ready for quick planting")} icon={CalendarDays} />
-          <Stat label="Used by plantings" value={farmStat(new Set(farmPlantings.map((item) => item.cropTypeId)).size)} detail={statDetail("crop varieties in use")} icon={Sprout} />
-          <Stat label="Fields" value={farmStat(fields.length)} detail={statDetail("across all farms")} icon={MapPinned} />
+          <Stat accent="purple" label="Crop types" value={farmStat(cropTypes.length)} detail={statDetail("across all farms")} icon={Leaf} />
+          <Stat accent="purple" label="With maturity defaults" value={farmStat(cropTypes.filter((item) => item.defaultMaturityTimeInDays).length)} detail={statDetail("ready for quick planting")} icon={CalendarDays} />
+          <Stat accent="green" label="Used by plantings" value={farmStat(new Set(farmPlantings.map((item) => item.cropTypeId)).size)} detail={statDetail("crop varieties in use")} icon={Sprout} />
+          <Stat accent="blue" label="Fields" value={farmStat(fields.length)} detail={statDetail("across all farms")} icon={MapPinned} />
         </div>
       ) : (
         <div className="workspace-stats">
-          <Stat label="Activity entries" value={activityPlantingsPending || activityLogsPending ? "…" : activities.length} detail="for selected planting" icon={ClipboardList} />
-          <Stat label="In progress" value={activityPlantingsPending || activityLogsPending ? "…" : activities.filter((item) => item.status === "IN_PROGRESS").length} detail="work underway" icon={Sprout} />
-          <Stat label="Completed" value={activityPlantingsPending || activityLogsPending ? "…" : activities.filter((item) => item.status === "COMPLETED").length} detail="activities finished" icon={Check} />
-          <Stat label="Planned" value={activityPlantingsPending || activityLogsPending ? "…" : activities.filter((item) => item.status === "PLANNED").length} detail="upcoming work" icon={CalendarDays} />
+          <Stat accent="blue" label="Activity entries" value={activityPlantingsPending || activityLogsPending ? "…" : activities.length} detail="for selected planting" icon={ClipboardList} />
+          <Stat accent="blue" label="In progress" value={activityPlantingsPending || activityLogsPending ? "…" : activities.filter((item) => item.status === "IN_PROGRESS").length} detail="work underway" icon={Sprout} />
+          <Stat accent="green" label="Completed" value={activityPlantingsPending || activityLogsPending ? "…" : activities.filter((item) => item.status === "COMPLETED").length} detail="activities finished" icon={Check} />
+          <Stat accent="purple" label="Planned" value={activityPlantingsPending || activityLogsPending ? "…" : activities.filter((item) => item.status === "PLANNED").length} detail="upcoming work" icon={CalendarDays} />
         </div>
       )}
 
