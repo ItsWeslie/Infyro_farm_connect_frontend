@@ -190,20 +190,20 @@ export default function OverviewCropProgress({ onNavigate, onAdd }) {
                 </span>
                 <div className="ifc-overview-crop-progress-content">
                   <div className="ifc-overview-crop-progress-title">
-                    <strong title={planting.cropTypeName || "Crop planting"}>{planting.cropTypeName || "Crop planting"}</strong>
+                    <strong data-tooltip={planting.cropTypeName || "Crop planting"}>{planting.cropTypeName || "Crop planting"}</strong>
                     <span className={"ifc-overview-crop-progress-status " + statusTone(planting.status)}>{status}</span>
                   </div>
                   <div className="ifc-overview-crop-progress-meta">
-                    <span className="ifc-overview-crop-progress-farm" title={planting.farmName || "Farm unavailable"}>
+                    <span className="ifc-overview-crop-progress-farm" data-tooltip={planting.farmName || "Farm unavailable"}>
                       <Tractor size={10} aria-hidden="true" />
                       <span>{planting.farmName || "Farm unavailable"}</span>
                     </span>
-                    <span className="ifc-overview-crop-progress-field" title={planting.fieldName || "Field unavailable"}>
+                    <span className="ifc-overview-crop-progress-field" data-tooltip={planting.fieldName || "Field unavailable"}>
                       <MapPin size={10} aria-hidden="true" />
                       <span>{planting.fieldName || "Field unavailable"}</span>
                     </span>
                     <span className="ifc-overview-crop-progress-area">{formatArea(planting.cropArea)}</span>
-                    <span className="ifc-overview-crop-progress-harvest" title="Expected harvest date">
+                    <span className="ifc-overview-crop-progress-harvest" data-tooltip="Expected harvest date">
                       <CalendarDays size={10} aria-hidden="true" />
                       <time dateTime={planting.expectedHarvestOn || undefined}>{formatHarvestDate(planting.expectedHarvestOn)}</time>
                     </span>
@@ -214,6 +214,7 @@ export default function OverviewCropProgress({ onNavigate, onAdd }) {
                       className={"ifc-overview-crop-progress-track" + (progress == null ? " is-unavailable" : "")}
                       role={progress == null ? undefined : "progressbar"}
                       aria-label={progress == null ? undefined : (planting.cropTypeName || "Crop") + " estimated progress"}
+                      data-tooltip={progress == null ? "Estimated progress is unavailable." : "Estimated progress: " + progress + "% based on the planting and expected harvest dates."}
                       aria-valuemin={progress == null ? undefined : 0}
                       aria-valuemax={progress == null ? undefined : 100}
                       aria-valuenow={progress == null ? undefined : progress}

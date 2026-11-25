@@ -1,3 +1,4 @@
+import { TooltipTarget } from "./ui/tooltip";
 import { useEffect, useMemo, useRef, useState } from "react";
 import UseAnimations from "react-useanimations";
 import loading2 from "react-useanimations/lib/loading2";
@@ -526,9 +527,11 @@ export default function FarmsFieldsPage({
                               onClick={() => deleteFarm(farm)}
                               aria-label={`Delete ${farm.name}`}
                               render={(eventProps, animationProps) => (
-                                <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label={`Delete ${farm.name}`} disabled={deletingId === farm.id}>
-                                  <span {...animationProps} aria-hidden="true" />
-                                </button>
+                                <TooltipTarget disabledReason="Deletion is in progress.">
+                                  <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label={`Delete ${farm.name}`} disabled={deletingId === farm.id}>
+                                    <span {...animationProps} aria-hidden="true" />
+                                  </button>
+                                </TooltipTarget>
                               )}
                             />
                           </div>
@@ -588,9 +591,11 @@ export default function FarmsFieldsPage({
                           size={14}
                           interaction="hover"
                           render={(eventProps, animationProps) => (
-                            <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label={`Delete ${field.fieldName}`} disabled={deletingId === field.id} onClick={() => deleteField(field)}>
-                              <span {...animationProps} aria-hidden="true" />
-                            </button>
+                            <TooltipTarget disabledReason="Deletion is in progress.">
+                              <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label={`Delete ${field.fieldName}`} disabled={deletingId === field.id} onClick={() => deleteField(field)}>
+                                <span {...animationProps} aria-hidden="true" />
+                              </button>
+                            </TooltipTarget>
                           )}
                         />
                       </div>

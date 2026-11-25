@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import UseAnimations from "react-useanimations";
+import { TooltipTarget } from "./ui/tooltip";
 import edit from "react-useanimations/lib/edit";
 import trash2 from "react-useanimations/lib/trash2";
 import {
@@ -968,9 +969,11 @@ export default function CropManagementPage({
                             size={14}
                             interaction="hover"
                             render={(eventProps, animationProps) => (
-                              <button {...eventProps} type="button" className="ff-icon-button" aria-label={"Edit " + cropType.name} disabled={switchDisabled} onClick={() => openEditType(cropType)}>
-                                <span {...animationProps} aria-hidden="true" />
-                              </button>
+                              <TooltipTarget disabledReason="Another operation is in progress.">
+                                <button {...eventProps} type="button" className="ff-icon-button" aria-label={"Edit " + cropType.name} disabled={switchDisabled} onClick={() => openEditType(cropType)}>
+                                  <span {...animationProps} aria-hidden="true" />
+                                </button>
+                              </TooltipTarget>
                             )}
                           />
                           <UseAnimations
@@ -978,9 +981,11 @@ export default function CropManagementPage({
                             size={14}
                             interaction="hover"
                             render={(eventProps, animationProps) => (
-                              <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label={"Delete " + cropType.name} disabled={used > 0 || switchDisabled || cropData.plantingsFailed || cropData.failedFields.includes(cropType.farmId)} onClick={() => deleteType(cropType)}>
-                                <span {...animationProps} aria-hidden="true" />
-                              </button>
+                              <TooltipTarget disabledReason={used > 0 ? "Crop types used by plantings cannot be deleted." : cropData.plantingsFailed || cropData.failedFields.includes(cropType.farmId) ? "Planting usage is unavailable. Retry loading the data." : "Another operation is in progress."}>
+                                <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label={"Delete " + cropType.name} disabled={used > 0 || switchDisabled || cropData.plantingsFailed || cropData.failedFields.includes(cropType.farmId)} onClick={() => deleteType(cropType)}>
+                                  <span {...animationProps} aria-hidden="true" />
+                                </button>
+                              </TooltipTarget>
                             )}
                           />
                         </div></td>
@@ -1019,9 +1024,11 @@ export default function CropManagementPage({
                           size={14}
                           interaction="hover"
                           render={(eventProps, animationProps) => (
-                            <button {...eventProps} type="button" className="ff-icon-button" aria-label="Edit activity" onClick={() => openEditActivity(activity)} disabled={switchDisabled || ["COMPLETED", "CANCELLED"].includes(activity.status)}>
-                              <span {...animationProps} aria-hidden="true" />
-                            </button>
+                            <TooltipTarget disabledReason={["COMPLETED", "CANCELLED"].includes(activity.status) ? "Completed or cancelled activities cannot be edited." : "Another operation is in progress."}>
+                              <button {...eventProps} type="button" className="ff-icon-button" aria-label="Edit activity" onClick={() => openEditActivity(activity)} disabled={switchDisabled || ["COMPLETED", "CANCELLED"].includes(activity.status)}>
+                                <span {...animationProps} aria-hidden="true" />
+                              </button>
+                            </TooltipTarget>
                           )}
                         />
                         {ACTIVITY_TRANSITIONS[activity.status]?.length > 0 && (
@@ -1039,9 +1046,11 @@ export default function CropManagementPage({
                           size={14}
                           interaction="hover"
                           render={(eventProps, animationProps) => (
-                            <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label="Delete activity" disabled={activity.status !== "PLANNED" || switchDisabled} onClick={() => deleteActivity(activity)}>
-                              <span {...animationProps} aria-hidden="true" />
-                            </button>
+                            <TooltipTarget disabledReason={activity.status !== "PLANNED" ? "Only planned activities can be deleted." : "Another operation is in progress."}>
+                              <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label="Delete activity" disabled={activity.status !== "PLANNED" || switchDisabled} onClick={() => deleteActivity(activity)}>
+                                <span {...animationProps} aria-hidden="true" />
+                              </button>
+                            </TooltipTarget>
                           )}
                         />
                       </div></td>
@@ -1078,9 +1087,11 @@ export default function CropManagementPage({
                           size={14}
                           interaction="hover"
                           render={(eventProps, animationProps) => (
-                            <button {...eventProps} type="button" className="ff-icon-button" aria-label={"Edit " + planting.cropTypeName + " planting"} disabled={switchDisabled || ["COMPLETED", "CANCELLED"].includes(planting.status) || cropData.failedTypes.includes(planting.farmId)} onClick={() => openEditPlanting(planting)}>
-                              <span {...animationProps} aria-hidden="true" />
-                            </button>
+                            <TooltipTarget disabledReason={["COMPLETED", "CANCELLED"].includes(planting.status) ? "Completed or cancelled plantings cannot be edited." : cropData.failedTypes.includes(planting.farmId) ? "Crop types are unavailable. Retry loading the data." : "Another operation is in progress."}>
+                              <button {...eventProps} type="button" className="ff-icon-button" aria-label={"Edit " + planting.cropTypeName + " planting"} disabled={switchDisabled || ["COMPLETED", "CANCELLED"].includes(planting.status) || cropData.failedTypes.includes(planting.farmId)} onClick={() => openEditPlanting(planting)}>
+                                <span {...animationProps} aria-hidden="true" />
+                              </button>
+                            </TooltipTarget>
                           )}
                         />
                         {transitions.length > 0 && (
@@ -1098,9 +1109,11 @@ export default function CropManagementPage({
                           size={14}
                           interaction="hover"
                           render={(eventProps, animationProps) => (
-                            <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label={"Delete " + planting.cropTypeName + " planting"} disabled={planting.status !== "PLANNED" || switchDisabled} onClick={() => deletePlanting(planting)}>
-                              <span {...animationProps} aria-hidden="true" />
-                            </button>
+                            <TooltipTarget disabledReason={planting.status !== "PLANNED" ? "Only planned plantings can be deleted." : "Another operation is in progress."}>
+                              <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label={"Delete " + planting.cropTypeName + " planting"} disabled={planting.status !== "PLANNED" || switchDisabled} onClick={() => deletePlanting(planting)}>
+                                <span {...animationProps} aria-hidden="true" />
+                              </button>
+                            </TooltipTarget>
                           )}
                         />
                       </div></td>
