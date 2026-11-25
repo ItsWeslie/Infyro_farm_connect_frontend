@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Clock3,
   Inbox,
+  Info,
   MapPin,
   RefreshCw,
   Search,
@@ -16,6 +17,7 @@ import {
 } from "lucide-react";
 import { calendarApi, notificationApi } from "../api/client";
 import { SkeletonBlock } from "./ui/Skeleton";
+import { Alert, AlertDescription } from "./ui/alert";
 import { useConfirmDialog } from "../context/ConfirmDialogContext";
 import { useAuth } from "../context/AuthContext";
 
@@ -165,10 +167,6 @@ export function CalendarPage({ notify }) {
           <h1>Calendar</h1>
           <p>Planting dates and expected harvests from your crop records.</p>
         </div>
-        <div className="ifc-live-heading-meta">
-          <span className="ifc-live-status"><i /> Live backend data</span>
-          <span>{events.length} {events.length === 1 ? "milestone" : "milestones"} this month</span>
-        </div>
       </div>
 
       <div className="ifc-calendar-card surface-card">
@@ -313,9 +311,11 @@ export function CalendarPage({ notify }) {
             ))}
           </div>
         )}
-        <div className="ifc-calendar-footnote">
-          <Clock3 size={14} />
-          Calendar events are generated from crop planting dates and expected harvest dates. Custom events and activity scheduling are not currently exposed by the backend.
+        <div className="ifc-calendar-info-wrap">
+          <Alert className="ifc-calendar-info" variant="info" role="note">
+            <Info size={16} aria-hidden="true" />
+            <AlertDescription>Calendar events are generated from crop planting dates and expected harvest dates.</AlertDescription>
+          </Alert>
         </div>
       </div>
     </section>
