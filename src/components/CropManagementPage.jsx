@@ -20,7 +20,7 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { DatePicker } from "./ui/calendar";
 import { Alert, AlertDescription } from "./ui/alert";
-import FieldFarmSelector from "./FieldFarmSelector";
+
 import ActivityPlantingSelector from "./ActivityPlantingSelector";
 import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "./ui/select";
 import { useConfirmDialog } from "../context/ConfirmDialogContext";
@@ -166,22 +166,23 @@ function FieldSelect({ fields, value, onChange, disabled = false }) {
   );
 }
 
+function FarmFormSelect({ id, farms, value, onChange, disabled }) {
+  return <div className="form-label"><label htmlFor={id}>Farm</label><Select required value={value} disabled={disabled} onValueChange={onChange}><SelectTrigger id={id} className="ifc-form-select"><SelectValue placeholder="Choose a farm" /></SelectTrigger><SelectContent align="start">{farms.filter((farm) => farm.id != null).map((farm) => <SelectItem key={farm.id} value={String(farm.id)}>{farm.name || "Unnamed farm"}</SelectItem>)}</SelectContent></Select></div>;
+}
+
 export default function CropManagementPage({
   active,
   farms,
-  selectedFarm,
-  setSelectedFarm,
   requestedPlantingId,
   setRequestedPlantingId,
   onNavigate,
   notify,
 }) {
   const confirmDialog = useConfirmDialog();
-  const [fields, setFields] = useState([]);
-  const [cropTypes, setCropTypes] = useState([]);
-  const [plantings, setPlantings] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [loadedFarmId, setLoadedFarmId] = useState(null);
+  const [cropData, setCropData] = useState({ key: null, fields: [], types: [], plantings: [], warnings: [], failedFields: [], failedTypes: [], plantingsFailed: false });
+  const [farmFilter, setFarmFilter] = useState("ALL");
+  const [typeFarmId, setTypeFarmId] = useState("");
+  const [plantingFarmId, setPlantingFarmId] = useState("");
   const [pendingStatusChanges, setPendingStatusChanges] = useState(0);
   const [pageError, setPageError] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
@@ -217,68 +218,70 @@ export default function CropManagementPage({
   const [deletingId, setDeletingId] = useState(null);
 
   const isActivities = active === "Activities";
-  const farmId = selectedFarm?.id;
   const activityFarmIds = JSON.stringify([...new Set(farms.filter((farm) => farm.id != null).map((farm) => String(farm.id)))].sort());
   const activityPlantingKey = JSON.stringify([activityFarmIds, reloadKey]);
   const activityPlantingsPending = isActivities && activityPlantingData.key !== activityPlantingKey;
-  const farmDataPending = Boolean(farmId) && (loading || String(loadedFarmId) !== String(farmId));
+  const cropDataKey = JSON.stringify([activityFarmIds, reloadKey]);
+  const farmDataPending = !isActivities && cropData.key !== cropDataKey;
+  const fields = useMemo(() => farmDataPending ? [] : cropData.fields, [farmDataPending, cropData.fields]);
+  const cropTypes = useMemo(() => farmDataPending ? [] : cropData.types, [farmDataPending, cropData.types]);
+  const plantings = useMemo(() => farmDataPending ? [] : cropData.plantings, [farmDataPending, cropData.plantings]);
+  const farmNames = useMemo(() => new Map(farms.map((farm) => [String(farm.id), farm.name || "Unnamed farm"])), [farms]);
+  const currentFarmFilter = farmFilter === "ALL" || farmNames.has(farmFilter) ? farmFilter : "ALL";
+  const warnings = farmDataPending ? [] : cropData.warnings;
   const switchDisabled = typeDialogOpen || plantingDialogOpen || activityDialogOpen || typeSaving || plantingSaving || activitySaving || deletingId !== null || pendingStatusChanges > 0;
-
-  function switchFarm(farm) {
-    if (switchDisabled || String(farm.id) === String(farmId)) return;
-    setSearch("");
-    setStatusFilter("ALL");
-    setPageError("");
-    setSelectedFarm(farm);
-  }
+  const defaultFarmId = currentFarmFilter !== "ALL" ? currentFarmFilter : farms.length === 1 ? String(farms[0].id) : "";
+  const plantingFields = fields.filter((field) => field.farmId === plantingFarmId);
+  const plantingTypes = cropTypes.filter((type) => type.farmId === plantingFarmId);
+  const plantingField = plantingFields.find((field) => String(field.id) === plantingForm.fieldId);
+  const plantingAreaLimit = plantingField ? Number(plantingField.availableArea) + (editingPlanting ? Number(editingPlanting.cropArea) : 0) : null;
+  const canCreatePlanting = fields.some((field) => cropTypes.some((type) => type.farmId === field.farmId));
 
   function farmStat(value) {
-    return farmDataPending ? "…" : pageError && !fields.length && !cropTypes.length && !plantings.length ? "—" : value;
+    return farmDataPending ? "…" : value;
+  }
+
+  function statDetail(detail) {
+    return warnings.length ? "Partial data · " + detail : detail;
   }
 
   useEffect(() => {
-    let current = true;
     if (isActivities) return undefined;
-    if (!farmId) {
-      setFields([]);
-      setCropTypes([]);
-      setPlantings([]);
-      setLoadedFarmId(null);
-      setLoading(false);
-      setPageError("");
+    let current = true;
+    const ids = JSON.parse(activityFarmIds);
+    setPageError("");
+    if (!ids.length) {
+      setCropData({ key: cropDataKey, fields: [], types: [], plantings: [], warnings: [], failedFields: [], failedTypes: [], plantingsFailed: false });
       return undefined;
     }
-
-    setLoading(true);
-    setPageError("");
     Promise.all([
-      fieldApi.getByFarm(farmId),
-      cropTypeApi.getAll(farmId),
-      cropPlantingApi.getAll(),
-    ])
-      .then(([fieldResponse, cropTypeResponse, plantingResponse]) => {
-        if (!current) return;
-        setFields(toList(fieldResponse));
-        setCropTypes(toList(cropTypeResponse));
-        setPlantings(toList(plantingResponse));
-      })
-      .catch((error) => {
-        if (!current) return;
-        setFields([]);
-        setCropTypes([]);
-        setPlantings([]);
-        setPageError(error.message || "Unable to load crop management data.");
-        notify(error.message || "Unable to load crop management data.", "error");
-      })
-      .finally(() => {
-        if (current) {
-          setLoadedFarmId(farmId);
-          setLoading(false);
-        }
+      Promise.allSettled(ids.map((id) => fieldApi.getByFarm(id))),
+      Promise.allSettled(ids.map((id) => cropTypeApi.getAll(id))),
+      Promise.allSettled([cropPlantingApi.getAll()]),
+    ]).then(([fieldResults, typeResults, plantingResults]) => {
+      if (!current) return;
+      const fields = [], types = [], warnings = [], failedFields = [], failedTypes = [];
+      fieldResults.forEach((result, index) => {
+        if (result.status === "fulfilled") toList(result.value).forEach((field) => fields.push({ ...field, farmId: ids[index] }));
+        else { failedFields.push(ids[index]); warnings.push("fields"); }
       });
-
+      typeResults.forEach((result, index) => {
+        if (result.status === "fulfilled") toList(result.value).forEach((type) => types.push({ ...type, farmId: ids[index] }));
+        else { failedTypes.push(ids[index]); warnings.push("crop types"); }
+      });
+      const plantingsFailed = plantingResults[0].status === "rejected";
+      if (plantingsFailed) warnings.push("plantings");
+      const contexts = new Map(fields.map((field) => [String(field.id), field.farmId]));
+      const plantings = plantingsFailed ? [] : toList(plantingResults[0].value).flatMap((planting) => {
+        const farmId = contexts.get(String(planting.fieldId));
+        return farmId ? [{ ...planting, farmId }] : [];
+      });
+      setCropData({ key: cropDataKey, fields, types, plantings, warnings, failedFields, failedTypes, plantingsFailed });
+    }).catch(() => {
+      if (current) setCropData({ key: cropDataKey, fields: [], types: [], plantings: [], warnings: ["crop management data"], failedFields: ids, failedTypes: ids, plantingsFailed: true });
+    });
     return () => { current = false; };
-  }, [farmId, reloadKey, notify, isActivities]);
+  }, [isActivities, activityFarmIds, cropDataKey]);
 
   const fieldById = useMemo(
     () => new Map(fields.map((field) => [String(field.id), field])),
@@ -399,7 +402,9 @@ export default function CropManagementPage({
   useEffect(() => {
     setSearch("");
     setStatusFilter("ALL");
-    if (active === "Crop management") setSection("plantings");
+    if (active === "Crop management") { setSection("plantings"); setFarmFilter("ALL"); }
+    setTypeDialogOpen(false);
+    setPlantingDialogOpen(false);
   }, [active]);
 
   const filteredPlantings = useMemo(() => {
@@ -409,16 +414,17 @@ export default function CropManagementPage({
       const matchesSearch = [
         planting.cropTypeName,
         field?.fieldName,
+        farmNames.get(planting.farmId),
         planting.status,
         planting.plantedOn,
       ].join(" ").toLowerCase().includes(normalized);
-      return matchesSearch && (statusFilter === "ALL" || planting.status === statusFilter);
+      return matchesSearch && (currentFarmFilter === "ALL" || planting.farmId === currentFarmFilter) && (statusFilter === "ALL" || planting.status === statusFilter);
     });
-  }, [farmPlantings, fieldById, search, statusFilter]);
+  }, [farmPlantings, fieldById, search, statusFilter, farmNames, currentFarmFilter]);
 
   const filteredTypes = useMemo(() => cropTypes.filter((cropType) => (
-    [cropType.name, cropType.description].join(" ").toLowerCase().includes(search.toLowerCase())
-  )), [cropTypes, search]);
+    (currentFarmFilter === "ALL" || cropType.farmId === currentFarmFilter) && [cropType.name, cropType.description, farmNames.get(cropType.farmId)].join(" ").toLowerCase().includes(search.toLowerCase())
+  )), [cropTypes, search, farmNames, currentFarmFilter]);
 
   const isCropLibrary = section === "types";
   const filteredCropCount = isCropLibrary ? filteredTypes.length : filteredPlantings.length;
@@ -455,7 +461,7 @@ export default function CropManagementPage({
 
   useEffect(() => {
     setCropPage(1);
-  }, [farmId, active, section, search, statusFilter]);
+  }, [currentFarmFilter, active, section, search, statusFilter]);
 
   useEffect(() => {
     if (!farmDataPending && active !== "Activities") {
@@ -473,6 +479,7 @@ export default function CropManagementPage({
 
   function openCreateType() {
     setEditingType(null);
+    setTypeFarmId(defaultFarmId);
     setTypeForm(INITIAL_TYPE_FORM);
     setTypeError("");
     setTypeDialogOpen(true);
@@ -480,6 +487,7 @@ export default function CropManagementPage({
 
   function openEditType(cropType) {
     setEditingType(cropType);
+    setTypeFarmId(cropType.farmId);
     setTypeForm({
       name: cropType.name || "",
       description: cropType.description || "",
@@ -493,7 +501,8 @@ export default function CropManagementPage({
 
   async function submitType(event) {
     event.preventDefault();
-    if (!typeForm.name.trim()) return;
+    if (!typeForm.name.trim() || typeSaving) return;
+    if (!farmNames.has(typeFarmId) || (editingType && editingType.farmId !== typeFarmId)) { setTypeError("Choose a valid farm."); return; }
     const maturityDays = typeForm.defaultMaturityTimeInDays
       ? Number(typeForm.defaultMaturityTimeInDays)
       : null;
@@ -509,17 +518,9 @@ export default function CropManagementPage({
       defaultMaturityTimeInDays: maturityDays,
     };
     try {
-      const response = editingType
-        ? await cropTypeApi.update(farmId, editingType.id, payload)
-        : await cropTypeApi.create(farmId, payload);
-      const savedType = response?.data || response;
-      if (savedType && typeof savedType === "object" && savedType.id != null) {
-        setCropTypes((current) => editingType
-          ? current.map((item) => item.id === editingType.id ? savedType : item)
-          : [savedType, ...current.filter((item) => item.id !== savedType.id)]);
-      } else {
-        refreshData();
-      }
+      if (editingType) await cropTypeApi.update(typeFarmId, editingType.id, payload);
+      else await cropTypeApi.create(typeFarmId, payload);
+      refreshData();
       setTypeDialogOpen(false);
       setEditingType(null);
       setTypeForm(INITIAL_TYPE_FORM);
@@ -533,6 +534,7 @@ export default function CropManagementPage({
   }
 
   async function deleteType(cropType) {
+    if (cropData.plantingsFailed || cropData.failedFields.includes(cropType.farmId)) { setPageError("Planting usage is unavailable. Retry before deleting a crop type."); return; }
     const inUse = farmPlantings.some((planting) => String(planting.cropTypeId) === String(cropType.id));
     if (inUse) {
       setPageError("This crop type is already used by a planting and cannot be deleted.");
@@ -543,8 +545,8 @@ export default function CropManagementPage({
     setDeletingId("type-" + cropType.id);
     setPageError("");
     try {
-      await cropTypeApi.delete(farmId, cropType.id);
-      setCropTypes((current) => current.filter((item) => item.id !== cropType.id));
+      await cropTypeApi.delete(cropType.farmId, cropType.id);
+      refreshData();
       notify("Crop type deleted");
     } catch (error) {
       notify(error.message || "Unable to delete this crop type.", "error");
@@ -555,23 +557,16 @@ export default function CropManagementPage({
   }
 
   function openCreatePlanting() {
-    const firstCropType = cropTypes[0];
     setEditingPlanting(null);
-    setPlantingForm({
-      ...INITIAL_PLANTING_FORM,
-      fieldId: String(fields[0]?.id || ""),
-      cropTypeId: String(firstCropType?.id || ""),
-      plantedOn: todayIso(),
-      maturityTimeInDays: firstCropType?.defaultMaturityTimeInDays
-        ? String(firstCropType.defaultMaturityTimeInDays)
-        : "",
-    });
+    setPlantingFarmId(defaultFarmId);
+    setPlantingForm({ ...INITIAL_PLANTING_FORM, plantedOn: todayIso() });
     setPlantingError("");
     setPlantingDialogOpen(true);
   }
 
   function openEditPlanting(planting) {
     setEditingPlanting(planting);
+    setPlantingFarmId(planting.farmId);
     setPlantingForm({
       fieldId: String(planting.fieldId),
       cropTypeId: String(planting.cropTypeId),
@@ -589,7 +584,8 @@ export default function CropManagementPage({
   async function submitPlanting(event) {
     event.preventDefault();
     setPlantingError("");
-    const cropType = cropTypes.find((item) => String(item.id) === String(plantingForm.cropTypeId));
+    const cropType = plantingTypes.find((item) => String(item.id) === String(plantingForm.cropTypeId));
+    if (!farmNames.has(plantingFarmId) || !plantingField || (editingPlanting && editingPlanting.farmId !== plantingFarmId)) { setPlantingError("Choose a field belonging to the selected farm."); return; }
     const area = Number(plantingForm.cropArea);
     const maturity = plantingForm.maturityTimeInDays
       ? Number(plantingForm.maturityTimeInDays)
@@ -603,6 +599,7 @@ export default function CropManagementPage({
       setPlantingError("Crop area must be at least 0.01.");
       return;
     }
+    if (plantingAreaLimit !== null && Number.isFinite(plantingAreaLimit) && area > plantingAreaLimit + 1e-9) { setPlantingError("Crop area cannot exceed the available field area."); return; }
     if (!plantingForm.plantedOn) {
       setPlantingError("Choose the planting date.");
       return;
@@ -635,17 +632,9 @@ export default function CropManagementPage({
     setPlantingSaving(true);
     try {
       if (!editingPlanting && !plantingForm.fieldId) throw new Error("Choose a field before creating a planting.");
-      const response = editingPlanting
-        ? await cropPlantingApi.update(editingPlanting.id, payload)
-        : await cropPlantingApi.create(Number(plantingForm.fieldId), payload);
-      const savedPlanting = response?.data || response;
-      if (savedPlanting && typeof savedPlanting === "object" && savedPlanting.id != null) {
-        setPlantings((current) => editingPlanting
-          ? current.map((item) => item.id === editingPlanting.id ? savedPlanting : item)
-          : [savedPlanting, ...current.filter((item) => item.id !== savedPlanting.id)]);
-      } else {
-        refreshData();
-      }
+      if (editingPlanting) await cropPlantingApi.update(editingPlanting.id, payload);
+      else await cropPlantingApi.create(Number(plantingForm.fieldId), payload);
+      refreshData();
       setPlantingDialogOpen(false);
       setEditingPlanting(null);
       notify(editingPlanting ? "Planting updated" : "Planting created");
@@ -662,11 +651,8 @@ export default function CropManagementPage({
     setPendingStatusChanges((count) => count + 1);
     setPageError("");
     try {
-      const response = await cropPlantingApi.updateStatus(planting.id, nextStatus);
-      const updatedPlanting = response?.data || response;
-      setPlantings((current) => current.map((item) => item.id === planting.id
-        ? { ...item, ...(updatedPlanting && typeof updatedPlanting === "object" ? updatedPlanting : {}), status: updatedPlanting?.status || nextStatus }
-        : item));
+      await cropPlantingApi.updateStatus(planting.id, nextStatus);
+      refreshData();
       notify("Planting status changed to " + humanize(nextStatus));
     } catch (error) {
       notify(error.message || "Unable to change planting status.", "error");
@@ -683,7 +669,7 @@ export default function CropManagementPage({
     setPageError("");
     try {
       await cropPlantingApi.delete(planting.id);
-      setPlantings((current) => current.filter((item) => item.id !== planting.id));
+      refreshData();
       notify("Planting deleted");
     } catch (error) {
       notify(error.message || "Unable to delete this planting.", "error");
@@ -805,13 +791,13 @@ export default function CropManagementPage({
     }
   }
 
-  if (!isActivities && !selectedFarm?.id) {
+  if (!isActivities && !farms.length) {
     return (
       <section className="workspace-page">
         <div className="page-eyebrow"><span className="eyebrow-pip" /> CROP WORKSPACE</div>
         <div className="empty-state surface-card crop3-no-farm">
           <Sprout size={28} />
-          <strong>No farm selected</strong>
+          <strong>No farms available</strong>
           <span>Create a farm and at least one field before managing crops.</span>
           <button className="button-primary" type="button" onClick={() => onNavigate("Farms")}>
             Go to farms <ArrowRight size={14} />
@@ -830,22 +816,19 @@ export default function CropManagementPage({
         <div className="workspace-title-icon">{isActivities ? <ClipboardList size={23} /> : <Sprout size={23} />}</div>
         <div className="workspace-title-copy">
           <h1>{isActivities ? "Crop activity log" : "Crop management"}</h1>
-          <p>{isActivities ? "Record the work, observations, and care behind each planting." : "Manage farm crop types and track every planting through its growing cycle."}</p>
+          <p>{isActivities ? "Record the work, observations, and care behind each planting." : "Plan, manage and track crops across your farms."}</p>
         </div>
         <div className={`workspace-title-actions crop3-title-actions${isActivities ? "" : " ff-field-title-actions"}`}>
-          {!isActivities && farms.length > 0 && (
-            <FieldFarmSelector farms={farms} selectedFarm={selectedFarm} onSelect={switchFarm} disabled={switchDisabled} />
-          )}
           {isActivities ? (
             <button className="button-primary" type="button" onClick={openCreateActivity} disabled={!selectedPlanting || activityPlantingsPending || activityLogsPending}>
               <Plus size={15} /> Log activity
             </button>
           ) : isTypes ? (
-            <button className="button-primary" type="button" onClick={openCreateType} disabled={farmDataPending}>
+            <button className="button-primary" type="button" onClick={openCreateType} disabled={farmDataPending || switchDisabled}>
               <Plus size={15} /> Add crop type
             </button>
           ) : (
-            <button className="button-primary" type="button" onClick={openCreatePlanting} disabled={farmDataPending || !fields.length || !cropTypes.length}>
+            <button className="button-primary" type="button" onClick={openCreatePlanting} disabled={farmDataPending || switchDisabled || !canCreatePlanting}>
               <Plus size={15} /> Add planting
             </button>
           )}
@@ -855,28 +838,28 @@ export default function CropManagementPage({
       {!isActivities && (
         <div className="crop3-tabs" role="tablist" aria-label="Crop management sections">
           <button type="button" role="tab" aria-selected={!isTypes} className={!isTypes ? "selected" : ""} onClick={() => { setSection("plantings"); setSearch(""); }}>
-            <Sprout size={14} /> Plantings
+            <Sprout size={14} /> Crop plantings
           </button>
           <button type="button" role="tab" aria-selected={isTypes} className={isTypes ? "selected" : ""} onClick={() => { setSection("types"); setSearch(""); }}>
-            <Leaf size={14} /> Crop library
+            <Leaf size={14} /> Crop types
           </button>
-          <span className="crop3-tab-hint">{selectedFarm.name}</span>
+          <span className="crop3-tab-hint">All farms</span>
         </div>
       )}
 
       {!isActivities && !isTypes ? (
         <div className="workspace-stats">
-          <Stat label="Plantings" value={farmStat(farmPlantings.length)} detail="in this farm" icon={Sprout} />
-          <Stat label="Active crops" value={farmStat(activePlantings)} detail="growing or harvesting" icon={Leaf} />
-          <Stat label="Crop types" value={farmStat(cropTypes.length)} detail="available in this farm" icon={ClipboardList} />
-          <Stat label="Fields" value={farmStat(fields.length)} detail="ready for planting" icon={MapPinned} />
+          <Stat label="Plantings" value={farmStat(farmPlantings.length)} detail={statDetail("across all farms")} icon={Sprout} />
+          <Stat label="Active crops" value={farmStat(activePlantings)} detail={statDetail("growing or harvesting")} icon={Leaf} />
+          <Stat label="Crop types" value={farmStat(cropTypes.length)} detail={statDetail("registered crop types")} icon={ClipboardList} />
+          <Stat label="Fields" value={farmStat(fields.length)} detail={statDetail("across all farms")} icon={MapPinned} />
         </div>
       ) : isTypes ? (
         <div className="workspace-stats">
-          <Stat label="Crop types" value={farmStat(cropTypes.length)} detail="registered in this farm" icon={Leaf} />
-          <Stat label="With maturity defaults" value={farmStat(cropTypes.filter((item) => item.defaultMaturityTimeInDays).length)} detail="ready for quick planting" icon={CalendarDays} />
-          <Stat label="Used by plantings" value={farmStat(new Set(farmPlantings.map((item) => item.cropTypeId)).size)} detail="crop varieties in use" icon={Sprout} />
-          <Stat label="Fields" value={farmStat(fields.length)} detail="in this farm" icon={MapPinned} />
+          <Stat label="Crop types" value={farmStat(cropTypes.length)} detail={statDetail("across all farms")} icon={Leaf} />
+          <Stat label="With maturity defaults" value={farmStat(cropTypes.filter((item) => item.defaultMaturityTimeInDays).length)} detail={statDetail("ready for quick planting")} icon={CalendarDays} />
+          <Stat label="Used by plantings" value={farmStat(new Set(farmPlantings.map((item) => item.cropTypeId)).size)} detail={statDetail("crop varieties in use")} icon={Sprout} />
+          <Stat label="Fields" value={farmStat(fields.length)} detail={statDetail("across all farms")} icon={MapPinned} />
         </div>
       ) : (
         <div className="workspace-stats">
@@ -892,9 +875,9 @@ export default function CropManagementPage({
           <div>
             <h2 className="crop3-planting-title">
               {isActivities ? <ClipboardList size={14} aria-hidden="true" /> : isTypes ? <Leaf size={14} aria-hidden="true" /> : <Sprout size={14} aria-hidden="true" />}
-              {isActivities ? (selectedPlanting ? "Activities for " + selectedActivityOption.cropName : "Activities for this planting") : isTypes ? "Crop library" : "Plantings in " + selectedFarm.name}
+              {isActivities ? (selectedPlanting ? "Activities for " + selectedActivityOption.cropName : "Activities for this planting") : isTypes ? "Crop type directory" : "Crop plantings"}
             </h2>
-            <p>{isActivities ? "View and manage the activity history of the selected planting." : isTypes ? "Crop types are configured separately for each farm." : "Planting area is reserved against the selected field by the backend."}</p>
+            <p>{isActivities ? "View and manage the activity history of the selected planting." : isTypes ? "Manage crop varieties registered across your farms." : "View and manage plantings across all your farms."}</p>
           </div>
           {isActivities && (
             <div className="crop3-activity-planting-row">
@@ -915,6 +898,10 @@ export default function CropManagementPage({
             <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={isActivities ? "Search activities..." : isTypes ? "Search crop types..." : "Search plantings..."} />
             {search && <button type="button" aria-label="Clear search" onClick={() => setSearch("")}><X size={14} /></button>}
           </label>
+          {!isActivities && <Select value={currentFarmFilter} onValueChange={setFarmFilter} disabled={switchDisabled}>
+            <SelectTrigger className="expense4-ledger-filter crop3-farm-filter" aria-label="Filter crops by farm"><SelectValue /></SelectTrigger>
+            <SelectContent align="start"><SelectItem value="ALL">All farms</SelectItem>{farms.filter((farm) => farm.id != null).map((farm) => <SelectItem key={farm.id} value={String(farm.id)}>{farm.name || "Unnamed farm"}</SelectItem>)}</SelectContent>
+          </Select>}
           {!isActivities && !isTypes && (
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="crop3-status-filter" aria-label="Filter plantings by status">
@@ -938,35 +925,35 @@ export default function CropManagementPage({
           </>
         ) : !farmDataPending && pageError && <div className="ff-error" role="alert">{pageError}</div>}
 
+        {!isActivities && !farmDataPending && warnings.length > 0 && <div className="expense4-ledger-load-warning" role="status"><span>Some farm, crop type or planting data could not be loaded. Records and statistics may be incomplete.</span><button type="button" className="button-secondary" disabled={switchDisabled} onClick={refreshData}>Retry</button></div>}
         {(isActivities ? activityPlantingsPending : farmDataPending) ? (
           <SkeletonBlock rows={5} />
         ) : !isActivities && !isTypes && fields.length === 0 ? (
-          <div className="empty-state"><MapPinned size={23} /><strong>No fields in this farm</strong><span>Add a field before creating a crop planting.</span><button className="button-secondary" type="button" onClick={() => onNavigate("Fields")}>Manage fields <ArrowRight size={14} /></button></div>
+          <div className="empty-state"><MapPinned size={23} /><strong>No fields available</strong><span>Add a field before creating a crop planting.</span><button className="button-secondary" type="button" onClick={() => onNavigate("Fields")}>Manage fields <ArrowRight size={14} /></button></div>
         ) : !isActivities && isTypes ? (
-          loading ? (
-            <SkeletonBlock rows={4} />
-          ) : filteredTypes.length === 0 ? (
-            <div className="empty-state"><Leaf size={23} /><strong>{search ? "No matching crop types" : "No crop types yet"}</strong><span>{search ? "Try another search." : "Create crop types such as tomato, rice, or chilli for this farm."}</span>{!search && <button className="button-primary" type="button" onClick={openCreateType}><Plus size={14} /> Add crop type</button>}</div>
+          filteredTypes.length === 0 ? (
+            <div className="empty-state"><Leaf size={23} /><strong>{search || currentFarmFilter !== "ALL" ? "No matching crop types" : "No crop types yet"}</strong><span>{search || currentFarmFilter !== "ALL" ? "Try another search or farm filter." : "Register crop types such as tomato, rice, or chilli in your farms."}</span>{!search && <button className="button-primary" type="button" onClick={openCreateType}><Plus size={14} /> Add crop type</button>}</div>
           ) : (
             <div className="workspace-table-wrap">
               <table className="workspace-table crop3-table">
-                <thead><tr><th>CROP TYPE</th><th>DESCRIPTION</th><th>DEFAULT MATURITY</th><th>PLANTINGS</th><th>ACTIONS</th></tr></thead>
+                <thead><tr><th>CROP TYPE</th><th>FARM</th><th>DESCRIPTION</th><th>DEFAULT MATURITY</th><th>PLANTINGS</th><th>ACTIONS</th></tr></thead>
                 <tbody>
                   {paginatedTypes.map((cropType) => {
                     const used = farmPlantings.filter((item) => String(item.cropTypeId) === String(cropType.id)).length;
                     return (
                       <tr key={cropType.id}>
                         <td><strong className="workspace-cell-title">{cropType.name}</strong></td>
+                        <td>{farmNames.get(cropType.farmId)}</td>
                         <td className="crop3-description">{cropType.description || "—"}</td>
                         <td>{cropType.defaultMaturityTimeInDays ? cropType.defaultMaturityTimeInDays + " days" : "Not set"}</td>
-                        <td>{used}</td>
+                        <td>{cropData.plantingsFailed || cropData.failedFields.includes(cropType.farmId) ? "—" : used}</td>
                         <td><div className="ff-row-actions">
                           <UseAnimations
                             animation={edit}
                             size={14}
                             interaction="hover"
                             render={(eventProps, animationProps) => (
-                              <button {...eventProps} type="button" className="ff-icon-button" aria-label={"Edit " + cropType.name} onClick={() => openEditType(cropType)}>
+                              <button {...eventProps} type="button" className="ff-icon-button" aria-label={"Edit " + cropType.name} disabled={switchDisabled} onClick={() => openEditType(cropType)}>
                                 <span {...animationProps} aria-hidden="true" />
                               </button>
                             )}
@@ -976,7 +963,7 @@ export default function CropManagementPage({
                             size={14}
                             interaction="hover"
                             render={(eventProps, animationProps) => (
-                              <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label={"Delete " + cropType.name} disabled={used > 0 || deletingId === "type-" + cropType.id} onClick={() => deleteType(cropType)}>
+                              <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label={"Delete " + cropType.name} disabled={used > 0 || switchDisabled || cropData.plantingsFailed || cropData.failedFields.includes(cropType.farmId)} onClick={() => deleteType(cropType)}>
                                 <span {...animationProps} aria-hidden="true" />
                               </button>
                             )}
@@ -1049,13 +1036,13 @@ export default function CropManagementPage({
             </div>
           )
         ) : farmPlantings.length === 0 ? (
-          <div className="empty-state"><Sprout size={23} /><strong>No plantings yet</strong><span>Create a crop type first, then assign it to one of your fields.</span>{cropTypes.length === 0 ? <button className="button-secondary" type="button" onClick={() => setSection("types")}>Create a crop type <ArrowRight size={14} /></button> : <button className="button-primary" type="button" onClick={openCreatePlanting}><Plus size={14} /> Add planting</button>}</div>
+          <div className="empty-state"><Sprout size={23} /><strong>No plantings yet</strong><span>Create a crop type first, then assign it to one of your fields.</span>{!canCreatePlanting ? <button className="button-secondary" type="button" onClick={() => setSection("types")}>Create a crop type <ArrowRight size={14} /></button> : <button className="button-primary" type="button" onClick={openCreatePlanting}><Plus size={14} /> Add planting</button>}</div>
         ) : filteredPlantings.length === 0 ? (
-          <div className="empty-state"><Search size={23} /><strong>No matching plantings</strong><span>Try changing your search or status filter.</span></div>
+          <div className="empty-state"><Search size={23} /><strong>No matching plantings</strong><span>Try changing your search, farm or status filter.</span></div>
         ) : (
           <div className="workspace-table-wrap">
             <table className="workspace-table crop3-table">
-              <thead><tr><th>CROP</th><th>FIELD</th><th>AREA</th><th>PLANTED</th><th>EXPECTED HARVEST</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
+              <thead><tr><th>CROP</th><th>FARM</th><th>FIELD</th><th>AREA</th><th>PLANTED</th><th>EXPECTED HARVEST</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
               <tbody>
                 {paginatedPlantings.map((planting) => {
                   const field = fieldById.get(String(planting.fieldId));
@@ -1063,6 +1050,7 @@ export default function CropManagementPage({
                   return (
                     <tr key={planting.id}>
                       <td><strong className="workspace-cell-title">{planting.cropTypeName}</strong></td>
+                      <td>{farmNames.get(planting.farmId)}</td>
                       <td>{field?.fieldName || "Field"}</td>
                       <td>{numberLabel(planting.cropArea)}</td>
                       <td>{dateLabel(planting.plantedOn)}</td>
@@ -1074,13 +1062,13 @@ export default function CropManagementPage({
                           size={14}
                           interaction="hover"
                           render={(eventProps, animationProps) => (
-                            <button {...eventProps} type="button" className="ff-icon-button" aria-label={"Edit " + planting.cropTypeName + " planting"} disabled={["COMPLETED", "CANCELLED"].includes(planting.status)} onClick={() => openEditPlanting(planting)}>
+                            <button {...eventProps} type="button" className="ff-icon-button" aria-label={"Edit " + planting.cropTypeName + " planting"} disabled={switchDisabled || ["COMPLETED", "CANCELLED"].includes(planting.status) || cropData.failedTypes.includes(planting.farmId)} onClick={() => openEditPlanting(planting)}>
                               <span {...animationProps} aria-hidden="true" />
                             </button>
                           )}
                         />
                         {transitions.length > 0 && (
-                          <Select value="" onValueChange={(next) => changePlantingStatus(planting, next)}>
+                          <Select value="" disabled={switchDisabled} onValueChange={(next) => changePlantingStatus(planting, next)}>
                             <SelectTrigger className="crop3-action-select" aria-label="Change planting status">
                               <SelectValue placeholder="Move to…" />
                             </SelectTrigger>
@@ -1094,7 +1082,7 @@ export default function CropManagementPage({
                           size={14}
                           interaction="hover"
                           render={(eventProps, animationProps) => (
-                            <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label={"Delete " + planting.cropTypeName + " planting"} disabled={planting.status !== "PLANNED" || deletingId === "planting-" + planting.id} onClick={() => deletePlanting(planting)}>
+                            <button {...eventProps} type="button" className="ff-icon-button ff-danger" aria-label={"Delete " + planting.cropTypeName + " planting"} disabled={planting.status !== "PLANNED" || switchDisabled} onClick={() => deletePlanting(planting)}>
                               <span {...animationProps} aria-hidden="true" />
                             </button>
                           )}
@@ -1133,19 +1121,20 @@ export default function CropManagementPage({
               </PaginationContent>
             </Pagination>
           )}
-          <span>{isActivities ? selectedActivityOption?.farmName || "No planting selected" : selectedFarm.name}</span>
+          <span>{isActivities ? selectedActivityOption?.farmName || "No planting selected" : currentFarmFilter === "ALL" ? "All farms" : farmNames.get(currentFarmFilter)}</span>
         </div>
       </div>
 
       {typeDialogOpen && (
         <div className="modal-overlay" onMouseDown={(event) => { if (event.target === event.currentTarget && !typeSaving) setTypeDialogOpen(false); }}>
           <form className="dialog-card crop3-dialog crop3-type-dialog" onSubmit={submitType}>
-            <div className="dialog-heading"><div><span className="section-kicker">CROP LIBRARY</span><h2>{editingType ? "Edit crop type" : "Add crop type"}</h2><p>Crop types are saved to {selectedFarm.name}.</p></div><button type="button" className="icon-button ff-edit-farm-close" aria-label="Close dialog" disabled={typeSaving} onClick={() => setTypeDialogOpen(false)}><X size={19} /></button></div>
+            <div className="dialog-heading"><div><span className="section-kicker">CROP LIBRARY</span><h2>{editingType ? "Edit crop type" : "Add crop type"}</h2><p>{editingType ? "Update this registered crop variety." : "Register a crop variety for your farm."}</p></div><button type="button" className="icon-button ff-edit-farm-close" aria-label="Close dialog" disabled={typeSaving} onClick={() => setTypeDialogOpen(false)}><X size={19} /></button></div>
             {typeError && <div className="ff-error" role="alert">{typeError}</div>}
+            <FarmFormSelect id="crop-type-farm" farms={farms} value={typeFarmId} disabled={typeSaving || Boolean(editingType)} onChange={(value) => { setTypeFarmId(value); setTypeError(""); }} />
             <label className="form-label">Crop name<Input required maxLength={100} value={typeForm.name} onChange={(event) => setTypeForm({ ...typeForm, name: event.target.value })} placeholder="e.g. Tomato" /></label>
             <label className="form-label">Description<Textarea rows={3} maxLength={500} value={typeForm.description} onChange={(event) => setTypeForm({ ...typeForm, description: event.target.value })} placeholder="Variety, growing notes, or other details" /></label>
             <label className="form-label">Default maturity (days)<Input type="number" min="1" step="1" value={typeForm.defaultMaturityTimeInDays} onChange={(event) => setTypeForm({ ...typeForm, defaultMaturityTimeInDays: event.target.value })} placeholder="e.g. 90" /></label>
-            <div className="dialog-actions"><button type="button" className="button-secondary" disabled={typeSaving} onClick={() => setTypeDialogOpen(false)}>Cancel</button><button type="submit" className="button-primary" disabled={typeSaving || !typeForm.name.trim()}><Plus size={15} /> {typeSaving ? "Saving…" : editingType ? "Save changes" : "Create crop type"}</button></div>
+            <div className="dialog-actions"><button type="button" className="button-secondary" disabled={typeSaving} onClick={() => setTypeDialogOpen(false)}>Cancel</button><button type="submit" className="button-primary" disabled={typeSaving || !typeForm.name.trim() || !farmNames.has(typeFarmId)}><Plus size={15} /> {typeSaving ? "Saving…" : editingType ? "Save changes" : "Create crop type"}</button></div>
           </form>
         </div>
       )}
@@ -1153,34 +1142,34 @@ export default function CropManagementPage({
       {plantingDialogOpen && (
         <div className="modal-overlay" onMouseDown={(event) => { if (event.target === event.currentTarget && !plantingSaving) setPlantingDialogOpen(false); }}>
           <form className="dialog-card crop3-dialog crop3-planting-dialog" onSubmit={submitPlanting}>
-            <div className="dialog-heading"><div><span className="section-kicker">PLANTING RECORD</span><h2>{editingPlanting ? "Edit planting" : "Add planting"}</h2><p>Assign a crop type and area to a field in {selectedFarm.name}.</p></div><button type="button" className="icon-button ff-edit-farm-close" aria-label="Close dialog" disabled={plantingSaving} onClick={() => setPlantingDialogOpen(false)}><X size={19} /></button></div>
+            <div className="dialog-heading"><div><span className="section-kicker">PLANTING RECORD</span><h2>{editingPlanting ? "Edit planting" : "Add planting"}</h2><p>Assign a crop type and area to a field.</p></div><button type="button" className="icon-button ff-edit-farm-close" aria-label="Close dialog" disabled={plantingSaving} onClick={() => setPlantingDialogOpen(false)}><X size={19} /></button></div>
             {plantingError && <div className="ff-error" role="alert">{plantingError}</div>}
+            <FarmFormSelect id="planting-farm" farms={farms} value={plantingFarmId} disabled={plantingSaving || Boolean(editingPlanting)} onChange={(value) => { setPlantingFarmId(value); setPlantingForm((current) => ({ ...current, fieldId: "", cropTypeId: "", cropArea: "", maturityTimeInDays: "" })); setPlantingError(""); }} />
+            {!editingPlanting && plantingFarmId && (!plantingFields.length || !plantingTypes.length) && <div className="crop3-farm-form-hint">{cropData.failedFields.includes(plantingFarmId) || cropData.failedTypes.includes(plantingFarmId) ? "Field or crop type data is unavailable. Retry from the directory." : "This farm needs at least one field and crop type before adding a planting."}</div>}
             {!editingPlanting && (
               <div className="form-label">
                 <label htmlFor="planting-field">Field</label>
-                <FieldSelect fields={fields} value={plantingForm.fieldId} disabled={plantingSaving} onChange={(value) => setPlantingForm((current) => ({ ...current, fieldId: value }))} />
+                <FieldSelect fields={plantingFields} value={plantingForm.fieldId} disabled={plantingSaving || !plantingFarmId || !plantingFields.length} onChange={(value) => setPlantingForm((current) => ({ ...current, fieldId: value, cropArea: "" }))} />
               </div>
             )}
+            {plantingField && <div className="crop3-field-area-context"><MapPinned size={17} aria-hidden="true" /><div><strong>{plantingField.fieldName}</strong><small>{editingPlanting ? "Area available for this planting (including current allocation)" : "Available field area"}</small></div><strong>{numberLabel(plantingAreaLimit)}</strong></div>}
             <div className="form-label">
               <label htmlFor="planting-crop-type">Crop type</label>
-              <Select required disabled={plantingSaving} value={plantingForm.cropTypeId} onValueChange={(value) => {
-                const cropType = cropTypes.find((item) => String(item.id) === value);
+              <Select required disabled={plantingSaving || !plantingFarmId || !plantingTypes.length} value={plantingForm.cropTypeId} onValueChange={(value) => {
+                const cropType = plantingTypes.find((item) => String(item.id) === value);
                 setPlantingForm((current) => ({ ...current, cropTypeId: value, maturityTimeInDays: cropType?.defaultMaturityTimeInDays ? String(cropType.defaultMaturityTimeInDays) : "" }));
               }}>
                 <SelectTrigger id="planting-crop-type" className="ifc-form-select"><SelectValue placeholder="Choose a crop type" /></SelectTrigger>
                 <SelectContent align="start">
-                  {cropTypes.map((cropType) => <SelectItem key={cropType.id} value={String(cropType.id)}>{cropType.name}</SelectItem>)}
+                  {plantingTypes.map((cropType) => <SelectItem key={cropType.id} value={String(cropType.id)}>{cropType.name}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             <label className="form-label">Crop area
-              <Input type="number" required min="0.01" step="0.01" disabled={plantingSaving} value={plantingForm.cropArea} onChange={(event) => setPlantingForm((current) => ({ ...current, cropArea: event.target.value }))} placeholder="e.g. 0.75" />
+              <Input type="number" required min="0.01" step="0.01" disabled={plantingSaving || !plantingField} max={plantingAreaLimit != null && Number.isFinite(plantingAreaLimit) ? Math.round(plantingAreaLimit * 100) / 100 : undefined} value={plantingForm.cropArea} onChange={(event) => setPlantingForm((current) => ({ ...current, cropArea: event.target.value }))} placeholder="e.g. 0.75" />
             </label>
-            {plantingForm.fieldId && !editingPlanting && (
-              <Alert className="crop3-area-info" variant="info" role="status">
-                <Info size={16} aria-hidden="true" />
-                <AlertDescription>Available field area: <strong>{numberLabel(fields.find((field) => String(field.id) === String(plantingForm.fieldId))?.availableArea)}</strong></AlertDescription>
-              </Alert>
+            {plantingField && (
+              <Alert className="crop3-area-info" variant="info" role="status"><Info size={16} aria-hidden="true" /><AlertDescription>Crop area cannot exceed the available field area.</AlertDescription></Alert>
             )}
             <div className="crop3-form-grid">
               <div className="form-label">
@@ -1195,7 +1184,7 @@ export default function CropManagementPage({
             <label className="form-label">Maturity time (days)
               <Input type="number" min="1" step="1" disabled={plantingSaving} value={plantingForm.maturityTimeInDays} onChange={(event) => setPlantingForm((current) => ({ ...current, maturityTimeInDays: event.target.value }))} placeholder="Uses crop type default when blank" />
             </label>
-            <div className="dialog-actions"><button type="button" className="button-secondary" disabled={plantingSaving} onClick={() => setPlantingDialogOpen(false)}>Cancel</button><button type="submit" className="button-primary" disabled={plantingSaving || !cropTypes.length || !fields.length}><Plus size={15} /> {plantingSaving ? "Saving…" : editingPlanting ? "Save changes" : "Create planting"}</button></div>
+            <div className="dialog-actions"><button type="button" className="button-secondary" disabled={plantingSaving} onClick={() => setPlantingDialogOpen(false)}>Cancel</button><button type="submit" className="button-primary" disabled={plantingSaving || !plantingField || !plantingTypes.some((type) => String(type.id) === plantingForm.cropTypeId) || !plantingForm.cropArea || Number(plantingForm.cropArea) < 0.01 || (plantingAreaLimit != null && Number(plantingForm.cropArea) > plantingAreaLimit + 1e-9)}><Plus size={15} /> {plantingSaving ? "Saving…" : editingPlanting ? "Save changes" : "Create planting"}</button></div>
           </form>
         </div>
       )}
