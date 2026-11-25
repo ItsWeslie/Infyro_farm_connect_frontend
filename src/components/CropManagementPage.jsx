@@ -969,9 +969,11 @@ export default function CropManagementPage({
                             size={14}
                             interaction="hover"
                             render={(eventProps, animationProps) => (
-                              <button {...eventProps} type="button" className="ff-icon-button" aria-label={"Edit " + cropType.name} disabled={switchDisabled} onClick={() => openEditType(cropType)}>
-                                <span {...animationProps} aria-hidden="true" />
-                              </button>
+                              <TooltipTarget disabledReason="Another operation is in progress.">
+                                <button {...eventProps} type="button" className="ff-icon-button" aria-label={"Edit " + cropType.name} disabled={switchDisabled} onClick={() => openEditType(cropType)}>
+                                  <span {...animationProps} aria-hidden="true" />
+                                </button>
+                              </TooltipTarget>
                             )}
                           />
                           <UseAnimations
