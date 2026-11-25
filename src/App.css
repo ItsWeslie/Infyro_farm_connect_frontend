@@ -641,7 +641,11 @@ html[data-ifc-theme="dark"] .nav-active .nav-badge{
   color:#d8edca;
 }
 html[data-ifc-theme="dark"] .profile-area{border-color:rgba(203,226,194,.13)}
-html[data-ifc-theme="dark"] .profile-button,
+html[data-ifc-theme="dark"] .profile-button{
+  background:transparent;
+  color:#e5f0dc;
+  box-shadow:none;
+}
 html[data-ifc-theme="dark"] .farm-popover,
 html[data-ifc-theme="dark"] .profile-popover,
 html[data-ifc-theme="dark"] .notification-popover{
