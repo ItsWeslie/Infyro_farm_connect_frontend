@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { SkeletonBlock } from "./ui/Skeleton";
 import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 import { DatePicker } from "./ui/calendar";
 import { Alert, AlertDescription } from "./ui/alert";
 import FieldFarmSelector from "./FieldFarmSelector";
@@ -1138,12 +1139,12 @@ export default function CropManagementPage({
 
       {typeDialogOpen && (
         <div className="modal-overlay" onMouseDown={(event) => { if (event.target === event.currentTarget && !typeSaving) setTypeDialogOpen(false); }}>
-          <form className="dialog-card crop3-dialog" onSubmit={submitType}>
-            <div className="dialog-heading"><div><span className="section-kicker">CROP LIBRARY</span><h2>{editingType ? "Edit crop type" : "Add crop type"}</h2><p>Crop types are saved to {selectedFarm.name}.</p></div><button type="button" className="icon-button" aria-label="Close dialog" disabled={typeSaving} onClick={() => setTypeDialogOpen(false)}><X size={19} /></button></div>
+          <form className="dialog-card crop3-dialog crop3-type-dialog" onSubmit={submitType}>
+            <div className="dialog-heading"><div><span className="section-kicker">CROP LIBRARY</span><h2>{editingType ? "Edit crop type" : "Add crop type"}</h2><p>Crop types are saved to {selectedFarm.name}.</p></div><button type="button" className="icon-button ff-edit-farm-close" aria-label="Close dialog" disabled={typeSaving} onClick={() => setTypeDialogOpen(false)}><X size={19} /></button></div>
             {typeError && <div className="ff-error" role="alert">{typeError}</div>}
-            <label className="form-label">Crop name<input required maxLength={100} value={typeForm.name} onChange={(event) => setTypeForm({ ...typeForm, name: event.target.value })} placeholder="e.g. Tomato" /></label>
-            <label className="form-label">Description<textarea rows={3} maxLength={500} value={typeForm.description} onChange={(event) => setTypeForm({ ...typeForm, description: event.target.value })} placeholder="Variety, growing notes, or other details" /></label>
-            <label className="form-label">Default maturity (days)<input type="number" min="1" step="1" value={typeForm.defaultMaturityTimeInDays} onChange={(event) => setTypeForm({ ...typeForm, defaultMaturityTimeInDays: event.target.value })} placeholder="e.g. 90" /></label>
+            <label className="form-label">Crop name<Input required maxLength={100} value={typeForm.name} onChange={(event) => setTypeForm({ ...typeForm, name: event.target.value })} placeholder="e.g. Tomato" /></label>
+            <label className="form-label">Description<Textarea rows={3} maxLength={500} value={typeForm.description} onChange={(event) => setTypeForm({ ...typeForm, description: event.target.value })} placeholder="Variety, growing notes, or other details" /></label>
+            <label className="form-label">Default maturity (days)<Input type="number" min="1" step="1" value={typeForm.defaultMaturityTimeInDays} onChange={(event) => setTypeForm({ ...typeForm, defaultMaturityTimeInDays: event.target.value })} placeholder="e.g. 90" /></label>
             <div className="dialog-actions"><button type="button" className="button-secondary" disabled={typeSaving} onClick={() => setTypeDialogOpen(false)}>Cancel</button><button type="submit" className="button-primary" disabled={typeSaving || !typeForm.name.trim()}><Plus size={15} /> {typeSaving ? "Saving…" : editingType ? "Save changes" : "Create crop type"}</button></div>
           </form>
         </div>
