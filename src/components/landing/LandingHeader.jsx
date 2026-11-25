@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import UseAnimations from "react-useanimations";
-import chevronDown from "react-useanimations/lib/chevronDown";
-import { ChevronDown } from "lucide-react";
+import menu from "react-useanimations/lib/menu";
+import { Menu, X } from "lucide-react";
 import { ThemeToggle } from "../ui/ThemeToggle";
 import { BrandMark } from "./BrandMark";
 
@@ -29,7 +29,7 @@ export function LandingHeader({ mobileMenuOpen, setMobileMenuOpen, theme, setThe
     }
     const queue = () => { if (!frame) frame = requestAnimationFrame(update); };
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const desktop = window.matchMedia("(min-width: 981px)");
+    const desktop = window.matchMedia("(min-width: 1025px)");
     const changeMotion = () => setReduced(motion.matches);
     const changeDesktop = () => { if (desktop.matches) setMobileMenuOpen(false); };
     update();
@@ -63,7 +63,7 @@ export function LandingHeader({ mobileMenuOpen, setMobileMenuOpen, theme, setThe
       <div className="landing-header-inner ifc-capsule-inner">
         <div className="ifc-capsule-brand"><BrandMark /></div>
         <button ref={toggle} type="button" className="ifc-capsule-menu-toggle" aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={mobileMenuOpen} aria-controls="landing-primary-navigation" onClick={() => setMobileMenuOpen(open => !open)}>
-          Menu {reduced ? <ChevronDown size={18} className={mobileMenuOpen ? "is-open" : ""} aria-hidden="true" /> : <UseAnimations animation={chevronDown} size={20} interaction="click-toggle" active={mobileMenuOpen} strokeColor="currentColor" aria-hidden="true" />}
+          <span className="ifc-capsule-menu-icon" aria-hidden="true">{reduced ? (mobileMenuOpen ? <X size={24} /> : <Menu size={24} />) : <UseAnimations animation={menu} size={26} interaction="click-toggle" active={mobileMenuOpen} strokeColor="currentColor" />}</span>
         </button>
         <nav id="landing-primary-navigation" className={"ifc-capsule-nav" + (mobileMenuOpen ? " is-open" : "")} aria-label="Main navigation">
           <div className="ifc-capsule-links">
