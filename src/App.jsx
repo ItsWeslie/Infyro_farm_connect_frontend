@@ -234,7 +234,6 @@ function App() {
   // Live farms state from backend
   const [farms, setFarms] = useState([]);
   const [selectedFarm, setSelectedFarm] = useState(null);
-  const [requestedPlantingId, setRequestedPlantingId] = useState("");
   const [isLiveConnected, setIsLiveConnected] = useState(false);
   const [farmsLoading, setFarmsLoading] = useState(false);
   const [farmsError, setFarmsError] = useState("");
@@ -271,7 +270,6 @@ function App() {
     if (!isAuthenticated) {
       setFarms([]);
       setSelectedFarm(null);
-      setRequestedPlantingId("");
       setFarmsError("");
       setFarmsLoading(false);
       setIsLiveConnected(false);
@@ -773,8 +771,9 @@ function App() {
               farms={farms}
               selectedFarm={selectedFarm}
               setSelectedFarm={setSelectedFarm}
-              requestedPlantingId={requestedPlantingId}
-              setRequestedPlantingId={setRequestedPlantingId}
+              farmsLoading={farmsLoading}
+              farmsError={farmsError}
+              refreshFarms={refreshFarms}
               onNavigate={setActive}
               notify={notify}
             />
