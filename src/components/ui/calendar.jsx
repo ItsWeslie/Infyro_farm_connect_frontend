@@ -19,10 +19,13 @@ function toDateValue(date) {
   return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
 }
 
-function DatePicker({ id, value, onChange, min, required = false, disabled = false }) {
+function DatePicker({ id, value, onChange, min, max, required = false, disabled = false }) {
   const [open, setOpen] = useState(false);
   const selected = parseDate(value);
   const minimum = parseDate(min);
+  const maximum = parseDate(max);
+  const defaultMonth = minimum && (!selected || selected < minimum) ? minimum : maximum && (!selected || selected > maximum) ? maximum : selected;
+  const disabledDays = [...(minimum ? [{ before: minimum }] : []), ...(maximum ? [{ after: maximum }] : [])];
   return (
     <Popover open={open && !disabled} onOpenChange={(next) => setOpen(next && !disabled)}>
       <PopoverTrigger asChild>
@@ -34,8 +37,8 @@ function DatePicker({ id, value, onChange, min, required = false, disabled = fal
       </PopoverTrigger>
       <PopoverContent className="ifc-date-popover" side="top" align="start" sideOffset={5} collisionPadding={12}>
         <Calendar mode="single" selected={selected} required={required}
-          defaultMonth={minimum && (!selected || selected < minimum) ? minimum : selected}
-          startMonth={minimum} disabled={minimum ? { before: minimum } : undefined}
+          defaultMonth={defaultMonth}
+          startMonth={minimum} endMonth={maximum} disabled={disabledDays.length ? disabledDays : undefined}
           onSelect={(date) => { onChange(date ? toDateValue(date) : ""); setOpen(false); }} />
         {!required && selected && (
           <button type="button" className="ifc-date-clear" onClick={() => { onChange(""); setOpen(false); }}>Clear date</button>
