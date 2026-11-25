@@ -90,6 +90,7 @@ function Stat({ label, value, detail, icon: Icon }) {
 
 export default function FarmsFieldsPage({
   active,
+  searchTarget,
   farms,
   setFarms,
   farmsLoading,
@@ -207,8 +208,9 @@ export default function FarmsFieldsPage({
   }), [fields]);
 
   const filteredFarms = useMemo(() => farms.filter((farm) => (
+    (!searchTarget || searchTarget.kind !== "farm" || String(farm.id) === searchTarget.id) &&
     [farm.name, String(farm.id)].join(" ").toLowerCase().includes(query.toLowerCase())
-  )), [farms, query]);
+  )), [farms, query, searchTarget]);
 
   const farmPageCount = Math.max(1, Math.ceil(filteredFarms.length / FARMS_PER_PAGE));
   const currentFarmPage = Math.min(farmPage, farmPageCount);
@@ -224,10 +226,11 @@ export default function FarmsFieldsPage({
   }
 
   const filteredFields = useMemo(() => fields.filter((field) => (
+    (!searchTarget || searchTarget.kind !== "field" || (String(field.id) === searchTarget.id && field.farmId === searchTarget.farmId)) &&
     (currentFarmFilter === "ALL" || field.farmId === currentFarmFilter) &&
     [field.fieldName, farmById.get(field.farmId)?.name, field.totalArea, field.availableArea]
       .join(" ").toLowerCase().includes(query.trim().toLowerCase())
-  )).sort((a, b) => String(farmById.get(a.farmId)?.name || "").localeCompare(String(farmById.get(b.farmId)?.name || "")) || String(a.fieldName || "").localeCompare(String(b.fieldName || "")) || String(a.id).localeCompare(String(b.id))), [fields, query, farmById, currentFarmFilter]);
+  )).sort((a, b) => String(farmById.get(a.farmId)?.name || "").localeCompare(String(farmById.get(b.farmId)?.name || "")) || String(a.fieldName || "").localeCompare(String(b.fieldName || "")) || String(a.id).localeCompare(String(b.id))), [fields, query, farmById, currentFarmFilter, searchTarget]);
 
   const fieldPageCount = Math.max(1, Math.ceil(filteredFields.length / FIELDS_PER_PAGE));
   const currentFieldPage = Math.min(fieldPage, fieldPageCount);
