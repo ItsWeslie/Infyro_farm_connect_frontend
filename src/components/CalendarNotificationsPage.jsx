@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import UseAnimations from "react-useanimations";
 import alertCircle from "react-useanimations/lib/alertCircle";
 import {
   Bell,
   CalendarDays,
   Check,
+  CheckCheck,
   ChevronLeft,
   ChevronRight,
   Clock3,
@@ -15,14 +16,17 @@ import {
   ShieldCheck,
   Sprout,
   Wheat,
+  X,
 } from "lucide-react";
 import { calendarApi, notificationApi } from "../api/client";
 import { SkeletonBlock } from "./ui/Skeleton";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext } from "./ui/pagination";
 import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "./ui/select";
 import { useConfirmDialog } from "../context/ConfirmDialogContext";
 import { useAuth } from "../context/AuthContext";
 
-const NOTIFICATION_PAGE_SIZE = 20;
+const NOTIFICATION_PAGE_SIZE = 5;
 
 function toDateKey(date) {
   const year = date.getFullYear();
@@ -334,225 +338,221 @@ export function CalendarPage({ notify }) {
 }
 
 export function NotificationsPage({ unreadCount = 0, onNotificationsChanged, notify }) {
-  const [notifications, setNotifications] = useState([]);
   const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("ALL");
   const [pendingId, setPendingId] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
+  const [result, setResult] = useState({ key: null, rows: [], hasMore: false, error: "" });
+  const [actionError, setActionError] = useState("");
+  const normalizedQuery = query.trim().toLowerCase();
+  const requestKey = JSON.stringify([filter, normalizedQuery, page, reloadKey]);
+  const loading = result.key !== requestKey;
+  const notifications = loading ? [] : result.rows;
+  const hasMore = !loading && result.hasMore;
+  const error = loading ? "" : result.error;
+  const unreadOnPage = notifications.filter((item) => !item.read).length;
+  const inboxUnread = Math.max(0, Number(unreadCount) || 0, unreadOnPage);
+  const busy = pendingId !== null;
 
-  const loadFirstPage = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const response = await notificationApi.getAll(false, 0, NOTIFICATION_PAGE_SIZE);
-      const rows = Array.isArray(response) ? response : [];
-      setNotifications(rows);
-      setPage(0);
-      setHasMore(rows.length === NOTIFICATION_PAGE_SIZE);
-    } catch (requestError) {
-      setError(requestError.message || "Unable to load notifications.");
-      if (notify) notify(requestError.message || "Unable to load notifications.", "error");
-    } finally {
-      setLoading(false);
-    }
-  }, [notify]);
-
+  // The API provides offset pages and an unread-only filter, but no read-only
+  // or text-search endpoint. Scan paged results only as far as necessary to
+  // fill the requested filtered page and determine whether another exists.
   useEffect(() => {
-    loadFirstPage();
-  }, [loadFirstPage]);
-
-  const filteredNotifications = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-    return notifications.filter((item) => {
-      const matchesText = !normalizedQuery || [
-        item.title,
-        item.eventType,
-        item.eventDate,
-      ].filter(Boolean).join(" ").toLowerCase().includes(normalizedQuery);
-      const matchesFilter = filter === "ALL" ||
-        (filter === "UNREAD" && !item.read) ||
-        (filter === "READ" && item.read);
-      return matchesText && matchesFilter;
-    });
-  }, [notifications, query, filter]);
-
-  const unreadLoaded = notifications.filter((item) => !item.read).length;
-  const readLoaded = notifications.length - unreadLoaded;
+    let current = true;
+    async function load() {
+      try {
+        let rows = [];
+        let more = false;
+        if (!normalizedQuery && filter !== "READ") {
+          const response = await notificationApi.getAll(filter === "UNREAD", page, NOTIFICATION_PAGE_SIZE);
+          if (!current) return;
+          if (!Array.isArray(response)) throw new Error("Unexpected notification response.");
+          rows = response;
+          if (rows.length === NOTIFICATION_PAGE_SIZE) {
+            const next = await notificationApi.getAll(filter === "UNREAD", page + 1, NOTIFICATION_PAGE_SIZE);
+            if (!current) return;
+            if (!Array.isArray(next)) throw new Error("Unexpected notification response.");
+            more = next.length > 0;
+          }
+        } else {
+          const matches = [];
+          const seen = new Set();
+          const target = (page + 1) * NOTIFICATION_PAGE_SIZE + 1;
+          const chunkSize = 50;
+          for (let sourcePage = 0; matches.length < target; sourcePage += 1) {
+            const response = await notificationApi.getAll(filter === "UNREAD", sourcePage, chunkSize);
+            if (!current) return;
+            if (!Array.isArray(response)) throw new Error("Unexpected notification response.");
+            let newIds = 0;
+            for (const item of response) {
+              if (seen.has(item.id)) continue;
+              seen.add(item.id);
+              newIds += 1;
+              if (filter === "READ" && !item.read) continue;
+              const text = [item.title, item.eventType, eventTypeLabel(item.eventType), item.eventDate, displayDate(item.eventDate), displayTimestamp(item.scheduledAt, item.eventDate)].filter(Boolean).join(" ").toLowerCase();
+              if (!normalizedQuery || text.includes(normalizedQuery)) matches.push(item);
+            }
+            if (response.length < chunkSize) break;
+            if (!newIds) throw new Error("Notification pages could not be loaded completely.");
+          }
+          rows = matches.slice(page * NOTIFICATION_PAGE_SIZE, (page + 1) * NOTIFICATION_PAGE_SIZE);
+          more = matches.length > (page + 1) * NOTIFICATION_PAGE_SIZE;
+        }
+        if (!current) return;
+        if (!rows.length && page > 0) {
+          setPage((previous) => Math.max(0, previous - 1));
+          return;
+        }
+        setResult({ key: requestKey, rows, hasMore: more, error: "" });
+      } catch (requestError) {
+        if (current) setResult({ key: requestKey, rows: [], hasMore: false, error: requestError.message || "Unable to load notifications." });
+      }
+    }
+    load();
+    return () => { current = false; };
+  }, [filter, normalizedQuery, page, requestKey]);
 
   async function notifySummaryChanged() {
     if (typeof onNotificationsChanged !== "function") return;
-    try {
-      await onNotificationsChanged();
-    } catch {
-      // The notification action succeeded even if refreshing the header count failed.
-    }
+    try { await onNotificationsChanged(); } catch { /* The read action has already succeeded. */ }
   }
 
   async function markOneRead(item) {
-    if (item.read || pendingId !== null) return;
+    if (item.read || busy || loading) return;
     setPendingId(item.id);
+    setActionError("");
     try {
-      const updated = await notificationApi.markRead(item.id);
-      setNotifications((current) => current.map((notification) =>
-        notification.id === item.id ? (updated || { ...notification, read: true }) : notification
-      ));
+      await notificationApi.markRead(item.id);
+      setReloadKey((key) => key + 1);
       await notifySummaryChanged();
       if (notify) notify("Notification marked as read");
     } catch (requestError) {
-      if (notify) notify(requestError.message || "Could not mark this notification as read.", "error");
+      const message = requestError.message || "Could not mark this notification as read.";
+      setActionError(message);
+      if (notify) notify(message, "error");
     } finally {
       setPendingId(null);
     }
   }
 
-  async function markLoadedRead() {
-    const unread = notifications.filter((item) => !item.read);
-    if (!unread.length || pendingId !== null) return;
-    setPendingId("loaded");
-    const results = await Promise.allSettled(unread.map((item) => notificationApi.markRead(item.id)));
-    const successful = new Map();
-    results.forEach((result, index) => {
-      if (result.status === "fulfilled") successful.set(unread[index].id, result.value);
-    });
-    setNotifications((current) => current.map((item) => {
-      if (!successful.has(item.id)) return item;
-      return successful.get(item.id) || { ...item, read: true };
-    }));
-    await notifySummaryChanged();
-    const count = successful.size;
-    if (notify) {
-      if (count === unread.length) {
-        notify("All loaded notifications marked as read");
-      } else {
-        notify(count + " of " + unread.length + " notifications marked as read", count === 0 ? "error" : "warning");
-      }
-    }
-    setPendingId(null);
-  }
-
-  async function loadMore() {
-    if (loadingMore || !hasMore) return;
-    const nextPage = page + 1;
-    setLoadingMore(true);
-    setError("");
+  async function markAllRead() {
+    if (busy || loading || !inboxUnread) return;
+    setPendingId("all");
+    setActionError("");
+    const ids = new Set();
+    let successful = 0;
+    let failed = 0;
     try {
-      const response = await notificationApi.getAll(false, nextPage, NOTIFICATION_PAGE_SIZE);
-      const rows = Array.isArray(response) ? response : [];
-      setNotifications((current) => {
-        const existingIds = new Set(current.map((item) => item.id));
-        return [...current, ...rows.filter((item) => !existingIds.has(item.id))];
-      });
-      setPage(nextPage);
-      setHasMore(rows.length === NOTIFICATION_PAGE_SIZE);
+      // Snapshot all unread IDs before changing read status; changing the
+      // unread list while advancing its offset would skip notifications.
+      const chunkSize = 100;
+      for (let sourcePage = 0; ; sourcePage += 1) {
+        const response = await notificationApi.getAll(true, sourcePage, chunkSize);
+        if (!Array.isArray(response)) throw new Error("Unexpected notification response.");
+        const previousSize = ids.size;
+        response.forEach((item) => { if (!item.read && item.id != null) ids.add(item.id); });
+        if (response.length < chunkSize) break;
+        if (ids.size === previousSize) throw new Error("Unable to retrieve the complete unread inbox.");
+      }
+      const unreadIds = [...ids];
+      for (let offset = 0; offset < unreadIds.length; offset += 8) {
+        const results = await Promise.allSettled(unreadIds.slice(offset, offset + 8).map((id) => notificationApi.markRead(id)));
+        results.forEach((entry) => { if (entry.status === "fulfilled") successful += 1; else failed += 1; });
+      }
+      if (failed) {
+        const message = successful + " of " + unreadIds.length + " notifications marked as read. Try again for the remaining notifications.";
+        setActionError(message);
+        if (notify) notify(message, successful ? "warning" : "error");
+      } else if (notify) {
+        notify(unreadIds.length ? "All retrieved unread notifications marked as read" : "You're all caught up");
+      }
     } catch (requestError) {
-      setError(requestError.message || "Unable to load more notifications.");
+      const message = requestError.message || "Unable to mark all notifications as read.";
+      setActionError(message);
+      if (notify) notify(message, "error");
     } finally {
-      setLoadingMore(false);
+      setPage(0);
+      setReloadKey((key) => key + 1);
+      await notifySummaryChanged();
+      setPendingId(null);
     }
   }
 
-  return (
-    <section className="ifc-live-page">
-      <div className="ifc-live-page-heading">
-        <div>
-          <span className="page-eyebrow"><i className="eyebrow-pip" /> UPDATES FROM YOUR FARM</span>
-          <h1>Notifications</h1>
-          <p>Reminders and milestones generated by your farm records.</p>
-        </div>
-        <div className="ifc-live-heading-actions">
-          <button type="button" className="button-primary" onClick={markLoadedRead} disabled={unreadLoaded === 0 || pendingId !== null}>
-            <Check size={15} /> {pendingId === "loaded" ? "Marking…" : "Mark loaded as read"}
-          </button>
-        </div>
-      </div>
+  function changeFilter(value) {
+    setFilter(value);
+    setPage(0);
+    setActionError("");
+  }
 
-      <div className="ifc-notification-stats">
-        <article className="surface-card">
-          <span>Unread in inbox</span>
-          <strong>{unreadCount}</strong>
-          <small>Live count from backend</small>
-        </article>
-        <article className="surface-card">
-          <span>Loaded notifications</span>
-          <strong>{notifications.length}</strong>
-          <small>Across loaded pages</small>
-        </article>
-        <article className="surface-card">
-          <span>Read on this device view</span>
-          <strong>{readLoaded}</strong>
-          <small>In the loaded list</small>
-        </article>
-      </div>
-
-      <div className="ifc-notifications-card surface-card">
-        <div className="ifc-notifications-toolbar">
-          <label className="table-search">
-            <Search size={15} />
-            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search notifications…" />
-            {query && <button type="button" aria-label="Clear search" onClick={() => setQuery("")}>×</button>}
-          </label>
-          <div className="ifc-notification-filters" role="group" aria-label="Notification status filter">
-            <button type="button" className={filter === "ALL" ? "selected" : ""} onClick={() => setFilter("ALL")}>All</button>
-            <button type="button" className={filter === "UNREAD" ? "selected" : ""} onClick={() => setFilter("UNREAD")}>Unread</button>
-            <button type="button" className={filter === "READ" ? "selected" : ""} onClick={() => setFilter("READ")}>Read</button>
-          </div>
-        </div>
-
-        {error && <div className="ifc-live-error" role="alert"><span>{error}</span><button type="button" className="button-secondary" onClick={loadFirstPage}>Retry</button></div>}
-        {loading && <SkeletonBlock rows={5} />}
-        {!loading && filteredNotifications.length === 0 && (
+  function renderInbox() {
+    return (
+      <>
+        {(error || actionError) && <div className="ifc-live-error" role="alert"><span>{error || actionError}</span>{error && <button type="button" className="button-secondary" onClick={() => setReloadKey((key) => key + 1)}>Retry</button>}</div>}
+        {loading ? <SkeletonBlock rows={5} /> : !error && notifications.length === 0 ? (
           <div className="ifc-notification-state">
             <Inbox size={27} />
-            <strong>{notifications.length ? "No matching notifications" : "You’re all caught up"}</strong>
-            <span>{notifications.length ? "Try another search or status filter." : "New planting and harvest reminders will appear here when they are generated."}</span>
-            {(query || filter !== "ALL") && <button type="button" className="button-secondary" onClick={() => { setQuery(""); setFilter("ALL"); }}>Clear filters</button>}
+            <strong>{normalizedQuery ? "No matching notifications" : filter === "UNREAD" ? "You're all caught up" : filter === "READ" ? "No read notifications" : "No notifications yet"}</strong>
+            <span>{normalizedQuery ? "Try another search." : filter === "UNREAD" ? "You have no unread notifications." : filter === "READ" ? "Notifications you've read will appear here." : "New planting and harvest reminders will appear here."}</span>
+            {(query || filter !== "ALL") && <button type="button" className="button-secondary" disabled={busy} onClick={() => { setQuery(""); changeFilter("ALL"); }}>Clear filters</button>}
           </div>
-        )}
-        {!loading && filteredNotifications.length > 0 && (
+        ) : !error && (
           <div className="ifc-notification-list">
-            {filteredNotifications.map((item) => (
+            {notifications.map((item) => (
               <article className={"ifc-notification-item" + (item.read ? " is-read" : " is-unread")} key={item.id}>
-                <span className={"ifc-notification-icon " + eventTypeClass(item.eventType)}>
-                  <NotificationTypeIcon type={item.eventType} />
-                </span>
+                <span className={"ifc-notification-icon " + eventTypeClass(item.eventType)}><NotificationTypeIcon type={item.eventType} /></span>
                 <div className="ifc-notification-copy">
-                  <div className="ifc-notification-title-line">
-                    <h3>{item.title}</h3>
-                    {!item.read && <span className="ifc-unread-indicator">New</span>}
-                  </div>
+                  <div className="ifc-notification-title-line"><h3>{item.title}</h3></div>
                   <div className="ifc-notification-meta">
                     <span className={"ifc-event-type " + eventTypeClass(item.eventType)}>{eventTypeLabel(item.eventType)}</span>
-                    {item.eventDate && <span>Milestone date: {displayDate(item.eventDate)}</span>}
+                    {item.eventDate && <span>Milestone: {displayDate(item.eventDate)}</span>}
                     <span><Clock3 size={12} /> {displayTimestamp(item.scheduledAt, item.eventDate)}</span>
                   </div>
                 </div>
                 <div className="ifc-notification-action">
-                  {item.read ? (
-                    <span className="ifc-read-label"><Check size={13} /> Read</span>
-                  ) : (
-                    <button type="button" className="button-secondary" onClick={() => markOneRead(item)} disabled={pendingId !== null}>
-                      <Check size={13} /> {pendingId === item.id ? "Saving…" : "Mark read"}
-                    </button>
-                  )}
+                  {item.read ? <span className="ifc-inbox-read-icon" title="Read"><CheckCheck size={16} aria-label="Read" /></span> : <>
+                    <span className="ifc-inbox-unread-dot" aria-label="Unread" />
+                    <button type="button" className="ifc-inbox-read-button" title="Mark as read" aria-label={"Mark " + item.title + " as read"} disabled={busy} onClick={() => markOneRead(item)}><Check size={16} /></button>
+                  </>}
                 </div>
               </article>
             ))}
           </div>
         )}
-        {hasMore && !loading && (
-          <div className="ifc-notifications-load-more">
-            <button type="button" className="button-secondary" onClick={loadMore} disabled={loadingMore}>
-              {loadingMore ? "Loading…" : "Load more notifications"}
-            </button>
-          </div>
-        )}
-        <div className="ifc-notifications-footnote">
-          The backend exposes individual mark-as-read actions, so “Mark loaded as read” updates the notifications currently loaded in this list; it is not a server-side bulk operation.
+        <div className="ifc-inbox-footer">
+          <span>{loading ? "Loading notifications…" : error ? "Notifications unavailable" : notifications.length ? `Showing ${page * NOTIFICATION_PAGE_SIZE + 1}–${page * NOTIFICATION_PAGE_SIZE + notifications.length}${!hasMore ? " of " + (page * NOTIFICATION_PAGE_SIZE + notifications.length) : ""} notifications` : "Showing 0 notifications"}</span>
+          {!loading && !error && (notifications.length > 0 || page > 0) && <Pagination className="ff-farm-pagination ff-field-pagination" aria-label="Notification pagination"><PaginationContent>
+            <PaginationItem><PaginationPrevious disabled={busy || page === 0} onClick={() => setPage((previous) => Math.max(0, previous - 1))} /></PaginationItem>
+            {page > 0 && <PaginationItem><PaginationLink disabled={busy} aria-label={`Page ${page}`} onClick={() => setPage(page - 1)}>{page}</PaginationLink></PaginationItem>}
+            <PaginationItem><PaginationLink isActive aria-label={`Page ${page + 1}`}>{page + 1}</PaginationLink></PaginationItem>
+            {hasMore && <PaginationItem><PaginationLink disabled={busy} aria-label={`Page ${page + 2}`} onClick={() => setPage(page + 1)}>{page + 2}</PaginationLink></PaginationItem>}
+            <PaginationItem><PaginationNext disabled={busy || !hasMore} onClick={() => setPage(page + 1)} /></PaginationItem>
+          </PaginationContent></Pagination>}
+          <span>{inboxUnread} unread</span>
         </div>
+      </>
+    );
+  }
+
+  return (
+    <section className="workspace-page ifc-inbox-page">
+      <div className="page-eyebrow"><span className="eyebrow-pip" /> UPDATES FROM YOUR FARM</div>
+      <div className="workspace-title-row">
+        <div className="workspace-title-icon"><Bell size={23} /></div>
+        <div className="workspace-title-copy"><h1>Notifications</h1><p>Stay updated on your farm milestones and reminders.</p></div>
+        <div className="workspace-title-actions ifc-inbox-heading-actions"><button type="button" className="button-secondary" onClick={markAllRead} disabled={loading || !inboxUnread || busy}><CheckCheck size={15} /> {pendingId === "all" ? "Marking…" : "Mark all as read"}</button></div>
+      </div>
+      <div className="ifc-notifications-card surface-card ifc-inbox-card">
+        <div className="ifc-inbox-heading"><h2><Inbox size={15} aria-hidden="true" /> Inbox</h2>{inboxUnread > 0 && <span className="ifc-inbox-unread-count">{inboxUnread} unread</span>}</div>
+        <Tabs value={filter} onValueChange={changeFilter} className="ifc-inbox-tabs">
+          <div className="ifc-notifications-toolbar">
+            <label className="table-search"><Search size={15} /><input value={query} disabled={busy} onChange={(event) => { setQuery(event.target.value); setPage(0); }} placeholder="Search notifications…" aria-label="Search notifications" />{query && <button type="button" disabled={busy} aria-label="Clear search" onClick={() => { setQuery(""); setPage(0); }}><X size={14} /></button>}</label>
+            <TabsList aria-label="Notification status filter" className="ifc-notification-filters">
+              <TabsTrigger value="ALL" disabled={busy}>All</TabsTrigger><TabsTrigger value="UNREAD" disabled={busy}>Unread</TabsTrigger><TabsTrigger value="READ" disabled={busy}>Read</TabsTrigger>
+            </TabsList>
+          </div>
+          {["ALL", "UNREAD", "READ"].map((value) => <TabsContent value={value} key={value}>{filter === value && renderInbox()}</TabsContent>)}
+        </Tabs>
       </div>
     </section>
   );
