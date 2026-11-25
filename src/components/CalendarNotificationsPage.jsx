@@ -250,13 +250,14 @@ export function CalendarPage({ notify }) {
                       key={dateKey}
                       aria-label={displayDate(dateKey, { weekday: "long", month: "long", day: "numeric", year: "numeric" }) + ", " + dayEvents.length + " milestones"}
                       aria-pressed={selected}
+                      data-tooltip={dayEvents.length ? dayEvents.map((event) => event.title).join(" · ") : undefined}
                       className={"ifc-calendar-day" + (selected ? " is-selected" : "") + (isToday ? " is-today" : "")}
                       onClick={() => setSelectedDate(dateKey)}
                     >
                       <span className="ifc-calendar-day-number">{day}</span>
                       <span className="ifc-calendar-day-events">
                         {dayEvents.slice(0, 2).map((event) => (
-                          <span className={"ifc-calendar-marker " + eventTypeClass(event.eventType)} key={event.eventKey} title={event.title}>
+                          <span className={"ifc-calendar-marker " + eventTypeClass(event.eventType)} key={event.eventKey} data-tooltip={event.title}>
                             <i />{event.title}
                           </span>
                         ))}
@@ -510,9 +511,9 @@ export function NotificationsPage({ unreadCount = 0, onNotificationsChanged, not
                   </div>
                 </div>
                 <div className="ifc-notification-action">
-                  {item.read ? <span className="ifc-inbox-read-icon" title="Read"><CheckCheck size={16} aria-label="Read" /></span> : <>
+                  {item.read ? <span className="ifc-inbox-read-icon" data-tooltip="Read"><CheckCheck size={16} aria-label="Read" /></span> : <>
                     <span className="ifc-inbox-unread-dot" aria-label="Unread" />
-                    <button type="button" className="ifc-inbox-read-button" title="Mark as read" aria-label={"Mark " + item.title + " as read"} disabled={busy} onClick={() => markOneRead(item)}><Check size={16} /></button>
+                    <button type="button" className="ifc-inbox-read-button" data-tooltip="Mark as read" aria-label={"Mark " + item.title + " as read"} disabled={busy} onClick={() => markOneRead(item)}><Check size={16} /></button>
                   </>}
                 </div>
               </article>
