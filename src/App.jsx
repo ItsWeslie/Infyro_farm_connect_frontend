@@ -18,7 +18,6 @@ import {
   Check,
   ChevronDown,
   CircleHelp,
-  Command,
   LayoutDashboard,
   Menu,
   Moon,
@@ -60,6 +59,7 @@ import CropManagementPage from "./components/CropManagementPage";
 import ExpenseHarvestPage from "./components/ExpenseHarvestPage";
 import OverviewPage from "./components/OverviewPage";
 import ProfilePage from "./components/ProfilePage";
+import WorkspaceSearch from "./components/WorkspaceSearch";
 import { CalendarPage, NotificationsPage, SettingsPage } from "./components/CalendarNotificationsPage";
 import {
   farmApi,
@@ -146,8 +146,21 @@ function App() {
     return () => window.clearTimeout(timer);
   }, [loading, sessionMinimumElapsed, sessionWelcomeComplete]);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [active, setActive] = useState("Overview");
-  const [search, setSearch] = useState("");
+  const [active, setActivePage] = useState("Overview");
+  const [searchTarget, setSearchTarget] = useState(null);
+  const [searchNavigationVersion, setSearchNavigationVersion] = useState(0);
+  const clearSearchTarget = useCallback(() => setSearchTarget(null), []);
+  const setActive = useCallback((page) => {
+    setSearchTarget(null);
+    setActivePage(page);
+  }, []);
+  const chooseWorkspaceResult = useCallback((item) => {
+    setSearchTarget(item.kind ? { kind: item.kind, id: item.id, title: item.title, farmId: item.farmId, plantingId: item.plantingId } : null);
+    setActivePage(item.page);
+    setSearchNavigationVersion(value => value + 1);
+    setMobileNav(false);
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
   const [mobileNav, setMobileNav] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     try {
@@ -269,6 +282,7 @@ function App() {
     let current = true;
     if (!isAuthenticated) {
       setFarms([]);
+      setSearchTarget(null);
       setSelectedFarm(null);
       setFarmsError("");
       setFarmsLoading(false);
@@ -551,21 +565,7 @@ function App() {
             </div>
           </div>
           <div className="topbar-right">
-            <label className="global-search">
-              <Search size={16} />
-              <input
-                aria-label="Search workspace"
-                placeholder="Search anything..."
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  if (e.target.value) setActive("Crop management");
-                }}
-              />
-              <kbd>
-                <Command size={10} /> K
-              </kbd>
-            </label>
+            <WorkspaceSearch farms={farms} farmsLoading={farmsLoading} farmsError={farmsError} onRetryFarms={refreshFarms} onChoose={chooseWorkspaceResult} onOpen={() => { setProfileOpen(false); setTopProfileOpen(false); setNotificationsOpen(false); }} />
             <div className="top-divider" />
             <button
               type="button"
@@ -744,6 +744,7 @@ function App() {
           </div>
         </header>
         <div className="page-content">
+          {searchTarget && <div className="ifc-search-target-banner" role="status"><span><Search size={14} aria-hidden="true" /> Showing search result: <strong>{searchTarget.title}</strong></span><button type="button" className="button-secondary" onClick={clearSearchTarget}>Show all records <X size={13} /></button></div>}
           {active === "Overview" ? (
             <OverviewPage
               selectedFarm={selectedFarm}
@@ -754,6 +755,9 @@ function App() {
             />
           ) : active === "Farms" || active === "Fields" ? (
             <FarmsFieldsPage
+              key={searchNavigationVersion}
+              searchTarget={searchTarget}
+              onClearSearchTarget={clearSearchTarget}
               active={active}
               farms={farms}
               setFarms={setFarms}
@@ -767,6 +771,9 @@ function App() {
             />
           ) : active === "Crop management" || active === "Activities" ? (
             <CropManagementPage
+              key={searchNavigationVersion}
+              searchTarget={searchTarget}
+              onClearSearchTarget={clearSearchTarget}
               active={active}
               farms={farms}
               selectedFarm={selectedFarm}
@@ -779,6 +786,9 @@ function App() {
             />
           ) : active === "Expenses" || active === "Harvest records" ? (
             <ExpenseHarvestPage
+              key={searchNavigationVersion}
+              searchTarget={searchTarget}
+              onClearSearchTarget={clearSearchTarget}
               active={active}
               farms={farms}
               selectedFarm={selectedFarm}
@@ -790,6 +800,9 @@ function App() {
             <CalendarPage notify={notify} />
           ) : active === "Notifications" ? (
             <NotificationsPage
+              key={searchNavigationVersion}
+              searchTarget={searchTarget}
+              onClearSearchTarget={clearSearchTarget}
               unreadCount={notificationUnreadCount}
               onNotificationsChanged={refreshNotificationSummary}
               notify={notify}

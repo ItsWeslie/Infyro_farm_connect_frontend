@@ -141,13 +141,13 @@ function RecordStatus({ voided, inactiveLabel = "Voided" }) {
   );
 }
 
-function ExpensePage({ farms, onNavigate, notify }) {
+function ExpensePage({ farms, onNavigate, notify, searchTarget }) {
   const confirmDialog = useConfirmDialog();
   const [ledger, setLedger] = useState({ key: null, records: [], failedFarms: [] });
   const [expensePlantingData, setExpensePlantingData] = useState({ key: null, entries: [], error: "" });
   const [pageError, setPageError] = useState("");
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("ACTIVE");
+  const [statusFilter, setStatusFilter] = useState(searchTarget ? "ALL" : "ACTIVE");
   const [categoryFilter, setCategoryFilter] = useState("ALL");
   const [farmFilter, setFarmFilter] = useState("ALL");
   const [scopeFilter, setScopeFilter] = useState("ALL");
@@ -259,9 +259,9 @@ function ExpensePage({ farms, onNavigate, notify }) {
       const matchesCategory = categoryFilter === "ALL" || expense.category === categoryFilter;
       const matchesFarm = currentFarmFilter === "ALL" || String(expense.farmId) === currentFarmFilter;
       const matchesScope = scopeFilter === "ALL" || (scopeFilter === "CROP" ? cropLinked : !cropLinked);
-      return matchesSearch && matchesStatus && matchesCategory && matchesFarm && matchesScope;
+      return (!searchTarget || searchTarget.kind !== "expense" || (String(expense.id) === searchTarget.id && String(expense.farmId) === searchTarget.farmId)) && matchesSearch && matchesStatus && matchesCategory && matchesFarm && matchesScope;
     }).sort((a, b) => String(b.expenseDate || "").localeCompare(String(a.expenseDate || "")) || String(b.createdAt || "").localeCompare(String(a.createdAt || "")) || String(b.id).localeCompare(String(a.id)));
-  }, [expenses, plantingById, farmNames, search, statusFilter, categoryFilter, currentFarmFilter, scopeFilter]);
+  }, [expenses, plantingById, farmNames, search, statusFilter, categoryFilter, currentFarmFilter, scopeFilter, searchTarget]);
   const pageCount = Math.max(1, Math.ceil(filteredExpenses.length / EXPENSES_PER_PAGE));
   const currentPage = Math.min(page, pageCount);
   const pageStart = (currentPage - 1) * EXPENSES_PER_PAGE;
@@ -570,7 +570,7 @@ function ExpensePage({ farms, onNavigate, notify }) {
   );
 }
 
-function HarvestPage({ farms, onNavigate, notify }) {
+function HarvestPage({ farms, onNavigate, notify, searchTarget }) {
   const confirmDialog = useConfirmDialog();
   const [data, setData] = useState({ key: null, options: [], records: [], warnings: [] });
   const [reloadKey, setReloadKey] = useState(0);
@@ -579,7 +579,7 @@ function HarvestPage({ farms, onNavigate, notify }) {
   const [farmFilter, setFarmFilter] = useState("ALL");
   const [plantingFilter, setPlantingFilter] = useState("ALL");
   const [unitFilter, setUnitFilter] = useState("ALL");
-  const [statusFilter, setStatusFilter] = useState("ACTIVE");
+  const [statusFilter, setStatusFilter] = useState(searchTarget ? "ALL" : "ACTIVE");
   const [page, setPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [form, setForm] = useState(EMPTY_HARVEST);
@@ -676,13 +676,13 @@ function HarvestPage({ farms, onNavigate, notify }) {
       const matchesSearch = [record.notes, record.quantity, record.unit, humanize(record.unit), record.harvestDate,
         record.voided ? "Cancelled" : "Active", farmNames.get(String(record.farmId)), planting?.cropName, planting?.fieldName, planting?.plantedOn]
         .join(" ").toLowerCase().includes(normalized);
-      return matchesSearch
+      return (!searchTarget || searchTarget.kind !== "harvest" || (String(record.id) === searchTarget.id && String(record.cropPlantingId) === searchTarget.plantingId)) && matchesSearch
         && (statusFilter === "ALL" || (statusFilter === "ACTIVE" ? !record.voided : record.voided))
         && (currentFarmFilter === "ALL" || record.farmId === currentFarmFilter)
         && (currentPlantingFilter === "ALL" || record.cropPlantingId === currentPlantingFilter)
         && (unitFilter === "ALL" || record.unit === unitFilter);
     }).sort((a, b) => String(b.harvestDate || "").localeCompare(String(a.harvestDate || "")) || String(b.createdAt || "").localeCompare(String(a.createdAt || "")) || String(b.id).localeCompare(String(a.id)));
-  }, [records, plantingById, farmNames, search, statusFilter, currentFarmFilter, currentPlantingFilter, unitFilter]);
+  }, [records, plantingById, farmNames, search, statusFilter, currentFarmFilter, currentPlantingFilter, unitFilter, searchTarget]);
   const pageCount = Math.max(1, Math.ceil(filteredRecords.length / EXPENSES_PER_PAGE));
   const currentPage = Math.min(page, pageCount);
   const pageStart = (currentPage - 1) * EXPENSES_PER_PAGE;
@@ -879,6 +879,6 @@ function HarvestPage({ farms, onNavigate, notify }) {
   );
 }
 
-export default function ExpenseHarvestPage({ active, farms, onNavigate, notify }) {
-  return active === "Expenses" ? <ExpensePage farms={farms} onNavigate={onNavigate} notify={notify} /> : <HarvestPage farms={farms} onNavigate={onNavigate} notify={notify} />;
+export default function ExpenseHarvestPage({ active, farms, onNavigate, notify, searchTarget }) {
+  return active === "Expenses" ? <ExpensePage farms={farms} onNavigate={onNavigate} notify={notify} searchTarget={searchTarget} /> : <HarvestPage farms={farms} onNavigate={onNavigate} notify={notify} searchTarget={searchTarget} />;
 }
