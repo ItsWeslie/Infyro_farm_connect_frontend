@@ -1,13 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
+import UseAnimations from "react-useanimations";
+import alertCircle from "react-useanimations/lib/alertCircle";
 import {
   CalendarDays,
   CheckCircle2,
+  Circle,
   ClipboardList,
   Coins,
   Leaf,
   Plus,
   Search,
   Sprout,
+  Tractor,
   Ban,
   X,
 } from "lucide-react";
@@ -19,12 +23,19 @@ import {
 } from "../api/client";
 import { ExpenseCategory, HarvestUnit } from "../types/enums";
 import { SkeletonBlock } from "./ui/Skeleton";
+import { Input } from "./ui/input";
+import { DatePicker } from "./ui/calendar";
+import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "./ui/select";
+import { Alert, AlertDescription } from "./ui/alert";
+import ActivityPlantingSelector from "./ActivityPlantingSelector";
 import { useConfirmDialog } from "../context/ConfirmDialogContext";
 
 const CATEGORIES = Object.values(ExpenseCategory);
 const UNITS = Object.values(HarvestUnit);
 
 const EMPTY_EXPENSE = {
+  scope: "farm",
+  farmId: "",
   amount: "",
   expenseDate: new Date().toISOString().slice(0, 10),
   category: ExpenseCategory.OTHER,
@@ -125,6 +136,7 @@ function plantingLabel(planting, fieldById) {
 function ExpensePage({
   farmId,
   farmName,
+  farms,
   notify,
 }) {
   const confirmDialog = useConfirmDialog();
@@ -141,6 +153,10 @@ function ExpensePage({
   const [formError, setFormError] = useState("");
   const [saving, setSaving] = useState(false);
   const [voidingId, setVoidingId] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
+  const [expensePlantingData, setExpensePlantingData] = useState({ key: null, entries: [], error: "" });
+  const ownedFarmsKey = JSON.stringify([...new Set(farms.filter((farm) => farm.id != null).map((farm) => String(farm.id)))].sort());
+  const cropOptionsPending = dialogOpen && form.scope === "crop" && expensePlantingData.key !== ownedFarmsKey;
 
   useEffect(() => {
     let current = true;
@@ -179,7 +195,7 @@ function ExpensePage({
       });
 
     return () => { current = false; };
-  }, [farmId, notify]);
+  }, [farmId, notify, reloadKey]);
 
   const fieldById = useMemo(
     () => new Map(fields.map((field) => [String(field.id), field])),
@@ -193,6 +209,54 @@ function ExpensePage({
     () => new Map(farmPlantings.map((planting) => [String(planting.id), planting])),
     [farmPlantings],
   );
+
+  // Load planting contexts across owned farms only when a crop-specific expense is being entered.
+  useEffect(() => {
+    if (!dialogOpen || form.scope !== "crop") return undefined;
+    let current = true;
+    const ids = JSON.parse(ownedFarmsKey);
+    if (!ids.length) {
+      setExpensePlantingData({ key: ownedFarmsKey, entries: [], error: "" });
+      return undefined;
+    }
+    Promise.all([
+      cropPlantingApi.getAll(),
+      Promise.allSettled(ids.map((id) => fieldApi.getByFarm(id))),
+    ]).then(([plantingResponse, fieldResults]) => {
+      if (!current) return;
+      const contexts = new Map();
+      fieldResults.forEach((result, index) => {
+        if (result.status === "fulfilled") {
+          toList(result.value).forEach((field) => contexts.set(String(field.id), { farmId: ids[index], field }));
+        }
+      });
+      const entries = toList(plantingResponse).flatMap((planting) => {
+        const context = contexts.get(String(planting.fieldId));
+        return planting.id != null && context ? [{ planting, ...context }] : [];
+      });
+      const error = fieldResults.some((result) => result.status === "rejected") ? "Some farms' plantings could not be loaded. Only available plantings are shown." : "";
+      setExpensePlantingData({ key: ownedFarmsKey, entries, error });
+    }).catch((error) => {
+      if (current) setExpensePlantingData({ key: ownedFarmsKey, entries: [], error: error.message || "Unable to load crop plantings." });
+    });
+    return () => { current = false; };
+  }, [dialogOpen, form.scope, ownedFarmsKey]);
+
+  const expensePlantingOptions = useMemo(() => {
+    if (expensePlantingData.key !== ownedFarmsKey) return [];
+    const farmNames = new Map(farms.map((farm) => [String(farm.id), farm.name]));
+    return expensePlantingData.entries.map(({ planting, farmId: ownerFarmId, field }) => ({
+      id: String(planting.id),
+      farmId: ownerFarmId,
+      farmName: farmNames.get(ownerFarmId) || "Unnamed farm",
+      fieldName: field.fieldName || "Field",
+      cropName: planting.cropTypeName || "Crop",
+      plantedOn: dateLabel(planting.plantedOn),
+      status: humanize(planting.status),
+    })).sort((a, b) => a.farmName.localeCompare(b.farmName) || a.cropName.localeCompare(b.cropName) || a.fieldName.localeCompare(b.fieldName) || a.id.localeCompare(b.id));
+  }, [expensePlantingData, ownedFarmsKey, farms]);
+  const expensePlanting = expensePlantingOptions.find((option) => option.id === form.cropPlantingId);
+  const expenseFarm = farms.find((farm) => String(farm.id) === (form.scope === "crop" ? expensePlanting?.farmId : form.farmId));
 
   const activeExpenses = expenses.filter((expense) => !expense.voided);
   const totalActive = activeExpenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
@@ -219,8 +283,10 @@ function ExpensePage({
   function openCreate() {
     setForm({
       ...EMPTY_EXPENSE,
+      farmId: String(farmId ?? ""),
       expenseDate: todayIso(),
     });
+    setExpensePlantingData({ key: null, entries: [], error: "" });
     setFormError("");
     setDialogOpen(true);
   }
@@ -245,30 +311,35 @@ function ExpensePage({
       setFormError("Enter a description for this expense.");
       return;
     }
-    const cropPlantingId = form.cropPlantingId ? Number(form.cropPlantingId) : null;
-    if (cropPlantingId && !plantingById.has(String(cropPlantingId))) {
-      setFormError("Choose a planting that belongs to the selected farm.");
+    if (form.scope === "crop" && (cropOptionsPending || !expensePlanting)) {
+      setFormError("Choose a crop planting for this expense.");
+      return;
+    }
+    if (!expenseFarm) {
+      setFormError("Choose a farm for this expense.");
+      return;
+    }
+    const targetFarmId = expenseFarm.id;
+    const cropPlantingId = form.scope === "crop" ? Number(expensePlanting.id) : null;
+    if (form.scope === "crop" && (!Number.isSafeInteger(cropPlantingId) || cropPlantingId <= 0)) {
+      setFormError("The selected planting is invalid.");
       return;
     }
 
     setSaving(true);
     try {
-      const savedExpense = await expenseApi.create(farmId, {
+      await expenseApi.create(targetFarmId, {
         cropPlantingId,
         amount,
         expenseDate: form.expenseDate,
         category: form.category,
         description: form.description.trim(),
       });
-      const createdExpense = savedExpense?.data || savedExpense;
-      if (createdExpense && typeof createdExpense === "object" && createdExpense.id != null) {
-        setExpenses((current) => [createdExpense, ...current.filter((item) => item.id !== createdExpense.id)]);
-      } else {
-        setPageError("Expense saved, but the server response did not include the saved record. Reopen this page to sync it.");
-      }
+      // Keep this farm-scoped ledger accurate until the all-farms table is implemented.
+      setReloadKey((key) => key + 1);
       setDialogOpen(false);
       setForm(EMPTY_EXPENSE);
-      notify("Expense saved to " + farmName);
+      notify("Expense saved to " + expenseFarm.name + (String(targetFarmId) !== String(farmId) ? ". This ledger currently shows " + farmName + " only." : ""));
     } catch (error) {
       notify(error.message || "Unable to save this expense.", "error");
       setFormError(error.message || "Unable to save this expense.");
@@ -395,24 +466,74 @@ function ExpensePage({
         <div className="modal-overlay" onMouseDown={(event) => {
           if (event.target === event.currentTarget && !saving) setDialogOpen(false);
         }}>
-          <form className="dialog-card expense4-dialog" onSubmit={submit}>
+          <form className="dialog-card expense4-dialog expense4-create-dialog" onSubmit={submit}>
             <div className="dialog-heading">
-              <div><span className="section-kicker">EXPENSE ENTRY</span><h2>Add an expense</h2><p>Record a cost against {farmName}.</p></div>
-              <button type="button" className="icon-button" aria-label="Close dialog" disabled={saving} onClick={() => setDialogOpen(false)}><X size={19} /></button>
+              <div><span className="section-kicker">EXPENSE ENTRY</span><h2>Add an expense</h2><p>Record spending for a farm or a crop planting.</p></div>
+              <button type="button" className="icon-button ff-edit-farm-close" aria-label="Close dialog" disabled={saving} onClick={() => setDialogOpen(false)}><X size={19} /></button>
             </div>
             {formError && <div className="ff-error" role="alert">{formError}</div>}
-            <label className="form-label">Description<input required maxLength={1000} value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} placeholder="e.g. Organic fertilizer purchase" /></label>
+            <fieldset className="expense4-scope-fieldset">
+              <legend>Expense type</legend>
+              <div className="expense4-scope-grid">
+                {[
+                  { id: "farm", label: "Farm-wide", detail: "General farm expenses", Icon: Tractor },
+                  { id: "crop", label: "Crop-specific", detail: "Linked to a crop planting", Icon: Sprout },
+                ].map(({ id, label, detail, Icon }) => (
+                  <label key={id} className="expense4-scope-option" data-selected={form.scope === id}>
+                    <input type="radio" name="expense-scope" value={id} checked={form.scope === id} disabled={saving} onChange={() => {
+                      setForm((current) => ({ ...current, scope: id, cropPlantingId: "" }));
+                      setFormError("");
+                    }} />
+                    <span className="expense4-scope-option-top"><Icon size={17} aria-hidden="true" />{form.scope === id ? <CheckCircle2 size={15} aria-hidden="true" /> : <Circle size={15} aria-hidden="true" />}</span>
+                    <strong>{label}</strong><small>{detail}</small>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            {form.scope === "farm" ? (
+              <div className="form-label">
+                <label htmlFor="expense-farm">Select farm</label>
+                <Select value={expenseFarm ? form.farmId : ""} required disabled={saving || !farms.length} onValueChange={(value) => setForm((current) => ({ ...current, farmId: value, cropPlantingId: "" }))}>
+                  <SelectTrigger id="expense-farm" className="ifc-form-select"><SelectValue placeholder="Choose a farm" /></SelectTrigger>
+                  <SelectContent align="start">
+                    {farms.filter((farm) => farm.id != null).map((farm) => <SelectItem key={farm.id} value={String(farm.id)}>{farm.name || "Unnamed farm"}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+            ) : (
+              <div className="form-label">
+                <span>Crop planting</span>
+                <ActivityPlantingSelector options={expensePlantingOptions} selected={expensePlanting} loading={cropOptionsPending} disabled={saving} onSelect={(id) => {
+                  setForm((current) => ({ ...current, cropPlantingId: id }));
+                  setFormError("");
+                }} />
+                {!cropOptionsPending && expensePlantingData.error && <small className="expense4-selection-error" role="status">{expensePlantingData.error}</small>}
+                {!cropOptionsPending && !expensePlantingOptions.length && !expensePlantingData.error && <small className="expense4-selection-hint">No crop plantings available. Create a planting first.</small>}
+                {expensePlanting && <small className="expense4-selection-hint"><Tractor size={13} aria-hidden="true" /> {expensePlanting.farmName} will be linked automatically.</small>}
+              </div>
+            )}
+            <label className="form-label">Description<Input required disabled={saving} maxLength={1000} value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} placeholder="e.g. Organic fertilizer purchase" /></label>
             <div className="expense4-form-grid">
-              <label className="form-label">Amount (₹)<input type="number" required min="0.01" max="999999999999.99" step="0.01" value={form.amount} onChange={(event) => setForm({ ...form, amount: event.target.value })} placeholder="e.g. 1850.00" /></label>
-              <label className="form-label">Expense date<input type="date" required max={todayIso()} value={form.expenseDate} onChange={(event) => setForm({ ...form, expenseDate: event.target.value })} /></label>
+              <label className="form-label">Amount (₹)<Input type="number" required disabled={saving} min="0.01" max="999999999999.99" step="0.01" value={form.amount} onChange={(event) => setForm({ ...form, amount: event.target.value })} placeholder="e.g. 1850.00" /></label>
+              <div className="form-label">
+                <label htmlFor="expense-date">Expense date</label>
+                <DatePicker id="expense-date" required disabled={saving} max={todayIso()} value={form.expenseDate} onChange={(value) => setForm((current) => ({ ...current, expenseDate: value }))} />
+              </div>
             </div>
-            <label className="form-label">Category<select className="form-select" value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value })}>{CATEGORIES.map((category) => <option key={category} value={category}>{humanize(category)}</option>)}</select></label>
-            <label className="form-label">Related planting (optional)<select className="form-select" value={form.cropPlantingId} onChange={(event) => setForm({ ...form, cropPlantingId: event.target.value })}><option value="">Farm-wide expense</option>{farmPlantings.map((planting) => <option key={planting.id} value={planting.id}>{plantingLabel(planting, fieldById)}</option>)}</select></label>
-            <div className="dialog-note"><Leaf size={16} /><span>Linking a planting is optional. The backend keeps this expense attached to the selected farm either way.</span></div>
-            <div className="dialog-note"><CheckCircle2 size={16} /><span>The backend does not support editing expense entries. Void an incorrect entry and create a replacement; the audit record is retained.</span></div>
+            <div className="form-label">
+              <label htmlFor="expense-category">Category</label>
+              <Select value={form.category} disabled={saving} onValueChange={(value) => setForm((current) => ({ ...current, category: value }))}>
+                <SelectTrigger id="expense-category" className="ifc-form-select"><SelectValue placeholder="Choose a category" /></SelectTrigger>
+                <SelectContent align="start">{CATEGORIES.map((category) => <SelectItem key={category} value={category}>{humanize(category)}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <Alert className="expense4-audit-note" role="note">
+              <span className="ff-field-area-warning-icon" aria-hidden="true"><UseAnimations animation={alertCircle} size={22} strokeColor="#806522" interaction="loop" render={(eventProps, animationProps) => <span {...eventProps} {...animationProps} />} /></span>
+              <AlertDescription>Expenses cannot be edited after saving. Void an incorrect entry and create a replacement to retain its audit history.</AlertDescription>
+            </Alert>
             <div className="dialog-actions">
               <button type="button" className="button-secondary" disabled={saving} onClick={() => setDialogOpen(false)}>Cancel</button>
-              <button type="submit" className="button-primary" disabled={saving}><Plus size={15} /> {saving ? "Saving…" : "Save expense"}</button>
+              <button type="submit" className="button-primary" disabled={saving || !expenseFarm || (form.scope === "crop" && (cropOptionsPending || !expensePlanting))}><Plus size={15} /> {saving ? "Saving…" : "Save expense"}</button>
             </div>
           </form>
         </div>
