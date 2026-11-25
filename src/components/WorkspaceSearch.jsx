@@ -163,7 +163,7 @@ function SearchPanel({ farms, farmsLoading, farmsError, onChoose, onRetryFarms }
   return (
     <Command shouldFilter={false} loop label="Workspace search" className="ifc-workspace-command">
       <div className="ifc-search-heading">
-        <CommandInput autoFocus value={query} onValueChange={setQuery} placeholder="Search pages, farms, fields, crops…" aria-label="Search workspace" />
+        <CommandInput value={query} onValueChange={setQuery} placeholder="Search pages, farms, fields, crops…" aria-label="Search workspace" />
         {query && <button type="button" className="ifc-search-clear" onClick={() => setQuery("")} aria-label="Clear search"><X size={15} /></button>}
         <DialogClose asChild><button type="button" className="ifc-search-escape" aria-label="Close search">Esc</button></DialogClose>
       </div>
@@ -218,10 +218,10 @@ export default function WorkspaceSearch({ farms, farmsLoading, farmsError, onCho
           <Search size={16} aria-hidden="true" /><span>Search workspace…</span><kbd>{shortcut}</kbd>
         </button>
       </DialogTrigger>
-      <DialogContent className="ifc-workspace-search-dialog" showCloseButton={false}>
+      <DialogContent className="ifc-workspace-search-dialog" overlayClassName="ifc-workspace-search-overlay" showCloseButton={false}>
         <DialogTitle className="sr-only">Workspace search</DialogTitle>
         <DialogDescription className="sr-only">Find pages and records across your farms.</DialogDescription>
-        {open && <SearchPanel farms={farms} farmsLoading={farmsLoading} farmsError={farmsError} onRetryFarms={onRetryFarms} onChoose={item => { setOpen(false); onChoose(item); }} />}
+        <SearchPanel farms={farms} farmsLoading={farmsLoading} farmsError={farmsError} onRetryFarms={onRetryFarms} onChoose={item => { setOpen(false); onChoose(item); }} />
       </DialogContent>
     </Dialog>
   );
