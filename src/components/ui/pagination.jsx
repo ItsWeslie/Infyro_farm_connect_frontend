@@ -1,3 +1,4 @@
+import { TooltipTarget } from "./tooltip"
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -61,6 +62,7 @@ function PaginationPrevious({
   ...props
 }) {
   return (
+    <TooltipTarget text="Previous page" disabledReason="No previous page">
     <PaginationLink
       aria-label="Go to previous page"
       size="default"
@@ -70,6 +72,7 @@ function PaginationPrevious({
       <ChevronLeftIcon />
       <span className="hidden sm:block">Previous</span>
     </PaginationLink>
+    </TooltipTarget>
   )
 }
 
@@ -78,6 +81,7 @@ function PaginationNext({
   ...props
 }) {
   return (
+    <TooltipTarget text="Next page" disabledReason="No next page">
     <PaginationLink
       aria-label="Go to next page"
       size="default"
@@ -87,6 +91,7 @@ function PaginationNext({
       <span className="hidden sm:block">Next</span>
       <ChevronRightIcon />
     </PaginationLink>
+    </TooltipTarget>
   )
 }
 
