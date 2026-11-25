@@ -202,22 +202,22 @@ function OverviewPage({ onNavigate, onAdd }) {
         </div>
       ) : (
         <div className="ifc-overview-stats">
-          <article className="ifc-overview-stat surface-card">
+          <article className="ifc-overview-stat surface-card" data-accent="blue">
             <div><span>Fields</span><i><MapPinned size={17} /></i></div>
             <strong>{numberLabel(portfolioCards?.totalFields, 0)}</strong>
             <small>{numberLabel(portfolioCards?.totalFarms, 0)} farms in your portfolio</small>
           </article>
-          <article className="ifc-overview-stat surface-card">
+          <article className="ifc-overview-stat surface-card" data-accent="green">
             <div><span>Active plantings</span><i><Sprout size={17} /></i></div>
             <strong>{numberLabel(portfolioCards?.totalActivePlantings, 0)}</strong>
             <small>{numberLabel(portfolioCards?.totalPlantings, 0)} total plantings across your farms</small>
           </article>
-          <article className="ifc-overview-stat surface-card">
+          <article className="ifc-overview-stat surface-card" data-accent="clay">
             <div><span>Total expenses</span><i><Coins size={17} /></i></div>
             <strong>{currencyLabel(portfolioCards?.totalExpenses)}</strong>
             <small>{currencyLabel(portfolioCards?.totalExpensesCurrentMonth)} this month</small>
           </article>
-          <article className="ifc-overview-stat surface-card">
+          <article className="ifc-overview-stat surface-card" data-accent="gold">
             <div><span>Harvest records</span><i><Wheat size={17} /></i></div>
             <strong>{numberLabel(portfolioCards?.totalHarvestRecords, 0)}</strong>
             <small>{numberLabel(portfolioCards?.totalHarvestCurrentMonth, 0)} recorded this month</small>
