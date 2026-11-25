@@ -1956,3 +1956,15 @@ html[data-ifc-theme="dark"] .workspace-table.expense4-ledger-table thead th:last
 .expense4-ledger .expense4-cancel-button:disabled{opacity:.5;cursor:not-allowed}
 html[data-ifc-theme="dark"] .expense4-ledger .expense4-cancel-button{color:#f0a89d}
 html[data-ifc-theme="dark"] .expense4-ledger .expense4-cancel-button:hover:not(:disabled){background:#432e2a;border-color:#75534b;color:#ffd1c9}
+/* Harvest ledger reuses the expense table, filters and cancellation styling. */
+.harvest4-yield-summary{align-items:center;margin:0 0 16px}
+.harvest4-yield-summary>strong{display:flex;align-items:center;gap:7px}
+.harvest4-yield-summary>strong svg{color:#568052;flex-shrink:0}
+.harvest4-planting-menu{max-width:min(440px,var(--radix-select-content-available-width))}
+.harvest4-planting-menu [data-slot="select-item"]{white-space:normal}
+.harvest4-ledger-table .expense4-notes{max-width:180px;overflow-wrap:anywhere}
+.harvest4-create-dialog .form-label textarea.ifc-shadcn-textarea{box-sizing:border-box;height:76px;min-height:76px;max-height:76px;resize:none;field-sizing:fixed;overflow-y:auto}
+html[data-ifc-theme="dark"] .harvest4-yield-summary{background:#26352a;border-color:rgba(203,226,194,.15)}
+html[data-ifc-theme="dark"] .harvest4-yield-summary>strong,html[data-ifc-theme="dark"] .harvest4-yield-summary>strong svg{color:#c5e0b8}
+html[data-ifc-theme="dark"] .harvest4-yield-summary span{background:#344b35;color:#e5f0dc}
+@media(max-width:650px){.harvest4-yield-summary{align-items:flex-start}}
