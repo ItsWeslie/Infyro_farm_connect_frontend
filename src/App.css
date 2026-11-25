@@ -2190,3 +2190,18 @@ html[data-ifc-theme="dark"] .ifc-refined-shell .ifc-sidebar-toggle:hover{backgro
 .crop3-activity-dialog .ff-field-farm-trigger.crop3-activity-planting-trigger{width:100%;min-height:54px}
 html[data-ifc-theme="dark"] .crop3-activity-ledger .crop3-subtext{color:#b2c0ac}
 @media(max-width:650px){.crop3-activity-ledger .crop3-activity-filter,.crop3-activity-ledger .crop3-activity-status-filter{flex:1 1 130px;max-width:none}}
+
+/* Shared dashboard tooltip: portal layer above menus and dialogs. */
+.ifc-dashboard-tooltip{--ifc-tooltip-bg:#25382d;position:fixed;z-index:10000;max-width:min(240px,calc(100vw - 16px));padding:6px 9px;border-radius:6px;background:var(--ifc-tooltip-bg);color:#fff;font:500 11px/1.45 "DM Sans",sans-serif;box-shadow:0 3px 10px #0002;overflow-wrap:anywhere;pointer-events:none;visibility:hidden}
+.ifc-dashboard-tooltip[data-positioned="true"]{visibility:visible;animation:ifc-tooltip-in .14s ease-out}
+.ifc-tooltip-arrow{position:absolute;width:7px;height:7px;background:var(--ifc-tooltip-bg);transform:rotate(45deg)}
+.ifc-dashboard-tooltip[data-side="top"] .ifc-tooltip-arrow{bottom:-3px;left:calc(var(--ifc-tooltip-arrow) - 3.5px)}
+.ifc-dashboard-tooltip[data-side="bottom"] .ifc-tooltip-arrow{top:-3px;left:calc(var(--ifc-tooltip-arrow) - 3.5px)}
+.ifc-dashboard-tooltip[data-side="right"] .ifc-tooltip-arrow{left:-3px;top:calc(var(--ifc-tooltip-arrow) - 3.5px)}
+.ifc-dashboard-tooltip[data-side="left"] .ifc-tooltip-arrow{right:-3px;top:calc(var(--ifc-tooltip-arrow) - 3.5px)}
+html[data-ifc-theme="dark"] .ifc-dashboard-tooltip{--ifc-tooltip-bg:#dce9d6;color:#25382d}
+.ifc-tooltip-disabled-target{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;max-width:100%;border-radius:6px;cursor:not-allowed}
+.ifc-tooltip-disabled-target>button:disabled{pointer-events:none}
+.ifc-tooltip-disabled-target:focus-visible{outline:2px solid #79a071;outline-offset:2px}
+@keyframes ifc-tooltip-in{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.ifc-dashboard-tooltip[data-positioned="true"]{animation:none}}
