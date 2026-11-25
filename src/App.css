@@ -2051,3 +2051,70 @@ html[data-ifc-theme="dark"] .crop3-field-area-context small,html[data-ifc-theme=
 .crop3-tab-create-action{display:flex;align-items:center;justify-content:flex-end;flex-shrink:0;margin-left:auto}
 .crop3-tab-create-action .button-primary{white-space:nowrap}
 @media(max-width:650px){.crop3-tab-actions-row{gap:8px}.crop3-tab-actions-row .crop3-tabs{width:auto;flex:1 1 auto;overflow-x:auto}.crop3-tab-actions-row .crop3-tabs button{white-space:nowrap}.crop3-tab-create-action{flex:0 0 auto}}
+
+/* Dedicated My Profile page — uses the original Infyro theme. */
+.ifc-profile-grid{display:grid;grid-template-columns:minmax(240px,.85fr) minmax(0,1.55fr);gap:16px;align-items:start}
+.ifc-profile-card,.ifc-profile-information{min-width:0;border:1px solid var(--line);border-radius:13px}
+.ifc-profile-card{overflow:hidden}
+.ifc-profile-cover{position:relative;overflow:hidden;height:100px;background:linear-gradient(120deg,#e7efdf,#d9e8d1)}
+.ifc-profile-cover>span{position:absolute;border:1px solid #ffffff80;border-radius:50%;width:160px;height:160px;right:-20px;top:-72px}
+.ifc-profile-cover>span:nth-child(2){width:210px;height:210px;right:-43px;top:-97px}
+.ifc-profile-cover>span:nth-child(3){width:260px;height:260px;right:-68px;top:-122px}
+.ifc-profile-summary{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:7px;padding:0 20px 20px}
+.ifc-profile-avatar{display:grid;place-items:center;width:76px;height:76px;border-radius:50%;border:4px solid #fff;background:#e3efdc;color:#286044;margin-top:-38px;box-shadow:0 2px 8px #223c2815;font:800 25px Manrope,sans-serif}
+.ifc-profile-summary h2{font:800 20px/1.35 Manrope,sans-serif;color:#2d4233;margin:4px 0 0;overflow-wrap:anywhere;max-width:100%}
+.ifc-profile-summary p{font-size:11px;color:#78877b;margin:0;overflow-wrap:anywhere;max-width:100%}
+.ifc-profile-summary .ifc-live-status{margin-top:3px}
+.ifc-profile-summary-footer{border-top:1px solid #edf0eb;margin:0 18px;padding:15px 0 18px;display:flex;flex-direction:column;gap:12px}
+.ifc-profile-summary-footer>div{display:flex;align-items:center;gap:9px;color:#568052}
+.ifc-profile-summary-footer>div>span{display:grid;gap:4px}
+.ifc-profile-summary-footer strong{font-size:11px;color:#405544}
+.ifc-profile-summary-footer small{font-size:10px;color:#829084}
+.ifc-profile-summary-footer .button-secondary{justify-content:center;width:100%}
+.ifc-profile-information{padding:20px}
+.ifc-profile-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px 12px;margin:19px 0}
+.ifc-profile-detail{min-width:0;display:flex;flex-direction:column;gap:7px}
+.ifc-profile-detail dt{display:flex;align-items:center;gap:6px;color:#758478;font-size:10px;font-weight:600}
+.ifc-profile-detail dt svg{color:#568052;flex-shrink:0}
+.ifc-profile-detail dd{display:flex;align-items:center;min-height:42px;margin:0;padding:10px 11px;border:1px solid #e8ede5;border-radius:8px;background:#f8faf6;color:#35483a;font-size:12px;font-weight:600;overflow-wrap:anywhere;word-break:break-word}
+.ifc-profile-readonly{display:flex;align-items:center;gap:8px;padding:11px 12px;border-radius:8px;background:#f4f7f0;color:#647767;font-size:10px;line-height:1.5}
+.ifc-profile-readonly svg{flex-shrink:0}
+html[data-ifc-theme="dark"] .ifc-profile-card,html[data-ifc-theme="dark"] .ifc-profile-information{border-color:rgba(203,226,194,.14)}
+html[data-ifc-theme="dark"] .ifc-profile-cover{background:linear-gradient(120deg,#304b32,#3c5837)}
+html[data-ifc-theme="dark"] .ifc-profile-cover>span{border-color:#bcd5ad40}
+html[data-ifc-theme="dark"] .ifc-profile-avatar{border-color:#202b24;background:#344b35;color:#d4eac8}
+html[data-ifc-theme="dark"] .ifc-profile-summary-footer{border-color:rgba(203,226,194,.14)}
+html[data-ifc-theme="dark"] .ifc-profile-summary-footer>div,html[data-ifc-theme="dark"] .ifc-profile-detail dt svg{color:#c5e0b8}
+html[data-ifc-theme="dark"] .ifc-profile-detail dt,html[data-ifc-theme="dark"] .ifc-profile-summary-footer small{color:#b2c0ac}
+html[data-ifc-theme="dark"] .ifc-profile-detail dd{background:#26352a;border-color:rgba(203,226,194,.17);color:#e5f0dc}
+html[data-ifc-theme="dark"] .ifc-profile-readonly{background:#1a271e;color:#b2c0ac}
+@media(max-width:850px){.ifc-profile-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:500px){.ifc-profile-information{padding:15px}.ifc-profile-details{grid-template-columns:minmax(0,1fr)}}
+
+/* Account settings: local appearance preference and current-session logout. */
+.ifc-account-settings-page .ifc-settings-grid{align-items:start}
+.ifc-theme-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;border:0;padding:0;margin:16px 0 0;min-width:0}
+.ifc-theme-legend{padding:0 0 9px;font-size:10px;font-weight:700;color:#607363}
+.ifc-theme-option{position:relative;display:grid;gap:8px;padding:8px;border:1px solid #e8ede5;border-radius:9px;background:#fff;cursor:pointer;min-width:0}
+.ifc-theme-option input{position:absolute;opacity:0;width:1px;height:1px}
+.ifc-theme-option:focus-within{outline:2px solid #719b68;outline-offset:2px}
+.ifc-theme-option.is-selected{border-color:#79a071;background:#f5f9f2}
+.ifc-theme-option-preview{display:grid;grid-template-columns:24% 1fr;grid-template-rows:12px 1fr;gap:5px;height:66px;padding:7px;border:1px solid #e2e8de;border-radius:6px;background:#f7f8f4}
+.ifc-theme-option-preview>span{border-radius:3px;background:#fff;border:1px solid #e8ede5}
+.ifc-theme-option-preview>span:first-child{grid-row:1/3;background:#e2edda}
+.ifc-theme-option-preview.dark{background:#17231b;border-color:#3b4b3d}
+.ifc-theme-option-preview.dark>span{background:#26352a;border-color:#394b3b}
+.ifc-theme-option-preview.dark>span:first-child{background:#344b35}
+.ifc-theme-option-label{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:600;color:#526655}
+.ifc-theme-option-check{margin-left:auto;color:#568052}
+.ifc-theme-storage-note{margin:12px 0 0;font-size:10px;line-height:1.5;color:#78877b}
+.ifc-settings-logout-row{border-bottom:0;padding-bottom:0}
+.ifc-account-settings-page .ifc-settings-logout{display:inline-flex;align-items:center;gap:6px;color:#a45d53;white-space:nowrap}
+.ifc-account-settings-page .ifc-settings-logout:hover{background:#fbefeb;border-color:#e6c9c1;color:#954b43}
+html[data-ifc-theme="dark"] .ifc-theme-option{background:#26352a;border-color:rgba(203,226,194,.17)}
+html[data-ifc-theme="dark"] .ifc-theme-option.is-selected{background:#304733;border-color:#83ad76}
+html[data-ifc-theme="dark"] .ifc-theme-legend,html[data-ifc-theme="dark"] .ifc-theme-option-label{color:#d4e4cc}
+html[data-ifc-theme="dark"] .ifc-theme-option-check{color:#c5e0b8}
+html[data-ifc-theme="dark"] .ifc-theme-storage-note{color:#b2c0ac}
+html[data-ifc-theme="dark"] .ifc-account-settings-page .ifc-settings-logout{color:#f0a89d}
+html[data-ifc-theme="dark"] .ifc-account-settings-page .ifc-settings-logout:hover{background:#432e2a;border-color:#75534b;color:#ffd1c9}

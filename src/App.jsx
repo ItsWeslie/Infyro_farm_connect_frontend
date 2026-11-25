@@ -58,6 +58,7 @@ import FarmsFieldsPage from "./components/FarmsFieldsPage";
 import CropManagementPage from "./components/CropManagementPage";
 import ExpenseHarvestPage from "./components/ExpenseHarvestPage";
 import OverviewPage from "./components/OverviewPage";
+import ProfilePage from "./components/ProfilePage";
 import { CalendarPage, NotificationsPage, SettingsPage } from "./components/CalendarNotificationsPage";
 import {
   farmApi,
@@ -115,7 +116,7 @@ function App() {
   const { user, isAuthenticated, loading, logout } = useAuth();
   const [theme, setTheme] = useState(() => {
     try {
-      return localStorage.getItem("ifc-landing-theme") || "light";
+      return localStorage.getItem("ifc-landing-theme") === "dark" ? "dark" : "light";
     } catch {
       return "light";
     }
@@ -482,8 +483,9 @@ function App() {
               <div className="profile-popover">
                 <button
                   onClick={() => {
-                    setActive("Settings");
+                    setActive("My Profile");
                     setProfileOpen(false);
+                    setMobileNav(false);
                   }}
                 >
                   <CircleUserRound size={16} /> My profile
@@ -680,7 +682,8 @@ function App() {
                   <DropdownMenuItem
                     onSelect={() => {
                       setProfileOpen(false);
-                      setActive("Settings");
+                      setActive("My Profile");
+                      setMobileNav(false);
                     }}
                   >
                     <UseAnimations animation={animatedUser} size={16} interaction="hover" className="ifc-account-menu-animated-icon" aria-hidden="true" />
@@ -767,8 +770,10 @@ function App() {
               onNotificationsChanged={refreshNotificationSummary}
               notify={notify}
             />
+          ) : active === "My Profile" ? (
+            <ProfilePage onNavigate={setActive} />
           ) : active === "Settings" ? (
-            <SettingsPage notify={notify} />
+            <SettingsPage theme={theme} setTheme={setTheme} onLogout={handleLogout} />
           ) : (
             <WorkspacePage
               active={active}
