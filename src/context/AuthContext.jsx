@@ -10,6 +10,7 @@ function toUser(response, fallbackEmail = "") {
     name: response?.name || (username.includes("@") ? username.split("@")[0] : username),
     email: response?.email || fallbackEmail || (username.includes("@") ? username : ""),
     role: response?.role || null,
+    createdAt: typeof response?.createdAt === "string" ? response.createdAt : null,
   };
 }
 
