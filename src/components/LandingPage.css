@@ -2609,13 +2609,13 @@ html[data-ifc-theme="light"] .landing-footer-premium .ifc-landing-brand .brand-l
 @media(max-width:360px){.landing-page .ifc-landing-brand .brand-logo-name{font-size:16px}.landing-page .ifc-landing-brand .brand-logo-tagline{font-size:6px;letter-spacing:.3px}}
 
 /* Capsule landing navigation */
-.landing-page .ifc-capsule-header{position:sticky;top:10px;z-index:50;display:block;width:max-content;max-width:calc(100% - 40px);height:auto;min-height:0;margin:12px auto 10px;padding:0;border:0;background:transparent;box-shadow:none;isolation:isolate}
-.landing-page .ifc-capsule-inner{border:1px solid #dce5d4;border-radius:999px;background:#fffef8;box-shadow:0 4px 16px #2543260b;transition:box-shadow .25s}
-.landing-page .ifc-capsule-header.is-scrolled .ifc-capsule-inner{box-shadow:0 7px 24px #25432616;border-color:#ccd9c3}
+.landing-page .ifc-capsule-header{position:fixed;top:12px;inset-inline:0;z-index:50;display:block;width:max-content;max-width:calc(100% - 40px);height:auto;min-height:0;margin:0 auto;padding:0;border:0;background:transparent;box-shadow:none;isolation:isolate}
+.landing-page .ifc-capsule-inner{border:1px solid rgba(255,255,255,.76);border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.25),rgba(255,255,255,0)),rgba(250,249,242,.58);backdrop-filter:blur(18px) saturate(145%);-webkit-backdrop-filter:blur(18px) saturate(145%);box-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 5px 20px rgba(34,72,35,.10);transition:box-shadow .25s}
+.landing-page .ifc-capsule-header.is-scrolled .ifc-capsule-inner{background:linear-gradient(180deg,rgba(255,255,255,.22),transparent),rgba(250,249,242,.88);border-color:rgba(211,224,201,.9);box-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 7px 24px #25432616}
 .landing-page .ifc-capsule-inner{position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;height:64px;min-height:64px;max-height:64px;margin:0;padding:0 18px}
 .ifc-capsule-brand{flex:0 0 auto;display:flex;align-items:center}
 .ifc-capsule-nav{display:flex;align-items:center;justify-content:space-between;flex:1;min-width:0;gap:16px}
-.ifc-capsule-links{display:flex;align-items:center;justify-content:center;gap:3px;width:fit-content;margin:0 auto;padding:4px;border:1px solid #e3eadc;border-radius:999px;background:#f1f5eb}
+.ifc-capsule-links{display:flex;align-items:center;justify-content:center;gap:3px;width:fit-content;margin:0 auto;padding:4px;border:1px solid rgba(186,207,177,.48);border-radius:999px;background:rgba(232,240,222,.55)}
 .ifc-capsule-links>a{display:flex;align-items:center;justify-content:center;min-height:32px;padding:6px 13px;border:1px solid transparent;border-radius:999px;color:#66745f;font:650 12px/1.4 "DM Sans",sans-serif;text-decoration:none;white-space:nowrap;transition:color .18s,background .18s,border-color .18s,box-shadow .18s}
 .ifc-capsule-links>a:hover{background:#e7efdf;color:#224823}
 .ifc-capsule-links>a[aria-current="location"]{background:#fff;border-color:#dbe6d3;color:#286044;box-shadow:0 1px 4px #2248230d}
@@ -2631,9 +2631,9 @@ html[data-ifc-theme="dark"] .landing-page .ifc-capsule-theme-icon:hover{color:#e
 .ifc-capsule-header :is(a,button):focus-visible{outline:2px solid #79a071;outline-offset:3px}
 .landing-page :is(#features,#why-infyro,#how-it-works,#contact){scroll-margin-top:96px}
 html:has(.ifc-capsule-header){scroll-behavior:smooth}
-html[data-ifc-theme="dark"] .landing-page .ifc-capsule-inner{background:#202d23;border-color:#3b503b;box-shadow:0 4px 16px #0002}
-html[data-ifc-theme="dark"] .landing-page .ifc-capsule-header.is-scrolled .ifc-capsule-inner{box-shadow:0 8px 24px #0004;border-color:#486047}
-html[data-ifc-theme="dark"] .ifc-capsule-links{background:#172219;border-color:#354a36}
+html[data-ifc-theme="dark"] .landing-page .ifc-capsule-inner{background:linear-gradient(180deg,rgba(212,236,198,.10),transparent),rgba(25,39,29,.57);border-color:rgba(178,208,165,.30);box-shadow:inset 0 1px 0 rgba(215,239,204,.14),0 5px 20px #0003}
+html[data-ifc-theme="dark"] .landing-page .ifc-capsule-header.is-scrolled .ifc-capsule-inner{background:linear-gradient(180deg,rgba(212,236,198,.08),transparent),rgba(25,39,29,.90);border-color:rgba(115,151,110,.58);box-shadow:inset 0 1px 0 rgba(215,239,204,.14),0 8px 24px #0004}
+html[data-ifc-theme="dark"] .ifc-capsule-links{background:rgba(18,30,20,.48);border-color:rgba(115,151,110,.32)}
 html[data-ifc-theme="dark"] .ifc-capsule-links>a{color:#b2c0ac}
 html[data-ifc-theme="dark"] .ifc-capsule-links>a:hover{background:#283b2a;color:#e5f0dc}
 html[data-ifc-theme="dark"] .ifc-capsule-links>a[aria-current="location"]{background:#344b35;border-color:#486047;color:#c5e0b8}
@@ -2649,7 +2649,7 @@ html[data-ifc-theme="dark"] .landing-page .ifc-capsule-signin:hover{background:#
   .ifc-capsule-links{position:absolute;left:50%;transform:translateX(-50%);margin:0}
 }
 @media(max-width:1024px){
-  .landing-page .ifc-capsule-header{width:min(560px,calc(100% - 28px));max-width:calc(100% - 28px);top:8px;margin:10px auto 8px}
+  .landing-page .ifc-capsule-header{width:min(560px,calc(100% - 28px));max-width:calc(100% - 28px);top:10px;margin:0 auto}
   .landing-page .ifc-capsule-inner{height:62px;min-height:62px;max-height:62px;padding:0 14px;gap:10px}
   .ifc-capsule-mobile-controls{display:flex;align-items:center;gap:2px;margin-left:auto}
   .landing-page .ifc-capsule-mobile-controls .ifc-capsule-theme-icon{flex:0 0 44px;width:44px;height:44px}
@@ -2670,3 +2670,12 @@ html[data-ifc-theme="dark"] .landing-page .ifc-capsule-signin:hover{background:#
 }
 @media(max-width:360px){.landing-page .ifc-capsule-inner{padding:0 10px}}
 @media(prefers-reduced-motion:reduce){html:has(.ifc-capsule-header){scroll-behavior:auto}.ifc-capsule-inner,.ifc-capsule-nav,.ifc-capsule-links>a,.ifc-capsule-menu-toggle,.ifc-capsule-theme-icon,.ifc-capsule-signin{transition:none!important}}
+
+/* Floating navigation does not reserve a separate header strip.
+   Only the hero content receives clearance; its artwork starts at page top. */
+.landing-page > main > .landing-hero > .landing-hero-inner{padding-top:clamp(108px,10vw,142px)}
+@media(max-width:900px){.landing-page > main > .landing-hero > .landing-hero-inner{padding-top:108px}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .landing-page .ifc-capsule-inner{background:rgba(250,249,242,.94)}
+  html[data-ifc-theme="dark"] .landing-page .ifc-capsule-inner{background:rgba(25,39,29,.94)}
+}
