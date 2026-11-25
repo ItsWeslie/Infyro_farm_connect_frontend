@@ -2623,10 +2623,6 @@ html[data-ifc-theme="light"] .landing-footer-premium .ifc-landing-brand .brand-l
 .ifc-capsule-appearance>span{display:none}
 .landing-page .ifc-capsule-signin{min-height:36px;padding:0 12px;border:1px solid #d9e3d0;border-radius:999px;background:transparent;color:#31563a;white-space:nowrap;cursor:pointer;font:700 12px/1.4 "DM Sans",sans-serif;transition:background .18s,border-color .18s}
 .landing-page .ifc-capsule-signin:hover{background:#edf4e8;border-color:#b8cdb0}
-.landing-page .ifc-capsule-start.landing-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:0 14px;border:1px solid #286044;border-radius:999px;background:#286044;color:#fff;white-space:nowrap;font:700 12px/1.4 "DM Sans",sans-serif;box-shadow:none;transform:none;transition:background .18s,border-color .18s}
-.landing-page .ifc-capsule-start.landing-button:hover{background:#204d37;border-color:#204d37;transform:none}
-.ifc-capsule-start>span{display:inline-flex;flex-shrink:0;align-items:center;justify-content:center}
-.ifc-capsule-start svg [stroke]:not([stroke="none"]){stroke:currentColor}
 .landing-page .ifc-capsule-menu-toggle{display:none}
 .ifc-capsule-header :is(a,button):focus-visible{outline:2px solid #79a071;outline-offset:3px}
 .landing-page :is(#features,#why-infyro,#how-it-works,#contact){scroll-margin-top:96px}
@@ -2639,9 +2635,11 @@ html[data-ifc-theme="dark"] .ifc-capsule-links>a:hover{background:#283b2a;color:
 html[data-ifc-theme="dark"] .ifc-capsule-links>a[aria-current="location"]{background:#344b35;border-color:#486047;color:#c5e0b8}
 html[data-ifc-theme="dark"] .landing-page .ifc-capsule-signin{border-color:#405642;color:#d4e4cc}
 html[data-ifc-theme="dark"] .landing-page .ifc-capsule-signin:hover{background:#344b35;border-color:#59745b}
-html[data-ifc-theme="dark"] .landing-page .ifc-capsule-start.landing-button{background:#c5e0b8;border-color:#c5e0b8;color:#224823}
-html[data-ifc-theme="dark"] .landing-page .ifc-capsule-start.landing-button:hover{background:#d7ebcb;border-color:#d7ebcb}
-@media(max-width:1100px) and (min-width:981px){.landing-page .ifc-capsule-inner{gap:10px;padding:0 14px}.ifc-capsule-nav{gap:9px}.ifc-capsule-links>a{padding:6px 9px;font-size:11px}.ifc-capsule-actions{gap:8px}.landing-page .ifc-capsule-signin{padding:0 9px}.landing-page .ifc-capsule-start.landing-button{padding:0 10px}}
+@media(max-width:1100px) and (min-width:981px){.landing-page .ifc-capsule-inner{gap:10px;padding:0 14px}.ifc-capsule-nav{gap:9px}.ifc-capsule-links>a{padding:6px 9px;font-size:11px}.ifc-capsule-actions{gap:8px}.landing-page .ifc-capsule-signin{padding:0 9px}}
+@media(min-width:981px){
+  .ifc-capsule-nav{justify-content:flex-end}
+  .ifc-capsule-links{position:absolute;left:50%;transform:translateX(-50%);margin:0}
+}
 @media(max-width:980px){
   .landing-page .ifc-capsule-header{width:calc(100% - 28px);top:8px;margin:10px auto 8px;border-radius:999px}
   .landing-page .ifc-capsule-inner{height:62px;min-height:62px;padding:0 14px;gap:10px}
@@ -2652,10 +2650,10 @@ html[data-ifc-theme="dark"] .landing-page .ifc-capsule-start.landing-button:hove
   .ifc-capsule-nav.is-open{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0) scale(1);transition-delay:0s}
   .ifc-capsule-links{flex-direction:column;align-items:stretch;width:100%;margin:0;border-radius:13px;padding:4px}
   .ifc-capsule-links>a{justify-content:flex-start;min-height:39px;padding:9px 13px;border-radius:9px;font-size:12px}
-  .ifc-capsule-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .ifc-capsule-actions{display:grid;grid-template-columns:1fr;gap:10px}
   .ifc-capsule-appearance{grid-column:1/-1;padding:3px 4px 10px;border-bottom:1px solid #e3eadc;color:#66745f;font-size:12px;font-weight:650}
   .ifc-capsule-appearance>span{display:block}
-  .landing-page .ifc-capsule-signin,.landing-page .ifc-capsule-start.landing-button{min-height:40px}
+  .landing-page .ifc-capsule-signin{min-height:40px}
   html[data-ifc-theme="dark"] .ifc-capsule-nav{background:#202d23;border-color:#405642;box-shadow:0 12px 30px #0004}
   html[data-ifc-theme="dark"] .landing-page .ifc-capsule-menu-toggle{background:#26352a;border-color:#405642;color:#c5e0b8}
   html[data-ifc-theme="dark"] .ifc-capsule-appearance{color:#b2c0ac;border-color:#405642}
