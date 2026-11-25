@@ -1883,17 +1883,17 @@ html[data-ifc-theme="dark"] .ifc-shadcn-calendar .rdp-selected .rdp-day_button:h
 .ifc-shadcn-textarea:focus-visible{border-color:#8aab8c;box-shadow:0 0 0 3px rgba(112,151,117,.12);outline:none}
 .ifc-shadcn-textarea:disabled{opacity:.55;cursor:not-allowed}
 .crop3-type-dialog .form-label{min-width:0;margin-top:14px}
-.crop3-type-dialog .form-label .ifc-shadcn-textarea{min-height:76px;resize:none;overflow-y:auto}
+.crop3-type-dialog .form-label .ifc-shadcn-textarea{height:76px;min-height:76px;max-height:76px;resize:none;field-sizing:fixed;overflow-y:auto}
 html[data-ifc-theme="dark"] .crop3-type-dialog .form-label .ifc-shadcn-textarea,html[data-ifc-theme="dark"] .ifc-shadcn-textarea{background:#26352a;color:#e5f0dc;border-color:rgba(203,226,194,.15)}
 html[data-ifc-theme="dark"] .ifc-shadcn-textarea::placeholder{color:#b3c1ad}
 /* Activity journal dialog: reuse the crop form spacing and compact controls. */
-.crop3-activity-dialog{width:min(100%,400px);padding:19px}
+.crop3-activity-dialog{width:min(100%,390px);padding:18px}
 .crop3-activity-dialog .dialog-heading{margin-bottom:16px}
 .crop3-activity-dialog .dialog-actions{margin-top:16px}
 .crop3-activity-dialog .form-label{min-width:0;margin-top:10px;gap:6px}
 .crop3-activity-dialog .form-label .ifc-shadcn-input,.crop3-activity-dialog .ifc-form-select{height:38px;min-height:38px}
 .crop3-activity-dialog .crop3-form-grid{margin-top:10px}
 .crop3-activity-dialog .crop3-form-grid .form-label{margin-top:0}
-.crop3-activity-dialog .form-label .ifc-shadcn-textarea{height:54px;min-height:54px;padding:8px 10px;resize:none;overflow-y:auto}
+.crop3-activity-dialog .form-label .ifc-shadcn-textarea{height:52px;min-height:52px;max-height:52px;padding:8px 10px;resize:none;field-sizing:fixed;overflow-y:auto}
 html[data-ifc-theme="dark"] .crop3-activity-dialog .form-label .ifc-shadcn-textarea{background:#26352a;color:#e5f0dc;border-color:rgba(203,226,194,.15)}
 @media(max-width:520px){.crop3-activity-dialog{padding:16px}.crop3-activity-dialog .crop3-form-grid .form-label+.form-label{margin-top:10px}}
