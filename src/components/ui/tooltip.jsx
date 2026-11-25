@@ -6,6 +6,8 @@ import { createPortal } from "react-dom";
 const ICON_TARGETS = [
   ".app-shell button.icon-button[aria-label]",
   ".app-shell button.ff-icon-button[aria-label]",
+  ".app-shell button.crop3-action-select[aria-label]",
+  ".app-shell button.ff-action-button[aria-label^=\"View details\"]",
   ".app-shell button.ifc-notification-close[aria-label]",
   ".app-shell button.ifc-inbox-read-button[aria-label]",
   ".app-shell button.top-profile[aria-label]",
@@ -23,7 +25,7 @@ const ID = "ifc-dashboard-tooltip";
 
 function resolveTarget(node) {
   if (!(node instanceof Element)) return null;
-  const target = node.closest(SELECTOR);
+  const target = node.closest(".ifc-tooltip-disabled-target") || node.closest(SELECTOR);
   if (!target || target.closest("[inert]")) return null;
   if (target.matches(".nav-item") && (!target.closest(".sidebar-collapsed") || !window.matchMedia("(min-width: 901px)").matches)) return null;
   if (target.matches(":disabled") || target.getAttribute("aria-expanded") === "true" && !target.matches(".ifc-sidebar-toggle")) return null;
