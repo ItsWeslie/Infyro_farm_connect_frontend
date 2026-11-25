@@ -116,10 +116,10 @@ function Stat({ label, value, detail, icon: Icon }) {
   );
 }
 
-function RecordStatus({ voided }) {
+function RecordStatus({ voided, inactiveLabel = "Voided" }) {
   return (
     <span className={"status-pill " + (voided ? "status-planned" : "status-growing")}>
-      <i />{voided ? "Voided" : "Active"}
+      <i />{voided ? inactiveLabel : "Active"}
     </span>
   );
 }
@@ -350,17 +350,17 @@ function ExpensePage({
 
   async function voidExpense(expense) {
     if (expense.voided) return;
-    const confirmed = await confirmDialog({ title: "Void this expense?", message: "This expense will be marked as voided.", details: "It will remain in audit history and will no longer count toward active expense totals.", confirmLabel: "Void expense", tone: "warning" });
+    const confirmed = await confirmDialog({ title: "Cancel this expense?", message: "This expense will be marked as cancelled.", details: "It will remain in audit history and will no longer count toward active expense totals.", confirmLabel: "Cancel expense", tone: "warning" });
     if (!confirmed) return;
     setVoidingId(expense.id);
     setPageError("");
     try {
       await expenseApi.void(farmId, expense.id);
       setExpenses((current) => current.map((item) => item.id === expense.id ? { ...item, voided: true } : item));
-      notify("Expense voided; the audit record was retained.");
+      notify("Expense cancelled; the audit record was retained.");
     } catch (error) {
-      notify(error.message || "Unable to void this expense.", "error");
-      setPageError(error.message || "Unable to void this expense.");
+      notify(error.message || "Unable to cancel this expense.", "error");
+      setPageError(error.message || "Unable to cancel this expense.");
     } finally {
       setVoidingId(null);
     }
@@ -383,9 +383,9 @@ function ExpensePage({
       </div>
 
       <div className="workspace-stats">
-        <Stat label="Active expenses" value={activeExpenses.length} detail="not voided" icon={ClipboardList} />
-        <Stat label="Active spend" value={amountLabel(totalActive)} detail="excludes voided entries" icon={Coins} />
-        <Stat label="Voided entries" value={expenses.filter((item) => item.voided).length} detail="retained for audit" icon={CheckCircle2} />
+        <Stat label="Active expenses" value={activeExpenses.length} detail="not cancelled" icon={ClipboardList} />
+        <Stat label="Active spend" value={amountLabel(totalActive)} detail="excludes cancelled entries" icon={Coins} />
+        <Stat label="Cancelled entries" value={expenses.filter((item) => item.voided).length} detail="retained for audit" icon={CheckCircle2} />
         <Stat label="Crop-linked" value={expenses.filter((item) => !item.voided && item.cropPlantingId).length} detail="active expenses linked to plantings" icon={Leaf} />
       </div>
 
@@ -405,7 +405,7 @@ function ExpensePage({
           <label className="workspace-filter">
             <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
               <option value="ACTIVE">Active entries</option>
-              <option value="VOIDED">Voided entries</option>
+              <option value="VOIDED">Cancelled entries</option>
               <option value="ALL">All entries</option>
             </select>
           </label>
@@ -439,13 +439,13 @@ function ExpensePage({
                   return (
                     <tr key={expense.id} className={expense.voided ? "expense4-voided" : ""}>
                       <td>{dateLabel(expense.expenseDate)}</td>
-                      <td><strong className="workspace-cell-title">{expense.description}</strong>{expense.voided && <small className="expense4-subtext">{expense.voidReason || "Voided entry"}</small>}</td>
+                      <td><strong className="workspace-cell-title">{expense.description}</strong>{expense.voided && <small className="expense4-subtext">{expense.voidReason || "Cancelled entry"}</small>}</td>
                       <td>{humanize(expense.category)}</td>
                       <td>{planting ? <>{planting.cropTypeName}<small className="expense4-subtext">{field?.fieldName || "Field"}</small></> : "Farm-wide"}</td>
                       <td className="expense4-amount">{amountLabel(expense.amount)}</td>
-                      <td><RecordStatus voided={expense.voided} /></td>
+                      <td><RecordStatus voided={expense.voided} inactiveLabel="Cancelled" /></td>
                       <td>
-                        <button type="button" className="ff-icon-button ff-danger" aria-label={"Void expense " + expense.id} disabled={expense.voided || voidingId === expense.id} onClick={() => voidExpense(expense)}>
+                        <button type="button" className="ff-icon-button ff-danger" aria-label={"Cancel expense " + expense.id} disabled={expense.voided || voidingId === expense.id} onClick={() => voidExpense(expense)}>
                           <Ban size={14} />
                         </button>
                       </td>
@@ -529,7 +529,7 @@ function ExpensePage({
             </div>
             <Alert className="expense4-audit-note" role="note">
               <span className="ff-field-area-warning-icon" aria-hidden="true"><UseAnimations animation={alertCircle} size={22} strokeColor="#806522" interaction="loop" render={(eventProps, animationProps) => <span {...eventProps} {...animationProps} />} /></span>
-              <AlertDescription>Expenses cannot be edited after saving. Void an incorrect entry and create a replacement to retain its audit history.</AlertDescription>
+              <AlertDescription>Expenses cannot be edited after saving. Cancel an incorrect entry and create a replacement to retain its audit history.</AlertDescription>
             </Alert>
             <div className="dialog-actions">
               <button type="button" className="button-secondary" disabled={saving} onClick={() => setDialogOpen(false)}>Cancel</button>
