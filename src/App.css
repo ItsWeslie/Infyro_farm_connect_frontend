@@ -2370,3 +2370,25 @@ html[data-ifc-theme="dark"] .ifc-auth-error [data-slot="alert-title"]{color:#ffd
 html[data-ifc-theme="dark"] .ifc-auth-footer{border-color:#405642}
 @media(max-width:420px){.ifc-auth-dialog.ifc-shadcn-dialog-content{--ifc-auth-top:16px;padding:19px}.ifc-auth-heading [data-slot="dialog-title"]{font-size:21px}}
 @media(prefers-reduced-motion:reduce){.ifc-auth-dialog[data-state],.ifc-auth-overlay[data-state],.ifc-auth-heading,.ifc-auth-tab-content[data-state="active"],.ifc-auth-eye,.ifc-auth-spinner{animation:none}.ifc-auth-input-wrap,.ifc-auth-requirements-meter i{transition:none}}
+
+/* Centered authentication and compact registration. */
+.ifc-auth-dialog.ifc-shadcn-dialog-content{top:50%;transform:translate(-50%,-50%);transform-origin:center;max-height:calc(100vh - 28px);max-height:calc(100dvh - 28px)}
+@keyframes ifc-auth-enter{from{opacity:0;transform:translate3d(-50%,calc(-50% + 6px),0) scale(.985)}to{opacity:1;transform:translate3d(-50%,-50%,0) scale(1)}}
+@keyframes ifc-auth-exit{from{opacity:1;transform:translate3d(-50%,-50%,0)}to{opacity:0;transform:translate3d(-50%,calc(-50% + 4px),0) scale(.99)}}
+.ifc-auth-dialog.ifc-shadcn-dialog-content:has(#ifc-auth-name){width:min(385px,calc(100% - 28px));padding:18px 21px}
+.ifc-auth-dialog:has(#ifc-auth-name) .ifc-auth-brand-row{margin-bottom:12px}
+.ifc-auth-dialog:has(#ifc-auth-name) .ifc-auth-heading{margin-bottom:11px}
+.ifc-auth-dialog:has(#ifc-auth-name) .ifc-auth-heading [data-slot="dialog-title"]{font-size:22px}
+.ifc-auth-dialog:has(#ifc-auth-name) .ifc-auth-tabs-list{margin-bottom:11px;min-height:36px}
+.ifc-auth-dialog:has(#ifc-auth-name) .ifc-auth-form{gap:9px}
+.ifc-auth-dialog:has(#ifc-auth-name) .ifc-auth-field{gap:5px}
+.ifc-auth-dialog:has(#ifc-auth-name) .ifc-auth-input-wrap{height:38px}
+.ifc-auth-dialog:has(#ifc-auth-name) .ifc-auth-input-wrap .ifc-shadcn-input{height:36px}
+.ifc-auth-dialog:has(#ifc-auth-name) .ifc-auth-requirements{padding:8px 10px}
+.ifc-auth-dialog:has(#ifc-auth-name) .ifc-auth-requirements-head{margin-bottom:5px}
+.ifc-auth-dialog:has(#ifc-auth-name) .ifc-auth-requirements-meter{margin-bottom:6px}
+.ifc-auth-dialog:has(#ifc-auth-name) .ifc-auth-requirements ul{gap:3px}
+.ifc-auth-dialog:has(#ifc-auth-name) .ifc-auth-requirements p{margin-top:6px}
+.ifc-auth-dialog:has(#ifc-auth-name) .ifc-auth-submit{min-height:40px}
+.ifc-auth-dialog:has(#ifc-auth-name) .ifc-auth-footer{margin-top:12px;padding-top:10px}
+@media(max-width:420px){.ifc-auth-dialog.ifc-shadcn-dialog-content:has(#ifc-auth-name){padding:16px 18px}.ifc-auth-dialog:has(#ifc-auth-name) .ifc-auth-heading [data-slot="dialog-title"]{font-size:21px}}
