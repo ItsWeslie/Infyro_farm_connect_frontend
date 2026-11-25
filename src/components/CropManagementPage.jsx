@@ -173,6 +173,8 @@ function FarmFormSelect({ id, farms, value, onChange, disabled }) {
 
 export default function CropManagementPage({
   active,
+  searchTarget,
+  onClearSearchTarget,
   farms,
   farmsLoading = false,
   farmsError = "",
@@ -190,7 +192,7 @@ export default function CropManagementPage({
   const [reloadKey, setReloadKey] = useState(0);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
-  const [section, setSection] = useState("plantings");
+  const [section, setSection] = useState(searchTarget?.kind === "type" ? "types" : "plantings");
   const [cropPage, setCropPage] = useState(1);
 
   const [typeDialogOpen, setTypeDialogOpen] = useState(false);
@@ -413,7 +415,7 @@ export default function CropManagementPage({
     setFarmFilter("ALL");
     setActivityPlantingFilter("ALL");
     setActivityDialogOpen(false);
-    if (active === "Crop management") setSection("plantings");
+    if (active === "Crop management") setSection(searchTarget?.kind === "type" ? "types" : "plantings");
     setTypeDialogOpen(false);
     setPlantingDialogOpen(false);
   }, [active]);
@@ -429,13 +431,13 @@ export default function CropManagementPage({
         planting.status,
         planting.plantedOn,
       ].join(" ").toLowerCase().includes(normalized);
-      return matchesSearch && (currentFarmFilter === "ALL" || planting.farmId === currentFarmFilter) && (statusFilter === "ALL" || planting.status === statusFilter);
+      return (!searchTarget || searchTarget.kind !== "planting" || String(planting.id) === searchTarget.id) && matchesSearch && (currentFarmFilter === "ALL" || planting.farmId === currentFarmFilter) && (statusFilter === "ALL" || planting.status === statusFilter);
     });
-  }, [farmPlantings, fieldById, search, statusFilter, farmNames, currentFarmFilter]);
+  }, [farmPlantings, fieldById, search, statusFilter, farmNames, currentFarmFilter, searchTarget]);
 
   const filteredTypes = useMemo(() => cropTypes.filter((cropType) => (
-    (currentFarmFilter === "ALL" || cropType.farmId === currentFarmFilter) && [cropType.name, cropType.description, farmNames.get(cropType.farmId)].join(" ").toLowerCase().includes(search.toLowerCase())
-  )), [cropTypes, search, farmNames, currentFarmFilter]);
+    (!searchTarget || searchTarget.kind !== "type" || (String(cropType.id) === searchTarget.id && cropType.farmId === searchTarget.farmId)) && (currentFarmFilter === "ALL" || cropType.farmId === currentFarmFilter) && [cropType.name, cropType.description, farmNames.get(cropType.farmId)].join(" ").toLowerCase().includes(search.toLowerCase())
+  )), [cropTypes, search, farmNames, currentFarmFilter, searchTarget]);
 
   const isCropLibrary = section === "types";
   const filteredCropCount = isCropLibrary ? filteredTypes.length : filteredPlantings.length;
@@ -450,12 +452,12 @@ export default function CropManagementPage({
     const query = search.trim().toLowerCase();
     return activities.filter((item) => {
       const option = activityOptionById.get(String(item.cropPlantingId));
-      return (currentFarmFilter === "ALL" || item.farmId === currentFarmFilter)
+      return (!searchTarget || searchTarget.kind !== "activity" || (String(item.id) === searchTarget.id && String(item.cropPlantingId) === searchTarget.plantingId)) && (currentFarmFilter === "ALL" || item.farmId === currentFarmFilter)
         && (currentActivityPlantingFilter === "ALL" || String(item.cropPlantingId) === currentActivityPlantingFilter)
         && (statusFilter === "ALL" || item.status === statusFilter)
         && [item.dailyActivity, item.cropStage, humanize(item.cropStage), item.status, humanize(item.status), item.dayNumber, item.createdAt, item.notes, item.nutritionAndWaterManagement, item.pestAndDiseaseControl, option?.cropName, option?.farmName, option?.fieldName].join(" ").toLowerCase().includes(query);
     });
-  }, [activities, activityLogsPending, activityOptionById, currentFarmFilter, currentActivityPlantingFilter, statusFilter, search]);
+  }, [activities, activityLogsPending, activityOptionById, currentFarmFilter, currentActivityPlantingFilter, statusFilter, search, searchTarget]);
   const activityPageCount = Math.max(1, Math.ceil(filteredActivities.length / CROPS_PER_PAGE));
   const currentActivityPage = Math.min(activityPage, activityPageCount);
   const activityPageStart = (currentActivityPage - 1) * CROPS_PER_PAGE;
@@ -842,10 +844,10 @@ export default function CropManagementPage({
       {!isActivities && (
         <div className="crop3-tab-actions-row">
           <div className="crop3-tabs" role="tablist" aria-label="Crop management sections">
-            <button type="button" role="tab" aria-selected={!isTypes} className={!isTypes ? "selected" : ""} onClick={() => { setSection("plantings"); setSearch(""); }}>
+            <button type="button" role="tab" aria-selected={!isTypes} className={!isTypes ? "selected" : ""} onClick={() => { onClearSearchTarget?.(); setSection("plantings"); setSearch(""); }}>
               <Sprout size={14} /> Crop plantings
             </button>
-            <button type="button" role="tab" aria-selected={isTypes} className={isTypes ? "selected" : ""} onClick={() => { setSection("types"); setSearch(""); }}>
+            <button type="button" role="tab" aria-selected={isTypes} className={isTypes ? "selected" : ""} onClick={() => { onClearSearchTarget?.(); setSection("types"); setSearch(""); }}>
               <Leaf size={14} /> Crop types
             </button>
             <span className="crop3-tab-hint">All farms</span>
