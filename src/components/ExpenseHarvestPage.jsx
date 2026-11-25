@@ -9,6 +9,7 @@ import {
   Coins,
   Leaf,
   Plus,
+  Receipt,
   Search,
   Sprout,
   Tractor,
@@ -28,10 +29,21 @@ import { DatePicker } from "./ui/calendar";
 import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "./ui/select";
 import { Alert, AlertDescription } from "./ui/alert";
 import ActivityPlantingSelector from "./ActivityPlantingSelector";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "./ui/pagination";
 import { useConfirmDialog } from "../context/ConfirmDialogContext";
 
 const CATEGORIES = Object.values(ExpenseCategory);
 const UNITS = Object.values(HarvestUnit);
+const EXPENSES_PER_PAGE = 5;
+
+function expensePageItems(page, totalPages) {
+  const pages = [...new Set([1, page - 1, page, page + 1, totalPages])]
+    .filter((value) => value >= 1 && value <= totalPages)
+    .sort((a, b) => a - b);
+  return pages.flatMap((value, index) =>
+    index > 0 && value - pages[index - 1] > 1 ? [`gap-${value}`, value] : [value]
+  );
+}
 
 const EMPTY_EXPENSE = {
   scope: "farm",
@@ -133,90 +145,62 @@ function plantingLabel(planting, fieldById) {
   ].filter(Boolean).join(" · ");
 }
 
-function ExpensePage({
-  farmId,
-  farmName,
-  farms,
-  notify,
-}) {
+function ExpensePage({ farms, onNavigate, notify }) {
   const confirmDialog = useConfirmDialog();
-  const [fields, setFields] = useState([]);
-  const [plantings, setPlantings] = useState([]);
-  const [expenses, setExpenses] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [ledger, setLedger] = useState({ key: null, records: [], failedFarms: [] });
+  const [expensePlantingData, setExpensePlantingData] = useState({ key: null, entries: [], error: "" });
   const [pageError, setPageError] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ACTIVE");
   const [categoryFilter, setCategoryFilter] = useState("ALL");
+  const [farmFilter, setFarmFilter] = useState("ALL");
+  const [scopeFilter, setScopeFilter] = useState("ALL");
+  const [page, setPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [form, setForm] = useState(EMPTY_EXPENSE);
   const [formError, setFormError] = useState("");
   const [saving, setSaving] = useState(false);
   const [voidingId, setVoidingId] = useState(null);
   const [reloadKey, setReloadKey] = useState(0);
-  const [expensePlantingData, setExpensePlantingData] = useState({ key: null, entries: [], error: "" });
   const ownedFarmsKey = JSON.stringify([...new Set(farms.filter((farm) => farm.id != null).map((farm) => String(farm.id)))].sort());
-  const cropOptionsPending = dialogOpen && form.scope === "crop" && expensePlantingData.key !== ownedFarmsKey;
+  const requestKey = JSON.stringify([ownedFarmsKey, reloadKey]);
+  const farmNames = useMemo(() => new Map(farms.map((farm) => [String(farm.id), farm.name || "Unnamed farm"])), [farms]);
+  const currentFarmFilter = farmFilter === "ALL" || farmNames.has(farmFilter) ? farmFilter : "ALL";
+  const loading = ledger.key !== requestKey;
+  const expenses = useMemo(() => ledger.key === requestKey ? ledger.records : [], [ledger, requestKey]);
+  const failedFarms = ledger.key === requestKey ? ledger.failedFarms : [];
+  const cropOptionsPending = expensePlantingData.key !== requestKey;
 
+  // Every farm is queried independently so a failed request cannot hide another farm's records.
   useEffect(() => {
     let current = true;
-    if (!farmId) {
-      setFields([]);
-      setPlantings([]);
-      setExpenses([]);
-      setLoading(false);
-      setPageError("");
-      return undefined;
-    }
-
-    setLoading(true);
+    const ids = JSON.parse(ownedFarmsKey);
     setPageError("");
-    Promise.all([
-      fieldApi.getByFarm(farmId),
-      cropPlantingApi.getAll(),
-      expenseApi.getByFarm(farmId),
-    ])
-      .then(([fieldResponse, plantingResponse, expenseResponse]) => {
-        if (!current) return;
-        setFields(toList(fieldResponse));
-        setPlantings(toList(plantingResponse));
-        setExpenses(toList(expenseResponse));
-      })
-      .catch((error) => {
-        if (!current) return;
-        setFields([]);
-        setPlantings([]);
-        setExpenses([]);
-        setPageError(error.message || "Unable to load expense records.");
-        notify(error.message || "Unable to load expense records.", "error");
-      })
-      .finally(() => {
-        if (current) setLoading(false);
+    Promise.allSettled(ids.map((id) => expenseApi.getByFarm(id))).then((results) => {
+      if (!current) return;
+      const records = [];
+      const failedFarms = [];
+      results.forEach((result, index) => {
+        const ownerFarmId = ids[index];
+        if (result.status === "fulfilled") {
+          toList(result.value).forEach((expense) => {
+            if (expense.id != null) records.push({ ...expense, farmId: ownerFarmId });
+          });
+        } else {
+          failedFarms.push(ownerFarmId);
+        }
       });
-
+      setLedger({ key: requestKey, records, failedFarms });
+    });
     return () => { current = false; };
-  }, [farmId, notify, reloadKey]);
+  }, [ownedFarmsKey, requestKey]);
 
-  const fieldById = useMemo(
-    () => new Map(fields.map((field) => [String(field.id), field])),
-    [fields],
-  );
-  const farmPlantings = useMemo(
-    () => plantings.filter((planting) => fieldById.has(String(planting.fieldId))),
-    [plantings, fieldById],
-  );
-  const plantingById = useMemo(
-    () => new Map(farmPlantings.map((planting) => [String(planting.id), planting])),
-    [farmPlantings],
-  );
-
-  // Load planting contexts across owned farms only when a crop-specific expense is being entered.
+  // Share the cross-farm planting contexts between the ledger and the add expense dialog.
   useEffect(() => {
-    if (!dialogOpen || form.scope !== "crop") return undefined;
     let current = true;
     const ids = JSON.parse(ownedFarmsKey);
     if (!ids.length) {
-      setExpensePlantingData({ key: ownedFarmsKey, entries: [], error: "" });
+      setExpensePlantingData({ key: requestKey, entries: [], error: "" });
       return undefined;
     }
     Promise.all([
@@ -235,16 +219,15 @@ function ExpensePage({
         return planting.id != null && context ? [{ planting, ...context }] : [];
       });
       const error = fieldResults.some((result) => result.status === "rejected") ? "Some farms' plantings could not be loaded. Only available plantings are shown." : "";
-      setExpensePlantingData({ key: ownedFarmsKey, entries, error });
+      setExpensePlantingData({ key: requestKey, entries, error });
     }).catch((error) => {
-      if (current) setExpensePlantingData({ key: ownedFarmsKey, entries: [], error: error.message || "Unable to load crop plantings." });
+      if (current) setExpensePlantingData({ key: requestKey, entries: [], error: error.message || "Unable to load crop plantings." });
     });
     return () => { current = false; };
-  }, [dialogOpen, form.scope, ownedFarmsKey]);
+  }, [ownedFarmsKey, requestKey]);
 
   const expensePlantingOptions = useMemo(() => {
-    if (expensePlantingData.key !== ownedFarmsKey) return [];
-    const farmNames = new Map(farms.map((farm) => [String(farm.id), farm.name]));
+    if (expensePlantingData.key !== requestKey) return [];
     return expensePlantingData.entries.map(({ planting, farmId: ownerFarmId, field }) => ({
       id: String(planting.id),
       farmId: ownerFarmId,
@@ -254,39 +237,49 @@ function ExpensePage({
       plantedOn: dateLabel(planting.plantedOn),
       status: humanize(planting.status),
     })).sort((a, b) => a.farmName.localeCompare(b.farmName) || a.cropName.localeCompare(b.cropName) || a.fieldName.localeCompare(b.fieldName) || a.id.localeCompare(b.id));
-  }, [expensePlantingData, ownedFarmsKey, farms]);
-  const expensePlanting = expensePlantingOptions.find((option) => option.id === form.cropPlantingId);
+  }, [expensePlantingData, requestKey, farmNames]);
+  const plantingById = useMemo(() => new Map(expensePlantingOptions.map((option) => [option.id, option])), [expensePlantingOptions]);
+  const expensePlanting = plantingById.get(form.cropPlantingId);
   const expenseFarm = farms.find((farm) => String(farm.id) === (form.scope === "crop" ? expensePlanting?.farmId : form.farmId));
 
   const activeExpenses = expenses.filter((expense) => !expense.voided);
   const totalActive = activeExpenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
+  const cropSpend = activeExpenses.filter((expense) => expense.cropPlantingId != null).reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
+  const farmSpend = activeExpenses.filter((expense) => expense.cropPlantingId == null).reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
+  const statDetail = (detail) => failedFarms.length ? "Partial data · " + detail : detail;
   const filteredExpenses = useMemo(() => {
     const normalized = search.trim().toLowerCase();
     return expenses.filter((expense) => {
       const planting = plantingById.get(String(expense.cropPlantingId));
+      const cropLinked = expense.cropPlantingId != null;
       const matchesSearch = [
-        expense.description,
-        expense.category,
-        planting?.cropTypeName,
-        fieldById.get(String(planting?.fieldId))?.fieldName,
-        expense.amount,
-        expense.expenseDate,
+        expense.description, expense.category, humanize(expense.category),
+        farmNames.get(String(expense.farmId)), planting?.cropName, planting?.fieldName,
+        cropLinked ? "crop-specific" : "farm-wide", expense.amount, expense.expenseDate,
       ].join(" ").toLowerCase().includes(normalized);
       const matchesStatus = statusFilter === "ALL"
         || (statusFilter === "ACTIVE" && !expense.voided)
         || (statusFilter === "VOIDED" && expense.voided);
       const matchesCategory = categoryFilter === "ALL" || expense.category === categoryFilter;
-      return matchesSearch && matchesStatus && matchesCategory;
-    });
-  }, [expenses, plantingById, fieldById, search, statusFilter, categoryFilter]);
+      const matchesFarm = currentFarmFilter === "ALL" || String(expense.farmId) === currentFarmFilter;
+      const matchesScope = scopeFilter === "ALL" || (scopeFilter === "CROP" ? cropLinked : !cropLinked);
+      return matchesSearch && matchesStatus && matchesCategory && matchesFarm && matchesScope;
+    }).sort((a, b) => String(b.expenseDate || "").localeCompare(String(a.expenseDate || "")) || String(b.createdAt || "").localeCompare(String(a.createdAt || "")) || String(b.id).localeCompare(String(a.id)));
+  }, [expenses, plantingById, farmNames, search, statusFilter, categoryFilter, currentFarmFilter, scopeFilter]);
+  const pageCount = Math.max(1, Math.ceil(filteredExpenses.length / EXPENSES_PER_PAGE));
+  const currentPage = Math.min(page, pageCount);
+  const pageStart = (currentPage - 1) * EXPENSES_PER_PAGE;
+  const paginatedExpenses = filteredExpenses.slice(pageStart, pageStart + EXPENSES_PER_PAGE);
+
+  useEffect(() => { setPage(1); }, [search, statusFilter, categoryFilter, currentFarmFilter, scopeFilter]);
+  useEffect(() => { if (!loading) setPage((previous) => Math.min(previous, pageCount)); }, [loading, pageCount]);
 
   function openCreate() {
     setForm({
       ...EMPTY_EXPENSE,
-      farmId: String(farmId ?? ""),
+      farmId: currentFarmFilter !== "ALL" ? currentFarmFilter : farms.length === 1 ? String(farms[0].id) : "",
       expenseDate: todayIso(),
     });
-    setExpensePlantingData({ key: null, entries: [], error: "" });
     setFormError("");
     setDialogOpen(true);
   }
@@ -335,11 +328,11 @@ function ExpensePage({
         category: form.category,
         description: form.description.trim(),
       });
-      // Keep this farm-scoped ledger accurate until the all-farms table is implemented.
       setReloadKey((key) => key + 1);
+      setPage(1);
       setDialogOpen(false);
       setForm(EMPTY_EXPENSE);
-      notify("Expense saved to " + expenseFarm.name + (String(targetFarmId) !== String(farmId) ? ". This ledger currently shows " + farmName + " only." : ""));
+      notify("Expense saved to " + expenseFarm.name);
     } catch (error) {
       notify(error.message || "Unable to save this expense.", "error");
       setFormError(error.message || "Unable to save this expense.");
@@ -352,11 +345,11 @@ function ExpensePage({
     if (expense.voided) return;
     const confirmed = await confirmDialog({ title: "Cancel this expense?", message: "This expense will be marked as cancelled.", details: "It will remain in audit history and will no longer count toward active expense totals.", confirmLabel: "Cancel expense", tone: "warning" });
     if (!confirmed) return;
-    setVoidingId(expense.id);
+    setVoidingId(String(expense.farmId) + ":" + expense.id);
     setPageError("");
     try {
-      await expenseApi.void(farmId, expense.id);
-      setExpenses((current) => current.map((item) => item.id === expense.id ? { ...item, voided: true } : item));
+      await expenseApi.void(expense.farmId, expense.id);
+      setReloadKey((key) => key + 1);
       notify("Expense cancelled; the audit record was retained.");
     } catch (error) {
       notify(error.message || "Unable to cancel this expense.", "error");
@@ -373,79 +366,105 @@ function ExpensePage({
         <div className="workspace-title-icon"><Coins size={23} /></div>
         <div className="workspace-title-copy">
           <h1>Farm expenses</h1>
-          <p>Record farm spending and keep a traceable history of every entry.</p>
+          <p>Manage and track expenses across your farms.</p>
         </div>
         <div className="workspace-title-actions expense4-actions">
-          <button className="button-primary" type="button" onClick={openCreate}>
+          <button className="button-primary" type="button" onClick={openCreate} disabled={!farms.length}>
             <Plus size={15} /> Add expense
           </button>
         </div>
       </div>
 
       <div className="workspace-stats">
-        <Stat label="Active expenses" value={activeExpenses.length} detail="not cancelled" icon={ClipboardList} />
-        <Stat label="Active spend" value={amountLabel(totalActive)} detail="excludes cancelled entries" icon={Coins} />
-        <Stat label="Cancelled entries" value={expenses.filter((item) => item.voided).length} detail="retained for audit" icon={CheckCircle2} />
-        <Stat label="Crop-linked" value={expenses.filter((item) => !item.voided && item.cropPlantingId).length} detail="active expenses linked to plantings" icon={Leaf} />
+        <Stat label="Total spend" value={loading ? "…" : amountLabel(totalActive)} detail={statDetail("excludes cancelled entries")} icon={Coins} />
+        <Stat label="Farm-wide spend" value={loading ? "…" : amountLabel(farmSpend)} detail={statDetail("general farm expenses")} icon={Tractor} />
+        <Stat label="Crop-specific spend" value={loading ? "…" : amountLabel(cropSpend)} detail={statDetail("linked to crop plantings")} icon={Sprout} />
+        <Stat label="Active expenses" value={loading ? "…" : activeExpenses.length} detail={statDetail("across all farms")} icon={ClipboardList} />
       </div>
 
-      <div className="workspace-data-card surface-card expense4-data-card">
+      <div className="workspace-data-card surface-card expense4-data-card expense4-ledger">
         <div className="workspace-data-heading">
           <div>
-            <h2>Expense ledger · {farmName}</h2>
-            <p>Only expense records returned for this farm are shown.</p>
+            <h2 className="expense4-ledger-title"><Receipt size={14} aria-hidden="true" /> Expense ledger</h2>
+            <p>View and manage spending across all your farms.</p>
           </div>
         </div>
-        <div className="workspace-toolbar expense4-toolbar">
+        <div className="workspace-toolbar expense4-toolbar expense4-ledger-toolbar">
           <label className="table-search">
             <Search size={15} />
             <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search expenses..." />
             {search && <button type="button" aria-label="Clear search" onClick={() => setSearch("")}><X size={14} /></button>}
           </label>
-          <label className="workspace-filter">
-            <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-              <option value="ACTIVE">Active entries</option>
-              <option value="VOIDED">Cancelled entries</option>
-              <option value="ALL">All entries</option>
-            </select>
-          </label>
-          <label className="workspace-filter">
-            <select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
-              <option value="ALL">All categories</option>
-              {CATEGORIES.map((category) => <option key={category} value={category}>{humanize(category)}</option>)}
-            </select>
-          </label>
-          <span className="result-count">{filteredExpenses.length} records</span>
+          <Select value={currentFarmFilter} onValueChange={setFarmFilter}>
+            <SelectTrigger className="expense4-ledger-filter" aria-label="Filter by farm"><SelectValue /></SelectTrigger>
+            <SelectContent align="start">
+              <SelectItem value="ALL">All farms</SelectItem>
+              {farms.filter((farm) => farm.id != null).map((farm) => <SelectItem key={farm.id} value={String(farm.id)}>{farm.name || "Unnamed farm"}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={scopeFilter} onValueChange={setScopeFilter}>
+            <SelectTrigger className="expense4-ledger-filter" aria-label="Filter by expense type"><SelectValue /></SelectTrigger>
+            <SelectContent align="start">
+              <SelectItem value="ALL">All expense types</SelectItem>
+              <SelectItem value="FARM">Farm-wide</SelectItem>
+              <SelectItem value="CROP">Crop-specific</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+            <SelectTrigger className="expense4-ledger-filter" aria-label="Filter by category"><SelectValue /></SelectTrigger>
+            <SelectContent align="start">
+              <SelectItem value="ALL">All categories</SelectItem>
+              {CATEGORIES.map((category) => <SelectItem key={category} value={category}>{humanize(category)}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="expense4-ledger-filter" aria-label="Filter by status"><SelectValue /></SelectTrigger>
+            <SelectContent align="end">
+              <SelectItem value="ACTIVE">Active entries</SelectItem>
+              <SelectItem value="VOIDED">Cancelled entries</SelectItem>
+              <SelectItem value="ALL">All entries</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {pageError && <div className="ff-error" role="alert">{pageError}</div>}
+        {!loading && failedFarms.length > 0 && (
+          <div className="expense4-ledger-load-warning" role="status">
+            <span>Could not load expenses for {failedFarms.map((id) => farmNames.get(id) || "Farm").join(", ")}. Totals and records may be incomplete.</span>
+            <button type="button" className="button-secondary" onClick={() => setReloadKey((key) => key + 1)}>Retry</button>
+          </div>
+        )}
+        {!cropOptionsPending && expensePlantingData.error && <div className="expense4-ledger-load-warning" role="status"><span>Some linked planting details are unavailable.</span><button type="button" className="button-secondary" onClick={() => setReloadKey((key) => key + 1)}>Retry</button></div>}
         {loading ? (
           <SkeletonBlock rows={5} />
+        ) : !farms.length ? (
+          <div className="empty-state"><Coins size={23} /><strong>No farms available</strong><span>Create a farm before recording expenses.</span><button type="button" className="button-primary" onClick={() => onNavigate("Farms")}>Go to farms</button></div>
         ) : filteredExpenses.length === 0 ? (
           <div className="empty-state">
             <Coins size={23} />
-            <strong>{expenses.length === 0 ? "No expenses recorded" : "No matching expenses"}</strong>
-            <span>{expenses.length === 0 ? "Add your first farm expense to start tracking costs." : "Try another search or filter."}</span>
-            {expenses.length === 0 && <button type="button" className="button-primary" onClick={openCreate}><Plus size={14} /> Add expense</button>}
+            <strong>{failedFarms.length ? "No available matching expenses" : expenses.length === 0 ? "No expenses recorded" : "No matching expenses"}</strong>
+            <span>{failedFarms.length ? "Retry the unavailable farms or adjust your filters." : expenses.length === 0 ? "Add your first farm expense to start tracking costs." : "Try another search or filter."}</span>
+            {expenses.length === 0 && !failedFarms.length && <button type="button" className="button-primary" onClick={openCreate}><Plus size={14} /> Add expense</button>}
           </div>
         ) : (
           <div className="workspace-table-wrap">
-            <table className="workspace-table expense4-table">
-              <thead><tr><th>DATE</th><th>DESCRIPTION</th><th>CATEGORY</th><th>PLANTING</th><th>AMOUNT</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
+            <table className="workspace-table expense4-table expense4-ledger-table">
+              <thead><tr><th>DATE</th><th>DESCRIPTION</th><th>FARM</th><th>CATEGORY</th><th>LINKED PLANTING</th><th>AMOUNT</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
               <tbody>
-                {filteredExpenses.map((expense) => {
+                {paginatedExpenses.map((expense) => {
                   const planting = plantingById.get(String(expense.cropPlantingId));
-                  const field = fieldById.get(String(planting?.fieldId));
+                  const recordKey = String(expense.farmId) + ":" + expense.id;
                   return (
-                    <tr key={expense.id} className={expense.voided ? "expense4-voided" : ""}>
+                    <tr key={recordKey} className={expense.voided ? "expense4-voided" : ""}>
                       <td>{dateLabel(expense.expenseDate)}</td>
                       <td><strong className="workspace-cell-title">{expense.description}</strong>{expense.voided && <small className="expense4-subtext">{expense.voidReason || "Cancelled entry"}</small>}</td>
+                      <td>{farmNames.get(String(expense.farmId)) || "Unnamed farm"}</td>
                       <td>{humanize(expense.category)}</td>
-                      <td>{planting ? <>{planting.cropTypeName}<small className="expense4-subtext">{field?.fieldName || "Field"}</small></> : "Farm-wide"}</td>
+                      <td>{expense.cropPlantingId == null ? "Farm-wide" : planting && planting.farmId === String(expense.farmId) ? <>{planting.cropName}<small className="expense4-subtext">{planting.fieldName}</small></> : <>{cropOptionsPending ? "Loading planting…" : "Crop-specific"}<small className="expense4-subtext">Planting #{expense.cropPlantingId}</small></>}</td>
                       <td className="expense4-amount">{amountLabel(expense.amount)}</td>
                       <td><RecordStatus voided={expense.voided} inactiveLabel="Cancelled" /></td>
                       <td>
-                        <button type="button" className="ff-icon-button ff-danger" aria-label={"Cancel expense " + expense.id} disabled={expense.voided || voidingId === expense.id} onClick={() => voidExpense(expense)}>
+                        <button type="button" className="ff-icon-button ff-danger" aria-label={"Cancel expense " + expense.id} disabled={expense.voided || voidingId !== null} onClick={() => voidExpense(expense)}>
                           <Ban size={14} />
                         </button>
                       </td>
@@ -456,9 +475,22 @@ function ExpensePage({
             </table>
           </div>
         )}
-        <div className="workspace-data-footer">
-          <span>Showing <strong>{filteredExpenses.length}</strong> of <strong>{expenses.length}</strong> records</span>
-          <span>{farmName} · backend expense ledger</span>
+        <div className="workspace-data-footer ff-fields-footer">
+          <span>Showing <strong>{loading ? "…" : filteredExpenses.length ? `${pageStart + 1}–${Math.min(pageStart + EXPENSES_PER_PAGE, filteredExpenses.length)} of ${filteredExpenses.length}` : "0"}</strong> expenses</span>
+          {!loading && filteredExpenses.length > 0 && (
+            <Pagination className="ff-farm-pagination ff-field-pagination" aria-label="Expense ledger pagination">
+              <PaginationContent>
+                <PaginationItem><PaginationPrevious disabled={currentPage === 1} onClick={() => setPage(currentPage - 1)} /></PaginationItem>
+                {expensePageItems(currentPage, pageCount).map((item) => (
+                  <PaginationItem key={item}>
+                    {typeof item === "number" ? <PaginationLink isActive={currentPage === item} aria-label={`Page ${item}`} onClick={() => setPage(item)}>{item}</PaginationLink> : <PaginationEllipsis />}
+                  </PaginationItem>
+                ))}
+                <PaginationItem><PaginationNext disabled={currentPage === pageCount} onClick={() => setPage(currentPage + 1)} /></PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+          <span>{currentFarmFilter === "ALL" ? "All farms" : farmNames.get(currentFarmFilter)}</span>
         </div>
       </div>
 
@@ -911,6 +943,8 @@ export default function ExpenseHarvestPage({
   onNavigate,
   notify,
 }) {
+  if (active === "Expenses") return <ExpensePage farms={farms} onNavigate={onNavigate} notify={notify} />;
+
   if (!selectedFarm?.id) {
     return (
       <section className="workspace-page">
@@ -934,5 +968,5 @@ export default function ExpenseHarvestPage({
     onNavigate,
     notify,
   };
-  return active === "Expenses" ? <ExpensePage {...pageProps} /> : <HarvestPage {...pageProps} />;
+  return <HarvestPage {...pageProps} />;
 }

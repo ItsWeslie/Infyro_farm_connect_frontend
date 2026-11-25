@@ -212,7 +212,7 @@ html[data-ifc-theme="dark"] .dialog-card .ff-form-context strong { color: #e5f0d
 /* Radix Select locks body scrolling and compensates for the removed scrollbar.
    The document already reserves a stable scrollbar gutter; keep its scrollbar
    and avoid a second width adjustment while a crop filter or form select is open. */
-body[data-scroll-locked="1"]:has(:is(.crop3-status-filter,.crop3-action-select,.crop3-planting-dialog .ifc-form-select,.crop3-activity-dialog .ifc-form-select,.ifc-calendar-show-select,.expense4-create-dialog .ifc-form-select)[data-state="open"]){
+body[data-scroll-locked="1"]:has(:is(.crop3-status-filter,.crop3-action-select,.crop3-planting-dialog .ifc-form-select,.crop3-activity-dialog .ifc-form-select,.ifc-calendar-show-select,.expense4-create-dialog .ifc-form-select,.expense4-ledger-filter)[data-state="open"]){
   overflow:visible!important;
   margin-right:0!important;
   --removed-body-scroll-bar-size:0px!important;
@@ -1797,13 +1797,13 @@ html[data-ifc-theme="dark"] .workspace-table.ff-table thead th:first-child,html[
 html[data-ifc-theme="dark"] .workspace-table.ff-table thead th:last-child,html[data-ifc-theme="dark"] .workspace-table.crop3-table thead th:last-child{border-radius:0 6px 6px 0}
 
 /* Keep field pagination inline with the result count and selected farm. */
-:is(.ff-data-card,.crop3-data-card) .ff-fields-footer{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px}
-:is(.ff-data-card,.crop3-data-card) .ff-fields-footer>.ff-field-pagination{width:auto;padding:0;min-width:0;justify-self:center}
-:is(.ff-data-card,.crop3-data-card) .ff-fields-footer>span:last-child{text-align:right}
+:is(.ff-data-card,.crop3-data-card,.expense4-ledger) .ff-fields-footer{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px}
+:is(.ff-data-card,.crop3-data-card,.expense4-ledger) .ff-fields-footer>.ff-field-pagination{width:auto;padding:0;min-width:0;justify-self:center}
+:is(.ff-data-card,.crop3-data-card,.expense4-ledger) .ff-fields-footer>span:last-child{text-align:right}
 @media(max-width:650px){
-  :is(.ff-data-card,.crop3-data-card) .ff-fields-footer{grid-template-columns:minmax(0,1fr) auto;gap:6px}
-  :is(.ff-data-card,.crop3-data-card) .ff-fields-footer>.ff-field-pagination{justify-self:end}
-  :is(.ff-data-card,.crop3-data-card) .ff-fields-footer>span:last-child{display:none}
+  :is(.ff-data-card,.crop3-data-card,.expense4-ledger) .ff-fields-footer{grid-template-columns:minmax(0,1fr) auto;gap:6px}
+  :is(.ff-data-card,.crop3-data-card,.expense4-ledger) .ff-fields-footer>.ff-field-pagination{justify-self:end}
+  :is(.ff-data-card,.crop3-data-card,.expense4-ledger) .ff-fields-footer>span:last-child{display:none}
   .ff-field-pagination [data-slot="pagination-content"]{flex-wrap:wrap;justify-content:flex-end;gap:2px}
 }
 
@@ -1935,3 +1935,18 @@ html[data-ifc-theme="dark"] .expense4-scope-option small,html[data-ifc-theme="da
 html[data-ifc-theme="dark"] .expense4-selection-error{color:#f0a89d}
 html[data-ifc-theme="dark"] .expense4-create-dialog .expense4-audit-note{background:#393321;border-color:#5e5030;color:#f1d89c}
 @media(max-width:520px){.expense4-create-dialog{padding:16px}.expense4-create-dialog .expense4-form-grid .form-label+.form-label{margin-top:12px}}
+/* Centralized expense ledger — shared table and pagination styling. */
+.expense4-ledger-title{display:flex;align-items:center;gap:6px}
+.expense4-ledger-title svg{flex-shrink:0;color:#568052}
+.expense4-ledger-toolbar .table-search{flex:1 1 180px;min-width:150px}
+.expense4-ledger-filter{height:34px;min-width:115px;max-width:180px}
+.expense4-ledger-table{min-width:760px}
+.expense4-ledger .ff-fields-footer>span:last-child{grid-column:3;grid-row:1;overflow-wrap:anywhere}
+.expense4-ledger-load-warning{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 12px;padding:8px 10px;border:1px solid #eee5c8;border-radius:8px;background:#fbf8ed;color:#806522;font-size:10px;line-height:1.5}
+html[data-ifc-theme="dark"] .expense4-ledger-load-warning{background:#393321;border-color:#5e5030;color:#f1d89c}
+html[data-ifc-theme="dark"] .expense4-ledger-title svg{color:#c5e0b8}
+html[data-ifc-theme="dark"] .workspace-table.expense4-ledger-table{border-collapse:separate;border-spacing:0}
+html[data-ifc-theme="dark"] .workspace-table.expense4-ledger-table thead th{height:36px;box-sizing:border-box;padding:10px 9px;line-height:16px;vertical-align:middle}
+html[data-ifc-theme="dark"] .workspace-table.expense4-ledger-table thead th:first-child{border-radius:6px 0 0 6px}
+html[data-ifc-theme="dark"] .workspace-table.expense4-ledger-table thead th:last-child{border-radius:0 6px 6px 0}
+@media(max-width:650px){.expense4-ledger-toolbar .table-search{flex-basis:100%}.expense4-ledger-filter{flex:1 1 130px;max-width:none}.expense4-ledger .ff-fields-footer>span:last-child{display:none;grid-column:auto;grid-row:auto}}
