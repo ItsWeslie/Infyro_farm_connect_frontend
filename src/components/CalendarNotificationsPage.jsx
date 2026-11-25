@@ -338,7 +338,7 @@ export function CalendarPage({ notify }) {
   );
 }
 
-export function NotificationsPage({ unreadCount = 0, onNotificationsChanged, notify }) {
+export function NotificationsPage({ unreadCount = 0, onNotificationsChanged, notify, searchTarget }) {
   const [page, setPage] = useState(0);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("ALL");
@@ -347,7 +347,8 @@ export function NotificationsPage({ unreadCount = 0, onNotificationsChanged, not
   const [result, setResult] = useState({ key: null, rows: [], hasMore: false, error: "" });
   const [actionError, setActionError] = useState("");
   const normalizedQuery = query.trim().toLowerCase();
-  const requestKey = JSON.stringify([filter, normalizedQuery, page, reloadKey]);
+  const targetId = searchTarget?.kind === "notification" ? searchTarget.id : null;
+  const requestKey = JSON.stringify([filter, normalizedQuery, page, reloadKey, targetId]);
   const loading = result.key !== requestKey;
   const notifications = loading ? [] : result.rows;
   const hasMore = !loading && result.hasMore;
@@ -365,7 +366,7 @@ export function NotificationsPage({ unreadCount = 0, onNotificationsChanged, not
       try {
         let rows = [];
         let more = false;
-        if (!normalizedQuery && filter !== "READ") {
+        if (!targetId && !normalizedQuery && filter !== "READ") {
           const response = await notificationApi.getAll(filter === "UNREAD", page, NOTIFICATION_PAGE_SIZE);
           if (!current) return;
           if (!Array.isArray(response)) throw new Error("Unexpected notification response.");
@@ -390,11 +391,12 @@ export function NotificationsPage({ unreadCount = 0, onNotificationsChanged, not
               if (seen.has(item.id)) continue;
               seen.add(item.id);
               newIds += 1;
+              if (targetId && String(item.id) !== targetId) continue;
               if (filter === "READ" && !item.read) continue;
               const text = [item.title, item.eventType, eventTypeLabel(item.eventType), item.eventDate, displayDate(item.eventDate), displayTimestamp(item.scheduledAt, item.eventDate)].filter(Boolean).join(" ").toLowerCase();
               if (!normalizedQuery || text.includes(normalizedQuery)) matches.push(item);
             }
-            if (response.length < chunkSize) break;
+            if ((targetId && matches.length) || response.length < chunkSize) break;
             if (!newIds) throw new Error("Notification pages could not be loaded completely.");
           }
           rows = matches.slice(page * NOTIFICATION_PAGE_SIZE, (page + 1) * NOTIFICATION_PAGE_SIZE);
@@ -412,7 +414,7 @@ export function NotificationsPage({ unreadCount = 0, onNotificationsChanged, not
     }
     load();
     return () => { current = false; };
-  }, [filter, normalizedQuery, page, requestKey]);
+  }, [filter, normalizedQuery, page, requestKey, targetId]);
 
   async function notifySummaryChanged() {
     if (typeof onNotificationsChanged !== "function") return;
