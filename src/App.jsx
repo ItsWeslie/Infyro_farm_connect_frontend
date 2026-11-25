@@ -463,7 +463,7 @@ function App() {
                 <Avatar name={user?.name || user?.username} />
                 <span className="profile-copy">
                   <strong>{user?.name || user?.username}</strong>
-                  <small>Live Account</small>
+                  <small>Account</small>
                 </span>
                 <Ellipsis size={19} />
               </button>
