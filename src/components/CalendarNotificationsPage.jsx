@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import UseAnimations from "react-useanimations";
+import alertCircle from "react-useanimations/lib/alertCircle";
 import {
   Bell,
   CalendarDays,
@@ -7,7 +9,6 @@ import {
   ChevronRight,
   Clock3,
   Inbox,
-  Info,
   MapPin,
   RefreshCw,
   Search,
@@ -17,7 +18,7 @@ import {
 } from "lucide-react";
 import { calendarApi, notificationApi } from "../api/client";
 import { SkeletonBlock } from "./ui/Skeleton";
-import { Alert, AlertDescription } from "./ui/alert";
+import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "./ui/select";
 import { useConfirmDialog } from "../context/ConfirmDialogContext";
 import { useAuth } from "../context/AuthContext";
 
@@ -179,14 +180,17 @@ export function CalendarPage({ notify }) {
             </div>
           </div>
           <div className="ifc-calendar-controls">
-            <label className="ifc-calendar-filter">
-              <span>Show</span>
-              <select value={eventFilter} onChange={(event) => setEventFilter(event.target.value)}>
-                <option value="ALL">All milestones</option>
-                <option value="PLANTING">Planting dates</option>
-                <option value="HARVEST">Expected harvests</option>
-              </select>
-            </label>
+            <div className="ifc-calendar-filter">
+              <label htmlFor="calendar-event-filter">Show</label>
+              <Select value={eventFilter} onValueChange={setEventFilter}>
+                <SelectTrigger id="calendar-event-filter" className="ifc-calendar-show-select"><SelectValue /></SelectTrigger>
+                <SelectContent align="start">
+                  <SelectItem value="ALL">All milestones</SelectItem>
+                  <SelectItem value="PLANTING">Planting dates</SelectItem>
+                  <SelectItem value="HARVEST">Expected harvests</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
             <div className="ifc-calendar-month-nav">
               <button type="button" className="icon-button" aria-label="Previous month" onClick={() => changeMonth(-1)}>
                 <ChevronLeft size={18} />
@@ -312,10 +316,12 @@ export function CalendarPage({ notify }) {
           </div>
         )}
         <div className="ifc-calendar-info-wrap">
-          <Alert className="ifc-calendar-info" variant="info" role="note">
-            <Info size={16} aria-hidden="true" />
-            <AlertDescription>Calendar events are generated from crop planting dates and expected harvest dates.</AlertDescription>
-          </Alert>
+          <div className="ifc-calendar-info" role="note">
+            <span className="ff-field-area-warning-icon" aria-hidden="true">
+              <UseAnimations animation={alertCircle} size={22} strokeColor="#806522" interaction="loop" render={(eventProps, animationProps) => <span {...eventProps} {...animationProps} />} />
+            </span>
+            <span>Calendar events are generated from crop planting dates and expected harvest dates.</span>
+          </div>
         </div>
       </div>
     </section>
