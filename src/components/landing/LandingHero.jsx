@@ -1,29 +1,17 @@
-import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import UseAnimations from "react-useanimations";
 import arrowRight from "react-useanimations/lib/arrowRight";
 import chevronDown from "react-useanimations/lib/chevronDown";
 import { Sprout, ArrowRight, CirclePlay, ShieldCheck, ChevronDown } from "lucide-react";
 import { DashboardPreview } from "./DashboardPreview";
 
-function useReducedMotion() {
-  const [reduced, setReduced] = useState(() =>
-    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  );
-  useEffect(() => {
-    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(query.matches);
-    update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
-  }, []);
-  return reduced;
-}
-
 export function LandingHero({ openAuth }) {
   const reduced = useReducedMotion();
+  const enter = delay => ({ initial: reduced ? false : { opacity: 0, y: 22, filter: "blur(5px)" }, animate: { opacity: 1, y: 0, filter: "blur(0px)" }, transition: reduced ? { duration: 0 } : { duration: .85, delay, ease: [.2,.7,.2,1] } });
   return (
     <section className="landing-hero">
-      <svg
+      <motion.svg
+        initial={reduced ? false : { opacity: .25 }} animate={{ opacity: 1 }} transition={{ duration: reduced ? 0 : .85, ease: "easeOut" }}
         className="landing-hero-landscape"
         viewBox="0 0 1440 620"
         preserveAspectRatio="xMidYMax slice"
@@ -58,25 +46,25 @@ export function LandingHero({ openAuth }) {
             ))}
           </g>
         </g>
-      </svg>
+      </motion.svg>
       <div className="landing-hero-glow" aria-hidden="true" />
       <div className="landing-hero-shade" aria-hidden="true" />
       <div className="landing-hero-inner">
         <div className="landing-hero-copy">
-          <div className="landing-eyebrow landing-hero-reveal landing-hero-reveal-1">
+          <motion.div className="landing-eyebrow" {...enter(0.1)}>
             <span className="landing-eyebrow-mark"><Sprout size={14} aria-hidden="true" /></span>
             A product by Infyro Inc.
-          </div>
-          <h1 className="landing-hero-reveal landing-hero-reveal-2">
+          </motion.div>
+          <motion.h1 {...enter(0.22)}>
             Grow smarter.
             <br />
             <em>Manage better.</em>
-          </h1>
-          <p className="landing-hero-description landing-hero-reveal landing-hero-reveal-3">
+          </motion.h1>
+          <motion.p className="landing-hero-description" {...enter(0.36)}>
             A connected farm management platform built by Infyro Inc. Manage fields,
             track crops, record expenses and plan your harvests — all in one place.
-          </p>
-          <div className="landing-hero-actions landing-hero-reveal landing-hero-reveal-4">
+          </motion.p>
+          <motion.div className="landing-hero-actions" {...enter(0.5)}>
             <button type="button" className="landing-button landing-hero-primary" onClick={() => openAuth("signup")}>
               Get started for free
               <span className="landing-hero-button-icon" aria-hidden="true">
@@ -87,10 +75,10 @@ export function LandingHero({ openAuth }) {
               <span aria-hidden="true"><CirclePlay size={18} /></span>
               Explore platform
             </a>
-          </div>
-          <div className="landing-trust-note landing-hero-reveal landing-hero-reveal-5">
+          </motion.div>
+          <motion.div className="landing-trust-note" {...enter(0.62)}>
             <ShieldCheck size={15} aria-hidden="true" /> Your farm workspace, made for you.
-          </div>
+          </motion.div>
         </div>
         <DashboardPreview />
       </div>
