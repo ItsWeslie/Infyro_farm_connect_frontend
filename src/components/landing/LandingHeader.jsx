@@ -15,7 +15,14 @@ function LandingThemeIcon({ theme, setTheme, className = "" }) {
   );
 }
 
-const LINKS = [["features", "Features"], ["how-it-works", "How it works"], ["why-infyro", "Our approach"], ["contact", "Contact"]];
+const LINKS = [
+  ["features", "Features"],
+  ["about-infyro", "About Us"],
+  ["why-infyro", "Our Approach"],
+  ["how-it-works", "How It Works"],
+  ["stories", "Testimonials"],
+  ["contact", "Contact Us"],
+];
 
 export function LandingHeader({ mobileMenuOpen, setMobileMenuOpen, theme, setTheme, openAuth }) {
   const [active, setActive] = useState("");
@@ -38,7 +45,7 @@ export function LandingHeader({ mobileMenuOpen, setMobileMenuOpen, theme, setThe
       setScrolled(window.scrollY > 16);
     }
     const queue = () => { if (!frame) frame = requestAnimationFrame(update); };
-    const desktop = window.matchMedia("(min-width: 901px)");
+    const desktop = window.matchMedia("(min-width: 1051px)");
     const changeDesktop = () => { if (desktop.matches) setMobileMenuOpen(false); };
     update();
     window.addEventListener("scroll", queue, { passive: true });
