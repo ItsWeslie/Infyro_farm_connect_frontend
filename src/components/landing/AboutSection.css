@@ -2,8 +2,7 @@
 .landing-page .ifc-about {
   --about-ink: #153d28; --about-muted: #53634f; --about-accent: #386f3c;
   --about-surface: #fffefa; --about-line: #dce5d4; --about-pale: #e9f4dc;
-  --about-brand-ink: #101d36; --about-glow: #cce7bc; --about-wave: #b9dfb0;
-  --about-brand-bg: #f5faf2; --about-shadow: #24452418;
+  --about-brand-ink: #101828; --about-glow: #cce7bc; --about-shadow: #24452418;
   box-sizing: border-box; width: min(1240px, calc(100% - 64px)); margin: 0 auto;
   padding: clamp(30px, 5vw, 72px) 0 clamp(48px, 7vw, 96px);
   display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
@@ -12,26 +11,30 @@
 html[data-ifc-theme="dark"] .landing-page .ifc-about {
   --about-ink: #edf4e9; --about-muted: #b9c7b3; --about-accent: #b6da98;
   --about-surface: #233128; --about-line: #405442; --about-pale: #344b35;
-  --about-brand-ink: #edf2ff; --about-glow: #304c39; --about-wave: #527b55;
-  --about-brand-bg: #1d2d24; --about-shadow: #0004;
+  --about-brand-ink: #edf2ff; --about-glow: #304c39; --about-shadow: #0004;
 }
 .ifc-about-brand-card {
+  --brand-surface: #ffffff; --brand-tint: #eaf3ff; --brand-border: #e4e7ec;
+  --brand-muted: #667085; --brand-label-bg: #eff6ff; --brand-label-ink: #3566a5;
+  --brand-shadow: #183b6410; --brand-hover-border: #c9dbf2;
   position: relative; isolation: isolate; overflow: hidden; min-width: 0;
-  min-height: 420px; border: 1px solid var(--about-line); border-radius: 28px;
-  background: radial-gradient(ellipse at 50% 34%,var(--about-surface) 0%,var(--about-brand-bg) 48%,var(--about-glow) 145%);
-  box-shadow: inset 0 0 0 4px color-mix(in srgb,var(--about-surface) 70%,transparent), 0 16px 36px var(--about-shadow);
+  min-height: 420px; border: 1px solid var(--brand-border); border-radius: 28px;
+  background: radial-gradient(ellipse 72% 57% at 50% 30%, var(--brand-tint) 0%, var(--brand-surface) 100%);
+  box-shadow: 0 10px 28px var(--brand-shadow);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   text-align: center; gap: 22px; padding: clamp(28px,4vw,56px) 22px;
   transition: box-shadow .3s,border-color .3s;
 }
-.ifc-about-rings { position:absolute; z-index:-1; width:86%; aspect-ratio:1; top:2%; left:7%; border-radius:50%; background:radial-gradient(circle,transparent 44%,color-mix(in srgb,var(--about-glow) 35%,transparent) 45%,transparent 46%,transparent 56%,color-mix(in srgb,var(--about-glow) 46%,transparent) 57%,transparent 58%); pointer-events:none; }
-.ifc-about-waves { position:absolute; z-index:-1; inset:auto 0 0; height:27%; color:var(--about-wave); pointer-events:none; }
-.ifc-about-waves svg { display:block; width:100%; height:100%; }
 .ifc-about-mark-wrap { display:grid; place-items:center; width:100%; }
-.ifc-about-mark { filter:drop-shadow(0 14px 20px #0175fe2b); transition:transform .4s cubic-bezier(.2,.7,.2,1); }
+html[data-ifc-theme="dark"] .ifc-about-brand-card {
+  --brand-surface: #161b22; --brand-tint: #182b43; --brand-border: #303b4b;
+  --brand-muted: #a7b5c9; --brand-label-bg: #20344d; --brand-label-ink: #a7cdfc;
+  --brand-shadow: #0003; --brand-hover-border: #466488;
+}
+.ifc-about-mark { transition:transform .4s cubic-bezier(.2,.7,.2,1); }
 .ifc-about-brand-copy strong { display:block; font-size:clamp(34px,4vw,55px); line-height:1.1; letter-spacing:-.045em; color:var(--about-brand-ink); font-weight:800; }
-.ifc-about-brand-copy p { margin:10px 0 0; font-size:clamp(12px,1.4vw,16px); line-height:1.5; color:var(--about-muted); }
-.ifc-about-parent-label { max-width:100%; padding:9px 15px; border:1px solid var(--about-line); border-radius:999px; background:var(--about-pale); color:var(--about-accent); font-size:10px; font-weight:750; text-transform:uppercase; letter-spacing:.9px; line-height:1.5; }
+.ifc-about-brand-copy p { margin:10px 0 0; font-size:clamp(12px,1.4vw,16px); line-height:1.5; color:var(--brand-muted); }
+.ifc-about-parent-label { max-width:100%; padding:9px 15px; border:1px solid transparent; border-radius:999px; background:var(--brand-label-bg); color:var(--brand-label-ink); font-size:10px; font-weight:750; text-transform:uppercase; letter-spacing:.9px; line-height:1.5; }
 .ifc-about-content { display:flex; flex-direction:column; justify-content:center; gap:clamp(22px,3vw,34px); min-width:0; }
 .ifc-about-kicker { display:inline-flex; align-items:center; gap:15px; color:var(--about-accent); font-size:11px; font-weight:750; letter-spacing:1.25px; }
 .ifc-about-kicker::after { content:""; display:block; width:45px; height:2px; border-radius:2px; background:var(--about-glow); }
@@ -53,7 +56,7 @@ html[data-ifc-theme="dark"] .ifc-about-visit:hover { background:#cce8b6; }
 .ifc-about-value h3 { margin:0; color:var(--about-ink); font-size:14px; font-weight:750; }
 .ifc-about-value p { margin:0; color:var(--about-muted); font-size:12px; line-height:1.65; }
 @media (hover:hover) and (pointer:fine) {
-  .ifc-about-brand-card:hover { box-shadow:0 22px 42px var(--about-shadow); border-color:var(--about-accent); }
+  .ifc-about-brand-card:hover { box-shadow:0 16px 36px var(--brand-shadow); border-color:var(--brand-hover-border); }
   .ifc-about-brand-card:hover .ifc-about-mark { transform:translateY(-3px) scale(1.04); }
   .ifc-about-value:hover { border-color:var(--about-accent); }
 }
