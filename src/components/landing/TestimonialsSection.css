@@ -1,0 +1,61 @@
+/* Continuous testimonial marquee, scoped independently of legacy testimonial grid. */
+.landing-page .ifc-testimonials {
+  --tm-bg:#f8f7ee; --tm-card:#fffefa; --tm-ink:#224823; --tm-muted:#66745f;
+  --tm-line:#dce5d4; --tm-accent:#527b3b; --tm-pale:#e8efdd; --tm-hill:#c7d9b5;
+  --tm-shadow:#25432612; --tm-star:#b68125;
+  position:relative; isolation:isolate; overflow:hidden; width:100%;
+  box-sizing:border-box; padding:clamp(56px,7vw,100px) 0 0;
+  background:var(--tm-bg); color:var(--tm-ink); scroll-margin-top:96px;
+}
+html[data-ifc-theme="dark"] .landing-page .ifc-testimonials {
+  --tm-bg:#19271d; --tm-card:#233128; --tm-ink:#edf4e9; --tm-muted:#b7c4af;
+  --tm-line:#405442; --tm-accent:#b6da98; --tm-pale:#344b35; --tm-hill:#405a3c;
+  --tm-shadow:#0003; --tm-star:#e8bf71;
+}
+.ifc-tm-heading { position:relative; z-index:1; width:min(800px,calc(100% - 36px)); margin:0 auto clamp(28px,4vw,48px); text-align:center; }
+.ifc-tm-kicker { display:flex; justify-content:center; align-items:center; gap:12px; color:var(--tm-accent); font-size:11px; font-weight:750; letter-spacing:1.8px; }
+.ifc-tm-kicker::before,.ifc-tm-kicker::after { content:""; display:block; width:26px; height:1px; background:currentColor; opacity:.5; }
+.ifc-tm-heading h2 { margin:14px 0; font-size:clamp(32px,4vw,52px); line-height:1.12; letter-spacing:-.045em; font-weight:760; color:var(--tm-ink); }
+.ifc-tm-heading h2 em { color:var(--tm-accent); font-style:normal; }
+.ifc-tm-heading p { margin:0 auto; color:var(--tm-muted); max-width:650px; font-size:clamp(13px,1.3vw,15px); line-height:1.75; }
+.ifc-tm-heading .ifc-tm-disclosure { display:block; margin-top:10px; color:var(--tm-muted); font-size:11px; line-height:1.5; }
+.ifc-tm-window { position:relative; width:100%; max-width:1680px; margin:0 auto; overflow:hidden; padding:12px 0 22px; touch-action:pan-y; outline-offset:-4px; }
+.ifc-tm-window::before,.ifc-tm-window::after { content:""; position:absolute; z-index:2; inset:0 auto 0 0; width:clamp(12px,5vw,85px); background:linear-gradient(90deg,var(--tm-bg),transparent); pointer-events:none; }
+.ifc-tm-window::after { inset:0 0 0 auto; transform:scaleX(-1); }
+.ifc-tm-track { position:relative; display:flex; align-items:stretch; gap:18px; width:max-content; padding:0 18px 0 0; will-change:transform; }
+.ifc-tm-card { box-sizing:border-box; position:relative; isolation:isolate; overflow:hidden; flex:0 0 auto; width:clamp(280px,27vw,380px); min-height:258px; display:flex; flex-direction:column; padding:clamp(20px,2.1vw,30px); border:1px solid var(--tm-line); border-radius:20px; background:var(--tm-card); box-shadow:0 8px 24px var(--tm-shadow); color:var(--tm-ink); transition:border-color .25s; }
+.ifc-tm-card:hover { border-color:var(--tm-accent); }
+.ifc-tm-quote-mark { display:block; height:32px; font:700 62px/.8 Georgia,serif; color:var(--tm-accent); }
+.ifc-tm-card blockquote { position:relative; z-index:1; flex:1; margin:9px 0 24px; color:var(--tm-ink); font-size:clamp(13px,1.25vw,16px); font-weight:500; line-height:1.75; }
+.ifc-tm-person { position:relative; z-index:1; display:flex; align-items:center; gap:12px; }
+.ifc-tm-avatar { display:grid; place-items:center; flex:0 0 48px; width:48px; height:48px; border:1px solid var(--tm-line); border-radius:50%; background:var(--tm-pale); color:var(--tm-accent); font-size:15px; font-weight:750; }
+.ifc-tm-person strong { display:block; color:var(--tm-ink); font-size:14px; line-height:1.5; font-weight:750; }
+.ifc-tm-person small { display:block; color:var(--tm-muted); font-size:11px; line-height:1.5; }
+.ifc-tm-stars { display:block; margin-top:4px; color:var(--tm-star); letter-spacing:2px; font-size:13px; line-height:1.4; }
+.ifc-tm-card-hills { position:absolute; z-index:-1; inset:auto 0 0; width:100%; height:38px; color:var(--tm-hill); opacity:.45; pointer-events:none; }
+.ifc-tm-controls { display:flex; justify-content:center; align-items:center; gap:12px; padding:9px 14px 20px; }
+.ifc-tm-control { display:grid; place-items:center; flex:0 0 44px; width:44px; height:44px; padding:0; border:1px solid var(--tm-line); border-radius:50%; background:var(--tm-card); color:var(--tm-accent); cursor:pointer; transition:background .2s,border-color .2s; }
+.ifc-tm-control:hover { background:var(--tm-pale); border-color:var(--tm-accent); }
+.ifc-tm-control-icon { display:grid; place-items:center; }
+.ifc-tm-control-icon.is-back { transform:rotate(180deg); }
+.ifc-tm-dots { display:flex; align-items:center; gap:0; }
+.ifc-tm-dot { display:grid; place-items:center; width:27px; height:36px; border:0; padding:0; background:transparent; cursor:pointer; }
+.ifc-tm-dot span { display:block; width:7px; height:7px; border-radius:99px; background:var(--tm-hill); transition:width .25s,background .25s; }
+.ifc-tm-dot[aria-pressed="true"] span { width:20px; background:var(--tm-accent); }
+.ifc-tm-controls button:focus-visible,.ifc-tm-window:focus-visible { outline:2px solid var(--tm-accent); outline-offset:3px; }
+.ifc-tm-principles { position:relative; z-index:1; display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:16px 26px; padding:10px 20px 34px; color:var(--tm-muted); font-size:12px; }
+.ifc-tm-principles span { display:flex; align-items:center; gap:8px; }
+.ifc-tm-principles span + span { border-left:1px solid var(--tm-line); padding-left:26px; }
+.ifc-tm-principles svg { color:var(--tm-accent); flex:none; }
+.ifc-tm-bottom { display:block; width:100%; height:clamp(24px,4vw,52px); color:var(--tm-hill); opacity:.45; pointer-events:none; }
+@media(max-width:640px) {
+  .ifc-tm-track { gap:12px; padding-right:12px; }
+  .ifc-tm-card { width:min(310px,calc(100vw - 50px)); min-height:240px; padding:20px; border-radius:16px; }
+  .ifc-tm-controls { gap:7px; }
+  .ifc-tm-control { flex-basis:40px; width:40px; height:40px; }
+  .ifc-tm-dot { width:25px; }
+  .ifc-tm-principles { font-size:11px; gap:12px 15px; padding-bottom:25px; }
+  .ifc-tm-principles span + span { padding-left:0; border:0; }
+}
+@media(max-width:350px) { .ifc-tm-controls { gap:4px; } .ifc-tm-dot { width:22px; } }
+@media(prefers-reduced-motion:reduce) { .ifc-testimonials *, .ifc-testimonials *::before, .ifc-testimonials *::after { transition:none!important; } }
