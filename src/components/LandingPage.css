@@ -3240,10 +3240,6 @@ html[data-ifc-theme="dark"] .landing-page .ifc-product-features .ifc-feature-hea
 .ifc-feature-bridge p { margin: 0; max-width: 600px; color: var(--fp-muted); font-size: 13px; line-height: 1.8; }
 
 /* Opening motion: only the header and landscape enter; hero copy and SVG retain existing timings. */
-@keyframes ifc-capsule-arrive { from { opacity: .25; translate: 0 -12px; } to { opacity: 1; translate: 0 0; } }
-@keyframes ifc-landscape-arrive { from { opacity: .25; } to { opacity: 1; } }
-@keyframes ifc-feature-enter { from { opacity: 0; transform: translateY(20px) scale(.99); } to { opacity: 1; transform: none; } }
-@keyframes ifc-feature-copy-in { from { opacity: 0; transform: translateY(12px); filter: blur(3px); } to { opacity: 1; transform: none; filter: none; } }
 @keyframes ifc-preview-row-in { from { opacity: .25; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @keyframes ifc-preview-bar-in { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes ifc-preview-arc-in { from { stroke-dasharray: 0 100; } to { stroke-dasharray: var(--arc); } }
@@ -3254,7 +3250,6 @@ html[data-ifc-theme="dark"] .landing-page .ifc-product-features .ifc-feature-hea
 @keyframes ifc-proof-bulb { 0%,100% { scale: 1; } 45% { scale: 1.12; filter: drop-shadow(0 0 4px #e4c16c); } }
 @keyframes ifc-proof-sprout { 0% { scale: .78; rotate: -7deg; } 55% { scale: 1.1; rotate: 5deg; } 100% { scale: 1; rotate: 0deg; } }
 @keyframes ifc-proof-shield { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-@keyframes ifc-proof-copy { 0% { translate: 0 4px; } 100% { translate: 0 0; } }
 @property --ifc-preview-value { syntax: "<integer>"; initial-value: 0; inherits: false; }
 @keyframes ifc-preview-count-up { from { --ifc-preview-value: 0; } to { --ifc-preview-value: var(--ifc-target); } }
 .ifc-feature-count { --ifc-preview-value: var(--ifc-target); display: inline-block; font-variant-numeric: tabular-nums; }
@@ -3269,16 +3264,6 @@ html[data-ifc-theme="dark"] .landing-page .ifc-product-features .ifc-feature-hea
 .landing-proof-premium .ifc-proof-shield path { stroke-dasharray: 1; stroke-dashoffset: 0; }
 
 @media (prefers-reduced-motion: no-preference) {
-  .landing-page .ifc-capsule-header { animation: ifc-capsule-arrive .65s cubic-bezier(.2,.7,.2,1) 80ms backwards; }
-  .landing-page .landing-hero-landscape { animation: ifc-landscape-arrive .85s ease-out backwards; }
-  .ifc-product-features .ifc-feature-heading.reveal-on-scroll { opacity: 1; transform: none; }
-  .ifc-feature-heading.reveal-on-scroll:not(.is-revealed) :is(.landing-section-kicker,h2 > span,h2 > em,p) { opacity: 0; }
-  .ifc-feature-heading.reveal-on-scroll.is-revealed :is(.landing-section-kicker,h2 > span,h2 > em,p) { animation: ifc-feature-copy-in .65s cubic-bezier(.2,.7,.2,1) both; }
-  .ifc-feature-heading.is-revealed h2 > span { animation-delay: 100ms !important; }
-  .ifc-feature-heading.is-revealed h2 > em { animation-delay: 220ms !important; }
-  .ifc-feature-heading.is-revealed p { animation-delay: 360ms !important; }
-  .ifc-feature-card.reveal-on-scroll { opacity: 0; transform: translateY(20px); }
-  .ifc-feature-card.reveal-on-scroll.is-revealed { animation: ifc-feature-enter .65s cubic-bezier(.2,.7,.2,1) var(--feature-delay) both; }
   .ifc-feature-card.is-revealed .ifc-preview-row-motion { animation: ifc-preview-row-in .5s ease-out calc(var(--feature-delay) + 420ms + var(--row,0)*100ms) both; }
   .ifc-feature-card.is-revealed .ifc-preview-progress > span { animation: ifc-preview-bar-in 1.2s cubic-bezier(.2,.7,.2,1) calc(var(--feature-delay) + 420ms) both; }
   .ifc-feature-card.is-revealed .ifc-feature-count { animation: ifc-preview-count-up 1.2s ease-out calc(var(--feature-delay) + 420ms) both; }
@@ -3286,7 +3271,6 @@ html[data-ifc-theme="dark"] .landing-page .ifc-product-features .ifc-feature-hea
   .ifc-feature-card.is-revealed .ifc-preview-date-mark { animation: ifc-preview-date-in .7s ease-out calc(var(--feature-delay) + 550ms + var(--row,0)*180ms) both; }
   .ifc-feature-card.is-revealed .ifc-preview-check path { stroke-dasharray: 1; animation: ifc-preview-check-in .55s ease-out calc(var(--feature-delay) + 550ms + var(--row,0)*100ms) both; }
   .ifc-feature-harvest.is-revealed .ifc-feature-icon svg { transform-origin: bottom center; animation: ifc-feature-wheat-sway .85s ease-out calc(var(--feature-delay) + 250ms); }
-  .landing-proof-premium .landing-proof-principle.is-revealed .landing-proof-copy { animation: ifc-proof-copy .55s ease-out calc(var(--proof-order,0)*120ms) both; }
   .landing-proof-premium .ifc-proof-innovation.is-revealed .landing-proof-icon svg { animation: ifc-proof-bulb .7s ease-out; }
   .landing-proof-premium .ifc-proof-connected.is-revealed .landing-proof-icon svg { animation: ifc-proof-sprout .85s ease-out 120ms backwards; }
   .landing-proof-premium .ifc-proof-responsible.is-revealed .ifc-proof-shield .ifc-proof-shield-outline { animation: ifc-proof-shield .45s ease-out 240ms backwards; }
@@ -3332,4 +3316,18 @@ html[data-ifc-theme="dark"] .landing-page .ifc-product-features .ifc-feature-hea
   .ifc-feature-card.reveal-on-scroll,.ifc-feature-heading.reveal-on-scroll { opacity: 1 !important; transform: none !important; }
   .ifc-feature-count { --ifc-preview-value: var(--ifc-target); }
   .ifc-feature-card,.ifc-feature-preview,.ifc-feature-icon,.landing-proof-premium .landing-proof-icon { transition: none !important; }
+}
+
+/* Motion owns the entrance transforms; the existing observer only triggers inner data visuals. */
+.ifc-feature-card.reveal-on-scroll { visibility: visible; }
+@media (prefers-reduced-motion: reduce) {
+  .landing-page .ifc-capsule-header,
+  .landing-page .landing-hero-landscape,
+  .landing-page .landing-hero-copy > *,
+  .ifc-feature-heading :is(.landing-section-kicker,h2 > span,h2 > em,p),
+  .ifc-feature-card, .ifc-feature-bridge, .landing-proof-copy {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
 }
