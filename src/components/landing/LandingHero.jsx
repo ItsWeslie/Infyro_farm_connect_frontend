@@ -23,14 +23,44 @@ export function LandingHero({ openAuth }) {
   const reduced = useReducedMotion();
   return (
     <section className="landing-hero">
-      <div className="landing-hero-photo" aria-hidden="true" />
-      <div className="landing-hero-shade" aria-hidden="true" />
-      <div className="landing-hero-glow" aria-hidden="true" />
-      <svg className="landing-hero-contours" viewBox="0 0 1440 360" preserveAspectRatio="xMidYMax slice" fill="none" aria-hidden="true" focusable="false">
-        {Array.from({ length: 12 }, (_, i) => (
-          <path key={i} d={`M-80 ${110 + i * 18} C100 ${40 + i * 18} 290 ${55 + i * 18} 480 ${155 + i * 18} S790 ${235 + i * 18} 1010 ${130 + i * 18} S1300 ${25 + i * 18} 1520 ${92 + i * 18}`} />
-        ))}
+      <svg
+        className="landing-hero-landscape"
+        viewBox="0 0 1440 620"
+        preserveAspectRatio="xMidYMax slice"
+        fill="none"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <defs>
+          <linearGradient id="ifc-landscape-far" x1="0" y1="0" x2="0" y2="1">
+            <stop stopColor="var(--hero-hill-far)" stopOpacity=".08" />
+            <stop offset="1" stopColor="var(--hero-hill-far)" stopOpacity=".55" />
+          </linearGradient>
+          <linearGradient id="ifc-landscape-near" x1="0" y1="0" x2="0" y2="1">
+            <stop stopColor="var(--hero-hill-near)" stopOpacity=".24" />
+            <stop offset="1" stopColor="var(--hero-hill-near)" stopOpacity=".58" />
+          </linearGradient>
+          <linearGradient id="ifc-landscape-contour" x1="0" y1="0" x2="1" y2="0">
+            <stop stopColor="var(--hero-contour)" stopOpacity=".18" />
+            <stop offset=".45" stopColor="var(--hero-contour)" stopOpacity=".6" />
+            <stop offset="1" stopColor="var(--hero-contour)" stopOpacity=".85" />
+          </linearGradient>
+          <clipPath id="ifc-landscape-clip">
+            <rect width="1440" height="620" />
+          </clipPath>
+        </defs>
+        <g clipPath="url(#ifc-landscape-clip)">
+          <path d="M-100 525 C145 385 285 430 460 482 S770 517 970 406 S1280 295 1540 384 V650 H-100 Z" fill="url(#ifc-landscape-far)" />
+          <path d="M-100 585 C140 487 280 505 462 553 S788 587 1002 466 S1300 390 1540 448 V650 H-100 Z" fill="url(#ifc-landscape-near)" />
+          <g className="landing-hero-field-lines" stroke="url(#ifc-landscape-contour)">
+            {Array.from({ length: 17 }, (_, i) => (
+              <path key={i} d={`M-160 ${434 + i * 14} C120 ${352 + i * 15} 275 ${377 + i * 14} 468 ${466 + i * 14} S785 ${548 + i * 14} 1000 ${421 + i * 14} S1310 ${310 + i * 14} 1600 ${393 + i * 14}`} />
+            ))}
+          </g>
+        </g>
       </svg>
+      <div className="landing-hero-glow" aria-hidden="true" />
+      <div className="landing-hero-shade" aria-hidden="true" />
       <div className="landing-hero-inner">
         <div className="landing-hero-copy">
           <div className="landing-eyebrow landing-hero-reveal landing-hero-reveal-1">
