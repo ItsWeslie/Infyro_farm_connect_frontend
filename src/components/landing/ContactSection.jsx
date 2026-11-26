@@ -101,7 +101,6 @@ export function ContactSection({ contactForm, setContactForm, setContactToast })
 
   return <section className="ifc-nature-contact" id="contact" aria-labelledby="landing-contact-title">
     <Landscape />
-    <div className="ifc-nc-corner" aria-hidden="true" />
     <div className="ifc-nc-layout">
       <motion.div className="ifc-nc-copy" {...entrance(0)}>
         <span className="ifc-nc-kicker"><Sprout size={20} strokeWidth={1.8} aria-hidden="true" />CONTACT US</span>
