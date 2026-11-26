@@ -88,7 +88,10 @@ export default function LandingPage({ theme: controlledTheme, setTheme: setContr
       { threshold: 0.12, rootMargin: "0px 0px -35px 0px" },
     );
     targets.forEach((target) => {
-      target.classList.add("reveal-on-scroll");
+      // Motion owns these entrances; this observer only starts their internal CSS/SVG effects.
+      if (!target.matches(".ifc-feature-card, .landing-proof-premium .landing-proof-principle")) {
+        target.classList.add("reveal-on-scroll");
+      }
       observer.observe(target);
     });
     return () => observer.disconnect();
