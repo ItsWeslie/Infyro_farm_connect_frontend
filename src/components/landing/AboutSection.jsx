@@ -24,10 +24,6 @@ export function AboutSection() {
   return (
     <section className="ifc-about" id="about-infyro" aria-labelledby="ifc-about-title">
       <motion.div className="ifc-about-brand-card" {...enter(0, .98)}>
-        <div className="ifc-about-rings" aria-hidden="true" />
-        <div className="ifc-about-waves" aria-hidden="true">
-          <svg viewBox="0 0 600 170" preserveAspectRatio="none" fill="none"><path d="M0 20C180 135 300 178 600 70V170H0Z" fill="currentColor" opacity=".36" /><path d="M0 125C195 182 390 70 600 15V170H0Z" fill="currentColor" opacity=".3" /></svg>
-        </div>
         <motion.div className="ifc-about-mark-wrap" {...enter(.12, .92)}><InfyroIncLogo size={220} className="ifc-about-mark" decorative /></motion.div>
         <motion.div className="ifc-about-brand-copy" {...enter(.2)}>
           <strong>Infyro Inc.</strong>
