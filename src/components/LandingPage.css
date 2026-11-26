@@ -2739,6 +2739,10 @@ html[data-ifc-theme="dark"] .landing-dashboard-svg .landing-dashboard-theme-thum
     grid-template-columns: minmax(0,.78fr) minmax(0,1.22fr);
     gap: clamp(24px,3vw,40px);
   }
+  .landing-page .landing-dashboard-svg-preview {
+    position: relative;
+    left: clamp(8px,1.2vw,18px);
+  }
 }
 @media (max-width: 900px) {
   .landing-page .landing-dashboard-svg-preview {
