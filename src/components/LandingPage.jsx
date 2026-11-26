@@ -4,6 +4,7 @@ import { LandingHeader } from "./landing/LandingHeader";
 import { LandingHero } from "./landing/LandingHero";
 import { PlatformProofStrip } from "./landing/PlatformProofStrip";
 import { FeaturesSection } from "./landing/FeaturesSection";
+import { AboutSection } from "./landing/AboutSection";
 import { StorySection } from "./landing/StorySection";
 import { WorkflowSection } from "./landing/WorkflowSection";
 import { TestimonialsSection } from "./landing/TestimonialsSection";
@@ -139,6 +140,7 @@ export default function LandingPage({ theme: controlledTheme, setTheme: setContr
         <LandingHero openAuth={openAuth} />
         <PlatformProofStrip />
         <FeaturesSection />
+        <AboutSection />
         <StorySection openAuth={openAuth} />
         <WorkflowSection />
         <TestimonialsSection />
