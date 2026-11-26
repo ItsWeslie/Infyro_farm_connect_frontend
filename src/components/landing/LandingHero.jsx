@@ -65,7 +65,7 @@ export function LandingHero({ openAuth }) {
         <div className="landing-hero-copy">
           <div className="landing-eyebrow landing-hero-reveal landing-hero-reveal-1">
             <span className="landing-eyebrow-mark"><Sprout size={14} aria-hidden="true" /></span>
-            A better way to grow
+            A product by Infyro Inc.
           </div>
           <h1 className="landing-hero-reveal landing-hero-reveal-2">
             Grow smarter.
@@ -73,8 +73,8 @@ export function LandingHero({ openAuth }) {
             <em>Manage better.</em>
           </h1>
           <p className="landing-hero-description landing-hero-reveal landing-hero-reveal-3">
-            Everything your farm needs, in one place. Manage fields, track crops,
-            record expenses and plan your harvests with confidence.
+            A connected farm management platform built by Infyro Inc. Manage fields,
+            track crops, record expenses and plan your harvests — all in one place.
           </p>
           <div className="landing-hero-actions landing-hero-reveal landing-hero-reveal-4">
             <button type="button" className="landing-button landing-hero-primary" onClick={() => openAuth("signup")}>
