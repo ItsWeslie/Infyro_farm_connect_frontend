@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import UseAnimations from "react-useanimations";
 import arrowRight from "react-useanimations/lib/arrowRight";
 import { Tractor, ArrowRight, Sprout, Wheat, Wallet, ClipboardList, CalendarDays, Droplets, Leaf, ScanLine } from "lucide-react";
@@ -143,26 +143,23 @@ function HarvestPreview() {
 const previews = { farms: FarmPreview, crops: CropPreview, calendar: CalendarPreview, activities: ActivityPreview, expenses: ExpensePreview, harvest: HarvestPreview };
 
 export function FeaturesSection() {
-  const [reduced, setReduced] = useState(() => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  useEffect(() => {
-    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(query.matches);
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
-  }, []);
+  const reduced = useReducedMotion();
+  const animateOnScroll = !reduced && typeof IntersectionObserver !== "undefined";
+  const viewport = { once: true, amount: .12, margin: "0px 0px -35px 0px" };
+  const enter = delay => ({ initial: animateOnScroll ? { opacity: 0, y: 12, filter: "blur(3px)" } : false, whileInView: animateOnScroll ? { opacity: 1, y: 0, filter: "blur(0px)" } : undefined, viewport, transition: { duration: .65, delay, ease: [.2,.7,.2,1] } });
 
   return (
     <section className="landing-section landing-features ifc-product-features" id="features">
       <div className="landing-section-heading ifc-feature-heading">
-        <span className="landing-section-kicker">ONE PLATFORM. EVERY SEASON.</span>
-        <h2><span>Everything your farm needs.</span><em>One unified workspace.</em></h2>
-        <p>From managing your fields to recording your harvests, bring every aspect of your farming operations together in one dedicated platform.</p>
+        <motion.span className="landing-section-kicker" {...enter(0)}>ONE PLATFORM. EVERY SEASON.</motion.span>
+        <h2><motion.span {...enter(.1)}>Everything your farm needs.</motion.span><motion.em {...enter(.22)}>One unified workspace.</motion.em></h2>
+        <motion.p {...enter(.36)}>From managing your fields to recording your harvests, bring every aspect of your farming operations together in one dedicated platform.</motion.p>
       </div>
       <div className="ifc-feature-grid">
         {features.map(({ id, icon: Icon, label, title, description }, index) => {
           const Preview = previews[id];
           return (
-            <article className={"ifc-feature-card ifc-feature-" + id} key={id} style={{ "--feature-delay": Math.min(index * 100, 300) + "ms" }}>
+            <motion.article className={"ifc-feature-card ifc-feature-" + id} key={id} style={{ "--feature-delay": Math.min(index * 100, 300) + "ms" }} initial={animateOnScroll ? { opacity: 0, y: 20, scale: .99 } : false} whileInView={animateOnScroll ? { opacity: 1, y: 0, scale: 1 } : undefined} viewport={viewport} transition={{ duration: .65, delay: Math.min(index * .1, .3), ease: [.2,.7,.2,1] }}>
               <div className="ifc-feature-copy">
                 <div className="ifc-feature-card-head">
                   <span className="ifc-feature-icon" aria-hidden="true"><Icon size={23} strokeWidth={1.7} /></span>
@@ -176,17 +173,17 @@ export function FeaturesSection() {
               <div className="ifc-feature-preview-wrap" aria-hidden="true">
                 <div className="ifc-feature-preview"><Preview /></div>
               </div>
-            </article>
+            </motion.article>
           );
         })}
       </div>
       <p className="ifc-feature-caption">Illustrative product previews · Sample data</p>
-      <div className="ifc-feature-bridge">
+      <motion.div className="ifc-feature-bridge" {...enter(0)}>
         <Sprout size={25} strokeWidth={1.6} aria-hidden="true" />
         <span>THE PURPOSE BEHIND THE PRODUCT</span>
         <h3>More than software. <em>A purpose to grow.</em></h3>
         <p>Infyro Farm reflects our belief that meaningful technology should simplify work, empower people and create lasting value.</p>
-      </div>
+      </motion.div>
     </section>
   );
 }
