@@ -1,4 +1,4 @@
-import { ArrowRight, Sprout } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import UseAnimations from "react-useanimations";
 import arrowRight from "react-useanimations/lib/arrowRight";
@@ -45,19 +45,16 @@ export function LandingCTA({ openAuth }) {
     <section className="ifc-final-cta" aria-labelledby="ifc-final-cta-title">
       <BannerArt />
       <div className="ifc-final-cta-content">
-        <motion.div className="ifc-final-cta-mark" {...entrance(0)}>
-          <Sprout size={38} strokeWidth={1.6} aria-hidden="true" />
-        </motion.div>
-        <motion.span className="ifc-final-cta-kicker" {...entrance(.04)}>
+        <motion.span className="ifc-final-cta-kicker" {...entrance(0)}>
           YOUR NEXT SEASON STARTS HERE
         </motion.span>
-        <motion.h2 id="ifc-final-cta-title" {...entrance(.08)}>
+        <motion.h2 id="ifc-final-cta-title" {...entrance(.04)}>
           Grow with confidence. <em>Farm with clarity.</em>
         </motion.h2>
-        <motion.p {...entrance(.12)}>
+        <motion.p {...entrance(.08)}>
           Bring your farms, fields, crops and everyday activities together in one connected workspace.
         </motion.p>
-        <motion.div className="ifc-final-cta-actions" {...entrance(.16)}>
+        <motion.div className="ifc-final-cta-actions" {...entrance(.12)}>
           <button type="button" className="ifc-final-cta-action ifc-final-cta-primary" onClick={() => openAuth("signup")}>
             Get Started Free
             <span className="ifc-final-cta-arrow" aria-hidden="true">
