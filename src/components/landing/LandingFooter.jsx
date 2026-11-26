@@ -22,6 +22,7 @@ export function LandingFooter({ openAuth }) {
               <div className="landing-footer-link-group">
                 <span className="landing-footer-label">EXPLORE</span>
                 <a href="#features">Features</a>
+                <a href="#about-infyro">About Infyro Inc.</a>
                 <a href="#why-infyro">Our approach</a>
                 <a href="#how-it-works">How it works</a>
                 <a
