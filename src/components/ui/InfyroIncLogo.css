@@ -8,6 +8,7 @@
   width: calc(537px * var(--ifc-inc-logo-scale));
   height: calc(784px * var(--ifc-inc-logo-scale));
   vertical-align: middle;
+  overflow: hidden;
 }
 .ifc-inc-logo-shape {
   position: absolute;
