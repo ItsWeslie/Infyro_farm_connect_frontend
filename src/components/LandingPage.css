@@ -2810,12 +2810,13 @@ html[data-ifc-theme="dark"] .landing-dashboard-svg .landing-dashboard-theme-thum
   --hero-contour: #77985d;
   --hero-hill-far: #b4cba1;
   --hero-hill-near: #a7bf88;
+  --hero-end-surface: #faf9f2;
   min-height: 0;
   background: linear-gradient(112deg,#faf9f0 0%,#edf2e1 52%,#cbdcb7 100%);
 }
 .landing-page .landing-hero-shade {
   pointer-events: none;
-  background: linear-gradient(90deg,rgba(250,249,240,.70),rgba(244,247,234,.22) 48%,transparent 76%);
+  background: linear-gradient(to bottom,transparent 0%,transparent 80%,var(--hero-end-surface) 100%), linear-gradient(90deg,rgba(250,249,240,.70),rgba(244,247,234,.22) 48%,transparent 76%);
 }
 .landing-hero-glow {
   position: absolute;
@@ -2958,12 +2959,13 @@ html[data-ifc-theme="dark"] .landing-page .landing-hero {
   --hero-contour: #8aaf76;
   --hero-hill-far: #405b37;
   --hero-hill-near: #344d34;
+  --hero-end-surface: #172219;
   background: linear-gradient(112deg,#142219 0%,#203426 55%,#344b30 100%);
 }
-html[data-ifc-theme="dark"] .landing-page .landing-hero-shade { background: linear-gradient(90deg,rgba(20,34,25,.65),rgba(20,34,25,.20) 48%,transparent 76%); }
+html[data-ifc-theme="dark"] .landing-page .landing-hero-shade { background: linear-gradient(to bottom,transparent 0%,transparent 80%,var(--hero-end-surface) 100%), linear-gradient(90deg,rgba(20,34,25,.65),rgba(20,34,25,.20) 48%,transparent 76%); }
 html[data-ifc-theme="dark"] .landing-hero-glow { background: radial-gradient(ellipse at 78% 40%,rgba(113,157,93,.30),transparent 58%); }
 @media (min-width: 901px) {
-  .landing-page > main > .landing-hero > .landing-hero-inner { min-height: clamp(630px,92vh,760px); min-height: clamp(630px,92svh,760px); }
+  .landing-page > main > .landing-hero > .landing-hero-inner { min-height: 100vh; min-height: 100svh; }
 }
 @media (min-width: 901px) and (max-width: 1100px) {
   .landing-page .landing-hero-actions { gap: 12px; }
@@ -2994,4 +2996,13 @@ html[data-ifc-theme="dark"] .landing-hero-glow { background: radial-gradient(ell
   .landing-scroll-cue-icon { animation: none; }
   .landing-hero-primary:hover .landing-hero-button-icon,
   .landing-page .landing-hero .landing-secondary-action:hover > span { transform: none; }
+}
+
+/* Keep the hero-to-proof transition flush; the proof items are always visible. */
+.landing-page .landing-hero + .landing-proof-strip {
+  margin-top: 0;
+}
+.landing-page .landing-proof-strip > div {
+  opacity: 1;
+  transform: none;
 }
