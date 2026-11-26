@@ -1,3 +1,4 @@
+import { motion, useReducedMotion } from "motion/react";
 import { Lightbulb, Sprout } from "lucide-react";
 
 function AnimatedShield({ size = 23, strokeWidth = 1.7 }) {
@@ -31,6 +32,8 @@ const principles = [
 ];
 
 export function PlatformProofStrip() {
+  const reduced = useReducedMotion();
+  const animateOnScroll = !reduced && typeof IntersectionObserver !== "undefined";
   return (
     <section className="landing-proof-strip landing-proof-premium" aria-label="The principles behind Infyro Farm">
       <header className="landing-proof-intro">
@@ -43,10 +46,10 @@ export function PlatformProofStrip() {
             <span className="landing-proof-icon" aria-hidden="true">
               <Icon size={23} strokeWidth={1.7} />
             </span>
-            <div className="landing-proof-copy">
+            <motion.div className="landing-proof-copy" initial={false} whileInView={animateOnScroll ? { y: [0, 4, 0] } : undefined} viewport={{ once: true, amount: .12 }} transition={{ duration: .55, delay: index * .12, ease: "easeOut" }}>
               <h3>{title}</h3>
               <p>{description}</p>
-            </div>
+            </motion.div>
           </li>
         ))}
       </ul>
