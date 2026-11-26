@@ -42,7 +42,8 @@ html[data-ifc-theme="dark"] .landing-page .ifc-minimal-footer {
 .ifc-ft-signoff { margin-left:auto; text-align:right; }
 .ifc-minimal-footer :is(a,button):focus-visible { outline:2px solid var(--ft-hover); outline-offset:4px; }
 .ifc-ft-wordmark { width:100%; max-width:none; margin:0; line-height:0; overflow:hidden; pointer-events:none; user-select:none; }
-.ifc-ft-wordmark svg { display:block; width:100%; height:auto; overflow:hidden; }
+.ifc-ft-wordmark svg { display:block; width:100%; height:auto; overflow:hidden; opacity:.16; }
+html[data-ifc-theme="dark"] .landing-page .ifc-ft-wordmark svg { opacity:.12; }
 .ifc-ft-wordmark text { font-family:inherit; font-weight:850; letter-spacing:-9px; }
 .ifc-ft-word-infyro { fill:var(--ft-word); }
 .ifc-ft-word-farm { fill:var(--ft-farm); }
