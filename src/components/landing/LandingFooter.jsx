@@ -1,4 +1,4 @@
-import { ArrowUp, ArrowUpRight, BriefcaseBusiness, Clock3, Instagram, LayoutGrid, Linkedin, Mail, MapPin, Phone, UserRound } from "lucide-react";
+import { ArrowUpRight, BriefcaseBusiness, Clock3, Instagram, LayoutGrid, Linkedin, Mail, MapPin, Phone, UserRound } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { BrandMark } from "./BrandMark";
 import "./LandingFooter.css";
@@ -10,7 +10,7 @@ function FooterHeading({ icon: Icon, children }) {
 function FooterWordmark({ entrance }) {
   return (
     <motion.div className="ifc-ft-wordmark" aria-hidden="true" {...entrance(.16)}>
-      <svg viewBox="0 0 1000 180" focusable="false" aria-hidden="true">
+      <svg viewBox="0 0 1000 100" focusable="false" aria-hidden="true">
         <defs>
           <linearGradient id="ifc-ft-word-fade" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="white" />
@@ -21,7 +21,7 @@ function FooterWordmark({ entrance }) {
             <rect width="1000" height="180" fill="url(#ifc-ft-word-fade)" />
           </mask>
         </defs>
-        <text x="6" y="145" fontSize="170" textLength="988" lengthAdjust="spacingAndGlyphs" mask="url(#ifc-ft-word-mask)"><tspan className="ifc-ft-word-infyro">infyro</tspan><tspan className="ifc-ft-word-farm">farm.</tspan></text>
+        <text x="0" y="145" fontSize="170" textLength="1000" lengthAdjust="spacingAndGlyphs" mask="url(#ifc-ft-word-mask)"><tspan className="ifc-ft-word-infyro">infyro</tspan><tspan className="ifc-ft-word-farm"> farms</tspan></text>
       </svg>
     </motion.div>
   );
@@ -86,10 +86,9 @@ export function LandingFooter({ openAuth }) {
         <motion.div className="ifc-ft-bottom" {...entrance(.08)}>
           <small>© {new Date().getFullYear()} Infyro Farms. All rights reserved.</small>
           <span className="ifc-ft-signoff">Clearer records. More connected seasons.</span>
-          <button className="ifc-ft-top" type="button" onClick={() => window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" })} aria-label="Back to top" title="Back to top"><ArrowUp size={19} aria-hidden="true" /></button>
         </motion.div>
-        <FooterWordmark entrance={entrance} />
       </div>
+      <FooterWordmark entrance={entrance} />
     </footer>
   );
 }
