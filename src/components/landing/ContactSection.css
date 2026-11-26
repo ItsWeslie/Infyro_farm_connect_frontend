@@ -1,0 +1,85 @@
+/* Nature-inspired contact section, scoped away from the previous layout. */
+.landing-page .ifc-nature-contact {
+  --nc-bg:#f8f4e7; --nc-ink:#173f20; --nc-muted:#4d5e4d; --nc-accent:#416c32;
+  --nc-card:#fffdf5; --nc-field:#fffefa; --nc-border:#c9d7bc; --nc-icon:#e4edcf;
+  --nc-button-text:#fff; --nc-shadow:#344a2522; --nc-error:#9e422e;
+  --nc-hill-a:#b4c49a; --nc-hill-b:#92af72; --nc-hill-c:#769751; --nc-field-a:#a0b76b;
+  --nc-field-b:#638844; --nc-leaf:#567c3d; --nc-sun:#f5dc97; --nc-house:#f6ecd3; --nc-roof:#956c43;
+  position:relative; isolation:isolate; overflow:hidden; width:100%; box-sizing:border-box;
+  background:var(--nc-bg); color:var(--nc-ink); padding:clamp(64px,8vw,115px) 0 clamp(86px,10vw,155px);
+  scroll-margin-top:96px;
+}
+html[data-ifc-theme="dark"] .landing-page .ifc-nature-contact {
+  --nc-bg:#19271d; --nc-ink:#edf4e9; --nc-muted:#bac9b5; --nc-accent:#b6da98;
+  --nc-card:#233128; --nc-field:#1c2b20; --nc-border:#4e654b; --nc-icon:#344b35;
+  --nc-button-text:#18321e; --nc-shadow:#0005; --nc-error:#ffc0ad;
+  --nc-hill-a:#3b5541; --nc-hill-b:#405d3e; --nc-hill-c:#344f34; --nc-field-a:#466044;
+  --nc-field-b:#2d4931; --nc-leaf:#64865a; --nc-sun:#b6b88a; --nc-house:#849178; --nc-roof:#535c45;
+}
+.ifc-nc-landscape { position:absolute; inset:auto 0 0; width:100%; height:clamp(190px,29vw,420px); z-index:-1; pointer-events:none; overflow:hidden; }
+.ifc-nc-landscape svg { display:block; width:100%; height:100%; }
+.ifc-nc-landscape::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,var(--nc-bg),transparent 35%); }
+.ifc-nc-corner { position:absolute; pointer-events:none; z-index:-1; width:43%; height:48%; border-radius:50%; right:-17%; top:-25%; transform:rotate(-34deg); background:var(--nc-icon); opacity:.65; }
+.ifc-nc-corner::after { content:""; position:absolute; inset:14% -10% -18% 12%; border-radius:50%; background:var(--nc-icon); opacity:.7; }
+.ifc-nc-botanical { position:absolute; z-index:-1; top:-17px; left:-22px; width:clamp(105px,17vw,215px); height:auto; color:var(--nc-leaf); opacity:.22; transform:rotate(-20deg); pointer-events:none; }
+.ifc-nc-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.08fr); align-items:start; gap:clamp(30px,5vw,80px); width:min(1320px,calc(100% - 72px)); margin:0 auto; position:relative; }
+.ifc-nc-copy { min-width:0; padding:clamp(12px,2.5vw,36px) 0 0; }
+.ifc-nc-kicker { display:flex; align-items:center; gap:10px; font-size:12px; letter-spacing:2px; color:var(--nc-accent); font-weight:750; }
+.ifc-nc-kicker::before,.ifc-nc-kicker::after { content:""; width:clamp(22px,3vw,42px); height:1px; background:currentColor; opacity:.65; }
+.ifc-nc-copy h2 { margin:25px 0 19px; color:var(--nc-ink); font-family:inherit; font-size:clamp(42px,5vw,76px); font-weight:780; line-height:1.06; letter-spacing:-.048em; }
+.ifc-nc-copy h2 em { display:block; color:var(--nc-accent); font-style:italic; }
+.ifc-nc-copy > p { color:var(--nc-muted); font-size:clamp(16px,1.65vw,22px); line-height:1.6; max-width:520px; margin:0; }
+.ifc-nc-details { display:flex; flex-wrap:wrap; align-items:flex-start; gap:16px 20px; margin:clamp(25px,4vw,48px) 0 18px; }
+.ifc-nc-detail { display:flex; align-items:flex-start; gap:9px; min-width:0; color:var(--nc-ink); text-decoration:none; }
+.ifc-nc-detail strong,.ifc-nc-detail small { display:block; line-height:1.5; }
+.ifc-nc-detail strong { font-weight:750; font-size:13px; }
+.ifc-nc-detail small { font-size:11px; color:var(--nc-muted); overflow-wrap:anywhere; }
+.ifc-nc-detail:hover strong { color:var(--nc-accent); }
+.ifc-nc-symbol { display:grid; place-items:center; width:40px; height:40px; flex:0 0 40px; border-radius:11px; background:var(--nc-icon); color:var(--nc-accent); }
+.ifc-nc-socials { display:flex; gap:10px; }
+.ifc-nc-socials a { width:38px; height:38px; display:grid; place-items:center; border:1px solid var(--nc-border); border-radius:50%; background:var(--nc-card); color:var(--nc-accent); text-decoration:none; transition:background .2s,transform .2s; }
+.ifc-nc-socials a:hover { background:var(--nc-icon); transform:translateY(-2px); }
+.ifc-nc-form { box-sizing:border-box; min-width:0; display:flex; flex-direction:column; gap:19px; padding:clamp(23px,3.2vw,44px); border:1px solid var(--nc-border); border-radius:clamp(22px,3vw,36px); background:var(--nc-card); box-shadow:0 16px 45px var(--nc-shadow); }
+.ifc-nc-form-head { display:flex; align-items:center; gap:15px; margin-bottom:6px; }
+.ifc-nc-form-head .ifc-nc-symbol { width:58px; height:58px; flex-basis:58px; border-radius:16px; }
+.ifc-nc-form-head h3 { margin:0 0 5px; color:var(--nc-ink); font-size:clamp(23px,2.3vw,33px); line-height:1.15; letter-spacing:-.035em; font-weight:750; }
+.ifc-nc-form-head p { margin:0; color:var(--nc-muted); font-size:13px; line-height:1.5; }
+.ifc-nc-field-row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+.ifc-nc-field { display:flex; min-width:0; flex-direction:column; gap:7px; }
+.ifc-nc-field label { color:var(--nc-ink); font-size:13px; font-weight:700; }
+.ifc-nc-field label span { color:var(--nc-error); }
+.ifc-nc-input-wrap { position:relative; min-width:0; }
+.ifc-nc-input-icon { position:absolute; left:13px; top:15px; color:var(--nc-accent); pointer-events:none; }
+.ifc-nc-input-wrap input,.ifc-nc-input-wrap select,.ifc-nc-input-wrap textarea { box-sizing:border-box; width:100%; min-width:0; min-height:49px; padding:12px 12px 12px 40px; border:1px solid var(--nc-border); border-radius:12px; outline:none; font:inherit; font-size:14px; line-height:1.5; background:var(--nc-field); color:var(--nc-ink); transition:border-color .2s,box-shadow .2s; }
+.ifc-nc-input-wrap select { appearance:none; padding-right:36px; cursor:pointer; }
+.ifc-nc-select-arrow { position:absolute; right:12px; top:16px; color:var(--nc-accent); pointer-events:none; }
+.ifc-nc-input-wrap textarea { min-height:132px; resize:vertical; display:block; }
+.ifc-nc-input-wrap input::placeholder,.ifc-nc-input-wrap textarea::placeholder { color:var(--nc-muted); opacity:.8; }
+.ifc-nc-input-wrap :is(input,select,textarea):focus { border-color:var(--nc-accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--nc-accent) 18%,transparent); }
+.ifc-nc-input-wrap :is(input,select,textarea)[aria-invalid="true"] { border-color:var(--nc-error); }
+.ifc-nc-error { font-size:11px; color:var(--nc-error); }
+.ifc-nc-submit { min-height:52px; display:flex; align-items:center; justify-content:center; gap:9px; padding:12px 18px; border:0; border-radius:14px; background:var(--nc-accent); color:var(--nc-button-text); font:inherit; font-size:15px; font-weight:750; cursor:pointer; transition:box-shadow .2s,filter .2s; }
+.ifc-nc-submit:hover { filter:brightness(.94); box-shadow:0 5px 15px var(--nc-shadow); }
+.ifc-nc-submit svg { transition:transform .25s; }
+.ifc-nc-submit:hover svg { transform:translate(2px,-2px); }
+.ifc-nc-note { color:var(--nc-muted); font-size:11px; line-height:1.5; text-align:center; margin:-7px 0 0; }
+.ifc-nature-contact :is(a,button):focus-visible { outline:2px solid var(--nc-accent); outline-offset:4px; }
+@media(max-width:1050px) { .ifc-nc-layout { gap:30px; width:calc(100% - 48px); } .ifc-nc-details { gap:13px; } }
+@media(max-width:820px) {
+  .landing-page .ifc-nature-contact { padding:56px 0 92px; }
+  .ifc-nc-layout { grid-template-columns:minmax(0,1fr); width:min(620px,calc(100% - 36px)); gap:28px; }
+  .ifc-nc-copy { padding:0; }
+  .ifc-nc-copy h2 { font-size:clamp(42px,8vw,60px); }
+  .ifc-nc-copy h2 em { display:inline; }
+  .ifc-nc-details { margin:24px 0 15px; }
+  .ifc-nc-landscape { height:240px; }
+}
+@media(max-width:480px) {
+  .ifc-nc-layout { width:calc(100% - 30px); }
+  .ifc-nc-form { padding:20px 17px; gap:15px; }
+  .ifc-nc-field-row { grid-template-columns:minmax(0,1fr); gap:15px; }
+  .ifc-nc-form-head { gap:10px; }
+  .ifc-nc-form-head .ifc-nc-symbol { width:46px; height:46px; flex-basis:46px; border-radius:12px; }
+  .ifc-nc-input-wrap input,.ifc-nc-input-wrap select,.ifc-nc-input-wrap textarea { font-size:16px; }
+}
+@media(prefers-reduced-motion:reduce) { .ifc-nature-contact * { transition:none!important; animation:none!important; } .ifc-nc-socials a:hover,.ifc-nc-submit:hover svg { transform:none; } }
