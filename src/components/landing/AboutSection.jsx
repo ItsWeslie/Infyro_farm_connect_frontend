@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from "motion/react";
 import UseAnimations from "react-useanimations";
 import arrowRight from "react-useanimations/lib/arrowRight";
 import { ArrowRight, Sprout, Target, Zap } from "lucide-react";
+import { InfyroIncLogo } from "../ui/InfyroIncLogo";
 import "./AboutSection.css";
 
 const values = [
@@ -9,23 +10,6 @@ const values = [
   { title: "Mission", icon: Target, description: "To build purposeful, reliable and user-centric products that solve meaningful challenges." },
   { title: "Innovation", icon: Zap, description: "To continuously explore and apply technology in practical, high-impact ways." },
 ];
-
-function CorporateMark() {
-  return (
-    <svg className="ifc-about-mark" viewBox="0 0 180 224" fill="none" aria-hidden="true">
-      <defs>
-        <linearGradient id="ifc-corp-left" x1="12" y1="106" x2="94" y2="0" gradientUnits="userSpaceOnUse"><stop stopColor="#0754f0" /><stop offset="1" stopColor="#12a9f9" /></linearGradient>
-        <linearGradient id="ifc-corp-right" x1="90" y1="166" x2="170" y2="51" gradientUnits="userSpaceOnUse"><stop stopColor="#0752e9" /><stop offset="1" stopColor="#13b5ef" /></linearGradient>
-        <linearGradient id="ifc-corp-lower" x1="12" y1="224" x2="49" y2="128" gradientUnits="userSpaceOnUse"><stop stopColor="#0537d7" /><stop offset="1" stopColor="#079bf8" /></linearGradient>
-      </defs>
-      <path d="M5 51 90 2v51L5 102Z" fill="url(#ifc-corp-left)" strokeLinejoin="round" />
-      <path d="m90 2 85 49-44 25-41-23Z" fill="#0640cb" />
-      <path d="m65 164 36-21v59l-36 21Z" fill="#063bc8" />
-      <path d="m65 114 110-63v51L65 166Z" fill="url(#ifc-corp-right)" />
-      <path d="m5 147 36-21v97L5 202Z" fill="url(#ifc-corp-lower)" />
-    </svg>
-  );
-}
 
 export function AboutSection() {
   const reduced = useReducedMotion();
@@ -44,7 +28,7 @@ export function AboutSection() {
         <div className="ifc-about-waves" aria-hidden="true">
           <svg viewBox="0 0 600 170" preserveAspectRatio="none" fill="none"><path d="M0 20C180 135 300 178 600 70V170H0Z" fill="currentColor" opacity=".36" /><path d="M0 125C195 182 390 70 600 15V170H0Z" fill="currentColor" opacity=".3" /></svg>
         </div>
-        <motion.div className="ifc-about-mark-wrap" {...enter(.12, .92)}><CorporateMark /></motion.div>
+        <motion.div className="ifc-about-mark-wrap" {...enter(.12, .92)}><InfyroIncLogo size={220} className="ifc-about-mark" decorative /></motion.div>
         <motion.div className="ifc-about-brand-copy" {...enter(.2)}>
           <strong>Infyro Inc.</strong>
           <p>Purposeful innovation across products.</p>
