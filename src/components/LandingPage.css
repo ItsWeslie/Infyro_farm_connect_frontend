@@ -3053,7 +3053,7 @@ html[data-ifc-theme="dark"] .landing-hero-glow { background: radial-gradient(ell
 }
 .landing-proof-premium .landing-proof-principle {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 14px;
   min-width: 0;
   padding: 7px clamp(14px,2vw,26px);
@@ -3097,7 +3097,7 @@ html[data-ifc-theme="dark"] .landing-page .landing-proof-premium {
 }
 @media (min-width: 761px) and (max-width: 1000px) {
   .landing-page .landing-proof-premium { width: calc(100% - 44px); }
-  .landing-proof-premium .landing-proof-principle { flex-direction: column; gap: 10px; }
+  .landing-proof-premium .landing-proof-principle { gap: 10px; padding-inline: 12px; }
 }
 @media (max-width: 760px) {
   .landing-page .landing-proof-premium { width: calc(100% - 38px); padding: 30px 0; }
