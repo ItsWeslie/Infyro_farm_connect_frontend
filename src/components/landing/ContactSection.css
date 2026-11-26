@@ -6,6 +6,7 @@ html[data-ifc-theme="dark"] .landing-page { --ifc-contact-surface:#223329; }
   --nc-bg:var(--ifc-contact-surface); --nc-ink:#173f20; --nc-muted:#4d5e4d; --nc-accent:#416c32;
   --nc-card:#fffdf5; --nc-field:#fffefa; --nc-border:#c9d7bc; --nc-icon:#e4edcf;
   --nc-button-text:#fff; --nc-shadow:#344a2522; --nc-error:#9e422e;
+  /* Shared landscape palette in both light and dark mode. */
   --nc-hill-a:#b4c49a; --nc-hill-b:#92af72; --nc-hill-c:#769751; --nc-field-a:#a0b76b;
   --nc-field-b:#638844; --nc-leaf:#567c3d; --nc-sun:#f5dc97; --nc-house:#f6ecd3; --nc-roof:#956c43;
   position:relative; isolation:isolate; overflow:hidden; width:100%; box-sizing:border-box;
@@ -16,14 +17,10 @@ html[data-ifc-theme="dark"] .landing-page .ifc-nature-contact {
   --nc-bg:var(--ifc-contact-surface); --nc-ink:#edf4e9; --nc-muted:#bac9b5; --nc-accent:#b6da98;
   --nc-card:#233128; --nc-field:#1c2b20; --nc-border:#4e654b; --nc-icon:#344b35;
   --nc-button-text:#18321e; --nc-shadow:#0005; --nc-error:#ffc0ad;
-  --nc-hill-a:#3b5541; --nc-hill-b:#405d3e; --nc-hill-c:#344f34; --nc-field-a:#466044;
-  --nc-field-b:#2d4931; --nc-leaf:#64865a; --nc-sun:#b6b88a; --nc-house:#849178; --nc-roof:#535c45;
 }
 .ifc-nc-landscape { position:absolute; inset:auto 0 0; width:100%; height:clamp(160px,21vw,310px); z-index:-1; pointer-events:none; overflow:hidden; }
 .ifc-nc-landscape svg { display:block; width:100%; height:100%; }
 .ifc-nc-landscape::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,var(--nc-bg),transparent 35%); }
-.ifc-nc-corner { position:absolute; pointer-events:none; z-index:-1; width:43%; height:48%; border-radius:50%; right:-17%; top:-25%; transform:rotate(-34deg); background:var(--nc-icon); opacity:.65; }
-.ifc-nc-corner::after { content:""; position:absolute; inset:14% -10% -18% 12%; border-radius:50%; background:var(--nc-icon); opacity:.7; }
 
 .ifc-nc-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.08fr); align-items:start; gap:clamp(24px,4vw,56px); width:min(1180px,calc(100% - 64px)); margin:0 auto; position:relative; }
 .ifc-nc-copy { min-width:0; padding:clamp(8px,1.5vw,22px) 0 0; }

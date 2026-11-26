@@ -19,7 +19,6 @@ function Landscape() {
       <path d="M0 206Q150 143 301 193T574 192T900 156T1180 201T1440 152V400H0Z" fill="var(--nc-hill-b)" />
       <path d="M0 252Q176 193 327 226T615 245T941 195T1212 228T1440 191V400H0Z" fill="var(--nc-hill-c)" />
       <path d="M0 285Q284 238 562 274T1006 254T1440 265V400H0Z" fill="url(#ifc-nc-fields)" />
-      {Array.from({length:19},(_,i) => <path key={i} d={`M${440 + i*21} 266 Q${330+i*42} 312 ${-260+i*109} 400`} fill="none" stroke="var(--nc-field-a)" strokeWidth="9" opacity=".73" />)}
       <g transform="translate(145 188)">
         <path d="M12 28 68 3 127 28V82H12Z" fill="var(--nc-house)" />
         <path d="M0 31 68 -6 140 31 125 36 68 10 15 36Z" fill="var(--nc-roof)" />
@@ -101,7 +100,6 @@ export function ContactSection({ contactForm, setContactForm, setContactToast })
 
   return <section className="ifc-nature-contact" id="contact" aria-labelledby="landing-contact-title">
     <Landscape />
-    <div className="ifc-nc-corner" aria-hidden="true" />
     <div className="ifc-nc-layout">
       <motion.div className="ifc-nc-copy" {...entrance(0)}>
         <span className="ifc-nc-kicker"><Sprout size={20} strokeWidth={1.8} aria-hidden="true" />CONTACT US</span>
