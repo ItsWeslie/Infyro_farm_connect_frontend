@@ -159,7 +159,7 @@ export function FeaturesSection() {
         {features.map(({ id, icon: Icon, label, title, description }, index) => {
           const Preview = previews[id];
           return (
-            <motion.article className={"ifc-feature-card ifc-feature-" + id} key={id} style={{ "--feature-delay": Math.min(index * 100, 300) + "ms" }} initial={animateOnScroll ? { opacity: 0, y: 20, scale: .99 } : false} whileInView={animateOnScroll ? { opacity: 1, y: 0, scale: 1 } : undefined} viewport={viewport} transition={{ duration: .65, delay: Math.min(index * .1, .3), ease: [.2,.7,.2,1] }}>
+            <motion.article className={"ifc-feature-card ifc-feature-" + id} key={id} style={{ "--feature-delay": Math.min(index * 100, 300) + "ms" }} initial={animateOnScroll ? { opacity: 0, y: 20, scale: .99 } : false} whileInView={animateOnScroll ? { opacity: 1, y: 0, scale: 1 } : undefined} viewport={viewport} whileHover={animateOnScroll ? { y: -5, transition: { type: "spring", stiffness: 320, damping: 26, delay: 0 } } : undefined} transition={{ duration: .65, delay: Math.min(index * .1, .3), ease: [.2,.7,.2,1] }}>
               <div className="ifc-feature-copy">
                 <div className="ifc-feature-card-head">
                   <span className="ifc-feature-icon" aria-hidden="true"><Icon size={23} strokeWidth={1.7} /></span>
