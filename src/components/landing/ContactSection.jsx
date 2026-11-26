@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ChevronDown, Instagram, Leaf, Linkedin, List, Mail, MapPin, MessageSquare, Phone, Send, Sprout, UserRound } from "lucide-react";
+import { ChevronDown, List, Mail, MapPin, MessageSquare, Phone, Send, Sprout, UserRound } from "lucide-react";
 import "./ContactSection.css";
 
 const contactEmail = "info@infyroinc.com";
@@ -102,7 +102,6 @@ export function ContactSection({ contactForm, setContactForm, setContactToast })
   return <section className="ifc-nature-contact" id="contact" aria-labelledby="landing-contact-title">
     <Landscape />
     <div className="ifc-nc-corner" aria-hidden="true" />
-    <Leaf className="ifc-nc-botanical" strokeWidth={.65} aria-hidden="true" />
     <div className="ifc-nc-layout">
       <motion.div className="ifc-nc-copy" {...entrance(0)}>
         <span className="ifc-nc-kicker"><Sprout size={20} strokeWidth={1.8} aria-hidden="true" />CONTACT US</span>
@@ -112,10 +111,6 @@ export function ContactSection({ contactForm, setContactForm, setContactToast })
           <ContactDetail icon={Mail} title="Email Us" value={contactEmail} href={"mailto:" + contactEmail} />
           <ContactDetail icon={Phone} title="Call Us" value="+91 8438938918" href="tel:+918438938918" />
           <ContactDetail icon={MapPin} title="Our Location" value="Tiruchirapalli, Tamil Nadu, India" />
-        </div>
-        <div className="ifc-nc-socials">
-          <a href="https://www.linkedin.com/company/infyroinc/posts/" target="_blank" rel="noopener noreferrer" aria-label="Infyro on LinkedIn"><Linkedin size={18} aria-hidden="true" /></a>
-          <a href="https://www.instagram.com/infyroinc/" target="_blank" rel="noopener noreferrer" aria-label="Infyro on Instagram"><Instagram size={18} aria-hidden="true" /></a>
         </div>
       </motion.div>
       <motion.form className="ifc-nc-form" onSubmit={submit} noValidate aria-labelledby="ifc-nc-form-title" {...entrance(.1)}>
