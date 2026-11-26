@@ -226,9 +226,9 @@ export function TestimonialsSection() {
         <span><CheckSquare size={19} strokeWidth={1.7} aria-hidden="true" />Designed for everyday work</span>
         <span><Users size={21} strokeWidth={1.7} aria-hidden="true" />Growing together</span>
       </motion.div>
-      <svg className="ifc-tm-bottom" viewBox="0 0 1200 70" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0 39Q200 -18 440 39T860 32T1200 12V70H0Z" fill="currentColor" />
-        <path d="M0 60Q300 0 560 55T1200 30V70H0Z" fill="currentColor" opacity=".7" />
+      <svg className="ifc-tm-contact-transition" viewBox="0 0 1200 70" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <path d="M0 30C300 -20 570 78 1200 14V70H0Z" className="ifc-tm-transition-layer" />
+        <path d="M0 45C400 4 670 79 1200 30V70H0Z" className="ifc-tm-transition-surface" />
       </svg>
     </section>
   );
