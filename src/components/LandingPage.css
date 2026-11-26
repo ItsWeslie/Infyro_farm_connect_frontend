@@ -3141,7 +3141,7 @@ html[data-ifc-theme="dark"] .landing-page .ifc-product-features .ifc-feature-hea
   min-width: 0; box-sizing: border-box; padding: clamp(18px,2.5vw,30px);
   background: var(--fp-card); border: 1px solid var(--fp-line); border-radius: 19px;
   box-shadow: 0 8px 24px rgba(34,72,35,.04);
-  transition: translate .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s,border-color .35s;
+  transition: box-shadow .35s,border-color .35s;
 }
 .ifc-feature-card.ifc-feature-farms {
   grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0,.8fr) minmax(0,1.2fr);
@@ -3277,7 +3277,7 @@ html[data-ifc-theme="dark"] .landing-page .ifc-product-features .ifc-feature-hea
   .landing-proof-premium .ifc-proof-responsible.is-revealed .ifc-proof-shield .ifc-proof-shield-check { animation: ifc-proof-shield .3s ease-out 690ms backwards; }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .ifc-feature-card.is-revealed:hover { translate: 0 -5px; border-color: #83ad73; box-shadow: 0 17px 38px #22482319; }
+  .ifc-feature-card.is-revealed:hover { border-color: #83ad73; box-shadow: 0 17px 38px #22482319; }
   .ifc-feature-card:hover .ifc-feature-icon { transform: rotate(-5deg) scale(1.05); }
   .ifc-feature-card:hover .ifc-feature-preview { transform: scale(1.015); }
   .ifc-feature-farms.is-revealed .ifc-feature-preview-wrap { animation: ifc-preview-farm-float 8s ease-in-out 1.5s 1; }
