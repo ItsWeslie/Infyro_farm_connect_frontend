@@ -50,8 +50,28 @@ function Chip({ x, y, w, children, tone = "green" }) {
 }
 
 export function DashboardPreview() {
+  function resetTilt(event) {
+    event.currentTarget.style.removeProperty("--dp-tilt-x");
+    event.currentTarget.style.removeProperty("--dp-tilt-y");
+  }
+
+  function handlePointerMove(event) {
+    if (event.pointerType !== "mouse" || !window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)").matches) return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    if (!bounds.width || !bounds.height) return;
+    const x = Math.max(-0.5, Math.min(0.5, (event.clientX - bounds.left) / bounds.width - 0.5));
+    const y = Math.max(-0.5, Math.min(0.5, (event.clientY - bounds.top) / bounds.height - 0.5));
+    event.currentTarget.style.setProperty("--dp-tilt-x", (1 - y * 5) + "deg");
+    event.currentTarget.style.setProperty("--dp-tilt-y", (-4 + x * 9) + "deg");
+  }
+
   return (
-    <figure className="landing-dashboard-svg-preview landing-hero-dashboard-reveal">
+    <figure
+      className="landing-dashboard-svg-preview landing-hero-dashboard-reveal"
+      onPointerMove={handlePointerMove}
+      onPointerLeave={resetTilt}
+      onPointerCancel={resetTilt}
+    >
       <svg className="landing-dashboard-svg" viewBox="0 0 1000 690" role="img" aria-labelledby="landing-preview-title landing-preview-description" xmlns="http://www.w3.org/2000/svg">
         <title id="landing-preview-title">Infyro Farm overview dashboard</title>
         <desc id="landing-preview-description">Illustrative farm workspace with the actual navigation, portfolio overview, crop progress, milestones, recent activity and monthly expenses. All displayed values are sample data.</desc>
