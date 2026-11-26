@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import UseAnimations from "react-useanimations";
 import menu from "react-useanimations/lib/menu";
 import { Menu, Moon, Sun, X } from "lucide-react";
@@ -19,7 +20,7 @@ const LINKS = [["features", "Features"], ["how-it-works", "How it works"], ["why
 export function LandingHeader({ mobileMenuOpen, setMobileMenuOpen, theme, setTheme, openAuth }) {
   const [active, setActive] = useState("");
   const [scrolled, setScrolled] = useState(false);
-  const [reduced, setReduced] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const reduced = useReducedMotion();
   const header = useRef(null);
   const toggle = useRef(null);
   useEffect(() => {
@@ -37,20 +38,16 @@ export function LandingHeader({ mobileMenuOpen, setMobileMenuOpen, theme, setThe
       setScrolled(window.scrollY > 16);
     }
     const queue = () => { if (!frame) frame = requestAnimationFrame(update); };
-    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const desktop = window.matchMedia("(min-width: 901px)");
-    const changeMotion = () => setReduced(motion.matches);
     const changeDesktop = () => { if (desktop.matches) setMobileMenuOpen(false); };
     update();
     window.addEventListener("scroll", queue, { passive: true });
     window.addEventListener("resize", queue);
-    motion.addEventListener("change", changeMotion);
     desktop.addEventListener("change", changeDesktop);
     return () => {
       window.removeEventListener("scroll", queue);
       window.removeEventListener("resize", queue);
       if (frame) cancelAnimationFrame(frame);
-      motion.removeEventListener("change", changeMotion);
       desktop.removeEventListener("change", changeDesktop);
     };
   }, [setMobileMenuOpen]);
@@ -68,7 +65,7 @@ export function LandingHeader({ mobileMenuOpen, setMobileMenuOpen, theme, setThe
     };
   }, [mobileMenuOpen, setMobileMenuOpen]);
   return (
-    <header ref={header} className={"ifc-capsule-header" + (scrolled ? " is-scrolled" : "")}>
+    <motion.header ref={header} className={"ifc-capsule-header" + (scrolled ? " is-scrolled" : "")} initial={reduced ? false : { opacity: .25, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={reduced ? { duration: 0 } : { duration: .65, delay: .08, ease: [.2,.7,.2,1] }}>
       <div className="ifc-capsule-inner">
         <div className="ifc-capsule-brand"><BrandMark /></div>
         <div className="ifc-capsule-mobile-controls">
@@ -87,6 +84,6 @@ export function LandingHeader({ mobileMenuOpen, setMobileMenuOpen, theme, setThe
           </div>
         </nav>
       </div>
-    </header>
+    </motion.header>
   );
 }
