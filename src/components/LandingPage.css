@@ -2756,3 +2756,37 @@ html[data-ifc-theme="dark"] .landing-dashboard-svg .landing-dashboard-theme-thum
 @media (prefers-reduced-motion: reduce) {
   .landing-hero .landing-dashboard-svg-preview { opacity: 1; animation: none; transform: none; filter: none; will-change: auto; }
 }
+
+
+/* Dashboard SVG motion: independent entrance, tilt and idle float. */
+.landing-dashboard-svg-preview {
+  --dp-float-distance: 5px;
+}
+@keyframes ifc-dashboard-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 calc(-1 * var(--dp-float-distance)); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .landing-dashboard-svg-preview > .landing-dashboard-svg {
+    animation: ifc-dashboard-float 8s ease-in-out infinite;
+    animation-delay: 1.42s;
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .landing-dashboard-svg-preview > .landing-dashboard-svg {
+    transform: perspective(1400px) rotateX(var(--dp-tilt-x, 1deg)) rotateY(var(--dp-tilt-y, -4deg)) translateZ(0);
+    transform-origin: center;
+    transition: transform 500ms ease-out;
+  }
+}
+@media (max-width: 640px) {
+  .landing-dashboard-svg-preview { --dp-float-distance: 2px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-dashboard-svg-preview > .landing-dashboard-svg {
+    animation: none;
+    transform: none;
+    translate: none;
+    transition: none;
+  }
+}
