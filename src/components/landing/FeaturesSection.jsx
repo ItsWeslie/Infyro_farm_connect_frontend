@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import UseAnimations from "react-useanimations";
 import arrowRight from "react-useanimations/lib/arrowRight";
-import { Tractor, ArrowRight, Sprout, Wheat, Wallet, ClipboardList, CalendarDays, Check, Droplets, Leaf, ScanLine } from "lucide-react";
+import { Tractor, ArrowRight, Sprout, Wheat, Wallet, ClipboardList, CalendarDays, Droplets, Leaf, ScanLine } from "lucide-react";
 
 const features = [
   { id: "farms", icon: Tractor, label: "FARM & FIELD MANAGEMENT", title: "Every farm. Every field.", description: "Organize your farms, manage growing spaces and keep track of available land — all within a single connected workspace." },
