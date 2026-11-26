@@ -3,17 +3,10 @@ import { animate, motion, useInView, useMotionValue, useReducedMotion, useTransf
 import UseAnimations from "react-useanimations";
 import arrowRight from "react-useanimations/lib/arrowRight";
 import { ArrowRight, CalendarDays, Check, ChevronRight, CirclePlay, Layers, Sprout, Wallet, Wheat } from "lucide-react";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "../ui/dialog";
 import "./StorySection.css";
 
 const farmerImage = import.meta.env.BASE_URL + "images/our-approach-farmer.webp";
 const activities = ["Land Preparation", "Planting", "Fertilizing", "Irrigation"];
-const steps = [
-  { icon: Sprout, title: "Start with your farm", description: "Organize your farms and fields, add crop details and keep the essentials in one workspace." },
-  { icon: CalendarDays, title: "Keep track of everyday work", description: "Record planting, irrigation, fertilizing and other activities as they happen throughout the season." },
-  { icon: Wallet, title: "Understand your costs", description: "Capture farm expenses and review your spending alongside your daily records." },
-  { icon: Wheat, title: "Learn from every harvest", description: "Record harvest quantities and review your seasonal history before planning the next crop." },
-];
 
 function Count({ value, prefix = "", suffix = "", active }) {
   const number = useMotionValue(0);
@@ -69,27 +62,6 @@ function FarmerVisual({ reduced }) {
   </div>;
 }
 
-function StoryWalkthrough({ reduced }) {
-  const [step, setStep] = useState(0);
-  const current = steps[step];
-  const Icon = current.icon;
-  return <Dialog onOpenChange={open => { if (open) setStep(0); }}>
-    <DialogTrigger asChild><button type="button" className="ifc-story-secondary"><CirclePlay size={19} aria-hidden="true" />See the Story</button></DialogTrigger>
-    <DialogContent className="ifc-story-dialog">
-      <DialogTitle>Your farm, every season</DialogTitle>
-      <DialogDescription>Discover how Infyro Farm brings the everyday work of farming together.</DialogDescription>
-      <motion.div key={step} className="ifc-story-step" initial={reduced ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduced ? 0 : .25 }}>
-        <span className="ifc-story-symbol"><Icon size={21} aria-hidden="true" /></span><h3>{current.title}</h3><p>{current.description}</p>
-      </motion.div>
-      <div className="ifc-story-step-controls">
-        <button type="button" className="ifc-story-secondary" disabled={step === 0} onClick={() => setStep(previous => previous - 1)}>Previous</button>
-        <span className="ifc-story-step-count" aria-live="polite">Step {step + 1} of {steps.length}</span>
-        {step === steps.length - 1 ? <DialogClose asChild><button type="button" className="ifc-story-primary">Done <Check size={17} /></button></DialogClose> : <button type="button" className="ifc-story-primary" onClick={() => setStep(previous => previous + 1)}>Next <ArrowRight size={17} /></button>}
-      </div>
-    </DialogContent>
-  </Dialog>;
-}
-
 export function StorySection({ openAuth }) {
   const reduced = useReducedMotion();
   const canAnimate = !reduced && typeof IntersectionObserver !== "undefined";
@@ -107,7 +79,7 @@ export function StorySection({ openAuth }) {
       <motion.p {...enter(.2)}>Farming is a story of people — their dedication, decisions, and daily effort to grow more, sustain their land, and support their families. Infyro Farm brings simple, powerful technology to that journey, turning everyday farm activities into clear records, smarter insights, and greater confidence.</motion.p>
       <motion.div className="ifc-story-actions" {...enter(.3)}>
         <button type="button" className="ifc-story-primary" onClick={() => openAuth("signup")}>Start Your Farm Journey <span aria-hidden="true">{reduced ? <ArrowRight size={19} /> : <UseAnimations animation={arrowRight} size={22} interaction="hover" strokeColor="currentColor" />}</span></button>
-        <StoryWalkthrough reduced={reduced} />
+        <a href="#how-it-works" className="ifc-story-secondary"><CirclePlay size={19} aria-hidden="true" />See the Story</a>
       </motion.div>
     </div>
     <FarmerVisual reduced={reduced} />
