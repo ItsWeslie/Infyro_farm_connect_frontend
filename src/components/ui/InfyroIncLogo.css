@@ -1,0 +1,22 @@
+/* Original corporate logo: a single CSS silhouette traced from the supplied mark.
+   The clipping path stays at source dimensions; a uniform scale preserves every curve. */
+.ifc-inc-logo {
+  --ifc-inc-logo-scale: var(--ifc-inc-logo-default-scale, .229592);
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: calc(537px * var(--ifc-inc-logo-scale));
+  height: calc(784px * var(--ifc-inc-logo-scale));
+  vertical-align: middle;
+}
+.ifc-inc-logo-shape {
+  position: absolute;
+  display: block;
+  inset: 0 auto auto 0;
+  width: 537px;
+  height: 784px;
+  background: #0175fe;
+  clip-path: path("M 331 0 L 529 0 L 149 384 L 368 600 L 368 385 Q 368 346 389 320 L 536 177 L 536 517 Q 536 564 508 599 L 358 754 Q 344 767 328 781 Q 320 787 309 779 L 264 743 L 24 504 Q 0 480 0 448 L 0 355 Q 0 319 26 288 L 303 11 Q 316 0 331 0 Z");
+  transform: scale(var(--ifc-inc-logo-scale));
+  transform-origin: top left;
+}
