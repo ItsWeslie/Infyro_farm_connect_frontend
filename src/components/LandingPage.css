@@ -3121,7 +3121,7 @@ html[data-ifc-theme="dark"] .landing-page .landing-proof-premium {
   --fp-card: #fffefa; --fp-panel: #f6f8f2; --fp-pale: #e8efdd;
   --fp-line: #dce5d4; --fp-warm: #f7efdc; --fp-gold: #8d6835;
   width: min(1180px,calc(100% - 64px));
-  padding: clamp(65px,7vw,100px) 0;
+  padding: clamp(65px,7vw,100px) 0 clamp(16px,2vw,28px);
 }
 html[data-ifc-theme="dark"] .landing-page .ifc-product-features {
   --fp-ink: #edf4e9; --fp-muted: #b7c4af; --fp-accent: #b6da98;
