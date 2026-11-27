@@ -176,3 +176,37 @@ html:not([data-ifc-theme="dark"]) .landing-page .ifc-landscape-workflow .landing
 html:not([data-ifc-theme="dark"]) .landing-page .ifc-landscape-cta > .ifc-final-cta {
   --cta-glow:#67992d20;
 }
+
+
+/* Enhanced existing hero landscape: warm accents stay within the artwork. */
+.landing-page .landing-hero { --hero-wood:#87501f; }
+html[data-ifc-theme="dark"] .landing-page .landing-hero {
+  --hero-wood:#c6ad80; --hero-end-surface:var(--land-base);
+}
+.landing-page .landing-hero .ifc-hero-contour-highlights {
+  display:none; stroke-width:1.8; opacity:.78;
+}
+.landing-page .landing-hero .ifc-hero-contour-highlights path { vector-effect:non-scaling-stroke; }
+.landing-page .landing-hero[data-landscape-live="true"] .landing-hero-field-lines {
+  animation:none; transform:none;
+}
+.landing-page .landing-hero[data-landscape-live="true"] .ifc-hero-wood-line { stroke:url(#ifc-landscape-wood); }
+.landing-page .landing-hero[data-landscape-live="true"] .ifc-hero-contour-highlights { display:block; }
+.landing-page .landing-hero[data-landscape-live="true"] .landing-hero-glow {
+  background:
+    radial-gradient(ellipse at var(--hero-sun-x,79%) var(--hero-sun-y,18%),rgba(242,184,49,calc(var(--hero-sun-opacity,.36) * .55)),transparent 58%),
+    radial-gradient(ellipse at var(--hero-earth-x,60%) 95%,rgba(135,80,31,calc(var(--hero-earth-opacity,.24) * .25)),transparent 53%),
+    radial-gradient(ellipse at 78% 40%,rgba(255,253,221,.62),transparent 58%);
+}
+html[data-ifc-theme="dark"] .landing-page .landing-hero[data-landscape-live="true"] .landing-hero-glow {
+  background:
+    radial-gradient(ellipse at var(--hero-sun-x,79%) var(--hero-sun-y,18%),rgba(242,184,49,calc(var(--hero-sun-opacity,.36) * .22)),transparent 58%),
+    radial-gradient(ellipse at var(--hero-earth-x,60%) 95%,rgba(198,173,128,calc(var(--hero-earth-opacity,.24) * .12)),transparent 53%),
+    radial-gradient(ellipse at 78% 40%,rgba(113,157,93,.30),transparent 58%);
+}
+@media(max-width:600px) {
+  .landing-page .landing-hero[data-landscape-live="true"] .ifc-hero-contour-highlights { opacity:.48; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .landing-page .landing-hero .ifc-hero-contour-highlights { display:none!important; }
+}
