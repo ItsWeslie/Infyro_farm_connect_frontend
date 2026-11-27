@@ -1,6 +1,6 @@
 /* Borderless closing section on the continuous Living Landscape. */
 .landing-page .ifc-final-cta {
-  --cta-title:#224823; --cta-highlight:var(--land-gold-ink,#805b16); --cta-kicker:var(--land-earth,#87501f);
+  --cta-title:#224823; --cta-highlight:var(--land-gold-ink,#85640f); --cta-kicker:var(--land-leaf,#416c32);
   --cta-copy:#53634f; --cta-button:#224823; --cta-button-text:#fff;
   --cta-button-hover:#386c42; --cta-decoration:#67992D;
   --cta-secondary-hover:#67992d12; --cta-glow:#f2b83133;
@@ -10,7 +10,7 @@
   color:var(--cta-title); text-align:center;
 }
 html[data-ifc-theme="dark"] .landing-page .ifc-final-cta {
-  --cta-title:#edf4e9; --cta-highlight:var(--land-gold,#F2B831); --cta-kicker:var(--land-earth,#c6ad80);
+  --cta-title:#edf4e9; --cta-highlight:var(--land-gold,#F2B831); --cta-kicker:var(--land-leaf,#b6da98);
   --cta-copy:#bac9b5; --cta-button:#b6da98; --cta-button-text:#18321e;
   --cta-button-hover:#d0e8bb; --cta-decoration:#b6da98;
   --cta-secondary-hover:#b6da981a; --cta-glow:#f2b83119;

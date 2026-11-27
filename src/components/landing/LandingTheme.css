@@ -1,15 +1,15 @@
-/* Connected agricultural journey: shared surface, earth and harvest tokens.
+/* Connected agricultural journey: shared surface, leaf and harvest tokens.
    These styles are landing-only; the dashboard and hero are intentionally untouched. */
 .landing-page {
-  --land-earth:#87501F; --land-gold:#F2B831; --land-gold-ink:#805b16;
-  --land-earth-tint:#f0e3d3; --land-gold-tint:#f8edce; --land-earth-border:#ddc8ac; --land-gold-border:#e5d19e;
-  --land-earth-active:#87501f; --land-earth-on:#fffefa; --land-gold-active:#8a6014; --land-gold-on:#fffefa;
+  --land-leaf:#416c32; --land-gold:#F2B831; --land-gold-ink:#85640f;
+  --land-leaf-tint:#e8efdd; --land-gold-tint:#f8edce; --land-leaf-border:#d0ddbd; --land-gold-border:#e5d19e;
+  --land-leaf-active:#416c32; --land-leaf-on:#fffefa; --land-gold-active:#8a6014; --land-gold-on:#fffefa;
   --land-base:#FAF9F2;
 }
 html[data-ifc-theme="dark"] .landing-page {
-  --land-earth:#c6ad80; --land-gold-ink:#e9c467;
-  --land-earth-tint:#41362b; --land-gold-tint:#433b25; --land-earth-border:#66543b; --land-gold-border:#695b34;
-  --land-earth-active:#c6ad80; --land-earth-on:#2d2821; --land-gold-active:#F2B831; --land-gold-on:#302715;
+  --land-leaf:#b6da98; --land-gold-ink:#e9c467;
+  --land-leaf-tint:#344b35; --land-gold-tint:#433b25; --land-leaf-border:#50674d; --land-gold-border:#695b34;
+  --land-leaf-active:#b6da98; --land-leaf-on:#18321e; --land-gold-active:#F2B831; --land-gold-on:#302715;
   --land-base:#151E18;
 }
 /* One background for the whole post-hero page. Stage wrappers retain existing
@@ -19,8 +19,8 @@ html[data-ifc-theme="dark"] .landing-page {
 .ifc-landing-flow > canvas { position:absolute; top:0; left:0; display:block; pointer-events:none; }
 .ifc-landscape-stage { position:relative; isolation:isolate; display:flow-root; min-width:0; background:transparent; }
 /* Existing content remains above the artwork. Explicit dark selectors override legacy solid surfaces. */
-.landing-page .ifc-landscape-stage > :is(.landing-proof-premium,.ifc-product-features,.ifc-about,.ifc-people-story,.landing-workflow,.ifc-testimonials,.ifc-nature-contact,.ifc-minimal-footer),
-html[data-ifc-theme="dark"] .landing-page .ifc-landscape-stage > :is(.landing-proof-premium,.ifc-product-features,.ifc-about,.ifc-people-story,.landing-workflow,.ifc-testimonials,.ifc-nature-contact,.ifc-minimal-footer) {
+.landing-page .ifc-landscape-stage > :is(.landing-proof-premium,.ifc-product-features,.ifc-about,.landing-workflow,.ifc-testimonials,.ifc-nature-contact,.ifc-minimal-footer),
+html[data-ifc-theme="dark"] .landing-page .ifc-landscape-stage > :is(.landing-proof-premium,.ifc-product-features,.ifc-about,.landing-workflow,.ifc-testimonials,.ifc-nature-contact,.ifc-minimal-footer) {
   background:transparent;
 }
 .landing-page .ifc-landscape-stage > :is(.landing-proof-premium,.ifc-product-features,.ifc-about,.landing-workflow) { position:relative; }
@@ -28,9 +28,7 @@ html[data-ifc-theme="dark"] .landing-page .ifc-landscape-stage > :is(.landing-pr
 .landing-page .ifc-landscape-features > .ifc-product-features { padding-bottom:clamp(24px,3vw,40px); }
 .landing-page .ifc-landscape-about > .ifc-about { padding-top:clamp(28px,4vw,52px); padding-bottom:clamp(28px,4vw,55px); }
 .landing-page .ifc-landscape-workflow > .landing-workflow { padding-bottom:clamp(40px,5vw,72px); }
-/* The farmer image's edge fade must use its new surrounding surface. */
-.landing-page .ifc-landscape-approach > .ifc-people-story,
-html[data-ifc-theme="dark"] .landing-page .ifc-landscape-approach > .ifc-people-story { --story-bg:var(--land-base); }
+/* Our Approach keeps its original section surface, image fade and organic artwork from StorySection.css. */
 /* Keep the existing carousel and farmer imagery; only remove standalone background seams. */
 .landing-page .ifc-landscape-testimonials > .ifc-testimonials,
 html[data-ifc-theme="dark"] .landing-page .ifc-landscape-testimonials > .ifc-testimonials {
@@ -40,39 +38,39 @@ html[data-ifc-theme="dark"] .landing-page .ifc-landscape-testimonials > .ifc-tes
 /* Keep the bottom footer wordmark quiet. */
 .landing-page .ifc-landscape-footer > .ifc-minimal-footer { border-top:0; }
 
-/* Earth-toned eyebrows and meaningful highlights. */
+/* Green eyebrows and meaningful harvest highlights. */
 .landing-page .ifc-landscape-stage :is(.landing-proof-kicker,.ifc-feature-heading .landing-section-kicker,.ifc-about-purpose > span,.ifc-about-kicker,.ifc-story-kicker,.landing-section-heading .landing-section-kicker,.ifc-tm-kicker,.ifc-nc-kicker),
-html[data-ifc-theme="dark"] .landing-page .ifc-landscape-stage :is(.landing-proof-kicker,.ifc-feature-heading .landing-section-kicker,.ifc-about-purpose > span,.ifc-about-kicker,.ifc-story-kicker,.landing-section-heading .landing-section-kicker,.ifc-tm-kicker,.ifc-nc-kicker) { color:var(--land-earth); }
-.landing-page .ifc-landscape-stage :is(.ifc-about-purpose h2 em,.ifc-tm-heading h2 em,.ifc-nc-copy h2 em) { color:var(--land-earth); }
+html[data-ifc-theme="dark"] .landing-page .ifc-landscape-stage :is(.landing-proof-kicker,.ifc-feature-heading .landing-section-kicker,.ifc-about-purpose > span,.ifc-about-kicker,.ifc-story-kicker,.landing-section-heading .landing-section-kicker,.ifc-tm-kicker,.ifc-nc-kicker) { color:var(--land-leaf); }
+.landing-page .ifc-landscape-stage :is(.ifc-about-purpose h2 em,.ifc-tm-heading h2 em,.ifc-nc-copy h2 em) { color:var(--land-leaf); }
 .landing-page .ifc-landscape-workflow .landing-section-heading h2 em,
 html[data-ifc-theme="dark"] .landing-page .ifc-landscape-workflow .landing-section-heading h2 em { color:var(--land-gold-ink); }
 
 /* Accent choices follow the subject matter rather than coloring everything. */
 .landing-page .ifc-landscape-stage :is(.ifc-proof-innovation .landing-proof-icon,.ifc-about-value:nth-child(2) .ifc-about-value-head > span,.ifc-story-float-expense .ifc-story-symbol,.ifc-nc-detail:nth-child(2) .ifc-nc-symbol) {
-  background:var(--land-earth-tint); color:var(--land-earth); border-color:var(--land-earth-border);
+  background:var(--land-leaf-tint); color:var(--land-leaf); border-color:var(--land-leaf-border);
 }
 .landing-page .ifc-landscape-stage :is(.ifc-proof-responsible .landing-proof-icon,.ifc-about-value:nth-child(3) .ifc-about-value-head > span,.ifc-story-float-harvest .ifc-story-symbol,.ifc-nc-detail:nth-child(3) .ifc-nc-symbol) {
   background:var(--land-gold-tint); color:var(--land-gold-ink); border-color:var(--land-gold-border);
 }
-.landing-page .ifc-landscape-features .ifc-feature-card.ifc-feature-expenses { background:linear-gradient(145deg,var(--fp-card),var(--land-earth-tint)); }
+.landing-page .ifc-landscape-features .ifc-feature-card.ifc-feature-expenses { background:linear-gradient(145deg,var(--fp-card),var(--land-leaf-tint)); }
 .landing-page .ifc-landscape-features .ifc-feature-card.ifc-feature-harvest { background:linear-gradient(145deg,var(--fp-card),var(--land-gold-tint)); }
-.landing-page .ifc-landscape-features .ifc-feature-expenses :is(.ifc-feature-icon,.ifc-feature-label) { color:var(--land-earth); }
-.landing-page .ifc-landscape-features .ifc-feature-expenses .ifc-feature-icon { background:var(--land-earth-tint); }
+.landing-page .ifc-landscape-features .ifc-feature-expenses :is(.ifc-feature-icon,.ifc-feature-label) { color:var(--land-leaf); }
+.landing-page .ifc-landscape-features .ifc-feature-expenses .ifc-feature-icon { background:var(--land-leaf-tint); }
 .landing-page .ifc-landscape-features .ifc-feature-harvest :is(.ifc-feature-icon,.ifc-feature-label) { color:var(--land-gold-ink); }
 .landing-page .ifc-landscape-features .ifc-feature-harvest .ifc-feature-icon { background:var(--land-gold-tint); }
-.landing-page .ifc-landscape-about .ifc-about-brand-card { --brand-tint:var(--land-earth-tint); --brand-hill-back:var(--land-earth-border); --brand-hill-front:var(--land-gold-border); }
-.landing-page .ifc-landscape-about .ifc-about-parent-label { background:var(--land-earth-tint); color:var(--land-earth); }
-.landing-page .ifc-landscape-stage .ifc-story-float-expense .ifc-story-value { color:var(--land-earth); }
+.landing-page .ifc-landscape-about .ifc-about-brand-card { --brand-tint:var(--land-leaf-tint); --brand-hill-back:var(--land-leaf-border); --brand-hill-front:var(--land-gold-border); }
+.landing-page .ifc-landscape-about .ifc-about-parent-label { background:var(--land-leaf-tint); color:var(--land-leaf); }
+.landing-page .ifc-landscape-stage .ifc-story-float-expense .ifc-story-value { color:var(--land-leaf); }
 .landing-page .ifc-landscape-stage .ifc-story-float-harvest .ifc-story-value { color:var(--land-gold-ink); }
-.landing-page .ifc-landscape-stage .ifc-tm-avatar { background:var(--land-earth-tint); color:var(--land-earth); border-color:var(--land-earth-border); }
+.landing-page .ifc-landscape-stage .ifc-tm-avatar { background:var(--land-leaf-tint); color:var(--land-leaf); border-color:var(--land-leaf-border); }
 
 /* Preserve the original nine-step workflow and its motion. */
-.landing-page .ifc-landscape-workflow .landing-vine-node:is(:nth-child(-n+2),:nth-child(8)) { --land-node-ink:var(--land-earth); --land-node-bg:var(--land-earth-tint); --land-node-border:var(--land-earth-border); --land-node-active:var(--land-earth-active); --land-node-on:var(--land-earth-on); }
+.landing-page .ifc-landscape-workflow .landing-vine-node:is(:nth-child(-n+2),:nth-child(8)) { --land-node-ink:var(--land-leaf); --land-node-bg:var(--land-leaf-tint); --land-node-border:var(--land-leaf-border); --land-node-active:var(--land-leaf-active); --land-node-on:var(--land-leaf-on); }
 .landing-page .ifc-landscape-workflow .landing-vine-node:last-child { --land-node-ink:var(--land-gold-ink); --land-node-bg:var(--land-gold-tint); --land-node-border:var(--land-gold-border); --land-node-active:var(--land-gold-active); --land-node-on:var(--land-gold-on); }
 .landing-page .ifc-landscape-workflow .landing-vine-node:is(:nth-child(-n+2),:nth-child(8),:last-child) .landing-vine-node-circle { color:var(--land-node-ink); background:var(--land-node-bg); border-color:var(--land-node-border); }
 .landing-page .ifc-landscape-workflow .landing-vine-node:is(:nth-child(-n+2),:nth-child(8),:last-child) .landing-vine-node-number { color:var(--land-node-ink); }
 .landing-page .ifc-landscape-workflow .landing-vine-node.is-active:is(:nth-child(-n+2),:nth-child(8),:last-child) .landing-vine-node-circle { color:var(--land-node-on); background:var(--land-node-active); border-color:var(--land-node-border); box-shadow:0 0 0 6px color-mix(in srgb,var(--land-node-active) 16%,transparent); }
-.landing-page .ifc-landscape-workflow .landing-vine-experience:has(.landing-vine-node.is-active:is(:nth-child(-n+2),:nth-child(8))) .landing-vine-active-icon { color:var(--land-earth); background:var(--land-earth-tint); border-color:var(--land-earth-border); }
+.landing-page .ifc-landscape-workflow .landing-vine-experience:has(.landing-vine-node.is-active:is(:nth-child(-n+2),:nth-child(8))) .landing-vine-active-icon { color:var(--land-leaf); background:var(--land-leaf-tint); border-color:var(--land-leaf-border); }
 .landing-page .ifc-landscape-workflow .landing-vine-experience:has(.landing-vine-node.is-active:last-child) .landing-vine-active-icon { color:var(--land-gold-ink); background:var(--land-gold-tint); border-color:var(--land-gold-border); }
 
 @media(max-width:640px) {
@@ -80,13 +78,13 @@ html[data-ifc-theme="dark"] .landing-page .ifc-landscape-workflow .landing-secti
 }
 
 /* Finish the palette in the existing product previews and footer without changing their data. */
-.landing-page .ifc-landscape-commitment .landing-proof-intro h2 em { font-style:normal; color:var(--land-earth); }
-.landing-page .ifc-landscape-features .ifc-preview-donut-value strong { color:var(--land-earth); }
+.landing-page .ifc-landscape-commitment .landing-proof-intro h2 em { font-style:normal; color:var(--land-leaf); }
+.landing-page .ifc-landscape-features .ifc-preview-donut-value strong { color:var(--land-leaf); }
 .landing-page .ifc-landscape-features .ifc-preview-harvest-total > strong,
 .landing-page .ifc-landscape-features .ifc-feature-harvest .ifc-preview-table td:last-child { color:var(--land-gold-ink); }
-.landing-page .ifc-landscape-workflow #ifc-vine-gradient stop:first-child { stop-color:var(--land-earth); }
+.landing-page .ifc-landscape-workflow #ifc-vine-gradient stop:first-child { stop-color:var(--land-leaf); }
 .landing-page .ifc-landscape-workflow #ifc-vine-gradient stop:last-child { stop-color:var(--land-gold); }
-.landing-page .ifc-landscape-footer .ifc-ft-group:nth-child(3) .ifc-ft-tile { background:var(--land-earth-tint); color:var(--land-earth); }
+.landing-page .ifc-landscape-footer .ifc-ft-group:nth-child(3) .ifc-ft-tile { background:var(--land-leaf-tint); color:var(--land-leaf); }
 .landing-page .ifc-landscape-footer .ifc-ft-group:last-child .ifc-ft-tile { background:var(--land-gold-tint); color:var(--land-gold-ink); }
 
 /* Blend the existing decorative artwork into the common live canvas. */
@@ -97,7 +95,6 @@ html[data-ifc-theme="dark"] .landing-page .ifc-landscape-workflow .landing-secti
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 clamp(12px,5vw,85px),#000 calc(100% - clamp(12px,5vw,85px)),transparent);
   mask-image:linear-gradient(90deg,transparent,#000 clamp(12px,5vw,85px),#000 calc(100% - clamp(12px,5vw,85px)),transparent);
 }
-.landing-page .ifc-landscape-approach .ifc-story-shapes { display:none; }
 /* A self-contained landscape card. The common animated canvas remains
    visible in the surrounding gutters; the original countryside stays inside. */
 .landing-page .ifc-landscape-contact > .ifc-nature-contact,
