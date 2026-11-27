@@ -107,8 +107,13 @@ html[data-ifc-theme="dark"] .landing-page .ifc-landscape-cta > .ifc-final-cta {
 .landing-page .ifc-landscape-approach .ifc-story-shapes { display:none; }
 .landing-page .ifc-landscape-contact > .ifc-nature-contact,
 html[data-ifc-theme="dark"] .landing-page .ifc-landscape-contact > .ifc-nature-contact { --nc-bg:var(--land-base); }
+/* Keep the original countryside illustration as an opaque foreground landscape.
+   Only feather the sky and a narrow strip of foreground grass into the live canvas. */
 .landing-page .ifc-landscape-contact .ifc-nc-landscape,
 html[data-ifc-theme="dark"] .landing-page .ifc-landscape-contact .ifc-nc-landscape {
-  --nc-landscape-fade:linear-gradient(to bottom,transparent 0%,transparent 6%,rgba(0,0,0,.35) 24%,#000 54%,#000 68%,transparent 100%);
-  opacity:.72;
+  --nc-landscape-fade:linear-gradient(to bottom,transparent 0%,transparent 4%,rgba(0,0,0,.4) 15%,#000 30%,#000 92%,transparent 100%);
+  opacity:1;
+}
+html[data-ifc-theme="dark"] .landing-page .ifc-landscape-contact .ifc-nc-landscape {
+  --nc-landscape-fade:linear-gradient(to bottom,transparent 0%,transparent 6%,rgba(0,0,0,.35) 17%,#000 34%,#000 92%,transparent 100%);
 }
