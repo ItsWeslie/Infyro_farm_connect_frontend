@@ -27,8 +27,6 @@ export function AboutSection() {
         <div className="ifc-about-brand-landscape" aria-hidden="true">
           <span className="ifc-about-brand-hill ifc-about-brand-hill-back" />
           <span className="ifc-about-brand-hill ifc-about-brand-hill-front" />
-          <Sprout className="ifc-about-brand-leaf" size={110} strokeWidth={1.05} />
-          <Sprout className="ifc-about-brand-sprout" size={52} strokeWidth={1.4} />
         </div>
         <motion.div className="ifc-about-mark-wrap" {...enter(.12, .92)}><InfyroIncLogo size={220} className="ifc-about-mark" decorative /></motion.div>
         <motion.div className="ifc-about-brand-copy" {...enter(.2)}>
