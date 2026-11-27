@@ -46,6 +46,8 @@ function useLivingLandscape(heroRef, landscapeRef, reduced) {
     if (!far || !near || !hillGroup || !contourGroup || !glow || lines.length !== CONTOUR_COUNT) return undefined;
     let raf = 0, previous = 0, lastDraw = 0, time = 0;
     let visible = false, disposed = false, px = 0, py = 0, tx = 0, ty = 0;
+    let mobile = hero.clientWidth < 600;
+    const updateSize = () => { mobile = hero.clientWidth < 600; };
     const motionAllowed = () => !disposed && !media.matches && !document.hidden && visible;
     const stop = () => {
       if (raf) window.cancelAnimationFrame(raf);
@@ -67,8 +69,7 @@ function useLivingLandscape(heroRef, landscapeRef, reduced) {
       px = py = tx = ty = 0;
     }
     function draw() {
-      hero.dataset.landscapeLive = "true";
-      const mobile = hero.clientWidth < 600;
+      if (hero.dataset.landscapeLive !== "true") hero.dataset.landscapeLive = "true";
       const depth = mobile ? 0 : 1;
       const x = px * 17.28 * depth, y = py * 8.06 * depth;
       far.setAttribute("d", hillPath(false, time));
@@ -95,10 +96,16 @@ function useLivingLandscape(heroRef, landscapeRef, reduced) {
       if (!motionAllowed()) { previous = 0; return; }
       const elapsed = previous ? Math.min((now - previous) / 1000, .05) : 0;
       previous = now;
+      // Keep the last painted landscape during the cinematic transition.
+      // Repainting 25 SVG paths and several gradients would compete with it.
+      if (hero.dataset.cinematicEnter || hero.dataset.cinematicActive) {
+        raf = window.requestAnimationFrame(frame);
+        return;
+      }
       time = (time + elapsed * LANDSCAPE_SPEED) % (Math.PI * 20000);
       px += (tx - px) * .06;
       py += (ty - py) * .06;
-      if (now - lastDraw >= (hero.clientWidth < 600 ? 48 : 32)) {
+      if (now - lastDraw >= (mobile ? 50 : 40)) {
         draw();
         lastDraw = now;
       }
@@ -117,7 +124,7 @@ function useLivingLandscape(heroRef, landscapeRef, reduced) {
       else stop();
     }
     function pointerMove(event) {
-      if (event.pointerType === "touch" || !motionAllowed() || hero.clientWidth < 600) return;
+      if (event.pointerType === "touch" || !motionAllowed() || mobile || hero.dataset.cinematicEnter || hero.dataset.cinematicActive) return;
       const rect = hero.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
       tx = Math.max(-1, Math.min(1, (event.clientX - rect.left) / rect.width * 2 - 1));
@@ -134,6 +141,7 @@ function useLivingLandscape(heroRef, landscapeRef, reduced) {
     }
     if (observer) observer.observe(hero);
     else window.addEventListener("scroll", measureVisibility, { passive: true });
+    window.addEventListener("resize", updateSize, { passive: true });
     hero.addEventListener("pointermove", pointerMove, { passive: true });
     hero.addEventListener("pointerleave", pointerLeave);
     hero.addEventListener("pointercancel", pointerLeave);
@@ -145,6 +153,7 @@ function useLivingLandscape(heroRef, landscapeRef, reduced) {
       stop();
       observer?.disconnect();
       if (!observer) window.removeEventListener("scroll", measureVisibility);
+      window.removeEventListener("resize", updateSize);
       hero.removeEventListener("pointermove", pointerMove);
       hero.removeEventListener("pointerleave", pointerLeave);
       hero.removeEventListener("pointercancel", pointerLeave);
@@ -155,8 +164,7 @@ function useLivingLandscape(heroRef, landscapeRef, reduced) {
   }, [heroRef, landscapeRef, reduced]);
 }
 
-// The cinematic transition changes paint only; the hero retains its layout height.
-const CINEMATIC_DURATION = 1350;
+// Keep layout measurements stable and let CSS own the entrance timeline.
 const clampUnit = value => Math.max(0, Math.min(1, value));
 const smoothStep = value => {
   const x = clampUnit(value);
@@ -168,102 +176,113 @@ function useCinematicHero(heroRef) {
     const hero = heroRef.current;
     if (!hero) return undefined;
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let raf = 0, started = null, disposed = false;
-    // Skip entrance on restored scroll positions and deep-link navigation.
-    let entering = !media.matches && window.scrollY < 12 && !window.location.hash;
-    let top = 0, height = 1;
-    const properties = ["--hero-cinema-opacity", "--hero-cinema-scale", "--hero-cinema-y",
-      "--hero-cinema-inset", "--hero-cinema-radius", "--hero-cinema-depth-y", "--hero-cinema-depth-scale"];
+    let raf = 0, launchFrame = 0, launchNext = 0, disposed = false;
+    let top = 0, height = 1, viewport = 1, strength = 1, lastExit = -1;
+    let phase = "idle";
 
-    function clearMotion() {
-      delete hero.dataset.cinematicActive;
-      delete hero.dataset.cinematicEnter;
-      properties.forEach(name => hero.style.removeProperty(name));
-    }
     function measure() {
-      // offsetTop and offsetHeight are unaffected by the hero's own transform.
       top = 0;
       for (let node = hero; node; node = node.offsetParent) top += node.offsetTop;
       height = Math.max(1, hero.offsetHeight);
+      viewport = Math.max(1, window.innerHeight);
+      strength = hero.clientWidth <= 900 ? .55 : 1;
     }
-    function render(now) {
-      if (disposed) return;
-      if (media.matches) { entering = false; clearMotion(); return; }
-      const mobile = hero.clientWidth <= 900;
-      const viewport = Math.max(1, window.innerHeight);
+    function clearScroll() {
+      hero.style.removeProperty("opacity");
+      hero.style.removeProperty("transform");
+      delete hero.dataset.cinematicActive;
+      lastExit = -1;
+    }
+    function cancelEntrance() {
+      if (launchFrame) window.cancelAnimationFrame(launchFrame);
+      if (launchNext) window.cancelAnimationFrame(launchNext);
+      launchFrame = launchNext = 0;
+      phase = "idle";
+      delete hero.dataset.cinematicEnter;
+    }
+    function update() {
+      if (disposed || document.hidden) return;
+      if (media.matches) { cancelEntrance(); clearScroll(); return; }
       const scroll = Math.max(0, window.scrollY - top);
-      // Tall/mobile heroes stay readable until their lower portion has entered view.
       const begin = Math.max(height * .1, height - viewport * .88);
       const end = Math.max(begin + 1, height * .95);
+      if (phase !== "idle") {
+        if (scroll <= begin) return;
+        cancelEntrance();
+      }
       const exit = smoothStep((scroll - begin) / (end - begin));
-      if (entering && scroll > begin) {
-        entering = false;
-        delete hero.dataset.cinematicEnter;
+      if (exit === 0) {
+        if (lastExit !== 0) { clearScroll(); lastExit = 0; }
+        return;
       }
-      if (entering && started === null) started = now;
-      const raw = entering ? clampUnit((now - started) / CINEMATIC_DURATION) : 1;
-      const p = 1 - Math.pow(1 - raw, 4);
-      if (raw >= 1) {
-        entering = false;
-        delete hero.dataset.cinematicEnter;
-      }
-      if (!entering && exit === 0) { clearMotion(); return; }
-
-      const strength = mobile ? .55 : 1;
-      hero.dataset.cinematicActive = "true";
-      if (entering) hero.dataset.cinematicEnter = "true";
-      hero.style.setProperty("--hero-cinema-opacity", String((.25 + .75 * p) * (1 - exit)));
-      hero.style.setProperty("--hero-cinema-scale", String((1 - .05 * strength * (1 - p)) * (1 - .05 * strength * exit)));
-      hero.style.setProperty("--hero-cinema-y", `${strength * (44 * (1 - p) - 24 * exit)}px`);
-      hero.style.setProperty("--hero-cinema-inset", `${(1 - p) * 4.8 * strength}%`);
-      hero.style.setProperty("--hero-cinema-radius", `${(1 - p) * 24 * strength}px`);
-      hero.style.setProperty("--hero-cinema-depth-y", `${-24 * exit * strength}px`);
-      hero.style.setProperty("--hero-cinema-depth-scale", String(1 - .04 * exit * strength));
-    }
-    function frame(now) {
-      raf = 0;
-      render(now);
-      if (entering) schedule();
+      if (exit === lastExit) return;
+      lastExit = exit;
+      if (hero.dataset.cinematicActive !== "true") hero.dataset.cinematicActive = "true";
+      // Only two compositable properties are updated on scroll. No mask,
+      // inherited CSS variables, layout reads or per-frame React updates.
+      hero.style.opacity = String(1 - exit);
+      hero.style.transform = `translate3d(0,${-24 * exit * strength}px,0) scale(${1 - .05 * strength * exit})`;
     }
     function schedule() {
-      if (!disposed && !document.hidden && !raf) raf = window.requestAnimationFrame(frame);
+      if (!disposed && !document.hidden && !raf) {
+        raf = window.requestAnimationFrame(() => { raf = 0; update(); });
+      }
     }
-    function resize() { measure(); schedule(); }
+    function resize() { measure(); lastExit = -1; schedule(); }
+    function entranceFinished(event) {
+      if (event.target !== hero || event.animationName !== "ifc-hero-cinematic-enter") return;
+      cancelEntrance();
+      update();
+    }
+    function beginEntrance() {
+      phase = "pending";
+      hero.dataset.cinematicEnter = "pending";
+      // Paint the initial card pose before launching the CSS animation.
+      // Unlike a wall-clock JS loop, mounting/loading work cannot consume it.
+      launchFrame = window.requestAnimationFrame(() => {
+        launchFrame = 0;
+        launchNext = window.requestAnimationFrame(() => {
+          launchNext = 0;
+          if (disposed || phase !== "pending" || media.matches) return;
+          phase = "running";
+          hero.dataset.cinematicEnter = "running";
+        });
+      });
+    }
     function motionChanged() {
-      entering = false;
-      clearMotion();
-      if (raf) window.cancelAnimationFrame(raf);
-      raf = 0;
-      schedule();
+      cancelEntrance(); clearScroll(); schedule();
     }
     function visibilityChanged() {
       if (document.hidden) {
         if (raf) window.cancelAnimationFrame(raf);
         raf = 0;
-        // Never resume a half-finished entrance when returning to the tab.
-        entering = false;
-        clearMotion();
-      } else { measure(); schedule(); }
+        cancelEntrance();
+      } else { measure(); lastExit = -1; schedule(); }
     }
     const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(resize) : null;
     observer?.observe(hero);
+    hero.addEventListener("animationend", entranceFinished);
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", resize, { passive: true });
     media.addEventListener?.("change", motionChanged);
     document.addEventListener("visibilitychange", visibilityChanged);
     measure();
-    render(performance.now());
-    if (entering) schedule();
-
+    // A #home fragment is a valid hero entry, not a deep link.
+    const hash = window.location.hash;
+    const atHome = !hash || hash === "#home" || hash === "#";
+    if (!media.matches && !document.hidden && atHome && Math.abs(window.scrollY - top) < 32) beginEntrance();
+    else update();
     return () => {
       disposed = true;
+      cancelEntrance();
       if (raf) window.cancelAnimationFrame(raf);
       observer?.disconnect();
+      hero.removeEventListener("animationend", entranceFinished);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", resize);
       media.removeEventListener?.("change", motionChanged);
       document.removeEventListener("visibilitychange", visibilityChanged);
-      clearMotion();
+      clearScroll();
     };
   }, [heroRef]);
 }
