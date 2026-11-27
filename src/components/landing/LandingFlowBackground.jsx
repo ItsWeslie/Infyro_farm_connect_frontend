@@ -12,7 +12,8 @@ function paint(ctx, width, height, offset, time, dark) {
   const mint = dark ? [172, 211, 155] : [177, 205, 142];
   const forest = dark ? [86, 128, 70] : [34, 72, 35];
   const scale = Math.max(480, width);
-  const alpha = INTENSITY * (width < 600 ? .75 : 1);
+  const alpha = INTENSITY * (dark ? 1 : .72) * (width < 600 ? .75 : 1);
+  const cream = [250, 249, 242];
   const wave = (y, k) => {
     const v = (y + offset) / scale;
     return Math.sin(v * 1.7 + time * .58 + k * .36) * width * .14
@@ -27,9 +28,10 @@ function paint(ctx, width, height, offset, time, dark) {
   for (let i = first; i <= last; i += 1) {
     const cy = i * spacing - offset + 140;
     const cx = width * (.5 + .36 * Math.sin(i * 1.74 + time * .22));
-    const color = [green, sage, mint][((i % 3) + 3) % 3];
+    const colors = dark ? [green, sage, mint] : [cream, sage, cream];
+    const color = colors[((i % 3) + 3) % 3];
     const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-    glow.addColorStop(0, rgba(color, alpha * (dark ? .075 : .13)));
+    glow.addColorStop(0, rgba(color, alpha * (dark ? .075 : .10)));
     glow.addColorStop(.5, rgba(color, alpha * .055));
     glow.addColorStop(1, rgba(color, 0));
     ctx.fillStyle = glow;
@@ -43,7 +45,7 @@ function paint(ctx, width, height, offset, time, dark) {
   const end = Math.ceil((height + step) / step) * step;
   for (const side of [0, 1]) {
     for (let k = 0; k < 4; k += 1) {
-      const color = [forest, green, mint, sage][k];
+      const color = (dark ? [forest, green, mint, sage] : [sage, green, cream, cream])[k];
       const direction = side === 0 ? 1 : -1;
       const base = width * (side === 0 ? .075 : .925);
       const ribbonWidth = width * (.055 + k * .011);
@@ -60,9 +62,9 @@ function paint(ctx, width, height, offset, time, dark) {
       ctx.closePath();
       // Horizontal gradients stay consistent as the viewport moves down the page.
       const silk = ctx.createLinearGradient(0, 0, width, 0);
-      silk.addColorStop(0, rgba(color, alpha * (dark ? .09 : .17)));
+      silk.addColorStop(0, rgba(color, alpha * (dark ? .09 : .13)));
       silk.addColorStop(.5, rgba(color, alpha * (dark ? .04 : .07)));
-      silk.addColorStop(1, rgba(color, alpha * (dark ? .13 : .26)));
+      silk.addColorStop(1, rgba(color, alpha * (dark ? .13 : .20)));
       ctx.fillStyle = silk;
       ctx.fill();
       const fibers = width < 600 ? 3 : 6;
