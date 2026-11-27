@@ -13,6 +13,7 @@ import { LandingCTA } from "./landing/LandingCTA";
 import { LandingFooter } from "./landing/LandingFooter";
 import { ContactToast } from "./landing/ContactToast";
 import { BackToTop } from "./landing/BackToTop";
+import { SectionBackground } from "./landing/SectionBackground";
 import "./LandingPage.css";
 
 export default function LandingPage({ theme: controlledTheme, setTheme: setControlledTheme } = {}) {
@@ -138,20 +139,22 @@ export default function LandingPage({ theme: controlledTheme, setTheme: setContr
       />
       <main>
         <LandingHero openAuth={openAuth} />
-        <PlatformProofStrip />
-        <FeaturesSection />
-        <AboutSection />
-        <StorySection openAuth={openAuth} />
-        <WorkflowSection />
-        <TestimonialsSection />
-        <ContactSection
-          contactForm={contactForm}
-          setContactForm={setContactForm}
-          setContactToast={setContactToast}
-        />
-        <LandingCTA openAuth={openAuth} />
+        <SectionBackground stage="commitment"><PlatformProofStrip /></SectionBackground>
+        <SectionBackground stage="features"><FeaturesSection /></SectionBackground>
+        <SectionBackground stage="about"><AboutSection /></SectionBackground>
+        <SectionBackground stage="approach"><StorySection openAuth={openAuth} /></SectionBackground>
+        <SectionBackground stage="workflow"><WorkflowSection /></SectionBackground>
+        <SectionBackground stage="testimonials"><TestimonialsSection /></SectionBackground>
+        <SectionBackground stage="contact">
+          <ContactSection
+            contactForm={contactForm}
+            setContactForm={setContactForm}
+            setContactToast={setContactToast}
+          />
+        </SectionBackground>
+        <SectionBackground stage="cta"><LandingCTA openAuth={openAuth} /></SectionBackground>
       </main>
-      <LandingFooter openAuth={openAuth} />
+      <SectionBackground stage="footer"><LandingFooter openAuth={openAuth} /></SectionBackground>
       <ContactToast
         contactToast={contactToast}
         setContactToast={setContactToast}
