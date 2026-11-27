@@ -179,7 +179,6 @@ export function FeaturesSection() {
       </div>
       <p className="ifc-feature-caption">Illustrative product previews · Sample data</p>
       <motion.div className="ifc-feature-bridge" {...enter(0)}>
-        <Sprout size={25} strokeWidth={1.6} aria-hidden="true" />
         <span>THE PURPOSE BEHIND THE PRODUCT</span>
         <h3>More than software. <em>A purpose to grow.</em></h3>
         <p>Infyro Farm reflects our belief that meaningful technology should simplify work, empower people and create lasting value.</p>
