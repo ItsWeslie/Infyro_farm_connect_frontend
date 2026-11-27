@@ -102,7 +102,7 @@ export function ContactSection({ contactForm, setContactForm, setContactToast })
     <Landscape />
     <div className="ifc-nc-layout">
       <motion.div className="ifc-nc-copy" {...entrance(0)}>
-        <span className="ifc-nc-kicker"><Sprout size={20} strokeWidth={1.8} aria-hidden="true" />CONTACT US</span>
+        <span className="ifc-nc-kicker">CONTACT US</span>
         <h2 id="landing-contact-title">We’re here to <em>listen.</em></h2>
         <p>Share your question, feedback, or idea with the Infyro team.</p>
         <div className="ifc-nc-details">
