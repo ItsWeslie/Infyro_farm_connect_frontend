@@ -120,3 +120,13 @@ html[data-ifc-theme="dark"] .landing-page .ifc-landscape-cta > .ifc-final-cta {
   .ifc-landscape-transition { height:20px; }
   .landing-page .ifc-landscape-contact > .ifc-nature-contact { padding-bottom:48px; }
 }
+
+/* Finish the palette in the existing product previews and footer without changing their data. */
+.landing-page .ifc-landscape-commitment .landing-proof-intro h2 em { font-style:normal; color:var(--land-earth); }
+.landing-page .ifc-landscape-features .ifc-preview-donut-value strong { color:var(--land-earth); }
+.landing-page .ifc-landscape-features .ifc-preview-harvest-total > strong,
+.landing-page .ifc-landscape-features .ifc-feature-harvest .ifc-preview-table td:last-child { color:var(--land-gold-ink); }
+.landing-page .ifc-landscape-workflow #ifc-vine-gradient stop:first-child { stop-color:var(--land-earth); }
+.landing-page .ifc-landscape-workflow #ifc-vine-gradient stop:last-child { stop-color:var(--land-gold); }
+.landing-page .ifc-landscape-footer .ifc-ft-group:nth-child(3) .ifc-ft-tile { background:var(--land-earth-tint); color:var(--land-earth); }
+.landing-page .ifc-landscape-footer .ifc-ft-group:last-child .ifc-ft-tile { background:var(--land-gold-tint); color:var(--land-gold-ink); }
