@@ -9,7 +9,7 @@ function paint(ctx, width, height, offset, time, dark) {
   ctx.clearRect(0, 0, width, height);
   const green = dark ? [166, 202, 137] : [103, 153, 45];
   const sage = dark ? [145, 174, 142] : [138, 167, 115];
-  const gold = [242, 184, 49];
+  const mint = dark ? [172, 211, 155] : [177, 205, 142];
   const forest = dark ? [86, 128, 70] : [34, 72, 35];
   const scale = Math.max(480, width);
   const alpha = INTENSITY * (width < 600 ? .75 : 1);
@@ -27,7 +27,7 @@ function paint(ctx, width, height, offset, time, dark) {
   for (let i = first; i <= last; i += 1) {
     const cy = i * spacing - offset + 140;
     const cx = width * (.5 + .36 * Math.sin(i * 1.74 + time * .22));
-    const color = [green, sage, gold][((i % 3) + 3) % 3];
+    const color = [green, sage, mint][((i % 3) + 3) % 3];
     const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
     glow.addColorStop(0, rgba(color, alpha * (dark ? .075 : .13)));
     glow.addColorStop(.5, rgba(color, alpha * .055));
@@ -43,7 +43,7 @@ function paint(ctx, width, height, offset, time, dark) {
   const end = Math.ceil((height + step) / step) * step;
   for (const side of [0, 1]) {
     for (let k = 0; k < 4; k += 1) {
-      const color = [forest, green, gold, sage][k];
+      const color = [forest, green, mint, sage][k];
       const direction = side === 0 ? 1 : -1;
       const base = width * (side === 0 ? .075 : .925);
       const ribbonWidth = width * (.055 + k * .011);
