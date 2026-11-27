@@ -38,7 +38,7 @@ export function PlatformProofStrip() {
     <section className="landing-proof-strip landing-proof-premium" aria-label="The principles behind Infyro Farm">
       <header className="landing-proof-intro">
         <span className="landing-proof-kicker">THE INFYRO COMMITMENT</span>
-        <h2>Built with purpose. Made for farmers.</h2>
+        <h2>Built with purpose. <em>Made for farmers.</em></h2>
       </header>
       <ul className="landing-proof-principles">
         {principles.map(({ id, icon: Icon, title, description }, index) => (
