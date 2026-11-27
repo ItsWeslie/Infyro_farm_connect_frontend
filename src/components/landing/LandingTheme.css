@@ -4,7 +4,7 @@
   --land-leaf:#416c32; --land-sage:#67992D; --land-sage-ink:#527b3b;
   --land-leaf-tint:#e8efdd; --land-sage-tint:#eaf2e1; --land-leaf-border:#d0ddbd; --land-sage-border:#c6d8b5;
   --land-leaf-active:#416c32; --land-leaf-on:#fffefa; --land-sage-active:#527b3b; --land-sage-on:#fffefa;
-  --land-base:#EFEAD5;
+  --land-base:#FAF9F2;
   --land-card:#FAF9F2; --land-card-border:#d7d9c4;
 }
 html[data-ifc-theme="dark"] .landing-page {
@@ -134,8 +134,8 @@ html[data-ifc-theme="dark"] .landing-page .ifc-landscape-contact .ifc-nc-landsca
 /* Keep keyboard focus accents green in the post-hero sections. */
 .landing-page .ifc-landscape-stage :focus-visible { outline-color:var(--land-leaf); }
 
-/* Light mode: cream is the primary surface, green is the accent.
-   Preserve all original dark-mode tokens and the Our Approach section. */
+/* Light mode: the reference hero fades to a light ivory-cream surface.
+   Preserve the existing cards, dark-mode tokens and Our Approach artwork. */
 html:not([data-ifc-theme="dark"]) .landing-page {
   --ifc-paper:var(--land-base);
   --ifc-contact-surface:var(--land-card);
@@ -143,6 +143,8 @@ html:not([data-ifc-theme="dark"]) .landing-page {
 }
 html:not([data-ifc-theme="dark"]) .landing-page .landing-hero {
   --hero-end-surface:var(--land-base);
+  /* Original reference gradient: pale cream on the left, soft sage on the right. */
+  background:linear-gradient(112deg,#faf9f0 0%,#edf2e1 52%,#cbdcb7 100%);
 }
 html:not([data-ifc-theme="dark"]) .landing-page .ifc-landscape-features > .ifc-product-features {
   --fp-card:var(--land-card); --fp-panel:#f3f1e5;
@@ -194,9 +196,9 @@ html[data-ifc-theme="dark"] .landing-page .landing-hero {
 .landing-page .landing-hero[data-landscape-live="true"] .ifc-hero-contour-highlights { display:block; }
 .landing-page .landing-hero[data-landscape-live="true"] .landing-hero-glow {
   background:
-    radial-gradient(ellipse at var(--hero-sun-x,79%) var(--hero-sun-y,18%),rgba(242,184,49,calc(var(--hero-sun-opacity,.36) * .55)),transparent 58%),
-    radial-gradient(ellipse at var(--hero-earth-x,60%) 95%,rgba(135,80,31,calc(var(--hero-earth-opacity,.24) * .25)),transparent 53%),
-    radial-gradient(ellipse at 78% 40%,rgba(255,253,221,.62),transparent 58%);
+    radial-gradient(ellipse at var(--hero-sun-x,79%) var(--hero-sun-y,18%),rgba(242,184,49,calc(var(--hero-sun-opacity,.36) * .22)),transparent 58%),
+    radial-gradient(ellipse at var(--hero-earth-x,60%) 95%,rgba(135,80,31,calc(var(--hero-earth-opacity,.24) * .12)),transparent 53%),
+    radial-gradient(ellipse at 78% 40%,rgba(255,253,221,.78),transparent 58%);
 }
 html[data-ifc-theme="dark"] .landing-page .landing-hero[data-landscape-live="true"] .landing-hero-glow {
   background:
