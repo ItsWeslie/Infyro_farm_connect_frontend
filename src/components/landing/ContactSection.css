@@ -44,7 +44,6 @@ html[data-ifc-theme="dark"] .landing-page .ifc-nc-landscape {
 .ifc-nc-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.08fr); align-items:start; gap:clamp(24px,4vw,56px); width:min(1180px,calc(100% - 64px)); margin:0 auto; position:relative; }
 .ifc-nc-copy { min-width:0; padding:clamp(8px,1.5vw,22px) 0 0; }
 .ifc-nc-kicker { display:flex; align-items:center; gap:10px; font-size:12px; letter-spacing:2px; color:var(--nc-accent); font-weight:750; }
-.ifc-nc-kicker::before,.ifc-nc-kicker::after { content:""; width:clamp(22px,3vw,42px); height:1px; background:currentColor; opacity:.65; }
 .ifc-nc-copy h2 { margin:16px 0 13px; color:var(--nc-ink); font-family:inherit; font-size:clamp(36px,4vw,58px); font-weight:780; line-height:1.06; letter-spacing:-.048em; }
 .ifc-nc-copy h2 em { display:block; color:var(--nc-accent); font-style:italic; }
 .ifc-nc-copy > p { color:var(--nc-muted); font-size:clamp(15px,1.3vw,18px); line-height:1.6; max-width:520px; margin:0; }
