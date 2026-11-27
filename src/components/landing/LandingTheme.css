@@ -75,13 +75,6 @@ html[data-ifc-theme="dark"] .landing-page .ifc-landscape-workflow .landing-secti
 .landing-page .ifc-landscape-workflow .landing-vine-experience:has(.landing-vine-node.is-active:is(:nth-child(-n+2),:nth-child(8))) .landing-vine-active-icon { color:var(--land-earth); background:var(--land-earth-tint); border-color:var(--land-earth-border); }
 .landing-page .ifc-landscape-workflow .landing-vine-experience:has(.landing-vine-node.is-active:last-child) .landing-vine-active-icon { color:var(--land-gold-ink); background:var(--land-gold-tint); border-color:var(--land-gold-border); }
 
-/* Keep gold on dark green, including dark mode. A darker center supports text contrast. */
-.landing-page .ifc-landscape-cta > .ifc-final-cta,
-html[data-ifc-theme="dark"] .landing-page .ifc-landscape-cta > .ifc-final-cta {
-  --cta-highlight:var(--land-gold); --cta-kicker:var(--land-gold);
-  background:radial-gradient(ellipse at 50% 50%,#173b22b8,transparent 78%),radial-gradient(ellipse at 92% 0%,#f2b83118,transparent 48%),linear-gradient(112deg,var(--cta-start) 0%,var(--cta-mid) 60%,var(--cta-end) 100%);
-}
-.landing-page .ifc-landscape-cta .ifc-final-cta-art { color:color-mix(in srgb,var(--land-gold) 55%,var(--cta-decoration)); }
 @media(max-width:640px) {
   .landing-page .ifc-landscape-contact > .ifc-nature-contact { padding-bottom:48px; }
 }
