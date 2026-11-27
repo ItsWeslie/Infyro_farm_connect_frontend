@@ -100,29 +100,6 @@ export default function LandingPage({ theme: controlledTheme, setTheme: setContr
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
-      return undefined;
-    let ticking = false;
-    const updateParallax = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const hero = document.querySelector(".landing-hero");
-          if (hero)
-            hero.style.setProperty(
-              "--hero-parallax",
-              `${Math.min(window.scrollY * 0.16, 90)}px`,
-            );
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    window.addEventListener("scroll", updateParallax, { passive: true });
-    updateParallax();
-    return () => window.removeEventListener("scroll", updateParallax);
-  }, []);
-
   function openAuth(mode) {
     setAuthMode(mode);
     setAuthOpen(true);
