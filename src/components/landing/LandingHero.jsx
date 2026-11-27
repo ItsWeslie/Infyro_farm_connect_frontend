@@ -5,7 +5,7 @@ import chevronDown from "react-useanimations/lib/chevronDown";
 import { Sprout, ArrowRight, CirclePlay, ShieldCheck, ChevronDown } from "lucide-react";
 import { DashboardPreview } from "./DashboardPreview";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 
 const LANDSCAPE_INTENSITY = .8;
 const LANDSCAPE_SPEED = .4;
@@ -155,17 +155,131 @@ function useLivingLandscape(heroRef, landscapeRef, reduced) {
   }, [heroRef, landscapeRef, reduced]);
 }
 
+// The cinematic transition changes paint only; the hero retains its layout height.
+const CINEMATIC_DURATION = 1350;
+const clampUnit = value => Math.max(0, Math.min(1, value));
+const smoothStep = value => {
+  const x = clampUnit(value);
+  return x * x * (3 - 2 * x);
+};
+
+function useCinematicHero(heroRef) {
+  useLayoutEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return undefined;
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let raf = 0, started = null, disposed = false;
+    // Skip entrance on restored scroll positions and deep-link navigation.
+    let entering = !media.matches && window.scrollY < 12 && !window.location.hash;
+    let top = 0, height = 1;
+    const properties = ["--hero-cinema-opacity", "--hero-cinema-scale", "--hero-cinema-y",
+      "--hero-cinema-inset", "--hero-cinema-radius", "--hero-cinema-depth-y", "--hero-cinema-depth-scale"];
+
+    function clearMotion() {
+      delete hero.dataset.cinematicActive;
+      delete hero.dataset.cinematicEnter;
+      properties.forEach(name => hero.style.removeProperty(name));
+    }
+    function measure() {
+      // offsetTop and offsetHeight are unaffected by the hero's own transform.
+      top = 0;
+      for (let node = hero; node; node = node.offsetParent) top += node.offsetTop;
+      height = Math.max(1, hero.offsetHeight);
+    }
+    function render(now) {
+      if (disposed) return;
+      if (media.matches) { entering = false; clearMotion(); return; }
+      const mobile = hero.clientWidth <= 900;
+      const viewport = Math.max(1, window.innerHeight);
+      const scroll = Math.max(0, window.scrollY - top);
+      // Tall/mobile heroes stay readable until their lower portion has entered view.
+      const begin = Math.max(height * .1, height - viewport * .88);
+      const end = Math.max(begin + 1, height * .95);
+      const exit = smoothStep((scroll - begin) / (end - begin));
+      if (entering && scroll > begin) {
+        entering = false;
+        delete hero.dataset.cinematicEnter;
+      }
+      if (entering && started === null) started = now;
+      const raw = entering ? clampUnit((now - started) / CINEMATIC_DURATION) : 1;
+      const p = 1 - Math.pow(1 - raw, 4);
+      if (raw >= 1) {
+        entering = false;
+        delete hero.dataset.cinematicEnter;
+      }
+      if (!entering && exit === 0) { clearMotion(); return; }
+
+      const strength = mobile ? .55 : 1;
+      hero.dataset.cinematicActive = "true";
+      if (entering) hero.dataset.cinematicEnter = "true";
+      hero.style.setProperty("--hero-cinema-opacity", String((.25 + .75 * p) * (1 - exit)));
+      hero.style.setProperty("--hero-cinema-scale", String((1 - .05 * strength * (1 - p)) * (1 - .05 * strength * exit)));
+      hero.style.setProperty("--hero-cinema-y", `${strength * (44 * (1 - p) - 24 * exit)}px`);
+      hero.style.setProperty("--hero-cinema-inset", `${(1 - p) * 4.8 * strength}%`);
+      hero.style.setProperty("--hero-cinema-radius", `${(1 - p) * 24 * strength}px`);
+      hero.style.setProperty("--hero-cinema-depth-y", `${-24 * exit * strength}px`);
+      hero.style.setProperty("--hero-cinema-depth-scale", String(1 - .04 * exit * strength));
+    }
+    function frame(now) {
+      raf = 0;
+      render(now);
+      if (entering) schedule();
+    }
+    function schedule() {
+      if (!disposed && !document.hidden && !raf) raf = window.requestAnimationFrame(frame);
+    }
+    function resize() { measure(); schedule(); }
+    function motionChanged() {
+      entering = false;
+      clearMotion();
+      if (raf) window.cancelAnimationFrame(raf);
+      raf = 0;
+      schedule();
+    }
+    function visibilityChanged() {
+      if (document.hidden) {
+        if (raf) window.cancelAnimationFrame(raf);
+        raf = 0;
+        // Never resume a half-finished entrance when returning to the tab.
+        entering = false;
+        clearMotion();
+      } else { measure(); schedule(); }
+    }
+    const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(resize) : null;
+    observer?.observe(hero);
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", resize, { passive: true });
+    media.addEventListener?.("change", motionChanged);
+    document.addEventListener("visibilitychange", visibilityChanged);
+    measure();
+    render(performance.now());
+    if (entering) schedule();
+
+    return () => {
+      disposed = true;
+      if (raf) window.cancelAnimationFrame(raf);
+      observer?.disconnect();
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", resize);
+      media.removeEventListener?.("change", motionChanged);
+      document.removeEventListener("visibilitychange", visibilityChanged);
+      clearMotion();
+    };
+  }, [heroRef]);
+}
+
 export function LandingHero({ openAuth }) {
   const reduced = useReducedMotion();
   const heroRef = useRef(null);
   const landscapeRef = useRef(null);
   useLivingLandscape(heroRef, landscapeRef, reduced);
-  const enter = delay => ({ initial: reduced ? false : { opacity: 0, y: 22, filter: "blur(5px)" }, animate: { opacity: 1, y: 0, filter: "blur(0px)" }, transition: reduced ? { duration: 0 } : { duration: .85, delay, ease: [.2,.7,.2,1] } });
+  useCinematicHero(heroRef);
+  const enter = delay => ({ initial: reduced ? false : { opacity: .72, y: 8 }, animate: { opacity: 1, y: 0 }, transition: reduced ? { duration: 0 } : { duration: .65, delay: delay * .7, ease: [.16,1,.3,1] } });
   return (
-    <section className="landing-hero" ref={heroRef}>
+    <section className="landing-hero ifc-hero-cinematic" ref={heroRef}>
       <motion.svg
         ref={landscapeRef}
-        initial={reduced ? false : { opacity: .25 }} animate={{ opacity: 1 }} transition={{ duration: reduced ? 0 : .85, ease: "easeOut" }}
+        initial={false} animate={{ opacity: 1 }}
         className="landing-hero-landscape"
         viewBox="0 0 1440 620"
         preserveAspectRatio="xMidYMax slice"
