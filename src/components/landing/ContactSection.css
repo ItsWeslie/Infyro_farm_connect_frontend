@@ -67,7 +67,7 @@ html[data-ifc-theme="dark"] .landing-page .ifc-nc-landscape {
 .ifc-nc-input-icon { position:absolute; z-index:1; left:13px; top:13px; color:var(--nc-accent); pointer-events:none; }
 /* Reuse the shared shadcn primitives with the contact section palette. */
 .landing-page .ifc-nc-form .ifc-nc-input-wrap .ifc-nc-control { box-sizing:border-box; width:100%; min-width:0; min-height:44px; height:44px; padding:10px 12px 10px 40px; border:1px solid var(--nc-border); border-radius:10px; outline:none; font:inherit; font-size:14px; font-weight:400; line-height:1.5; background:var(--nc-field); color:var(--nc-ink); transition:border-color .2s,box-shadow .2s; }
-.landing-page .ifc-nc-form .ifc-nc-input-wrap textarea.ifc-nc-control { min-height:100px; height:auto; resize:vertical; display:block; }
+.landing-page .ifc-nc-form .ifc-nc-input-wrap textarea.ifc-nc-control { height:120px; min-height:120px; max-height:120px; resize:none; field-sizing:fixed; overflow-y:auto; display:block; }
 .landing-page .ifc-nc-form .ifc-nc-input-wrap .ifc-nc-subject-trigger { display:flex; justify-content:space-between; gap:8px; cursor:pointer; text-align:left; }
 .ifc-nc-subject-trigger [data-slot="select-icon"] { color:var(--nc-accent); }
 .ifc-nc-subject-trigger[data-placeholder] { color:var(--nc-muted); }
@@ -75,6 +75,13 @@ html[data-ifc-theme="dark"] .landing-page .ifc-nc-landscape {
 .landing-page .ifc-nc-form .ifc-nc-input-wrap .ifc-nc-control:focus-visible,
 .landing-page .ifc-nc-form .ifc-nc-subject-trigger[data-state="open"] { border-color:var(--nc-accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--nc-accent) 18%,transparent); outline:none; }
 .landing-page .ifc-nc-form .ifc-nc-input-wrap .ifc-nc-control[aria-invalid="true"] { border-color:var(--nc-error); }
+/* Preserve the document's stable scrollbar gutter when the subject Select
+   locks body scrolling. Scope the override to this popup, not other dialogs. */
+body[data-scroll-locked="1"]:has(.ifc-nc-subject-trigger[data-state="open"],.ifc-nc-subject-menu) {
+  overflow:visible!important;
+  margin-right:0!important;
+  --removed-body-scroll-bar-size:0px!important;
+}
 /* Radix portals the dropdown outside the landing section: supply theme tokens explicitly. */
 .ifc-select-content.ifc-nc-subject-menu { z-index:110; width:var(--radix-select-trigger-width); min-width:var(--radix-select-trigger-width); max-width:calc(100vw - 24px); background:#fffdf5; color:#173f20; border:1px solid #c9d7bc; padding:5px; border-radius:10px; }
 .ifc-nc-subject-menu .ifc-select-item { min-height:36px; font-size:13px; white-space:normal; }
