@@ -5,53 +5,64 @@ const INTENSITY = .65;
 const SPEED = .35;
 const rgba = (rgb, alpha) => "rgba(" + rgb.join(",") + "," + alpha + ")";
 
+// Warm colors belong to the decorative canvas only, never component accents.
+const GOLD_INTENSITY = .45;
+const WOOD_INTENSITY = .30;
+
 function paint(ctx, width, height, offset, time, dark) {
   ctx.clearRect(0, 0, width, height);
-  const green = dark ? [166, 202, 137] : [103, 153, 45];
-  const sage = dark ? [145, 174, 142] : [138, 167, 115];
-  const mint = dark ? [172, 211, 155] : [177, 205, 142];
-  const forest = dark ? [86, 128, 70] : [34, 72, 35];
+  const palette = {
+    green: dark ? [166, 202, 137] : [103, 153, 45],
+    gold: [242, 184, 49],
+    earth: dark ? [198, 173, 128] : [135, 80, 31],
+    cream: dark ? [150, 169, 139] : [250, 249, 242],
+  };
+  const weight = { green: 1, gold: GOLD_INTENSITY, earth: WOOD_INTENSITY, cream: 1 };
   const scale = Math.max(480, width);
-  const alpha = INTENSITY * (dark ? 1 : .72) * (width < 600 ? .75 : 1);
-  const cream = [250, 249, 242];
+  const alpha = INTENSITY * (width < 600 ? .8 : 1);
+  const tone = (key, opacity) => rgba(palette[key], alpha * weight[key] * opacity);
   const wave = (y, k) => {
     const v = (y + offset) / scale;
     return Math.sin(v * 1.7 + time * .58 + k * .36) * width * .14
       + Math.sin(v * .67 - time * .28 + k * .18) * width * .09;
   };
 
-  // Soft, overlapping aurora glows use world coordinates, not section boundaries.
-  const spacing = Math.max(380, width * .44);
-  const radius = Math.max(300, width * .66);
+  // Soft cream, sage, gold and woody brown aurora, in continuous page coordinates.
+  const spacing = Math.max(330, width * .4);
+  const radius = Math.max(300, width * .68);
   const first = Math.floor((offset - radius) / spacing);
   const last = Math.ceil((offset + height + radius) / spacing);
+  const glowKeys = ["cream", "green", "gold", "earth"];
   for (let i = first; i <= last; i += 1) {
-    const cy = i * spacing - offset + 140;
+    const cy = i * spacing - offset + 130;
     const cx = width * (.5 + .36 * Math.sin(i * 1.74 + time * .22));
-    const colors = dark ? [green, sage, mint] : [cream, sage, cream];
-    const color = colors[((i % 3) + 3) % 3];
+    const key = glowKeys[((i % 4) + 4) % 4];
+    const x = Math.max(0, cx - radius);
+    const y = Math.max(0, cy - radius);
+    const right = Math.min(width, cx + radius);
+    const bottom = Math.min(height, cy + radius);
+    if (right <= x || bottom <= y) continue;
     const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-    glow.addColorStop(0, rgba(color, alpha * (dark ? .075 : .10)));
-    glow.addColorStop(.5, rgba(color, alpha * .055));
-    glow.addColorStop(1, rgba(color, 0));
+    glow.addColorStop(0, tone(key, dark ? .14 : .32));
+    glow.addColorStop(.5, tone(key, dark ? .045 : .13));
+    glow.addColorStop(1, tone(key, 0));
     ctx.fillStyle = glow;
-    ctx.fillRect(Math.max(0, cx - radius), Math.max(0, cy - radius),
-      Math.min(width, cx + radius) - Math.max(0, cx - radius),
-      Math.max(0, Math.min(height, cy + radius) - Math.max(0, cy - radius)));
+    ctx.fillRect(x, y, right - x, bottom - y);
   }
 
-  // Translucent silk ribbons, with fine fibers that follow the same curves.
-  const step = width < 600 ? 12 : 10;
+  // Silk ribbons follow the approved preview's asymmetric color order.
+  const step = width < 600 ? 12 : 8;
   const end = Math.ceil((height + step) / step) * step;
   for (const side of [0, 1]) {
+    const keys = side === 0 ? ["earth", "cream", "gold", "green"] : ["green", "cream", "gold", "earth"];
     for (let k = 0; k < 4; k += 1) {
-      const color = (dark ? [forest, green, mint, sage] : [sage, green, cream, cream])[k];
+      const key = keys[k];
       const direction = side === 0 ? 1 : -1;
-      const base = width * (side === 0 ? .075 : .925);
-      const ribbonWidth = width * (.055 + k * .011);
+      const base = width * (side === 0 ? .06 : .94);
+      const ribbonWidth = width * (.065 + k * .014);
       const center = y => base + wave(y, k + side * 7)
-        + direction * (k * 11 + Math.sin((y + offset) / scale * 2.1 + time * .3 + k) * width * .045);
-      const bend = y => .45 + .55 * (.5 + .5 * Math.sin((y + offset) / scale * 2.1 + time * .45 + k));
+        + direction * (k * 12 + Math.sin((y + offset) / scale * 2.1 + time * .3 + k) * width * .035);
+      const bend = y => .55 + .45 * (.5 + .5 * Math.sin((y + offset) / scale * 2.1 + time * .45 + k));
       const point = (y, fraction) => center(y) + direction * ribbonWidth * bend(y) * fraction;
       ctx.beginPath();
       for (let y = -step; y <= end; y += step) {
@@ -60,14 +71,13 @@ function paint(ctx, width, height, offset, time, dark) {
       }
       for (let y = end; y >= -step; y -= step) ctx.lineTo(point(y, 1), y);
       ctx.closePath();
-      // Horizontal gradients stay consistent as the viewport moves down the page.
       const silk = ctx.createLinearGradient(0, 0, width, 0);
-      silk.addColorStop(0, rgba(color, alpha * (dark ? .09 : .13)));
-      silk.addColorStop(.5, rgba(color, alpha * (dark ? .04 : .07)));
-      silk.addColorStop(1, rgba(color, alpha * (dark ? .13 : .20)));
+      silk.addColorStop(0, tone(key, dark ? .23 : .30));
+      silk.addColorStop(.5, tone(key, dark ? .07 : .11));
+      silk.addColorStop(1, tone(key, dark ? .25 : .35));
       ctx.fillStyle = silk;
       ctx.fill();
-      const fibers = width < 600 ? 3 : 6;
+      const fibers = width < 600 ? 3 : 5;
       for (let j = 1; j <= fibers; j += 1) {
         ctx.beginPath();
         for (let y = -step; y <= end; y += step) {
@@ -75,29 +85,31 @@ function paint(ctx, width, height, offset, time, dark) {
           if (y === -step) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
-        ctx.strokeStyle = rgba(color, alpha * (dark ? .035 : .07));
+        ctx.strokeStyle = tone(key, dark ? .09 : .14);
         ctx.lineWidth = .7;
         ctx.stroke();
       }
     }
   }
 
-  // Agricultural topographic lines share the same continuous coordinate system.
+  // Thin brown and green contours with occasional gold threads.
+  const contourStep = 10;
   for (const side of [0, 1]) {
-    const count = width < 600 ? 12 : 18;
+    const count = width < 600 ? 16 : 22;
     const direction = side === 0 ? 1 : -1;
-    const base = width * (side === 0 ? -.14 : 1.14);
+    const base = width * (side === 0 ? -.12 : 1.12);
     for (let i = 0; i < count; i += 1) {
+      const key = side === 0 ? (i % 4 === 0 ? "gold" : "earth") : (i % 6 === 0 ? "gold" : "green");
       ctx.beginPath();
-      for (let y = -step; y <= end; y += step) {
+      for (let y = -contourStep; y <= height + contourStep; y += contourStep) {
         const v = (y + offset) / scale;
         const x = base + direction * i * width * .013 + wave(y, side * 7 + 1)
           + Math.sin(v * 3.1 + time * .32 + i * .027) * width * .025;
-        if (y === -step) ctx.moveTo(x, y);
+        if (y === -contourStep) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }
-      ctx.strokeStyle = rgba(side === 0 ? sage : green, alpha * (dark ? .10 : .19) * (i % 5 === 0 ? 1 : .6));
-      ctx.lineWidth = i % 5 === 0 ? 1.2 : .75;
+      ctx.strokeStyle = tone(key, (dark ? .23 : .36) * (i % 5 === 0 ? 1 : .65));
+      ctx.lineWidth = i % 5 === 0 ? 1.25 : .8;
       ctx.stroke();
     }
   }
