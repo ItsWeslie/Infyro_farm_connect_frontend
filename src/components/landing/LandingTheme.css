@@ -4,51 +4,20 @@
   --land-earth:#87501F; --land-gold:#F2B831; --land-gold-ink:#805b16;
   --land-earth-tint:#f0e3d3; --land-gold-tint:#f8edce; --land-earth-border:#ddc8ac; --land-gold-border:#e5d19e;
   --land-earth-active:#87501f; --land-earth-on:#fffefa; --land-gold-active:#8a6014; --land-gold-on:#fffefa;
-  --land-soil:#f6f0e4; --land-fields:#faf9f2; --land-roots:#f3ebdc;
-  --land-growth:#eef0df; --land-flow:#f3f5e9; --land-harvest:#faf3df;
-  --land-next:#e6edda; --land-footer:#f8f7ee;
-  --land-green:#67992D; --land-art-strength:1;
+  --land-base:#FAF9F2;
 }
 html[data-ifc-theme="dark"] .landing-page {
   --land-earth:#c6ad80; --land-gold-ink:#e9c467;
   --land-earth-tint:#41362b; --land-gold-tint:#433b25; --land-earth-border:#66543b; --land-gold-border:#695b34;
   --land-earth-active:#c6ad80; --land-earth-on:#2d2821; --land-gold-active:#F2B831; --land-gold-on:#302715;
-  --land-soil:#222a21; --land-fields:#19271d; --land-roots:#2d2821;
-  --land-growth:#233127; --land-flow:#1c2b22; --land-harvest:#302d22;
-  --land-next:#1a291d; --land-footer:#151e18;
-  --land-green:#a6c28e; --land-art-strength:.7;
+  --land-base:#151E18;
 }
-.ifc-landscape-stage { position:relative; isolation:isolate; display:flow-root; min-width:0; background:var(--land-stage); }
-.ifc-landscape-commitment { --land-stage:var(--land-soil); }
-.ifc-landscape-features { --land-stage:var(--land-fields); }
-.ifc-landscape-about { --land-stage:var(--land-roots); }
-.ifc-landscape-approach { --land-stage:var(--land-growth); }
-.ifc-landscape-workflow { --land-stage:var(--land-flow); }
-.ifc-landscape-testimonials { --land-stage:var(--land-harvest); }
-.ifc-landscape-contact { --land-stage:var(--ifc-contact-surface,#eef3e5); }
-.ifc-landscape-cta { --land-stage:var(--land-next); }
-.ifc-landscape-footer { --land-stage:var(--land-footer); }
-.ifc-landscape-art { position:absolute; z-index:-1; inset:0; overflow:hidden; pointer-events:none; opacity:var(--land-art-strength); }
-.ifc-landscape-art svg { position:absolute; inset:0; display:block; width:100%; height:100%; }
-.ifc-landscape-art-soil { background:radial-gradient(ellipse at 92% 0%,color-mix(in srgb,var(--land-gold) 9%,transparent),transparent 45%); }
-.ifc-landscape-art-harvest { background:radial-gradient(ellipse at 95% 0%,color-mix(in srgb,var(--land-gold) 12%,transparent),transparent 45%); }
-.ifc-landscape-art-growth { background:radial-gradient(ellipse at 0% 8%,color-mix(in srgb,var(--land-gold) 12%,transparent),transparent 46%); }
-.ifc-landscape-earth-fill { fill:var(--land-earth); opacity:.08; }
-.ifc-landscape-layer-soft { opacity:.05; }
-.ifc-landscape-green-fill { fill:var(--land-green); opacity:.09; }
-.ifc-landscape-gold-fill { fill:var(--land-gold); opacity:.07; }
-.ifc-landscape-earth-lines,.ifc-landscape-field-lines { fill:none; stroke:var(--land-earth); stroke-width:1.3; opacity:.13; }
-.ifc-landscape-field-lines { stroke:var(--land-green); opacity:.19; }
-.ifc-landscape-transition { display:block; width:100%; height:clamp(18px,3.2vw,45px); pointer-events:none; overflow:hidden; }
-.ifc-landscape-transition-tint { fill:var(--land-next-surface); opacity:.45; }
-.ifc-landscape-transition-surface { fill:var(--land-next-surface); }
-.ifc-landscape-to-features { --land-next-surface:var(--land-fields); }
-.ifc-landscape-to-about { --land-next-surface:var(--land-roots); }
-.ifc-landscape-to-approach { --land-next-surface:var(--land-growth); }
-.ifc-landscape-to-workflow { --land-next-surface:var(--land-flow); }
-.ifc-landscape-to-testimonials { --land-next-surface:var(--land-harvest); }
-.ifc-landscape-to-cta { --land-next-surface:var(--land-next); }
-.ifc-landscape-to-footer { --land-next-surface:var(--land-footer); }
+/* One background for the whole post-hero page. Stage wrappers retain existing
+   accent selectors and section spacing, but no longer paint separate surfaces. */
+.landing-page { position:relative; isolation:isolate; }
+.ifc-landing-flow { position:absolute; top:0; left:0; right:0; height:0; z-index:-1; overflow:hidden; pointer-events:none; background:var(--land-base); }
+.ifc-landing-flow > canvas { position:absolute; top:0; left:0; display:block; pointer-events:none; }
+.ifc-landscape-stage { position:relative; isolation:isolate; display:flow-root; min-width:0; background:transparent; }
 /* Existing content remains above the artwork. Explicit dark selectors override legacy solid surfaces. */
 .landing-page .ifc-landscape-stage > :is(.landing-proof-premium,.ifc-product-features,.ifc-about,.ifc-people-story,.landing-workflow,.ifc-testimonials,.ifc-nature-contact,.ifc-minimal-footer),
 html[data-ifc-theme="dark"] .landing-page .ifc-landscape-stage > :is(.landing-proof-premium,.ifc-product-features,.ifc-about,.ifc-people-story,.landing-workflow,.ifc-testimonials,.ifc-nature-contact,.ifc-minimal-footer) {
@@ -61,16 +30,14 @@ html[data-ifc-theme="dark"] .landing-page .ifc-landscape-stage > :is(.landing-pr
 .landing-page .ifc-landscape-workflow > .landing-workflow { padding-bottom:clamp(40px,5vw,72px); }
 /* The farmer image's edge fade must use its new surrounding surface. */
 .landing-page .ifc-landscape-approach > .ifc-people-story,
-html[data-ifc-theme="dark"] .landing-page .ifc-landscape-approach > .ifc-people-story { --story-bg:var(--land-growth); }
-/* Existing carousel fades and organic Contact transition stay in sync. */
+html[data-ifc-theme="dark"] .landing-page .ifc-landscape-approach > .ifc-people-story { --story-bg:var(--land-base); }
+/* Keep the existing carousel and farmer imagery; only remove standalone background seams. */
 .landing-page .ifc-landscape-testimonials > .ifc-testimonials,
 html[data-ifc-theme="dark"] .landing-page .ifc-landscape-testimonials > .ifc-testimonials {
-  --tm-bg:var(--land-harvest); --tm-star:var(--land-gold-ink);
-  --tm-transition:color-mix(in srgb,var(--ifc-contact-surface) 70%,var(--land-harvest));
+  --tm-bg:var(--land-base); --tm-star:var(--land-gold-ink);
 }
 .landing-page .ifc-landscape-contact > .ifc-nature-contact { padding-bottom:clamp(48px,5.5vw,78px); }
 /* Keep the bottom footer wordmark quiet. */
-.ifc-landscape-footer .ifc-landscape-art { opacity:calc(var(--land-art-strength) * .25); }
 .landing-page .ifc-landscape-footer > .ifc-minimal-footer { border-top:0; }
 
 /* Earth-toned eyebrows and meaningful highlights. */
@@ -116,8 +83,6 @@ html[data-ifc-theme="dark"] .landing-page .ifc-landscape-cta > .ifc-final-cta {
 }
 .landing-page .ifc-landscape-cta .ifc-final-cta-art { color:color-mix(in srgb,var(--land-gold) 55%,var(--cta-decoration)); }
 @media(max-width:640px) {
-  .ifc-landscape-art svg { opacity:.7; }
-  .ifc-landscape-transition { height:20px; }
   .landing-page .ifc-landscape-contact > .ifc-nature-contact { padding-bottom:48px; }
 }
 
@@ -130,3 +95,20 @@ html[data-ifc-theme="dark"] .landing-page .ifc-landscape-cta > .ifc-final-cta {
 .landing-page .ifc-landscape-workflow #ifc-vine-gradient stop:last-child { stop-color:var(--land-gold); }
 .landing-page .ifc-landscape-footer .ifc-ft-group:nth-child(3) .ifc-ft-tile { background:var(--land-earth-tint); color:var(--land-earth); }
 .landing-page .ifc-landscape-footer .ifc-ft-group:last-child .ifc-ft-tile { background:var(--land-gold-tint); color:var(--land-gold-ink); }
+
+/* Blend the existing decorative artwork into the common live canvas. */
+.landing-page .ifc-landscape-testimonials .ifc-tm-contact-transition { display:none; }
+.landing-page .ifc-landscape-testimonials .ifc-tm-window::before,
+.landing-page .ifc-landscape-testimonials .ifc-tm-window::after { display:none; }
+.landing-page .ifc-landscape-testimonials .ifc-tm-window {
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 clamp(12px,5vw,85px),#000 calc(100% - clamp(12px,5vw,85px)),transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 clamp(12px,5vw,85px),#000 calc(100% - clamp(12px,5vw,85px)),transparent);
+}
+.landing-page .ifc-landscape-approach .ifc-story-shapes { display:none; }
+.landing-page .ifc-landscape-contact > .ifc-nature-contact,
+html[data-ifc-theme="dark"] .landing-page .ifc-landscape-contact > .ifc-nature-contact { --nc-bg:var(--land-base); }
+.landing-page .ifc-landscape-contact .ifc-nc-landscape,
+html[data-ifc-theme="dark"] .landing-page .ifc-landscape-contact .ifc-nc-landscape {
+  --nc-landscape-fade:linear-gradient(to bottom,transparent 0%,transparent 6%,rgba(0,0,0,.35) 24%,#000 54%,#000 68%,transparent 100%);
+  opacity:.72;
+}
