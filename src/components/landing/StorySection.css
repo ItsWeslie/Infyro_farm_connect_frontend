@@ -16,8 +16,7 @@ html[data-ifc-theme="dark"] .ifc-people-story {
   background:var(--story-bg); color:var(--story-ink); scroll-margin-top:96px;
 }
 .ifc-story-copy { position:relative; z-index:3; width:44%; max-width:600px; min-width:0; }
-.ifc-story-kicker { display:flex; align-items:center; gap:15px; color:var(--story-accent); font-size:12px; font-weight:750; letter-spacing:2px; }
-.ifc-story-kicker::before { content:""; width:42px; height:2px; background:currentColor; border-radius:3px; }
+.ifc-story-kicker { display:inline-block; color:var(--story-accent); font-size:12px; font-weight:750; letter-spacing:2px; }
 .ifc-story-copy h2 { margin:22px 0 21px; color:var(--story-ink); font-size:clamp(36px,3.7vw,58px); font-weight:780; letter-spacing:-.045em; line-height:1.08; }
 .ifc-story-copy p { margin:0; max-width:540px; color:var(--story-muted); font-size:clamp(14px,1.3vw,18px); line-height:1.78; }
 .ifc-story-actions { display:flex; align-items:center; flex-wrap:wrap; gap:12px; margin-top:30px; }
