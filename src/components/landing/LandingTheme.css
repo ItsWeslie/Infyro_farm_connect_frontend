@@ -212,3 +212,57 @@ html[data-ifc-theme="dark"] .landing-page .landing-hero[data-landscape-live="tru
 @media(prefers-reduced-motion:reduce) {
   .landing-page .landing-hero .ifc-hero-contour-highlights { display:none!important; }
 }
+
+
+/* Cinematic hero: transform the existing section, not its layout or dimensions.
+   The header is a sibling and remains independent of this transition. */
+.landing-page .ifc-hero-cinematic[data-cinematic-active="true"] {
+  opacity:var(--hero-cinema-opacity,1);
+  transform:translate3d(0,var(--hero-cinema-y,0px),0) scale(var(--hero-cinema-scale,1));
+  transform-origin:50% 40%;
+}
+.landing-page .ifc-hero-cinematic[data-cinematic-enter="true"] {
+  clip-path:inset(var(--hero-cinema-inset,0%) calc(var(--hero-cinema-inset,0%) * .7) round var(--hero-cinema-radius,0px));
+}
+/* Replace the former figure entrance; its nested SVG still owns hover tilt and idle float. */
+.landing-page .ifc-hero-cinematic .landing-hero-dashboard-reveal {
+  animation:none; opacity:1; filter:none; transform:none; will-change:auto;
+}
+@media(prefers-reduced-motion:no-preference) {
+  .landing-page .ifc-hero-cinematic[data-cinematic-active="true"] .landing-hero-dashboard-reveal {
+    transform:translate3d(0,var(--hero-cinema-depth-y,0px),0) scale(var(--hero-cinema-depth-scale,1));
+  }
+  .landing-page .ifc-hero-cinematic[data-cinematic-enter="true"] .landing-hero-dashboard-reveal {
+    animation:ifc-hero-cinematic-dashboard 1.16s cubic-bezier(.16,1,.3,1) .16s backwards;
+    transform-origin:center;
+  }
+  @keyframes ifc-hero-cinematic-dashboard {
+    from { opacity:.45; transform:perspective(1400px) translate3d(0,38px,0) rotateX(10deg) scale(.96); }
+    to { opacity:1; transform:perspective(1400px) translate3d(0,0,0) rotateX(0deg) scale(1); }
+  }
+  @media(max-width:900px) {
+    .landing-page .ifc-hero-cinematic[data-cinematic-enter="true"] .landing-hero-dashboard-reveal {
+      animation-name:ifc-hero-cinematic-dashboard-mobile;
+    }
+    @keyframes ifc-hero-cinematic-dashboard-mobile {
+      from { opacity:.55; transform:translate3d(0,20px,0) scale(.98); }
+      to { opacity:1; transform:none; }
+    }
+  }
+}
+/* A keyboard-focused link or button must never be faded or clipped. */
+.landing-page .ifc-hero-cinematic:has(:focus-visible) {
+  opacity:1!important; transform:none!important; clip-path:none!important;
+}
+.landing-page .ifc-hero-cinematic:has(:focus-visible) .landing-hero-copy > *,
+.landing-page .ifc-hero-cinematic:has(:focus-visible) .landing-hero-dashboard-reveal {
+  animation:none!important; opacity:1!important; transform:none!important; filter:none!important;
+}
+@media(prefers-reduced-motion:reduce) {
+  .landing-page .ifc-hero-cinematic {
+    opacity:1!important; transform:none!important; clip-path:none!important;
+  }
+  .landing-page .ifc-hero-cinematic .landing-hero-dashboard-reveal {
+    animation:none!important; opacity:1!important; transform:none!important;
+  }
+}
