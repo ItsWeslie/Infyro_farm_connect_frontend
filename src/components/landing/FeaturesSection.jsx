@@ -103,7 +103,7 @@ function ActivityPreview() {
 
 const expenses = [
   { label: "Fertilizer", value: 45, offset: 0, color: "#83ad73" },
-  { label: "Seeds", value: 30, offset: 45, color: "#d7b478" },
+  { label: "Seeds", value: 30, offset: 45, color: "#91ac67" },
   { label: "Labour", value: 25, offset: 75, color: "#8ca9bf" },
 ];
 
