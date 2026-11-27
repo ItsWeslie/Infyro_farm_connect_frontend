@@ -63,13 +63,20 @@ function paint(ctx, width, height, offset, time, dark) {
       const center = y => base + wave(y, k + side * 7)
         + direction * (k * 12 + Math.sin((y + offset) / scale * 2.1 + time * .3 + k) * width * .035);
       const bend = y => .55 + .45 * (.5 + .5 * Math.sin((y + offset) / scale * 2.1 + time * .45 + k));
-      const point = (y, fraction) => center(y) + direction * ribbonWidth * bend(y) * fraction;
-      ctx.beginPath();
+      // Reuse the sampled center and width for all fibers of this ribbon.
+      const samples = [];
       for (let y = -step; y <= end; y += step) {
-        if (y === -step) ctx.moveTo(point(y, 0), y);
-        else ctx.lineTo(point(y, 0), y);
+        samples.push({ y, x: center(y), span: direction * ribbonWidth * bend(y) });
       }
-      for (let y = end; y >= -step; y -= step) ctx.lineTo(point(y, 1), y);
+      ctx.beginPath();
+      samples.forEach(({ x, y }, i) => {
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      for (let i = samples.length - 1; i >= 0; i -= 1) {
+        const { x, y, span } = samples[i];
+        ctx.lineTo(x + span, y);
+      }
       ctx.closePath();
       const silk = ctx.createLinearGradient(0, 0, width, 0);
       silk.addColorStop(0, tone(key, dark ? .23 : .30));
@@ -80,11 +87,11 @@ function paint(ctx, width, height, offset, time, dark) {
       const fibers = width < 600 ? 3 : 5;
       for (let j = 1; j <= fibers; j += 1) {
         ctx.beginPath();
-        for (let y = -step; y <= end; y += step) {
-          const x = point(y, j / (fibers + 1));
-          if (y === -step) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
+        samples.forEach(({ x, y, span }, i) => {
+          const point = x + span * j / (fibers + 1);
+          if (i === 0) ctx.moveTo(point, y);
+          else ctx.lineTo(point, y);
+        });
         ctx.strokeStyle = tone(key, dark ? .09 : .14);
         ctx.lineWidth = .7;
         ctx.stroke();
@@ -189,6 +196,9 @@ export function LandingFlowBackground({ theme }) {
       if (!visible || !width || !height) { previous = 0; return; }
       const nextOffset = Math.max(0, Math.min(top, extent - height));
       const moved = nextOffset !== offset;
+      // During continuous scrolling, paint at most ~25fps. Canvas and
+      // transform update together, retaining alignment with page coordinates.
+      if (moved && !dirty && !motion.matches && now - lastPaint < 40) { schedule(); return; }
       if (moved) {
         offset = nextOffset;
         canvas.style.transform = "translate3d(0," + offset + "px,0)";
@@ -196,7 +206,7 @@ export function LandingFlowBackground({ theme }) {
       const elapsed = previous ? Math.min((now - previous) / 1000, .05) : 0;
       previous = now;
       if (!motion.matches) time = (time + elapsed * SPEED * .6) % (TAU * 10000);
-      if (dirty || moved || (!motion.matches && now - lastPaint >= 32)) {
+      if (dirty || moved || (!motion.matches && now - lastPaint >= 40)) {
         paint(ctx, width, height, offset, time, themeRef.current === "dark");
         dirty = false;
         lastPaint = now;
@@ -216,7 +226,7 @@ export function LandingFlowBackground({ theme }) {
     observer?.observe(footer);
     const hero = root.querySelector(".landing-hero");
     if (hero) observer?.observe(hero);
-    window.addEventListener("scroll", invalidate, { passive: true });
+    window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", measure, { passive: true });
     motion.addEventListener?.("change", invalidate);
     document.addEventListener("visibilitychange", visibilityChanged);
@@ -227,7 +237,7 @@ export function LandingFlowBackground({ theme }) {
       disposed = true;
       if (raf) window.cancelAnimationFrame(raf);
       observer?.disconnect();
-      window.removeEventListener("scroll", invalidate);
+      window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", measure);
       motion.removeEventListener?.("change", invalidate);
       document.removeEventListener("visibilitychange", visibilityChanged);
