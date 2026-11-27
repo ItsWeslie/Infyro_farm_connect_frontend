@@ -1,26 +1,26 @@
 /* Borderless closing section on the continuous Living Landscape. */
 .landing-page .ifc-final-cta {
-  --cta-title:#224823; --cta-highlight:var(--land-gold-ink,#85640f); --cta-kicker:var(--land-leaf,#416c32);
+  --cta-title:#224823; --cta-highlight:var(--land-sage-ink,#527b3b); --cta-kicker:var(--land-leaf,#416c32);
   --cta-copy:#53634f; --cta-button:#224823; --cta-button-text:#fff;
   --cta-button-hover:#386c42; --cta-decoration:#67992D;
-  --cta-secondary-hover:#67992d12; --cta-glow:#f2b83133;
+  --cta-secondary-hover:#67992d12; --cta-glow:#67992d33;
   position:relative; isolation:isolate; overflow:hidden; box-sizing:border-box;
   width:100%; margin:0 auto; padding:clamp(40px,5.2vw,72px) 24px;
   border:0; border-radius:0; background:transparent; box-shadow:none;
   color:var(--cta-title); text-align:center;
 }
 html[data-ifc-theme="dark"] .landing-page .ifc-final-cta {
-  --cta-title:#edf4e9; --cta-highlight:var(--land-gold,#F2B831); --cta-kicker:var(--land-leaf,#b6da98);
+  --cta-title:#edf4e9; --cta-highlight:var(--land-sage-ink,#c5dfaf); --cta-kicker:var(--land-leaf,#b6da98);
   --cta-copy:#bac9b5; --cta-button:#b6da98; --cta-button-text:#18321e;
   --cta-button-hover:#d0e8bb; --cta-decoration:#b6da98;
-  --cta-secondary-hover:#b6da981a; --cta-glow:#f2b83119;
+  --cta-secondary-hover:#b6da981a; --cta-glow:#b6da9819;
 }
 .ifc-final-cta::before {
   content:""; position:absolute; z-index:-1; inset:0; pointer-events:none;
   background:radial-gradient(ellipse min(520px,48%) 49% at 50% 50%,var(--cta-glow),transparent 100%);
-  transform-origin:center; animation:ifc-cta-golden-breathe 8s ease-in-out infinite alternate;
+  transform-origin:center; animation:ifc-cta-green-breathe 8s ease-in-out infinite alternate;
 }
-@keyframes ifc-cta-golden-breathe {
+@keyframes ifc-cta-green-breathe {
   from { transform:scale(.86); opacity:.65; }
   to { transform:scale(1.1); opacity:1; }
 }
