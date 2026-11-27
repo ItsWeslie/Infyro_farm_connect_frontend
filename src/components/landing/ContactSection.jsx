@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { ChevronDown, List, Mail, MapPin, MessageSquare, Phone, Send, Sprout, UserRound } from "lucide-react";
+import { List, Mail, MapPin, MessageSquare, MessageSquareText, Phone, Send, UserRound } from "lucide-react";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "../ui/select";
+import { Button } from "../ui/button";
+import { Label } from "../ui/label";
 import "./ContactSection.css";
 
 const contactEmail = "info@infyroinc.com";
@@ -41,7 +46,7 @@ function ContactDetail({ icon: Icon, title, value, href }) {
 
 function Field({ name, label, icon: Icon, error, children }) {
   return <div className="ifc-nc-field">
-    <label htmlFor={"ifc-nc-" + name}>{label} <span aria-hidden="true">*</span></label>
+    <Label htmlFor={"ifc-nc-" + name}>{label} <span aria-hidden="true">*</span></Label>
     <div className="ifc-nc-input-wrap"><Icon className="ifc-nc-input-icon" size={18} strokeWidth={1.8} aria-hidden="true" />{children}</div>
     {error && <span className="ifc-nc-error" id={"ifc-nc-" + name + "-error"}>{error}</span>}
   </div>;
@@ -59,7 +64,10 @@ export function ContactSection({ contactForm, setContactForm, setContactToast })
   });
 
   function change(event) {
-    const { name, value } = event.target;
+    updateField(event.target.name, event.target.value);
+  }
+
+  function updateField(name, value) {
     setContactForm(current => ({ ...current, [name]: value }));
     setErrors(current => {
       if (!current[name]) return current;
@@ -71,7 +79,7 @@ export function ContactSection({ contactForm, setContactForm, setContactToast })
 
   function fieldProps(name) {
     return {
-      id: "ifc-nc-" + name, name, value: contactForm[name] ?? "", onChange: change,
+      id: "ifc-nc-" + name, name, value: contactForm[name] ?? "", onChange: change, className: "ifc-nc-control",
       required: true, "aria-invalid": !!errors[name],
       "aria-describedby": errors[name] ? "ifc-nc-" + name + "-error" : undefined,
     };
@@ -88,7 +96,7 @@ export function ContactSection({ contactForm, setContactForm, setContactToast })
     setErrors(next);
     if (Object.keys(next).length) {
       const first = Object.keys(next)[0];
-      event.currentTarget.elements.namedItem(first)?.focus();
+      document.getElementById("ifc-nc-" + first)?.focus();
       setContactToast({ type: "error", message: "Please review the highlighted fields." });
       return;
     }
@@ -112,17 +120,23 @@ export function ContactSection({ contactForm, setContactForm, setContactToast })
         </div>
       </motion.div>
       <motion.form className="ifc-nc-form" onSubmit={submit} noValidate aria-labelledby="ifc-nc-form-title" {...entrance(.1)}>
-        <div className="ifc-nc-form-head"><span className="ifc-nc-symbol"><Sprout size={29} strokeWidth={1.8} aria-hidden="true" /></span><div><h3 id="ifc-nc-form-title">Send Us a Message</h3><p>Fill in the details below to prepare your message.</p></div></div>
+        <div className="ifc-nc-form-head"><span className="ifc-nc-symbol"><MessageSquareText size={25} strokeWidth={1.8} aria-hidden="true" /></span><div><h3 id="ifc-nc-form-title">Send Us a Message</h3><p>Fill in the details below to prepare your message.</p></div></div>
         <div className="ifc-nc-field-row">
-          <Field name="name" label="Full Name" icon={UserRound} error={errors.name}><input {...fieldProps("name")} type="text" autoComplete="name" placeholder="Your name" /></Field>
-          <Field name="email" label="Email Address" icon={Mail} error={errors.email}><input {...fieldProps("email")} type="email" autoComplete="email" placeholder="Your email" /></Field>
+          <Field name="name" label="Full Name" icon={UserRound} error={errors.name}><Input {...fieldProps("name")} type="text" autoComplete="name" placeholder="Your name" /></Field>
+          <Field name="email" label="Email Address" icon={Mail} error={errors.email}><Input {...fieldProps("email")} type="email" autoComplete="email" placeholder="Your email" /></Field>
         </div>
         <Field name="subject" label="Subject" icon={List} error={errors.subject}>
-          <select {...fieldProps("subject")}><option value="" disabled>Select a subject</option>{subjects.map(subject => <option key={subject} value={subject}>{subject}</option>)}</select>
-          <ChevronDown className="ifc-nc-select-arrow" size={18} aria-hidden="true" />
+          <Select name="subject" required value={contactForm.subject ?? ""} onValueChange={value => updateField("subject", value)}>
+            <SelectTrigger id="ifc-nc-subject" className="ifc-nc-control ifc-nc-subject-trigger" aria-invalid={!!errors.subject} aria-describedby={errors.subject ? "ifc-nc-subject-error" : undefined} aria-required="true">
+              <SelectValue placeholder="Select a subject" />
+            </SelectTrigger>
+            <SelectContent className="ifc-nc-subject-menu">
+              {subjects.map(subject => <SelectItem key={subject} value={subject}>{subject}</SelectItem>)}
+            </SelectContent>
+          </Select>
         </Field>
-        <Field name="message" label="Message" icon={MessageSquare} error={errors.message}><textarea {...fieldProps("message")} rows={5} placeholder="Write your message..." /></Field>
-        <button type="submit" className="ifc-nc-submit"><Send size={19} aria-hidden="true" />Send Message</button>
+        <Field name="message" label="Message" icon={MessageSquare} error={errors.message}><Textarea {...fieldProps("message")} rows={5} placeholder="Write your message..." /></Field>
+        <Button type="submit" className="ifc-nc-submit"><Send size={19} aria-hidden="true" />Send Message</Button>
         <p className="ifc-nc-note">Your email app will open so you can review and send the message.</p>
       </motion.form>
     </div>
