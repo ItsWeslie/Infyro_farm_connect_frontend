@@ -22,7 +22,12 @@ export function AboutSection() {
   });
 
   return (
-    <section className="ifc-about" id="about-infyro" aria-labelledby="ifc-about-title">
+    <section className="ifc-about" id="about-infyro" aria-labelledby="ifc-about-purpose-title">
+      <motion.header className="ifc-about-purpose" {...enter(0)}>
+        <span>THE PURPOSE BEHIND THE PRODUCT</span>
+        <h2 id="ifc-about-purpose-title">More than software. <em>A purpose to grow.</em></h2>
+        <p>Infyro Farm reflects our belief that meaningful technology should simplify work, empower people and create lasting value.</p>
+      </motion.header>
       <motion.div className="ifc-about-brand-card" {...enter(0, .98)}>
         <div className="ifc-about-brand-landscape" aria-hidden="true">
           <span className="ifc-about-brand-hill ifc-about-brand-hill-back" />
@@ -39,7 +44,7 @@ export function AboutSection() {
       <div className="ifc-about-content">
         <motion.div className="ifc-about-intro" {...enter(.08)}>
           <span className="ifc-about-kicker">ABOUT INFYRO INC.</span>
-          <h2 id="ifc-about-title">The company behind <em>Infyro Farm.</em></h2>
+          <h3 id="ifc-about-title">The company behind <em>Infyro Farm.</em></h3>
           <p>Infyro Inc. builds purposeful digital products designed to solve real-world challenges.</p>
           <p>Infyro Farm extends that vision into agriculture through a connected platform for modern farm management.</p>
           <div className="ifc-about-actions">
@@ -50,7 +55,7 @@ export function AboutSection() {
         <div className="ifc-about-values" id="infyro-values" aria-label="Our vision, mission and innovation">
           {values.map(({ title, icon: Icon, description }, index) => (
             <motion.article key={title} className="ifc-about-value" {...enter(.13 + index * .09)}>
-              <div className="ifc-about-value-head"><span aria-hidden="true"><Icon size={21} strokeWidth={1.8} /></span><h3>{title}</h3></div>
+              <div className="ifc-about-value-head"><span aria-hidden="true"><Icon size={21} strokeWidth={1.8} /></span><h4>{title}</h4></div>
               <p>{description}</p>
             </motion.article>
           ))}
