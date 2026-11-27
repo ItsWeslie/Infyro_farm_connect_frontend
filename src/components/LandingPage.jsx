@@ -14,6 +14,7 @@ import { LandingFooter } from "./landing/LandingFooter";
 import { ContactToast } from "./landing/ContactToast";
 import { BackToTop } from "./landing/BackToTop";
 import { SectionBackground } from "./landing/SectionBackground";
+import { LandingFlowBackground } from "./landing/LandingFlowBackground";
 import "./LandingPage.css";
 
 export default function LandingPage({ theme: controlledTheme, setTheme: setControlledTheme } = {}) {
@@ -130,6 +131,7 @@ export default function LandingPage({ theme: controlledTheme, setTheme: setContr
 
   return (
     <div className="landing-page" id="home">
+      <LandingFlowBackground theme={theme} />
       <LandingHeader
         mobileMenuOpen={mobileMenuOpen}
         setMobileMenuOpen={setMobileMenuOpen}
