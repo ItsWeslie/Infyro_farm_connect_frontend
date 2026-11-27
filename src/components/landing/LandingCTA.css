@@ -23,7 +23,6 @@ html[data-ifc-theme="dark"] .landing-page .ifc-final-cta {
 .ifc-final-cta-art { position:absolute; inset:0; z-index:-1; width:100%; height:100%; color:var(--cta-decoration); pointer-events:none; }
 .ifc-final-cta-content { position:relative; display:flex; flex-direction:column; align-items:center; width:min(660px,100%); margin:0 auto; }
 .ifc-final-cta-kicker { display:flex; align-items:center; justify-content:center; gap:12px; color:var(--cta-kicker); font-size:11px; font-weight:750; letter-spacing:1.8px; line-height:1.6; }
-.ifc-final-cta-kicker::before,.ifc-final-cta-kicker::after { content:""; width:clamp(14px,2.6vw,36px); height:1px; background:currentColor; opacity:.65; }
 .ifc-final-cta h2 { margin:10px 0 10px; font:inherit; font-size:clamp(28px,3.4vw,42px); font-weight:760; letter-spacing:-.045em; line-height:1.12; color:var(--cta-title); }
 .ifc-final-cta h2 em { display:block; color:var(--cta-highlight); font-style:italic; }
 .ifc-final-cta p { max-width:570px; margin:0; color:var(--cta-copy); font-size:clamp(13px,1.2vw,14px); line-height:1.75; }

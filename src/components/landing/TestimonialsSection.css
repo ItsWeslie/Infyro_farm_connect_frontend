@@ -14,7 +14,6 @@ html[data-ifc-theme="dark"] .landing-page .ifc-testimonials {
 }
 .ifc-tm-heading { position:relative; z-index:1; width:min(800px,calc(100% - 36px)); margin:0 auto clamp(28px,4vw,48px); text-align:center; }
 .ifc-tm-kicker { display:flex; justify-content:center; align-items:center; gap:12px; color:var(--tm-accent); font-size:11px; font-weight:750; letter-spacing:1.8px; }
-.ifc-tm-kicker::before,.ifc-tm-kicker::after { content:""; display:block; width:26px; height:1px; background:currentColor; opacity:.5; }
 .ifc-tm-heading h2 { margin:14px 0; font-size:clamp(32px,4vw,52px); line-height:1.12; letter-spacing:-.045em; font-weight:760; color:var(--tm-ink); }
 .ifc-tm-heading h2 em { color:var(--tm-accent); font-style:normal; }
 .ifc-tm-heading p { margin:0 auto; color:var(--tm-muted); max-width:650px; font-size:clamp(13px,1.3vw,15px); line-height:1.75; }
