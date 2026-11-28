@@ -365,9 +365,9 @@ export function LandingHero({ openAuth }) {
             A product by Infyro Inc.
           </motion.div>
           <motion.h1 {...enter(0.22)}>
-            Grow smarter.
+            Farm smarter.
             <br />
-            <em>Manage better.</em>
+            <em>Grow better.</em>
           </motion.h1>
           <motion.p className="landing-hero-description" {...enter(0.36)}>
             A connected farm management platform built by Infyro Inc. Manage fields,
