@@ -2129,8 +2129,8 @@ html[data-ifc-theme="dark"] .ifc-account-settings-page .ifc-settings-logout:hove
 .ifc-refined-shell .sidebar-top{gap:4px;padding:0 3px 17px;flex-shrink:0;border-bottom:1px solid var(--line);margin-bottom:16px}
 .ifc-refined-shell .sidebar-top .brand-logo{flex:1;min-width:0;gap:7px;width:auto}
 /* Dashboard-only outer ring: preserve the logo's existing dimensions. */
-.ifc-refined-shell .sidebar-top .brand-logo-mark{box-shadow:0 0 0 1.5px #224823}
-html[data-ifc-theme="dark"] .ifc-refined-shell .sidebar-top .brand-logo-mark{box-shadow:0 0 0 1.5px #F2B831}
+.ifc-refined-shell .sidebar-top .brand-logo-mark{box-shadow:0 0 0 1px #224823}
+html[data-ifc-theme="dark"] .ifc-refined-shell .sidebar-top .brand-logo-mark{box-shadow:0 0 0 1px #F2B831}
 .ifc-refined-shell .sidebar-top .brand-logo-name{font-size:16px}
 .ifc-refined-shell .sidebar-top .brand-logo-tagline{font-size:5.6px;letter-spacing:.2px}
 .ifc-sidebar-toggle{display:none;flex:0 0 28px;width:28px;height:30px;padding:4px;align-items:center;justify-content:center}
