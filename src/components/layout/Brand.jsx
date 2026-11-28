@@ -8,7 +8,7 @@ export function Brand({ onHome, href, className = "" }) {
       onClick={onHome}
     >
       <span className="brand-logo-mark" aria-hidden="true">
-        <img src="/infyro-farm-logo.png" alt="" />
+        <img src="/infyro-farm-logo-3.png" alt="" />
       </span>
       <span className="brand-logo-copy">
         <span className="brand-logo-name">

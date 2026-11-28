@@ -77,16 +77,15 @@ export function DashboardPreview() {
         <desc id="landing-preview-description">Illustrative farm workspace with the actual navigation, portfolio overview, crop progress, milestones, recent activity and monthly expenses. All displayed values are sample data.</desc>
         <defs>
           <clipPath id="landing-preview-frame"><rect width="1000" height="690" rx="18" /></clipPath>
-          <clipPath id="landing-preview-logo"><circle cx="27" cy="30" r="17" /></clipPath>
+          <clipPath id="landing-preview-logo"><rect x="10" y="13" width="34" height="34" rx="6" /></clipPath>
           <clipPath id="landing-preview-banner"><rect x="204" y="116" width="776" height="151" rx="11" /></clipPath>
         </defs>
         <g clipPath="url(#landing-preview-frame)" fontFamily="DM Sans, sans-serif">
           <rect width="1000" height="690" fill={colors.canvas} />
           <rect width="184" height="690" fill={colors.card} />
           <path d="M184 0V690" stroke={colors.line} />
-          <circle cx="27" cy="30" r="17" fill="#f3f0d9" />
-          <image href="/infyro-farm-logo.png" x="-13" y="3" width="141" height="141" preserveAspectRatio="xMinYMin meet" clipPath="url(#landing-preview-logo)" />
-          <circle cx="27" cy="30" r="17" fill="none" stroke="#65982e" />
+          <rect x="10" y="13" width="34" height="34" rx="6" fill="#fff" />
+          <image href="/infyro-farm-logo-3.png" x="4.56" y="6.2" width="45.56" height="45.56" preserveAspectRatio="xMidYMid meet" clipPath="url(#landing-preview-logo)" />
           <Label x="50" y="29" size={15} weight={800} tone="ink">Infyro <tspan fill={colors.green}>Farm</tspan></Label>
           <Label x="50" y="40" size={5.7} weight={700} letterSpacing=".12">FARM SMARTER. GROW BETTER.</Label>
           <Icon glyph={PanelLeft} x={161} y={23} size={13} tone="muted" />
